@@ -1,0 +1,37 @@
+{
+    "Bin": {
+        "Images": {
+            "Cursors": {
+                "WinConcept": {
+                    "Dark": {
+                        "Busy": {},
+                        "Working": {}
+                    },
+                    "Light": {
+                        "Busy": {},
+                        "Working": {}
+                    }
+                }
+            },
+            "DGICON": {}
+        }
+    },
+    "Lib": {},
+    "Test": {
+        "UIKit": {
+            "ImageViewer": {},
+            "WidgetsGallery": {
+                "Images": {
+                    "SearchBox": {
+                        "Dark": {},
+                        "Light": {}
+                    },
+                    "SideCategory": {
+                        "Dark": {},
+                        "Light": {}
+                    }
+                }
+            }
+        }
+    }
+}

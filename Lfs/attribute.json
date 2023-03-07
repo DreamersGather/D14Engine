@@ -1,0 +1,12 @@
+{
+    "target": [
+        "Bin",
+        "Lib",
+        "Test"
+    ],
+    "suffix": [
+        "dll",
+        "lib",
+        "png"
+    ]
+}
