@@ -157,6 +157,7 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Test\UIKit\SimpleEditor\SimpleEditor.cpp" />
     <None Include=".editorconfig" />
     <None Include=".gitignore" />
     <None Include="Bin\Shaders\Letterbox.hlsl">
@@ -168,6 +169,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
     </ClCompile>
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Common\DirectXError.cpp" />

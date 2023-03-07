@@ -286,6 +286,9 @@
     <ClCompile Include="Src\UIKit\IconLabel2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Test\UIKit\SimpleEditor\SimpleEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Precompile.h">
@@ -649,6 +652,7 @@
     <None Include="LICENSE" />
     <None Include=".editorconfig" />
     <None Include="comment.html" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Src\UIKit\Appearances\ColorScheme.txt" />
