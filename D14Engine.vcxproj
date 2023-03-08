@@ -157,7 +157,6 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Test\UIKit\SimpleEditor\SimpleEditor.cpp" />
     <None Include=".editorconfig" />
     <None Include=".gitignore" />
     <None Include="Bin\Shaders\Letterbox.hlsl">

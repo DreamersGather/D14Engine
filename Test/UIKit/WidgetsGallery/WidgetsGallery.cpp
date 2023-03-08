@@ -25,9 +25,11 @@ D14_SET_APP_ENTRY(mainWidgetsGallery)
 
     return Application(argc, argv, info).run([&](Application* app)
     {
-        auto ui_mainWindow = makeRootUIObject<MainWindow>(
-            L"D14Engine - WidgetsGallery @ UIKit", 40.0f, 2.0f);
+        auto ui_mainWindow = makeRootUIObject<MainWindow>(L"D14Engine - WidgetsGallery @ UIKit");
         {
+            ui_mainWindow->setCaptionPanelHeight(40.0f);
+            ui_mainWindow->setDecorativeBarHeight(2.0f);
+
             ui_mainWindow->moveTopmost();
         }
         auto ui_centerLayout = makeUIObject<ConstraintLayout>();
@@ -39,12 +41,10 @@ D14_SET_APP_ENTRY(mainWidgetsGallery)
             ConstraintLayout::GeometryInfo geoInfo = {};
 
             geoInfo.keepWidth = false;
-            geoInfo.Left.ToLeft = 0.0f;
-            geoInfo.Right.ToRight = 0.0f;
+            geoInfo.Left.ToLeft = 0.0f; geoInfo.Right.ToRight = 0.0f;
 
             geoInfo.keepHeight = false;
-            geoInfo.Top.ToTop = 50.0f;
-            geoInfo.Bottom.ToBottom = 0.0f;
+            geoInfo.Top.ToTop = 50.0f; geoInfo.Bottom.ToBottom = 0.0f;
 
             ui_centerLayout->addElement(ui_tabGroup, geoInfo);
 
