@@ -157,6 +157,7 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Common\ResourcePack.cpp" />
     <None Include=".editorconfig" />
     <None Include=".gitignore" />
     <None Include="Bin\Shaders\Letterbox.hlsl">
@@ -355,6 +356,7 @@
     <ClInclude Include="Src\Common\MathUtils\3D.h" />
     <ClInclude Include="Src\Common\MathUtils\GDI.h" />
     <ClInclude Include="Src\Common\Precompile.h" />
+    <ClInclude Include="Src\Common\ResourcePack.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\Barrier.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\ParamHelper.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\PSO.h" />

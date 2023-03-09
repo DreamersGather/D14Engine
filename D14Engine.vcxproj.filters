@@ -286,6 +286,9 @@
     <ClCompile Include="Src\UIKit\IconLabel2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Common\ResourcePack.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Precompile.h">
@@ -640,6 +643,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\UIKit\IconLabel2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\ResourcePack.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
