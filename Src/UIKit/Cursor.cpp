@@ -132,6 +132,11 @@ namespace d14engine::uikit
         m_customIcons.staticIcons[name] = icon;
     }
 
+    void Cursor::unregisterStaticIcon(WstrParam name)
+    {
+        m_customIcons.staticIcons.erase(name);
+    }
+
     void Cursor::registerIcon(WstrParam themeName, DynamicIconIndex index, const DynamicIcon& icon)
     {
         auto categoryItor = m_classifiedBasicIcons.find(themeName);
@@ -145,6 +150,11 @@ namespace d14engine::uikit
     void Cursor::registerIcon(WstrParam name, const DynamicIcon& icon)
     {
         m_customIcons.dynamicIcons[name] = icon;
+    }
+
+    void Cursor::unregisterDynamicIcon(WstrParam name)
+    {
+        m_customIcons.dynamicIcons.erase(name);
     }
 
     void Cursor::setIcon(StaticIconIndex index)
