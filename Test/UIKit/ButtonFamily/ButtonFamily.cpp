@@ -148,8 +148,8 @@ D14_SET_APP_ENTRY(mainButtonFamily)
 
             ui_centerLayout->f_onMouseMove = [=](Panel* p, MouseMoveEvent& e)
             {
-                if (*useDynamicCursor) app->cursor()->setIcon(Cursor::DynamicIconIndex::Working);
-                else app->cursor()->setIcon(Cursor::StaticIconIndex::Arrow);
+                if (*useDynamicCursor) app->cursor()->setIcon(Cursor::Working);
+                else app->cursor()->setIcon(Cursor::Arrow);
             };
             ui_toggleButton->f_onStateChange = [=]
             (ToggleButton::StatefulObject* obj, ToggleButton::StatefulObject::Event& e)
@@ -164,7 +164,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
                         app->increaseAnimationCount();
 
                         *useDynamicCursor = true;
-                        app->cursor()->setIcon(Cursor::DynamicIconIndex::Working);
+                        app->cursor()->setIcon(Cursor::Working);
 
                         sh_label1->setText(L"FPS: 0");
                         sh_label2->setText(L"Current cursor: Working");
@@ -174,7 +174,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
                         app->decreaseAnimationCount();
 
                         *useDynamicCursor = false;
-                        app->cursor()->setIcon(Cursor::StaticIconIndex::Arrow);
+                        app->cursor()->setIcon(Cursor::Arrow);
 
                         sh_label1->setText(L"Animation Mode: Off");
                         sh_label2->setText(L"Current cursor: Arrow");

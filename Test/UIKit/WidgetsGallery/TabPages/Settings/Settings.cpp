@@ -78,7 +78,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         };
         ui_abtButton->f_onMouseMove = [](Panel* p, MouseMoveEvent& e)
         {
-            Application::g_app->cursor()->setIcon(Cursor::StaticIconIndex::Hand);
+            Application::g_app->cursor()->setIcon(Cursor::Hand);
         };
         ui_abtButton->f_onMouseButtonRelease = [](ClickablePanel* clkp, ClickablePanel::Event& e)
         {
