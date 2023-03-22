@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
+    <ProjectConfiguration Include="DRndr|x64">
+      <Configuration>DRndr</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
+    <ProjectConfiguration Include="DUIKit|x64">
+      <Configuration>DUIKit</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -15,6 +15,14 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RRndr|x64">
+      <Configuration>RRndr</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RUIKit|x64">
+      <Configuration>RUIKit</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -27,20 +35,19 @@
     <ProjectName>D14Engine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
@@ -53,66 +60,101 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <Profile>true</Profile>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+    <Manifest />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+    <Manifest />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
@@ -156,6 +198,56 @@
     <Manifest />
     <PostBuildEvent />
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+    <Manifest />
+    <Manifest />
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+    <Manifest />
+    <Manifest />
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Src\Common\ResourcePack.cpp" />
     <None Include=".editorconfig" />
@@ -167,7 +259,13 @@
     <None Include="comment.html" />
     <ClCompile Include="Src\UIKit\Appearances\ComboBox.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <None Include="README.md" />
   </ItemGroup>
@@ -178,12 +276,20 @@
     <ClCompile Include="Src\Common\MathUtils\GDI.cpp" />
     <ClCompile Include="Src\Common\Precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Common/Precompile.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">Common/Precompile.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">Common/Precompile.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Src\Common\RuntimeError.cpp" />
     <ClCompile Include="Src\Renderer\Camera.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">false</ShowIncludes>
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">false</ShowIncludes>
     </ClCompile>
     <ClCompile Include="Src\Renderer\DebugUtils.cpp" />
     <ClCompile Include="Src\Renderer\FrameResource.cpp" />
@@ -195,151 +301,442 @@
     <ClCompile Include="Src\Renderer\Renderer.cpp" />
     <ClCompile Include="Src\Renderer\GraphUtils\StaticSampler.cpp" />
     <ClCompile Include="Src\Renderer\TickTimer.cpp" />
-    <ClCompile Include="Src\UIKit\AnimationUtils\Sequence.cpp" />
-    <ClCompile Include="Src\UIKit\AnimationUtils\Motion.cpp" />
-    <ClCompile Include="Src\UIKit\Appearances\Appearance.cpp" />
+    <ClCompile Include="Src\UIKit\AnimationUtils\Sequence.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\AnimationUtils\Motion.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\Appearances\Appearance.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\Button.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\CheckBox.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\ElevatedButton.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\FilledButton.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\FlatButton.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\Label.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)LabelAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)LabelAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)LabelAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)LabelAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)LabelAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)LabelAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\LabelArea.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\Layout.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\MenuItem.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\MenuSeparator.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\OnOffSwitch.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\OutlinedButton.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\PopupMenu.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\RawTextInput.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\ResizablePanel.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\ScrollView.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\Slider.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)SliderAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)SliderAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)SliderAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)SliderAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)SliderAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)SliderAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\TabCaption.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\TabGroup.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\TextInput.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\ToggleButton.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\TreeViewItem.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\ViewItem.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Appearances\Window.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)WindowAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)WindowAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)WindowAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)WindowAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)WindowAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)WindowAppearance</ObjectFileName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\ColorUtils.cpp" />
-    <ClCompile Include="Src\UIKit\Application.cpp" />
-    <ClCompile Include="Src\UIKit\BitmapUtils.cpp" />
-    <ClCompile Include="Src\UIKit\Button.cpp" />
-    <ClCompile Include="Src\UIKit\ComboBox.cpp" />
-    <ClCompile Include="Src\UIKit\IconLabel2.cpp" />
-    <ClCompile Include="Src\UIKit\LabelArea.cpp" />
-    <ClCompile Include="Src\UIKit\ListViewItem.cpp" />
-    <ClCompile Include="Src\UIKit\MenuItem.cpp" />
-    <ClCompile Include="Src\UIKit\MenuSeparator.cpp" />
-    <ClCompile Include="Src\UIKit\PopupMenu.cpp" />
-    <ClCompile Include="Src\UIKit\RawTextInput.cpp" />
-    <ClCompile Include="Src\UIKit\TabCaption.cpp" />
-    <ClCompile Include="Src\UIKit\CheckBox.cpp" />
-    <ClCompile Include="Src\UIKit\ClickablePanel.cpp" />
-    <ClCompile Include="Src\UIKit\ConstraintLayout.cpp" />
-    <ClCompile Include="Src\UIKit\Cursor.cpp" />
-    <ClCompile Include="Src\UIKit\DraggablePanel.cpp" />
-    <ClCompile Include="Src\UIKit\ElevatedButton.cpp" />
-    <ClCompile Include="Src\UIKit\Event.cpp" />
-    <ClCompile Include="Src\UIKit\FileSystemUtils.cpp" />
-    <ClCompile Include="Src\UIKit\FilledButton.cpp" />
-    <ClCompile Include="Src\UIKit\FlatButton.cpp" />
-    <ClCompile Include="Src\UIKit\GridLayout.cpp" />
-    <ClCompile Include="Src\UIKit\HorzSlider.cpp" />
-    <ClCompile Include="Src\UIKit\IconLabel.cpp" />
-    <ClCompile Include="Src\UIKit\Label.cpp" />
-    <ClCompile Include="Src\UIKit\ListView.cpp" />
-    <ClCompile Include="Src\UIKit\MaskStyle.cpp" />
-    <ClCompile Include="Src\UIKit\OnOffSwitch.cpp" />
-    <ClCompile Include="Src\UIKit\OutlinedButton.cpp" />
-    <ClCompile Include="Src\UIKit\Panel.cpp" />
-    <ClCompile Include="Src\UIKit\ResizablePanel.cpp" />
-    <ClCompile Include="Src\UIKit\ResourceUtils.cpp" />
-    <ClCompile Include="Src\UIKit\ScrollView.cpp" />
-    <ClCompile Include="Src\UIKit\ShadowStyle.cpp" />
-    <ClCompile Include="Src\UIKit\Slider.cpp" />
-    <ClCompile Include="Src\UIKit\TabGroup.cpp" />
-    <ClCompile Include="Src\UIKit\TextInput.cpp" />
-    <ClCompile Include="Src\UIKit\ToggleButton.cpp" />
-    <ClCompile Include="Src\UIKit\TreeView.cpp" />
-    <ClCompile Include="Src\UIKit\TreeViewItem.cpp" />
-    <ClCompile Include="Src\UIKit\VertSlider.cpp" />
-    <ClCompile Include="Src\UIKit\ViewItem.cpp" />
-    <ClCompile Include="Src\UIKit\Window.cpp" />
-    <ClCompile Include="Src\UIKit\MainWindow.cpp" />
+    <ClCompile Include="Src\UIKit\ColorUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\Application.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\BitmapUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\Button.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\ComboBox.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\IconLabel2.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\LabelArea.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\ListViewItem.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\MenuItem.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\MenuSeparator.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\PopupMenu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\RawTextInput.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\TabCaption.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\CheckBox.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\ClickablePanel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\ConstraintLayout.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\Cursor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\DraggablePanel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\ElevatedButton.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\Event.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\FileSystemUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\FilledButton.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\FlatButton.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\GridLayout.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\HorzSlider.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\IconLabel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\Label.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\ListView.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\MaskStyle.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\OnOffSwitch.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\OutlinedButton.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\Panel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\ResizablePanel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\ResourceUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\ScrollView.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\ShadowStyle.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\Slider.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\TabGroup.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\TextInput.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\ToggleButton.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\TreeView.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\TreeViewItem.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\VertSlider.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\ViewItem.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\Window.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\MainWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\CppLangUtils\EnumClassMap.h" />
@@ -375,95 +772,356 @@
     <ClInclude Include="Src\Common\RuntimeError.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\StaticSampler.h" />
     <ClInclude Include="Src\Renderer\TickTimer.h" />
-    <ClInclude Include="Src\UIKit\AnimationUtils\Sequence.h" />
-    <ClInclude Include="Src\UIKit\AnimationUtils\Motion.h" />
-    <ClInclude Include="Src\UIKit\Appearances\Appearance.h" />
-    <ClInclude Include="Src\UIKit\Appearances\Button.h" />
-    <ClInclude Include="Src\UIKit\Appearances\ComboBox.h" />
-    <ClInclude Include="Src\UIKit\Appearances\Label.h" />
-    <ClInclude Include="Src\UIKit\Appearances\LabelArea.h" />
-    <ClInclude Include="Src\UIKit\Appearances\Layout.h" />
-    <ClInclude Include="Src\UIKit\Appearances\MenuSeparator.h" />
-    <ClInclude Include="Src\UIKit\Appearances\RawTextInput.h" />
-    <ClInclude Include="Src\UIKit\Appearances\TabCaption.h" />
-    <ClInclude Include="Src\UIKit\Appearances\TextInput.h" />
-    <ClInclude Include="Src\UIKit\Appearances\CheckBox.h" />
-    <ClInclude Include="Src\UIKit\Appearances\ElevatedButton.h" />
-    <ClInclude Include="Src\UIKit\Appearances\FilledButton.h" />
-    <ClInclude Include="Src\UIKit\Appearances\FlatButton.h" />
-    <ClInclude Include="Src\UIKit\Appearances\MenuItem.h" />
-    <ClInclude Include="Src\UIKit\Appearances\OnOffSwitch.h" />
-    <ClInclude Include="Src\UIKit\Appearances\OutlinedButton.h" />
-    <ClInclude Include="Src\UIKit\Appearances\PopupMenu.h" />
-    <ClInclude Include="Src\UIKit\Appearances\ResizablePanel.h" />
-    <ClInclude Include="Src\UIKit\Appearances\ScrollView.h" />
-    <ClInclude Include="Src\UIKit\Appearances\Slider.h" />
-    <ClInclude Include="Src\UIKit\Appearances\TabGroup.h" />
-    <ClInclude Include="Src\UIKit\Appearances\ToggleButton.h" />
-    <ClInclude Include="Src\UIKit\Appearances\TreeViewItem.h" />
-    <ClInclude Include="Src\UIKit\Appearances\ViewItem.h" />
-    <ClInclude Include="Src\UIKit\Appearances\Window.h" />
-    <ClInclude Include="Src\UIKit\AppEntry.h" />
-    <ClInclude Include="Src\UIKit\Application.h" />
-    <ClInclude Include="Src\UIKit\BitmapUtils.h" />
-    <ClInclude Include="Src\UIKit\Button.h" />
-    <ClInclude Include="Src\UIKit\ColorUtils.h" />
-    <ClInclude Include="Src\UIKit\ComboBox.h" />
-    <ClInclude Include="Src\UIKit\IconLabel2.h" />
-    <ClInclude Include="Src\UIKit\LabelArea.h" />
-    <ClInclude Include="Src\UIKit\MenuSeparator.h" />
-    <ClInclude Include="Src\UIKit\RawTextEditor.h" />
-    <ClInclude Include="Src\UIKit\RawTextInput.h" />
-    <ClInclude Include="Src\UIKit\TabCaption.h" />
-    <ClInclude Include="Src\UIKit\TextBox.h" />
-    <ClInclude Include="Src\UIKit\CheckBox.h" />
-    <ClInclude Include="Src\UIKit\ClickablePanel.h" />
-    <ClInclude Include="Src\UIKit\ConstraintLayout.h" />
-    <ClInclude Include="Src\UIKit\Cursor.h" />
-    <ClInclude Include="Src\UIKit\DraggablePanel.h" />
-    <ClInclude Include="Src\UIKit\ElevatedButton.h" />
-    <ClInclude Include="Src\UIKit\Event.h" />
-    <ClInclude Include="Src\UIKit\FileSystemUtils.h" />
-    <ClInclude Include="Src\UIKit\FilledButton.h" />
-    <ClInclude Include="Src\UIKit\FlatButton.h" />
-    <ClInclude Include="Src\UIKit\GridLayout.h" />
-    <ClInclude Include="Src\UIKit\HorzSlider.h" />
-    <ClInclude Include="Src\UIKit\IconLabel.h" />
-    <ClInclude Include="Src\UIKit\Label.h" />
-    <ClInclude Include="Src\UIKit\Layout.h" />
-    <ClInclude Include="Src\UIKit\ListView.h" />
-    <ClInclude Include="Src\UIKit\ListViewItem.h" />
-    <ClInclude Include="Src\UIKit\MaskStyle.h" />
-    <ClInclude Include="Src\UIKit\MenuItem.h" />
-    <ClInclude Include="Src\UIKit\OnOffSwitch.h" />
-    <ClInclude Include="Src\UIKit\OutlinedButton.h" />
-    <ClInclude Include="Src\UIKit\Panel.h" />
-    <ClInclude Include="Src\UIKit\PopupMenu.h" />
-    <ClInclude Include="Src\UIKit\ResizablePanel.h" />
-    <ClInclude Include="Src\UIKit\ResourceUtils.h" />
-    <ClInclude Include="Src\UIKit\ScrollView.h" />
-    <ClInclude Include="Src\UIKit\ShadowStyle.h" />
-    <ClInclude Include="Src\UIKit\Slider.h" />
-    <ClInclude Include="Src\UIKit\SolidStyle.h" />
-    <ClInclude Include="Src\UIKit\StatefulObject.h" />
-    <ClInclude Include="Src\UIKit\StrokeStyle.h" />
-    <ClInclude Include="Src\UIKit\TabGroup.h" />
-    <ClInclude Include="Src\UIKit\RawTextBox.h" />
-    <ClInclude Include="Src\UIKit\TextEditor.h" />
-    <ClInclude Include="Src\UIKit\TextInput.h" />
-    <ClInclude Include="Src\UIKit\TextInputObject.h" />
-    <ClInclude Include="Src\UIKit\ToggleButton.h" />
-    <ClInclude Include="Src\UIKit\TreeView.h" />
-    <ClInclude Include="Src\UIKit\TreeViewItem.h" />
-    <ClInclude Include="Src\UIKit\ValuefulObject.h" />
-    <ClInclude Include="Src\UIKit\VertSlider.h" />
-    <ClInclude Include="Src\UIKit\ViewItem.h" />
-    <ClInclude Include="Src\UIKit\WaterfallView.h" />
-    <ClInclude Include="Src\UIKit\Window.h" />
-    <ClInclude Include="Src\UIKit\MainWindow.h" />
+    <ClInclude Include="Src\UIKit\AnimationUtils\Sequence.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\AnimationUtils\Motion.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\Appearance.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\Button.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\ComboBox.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\Label.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\LabelArea.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\Layout.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\MenuSeparator.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\RawTextInput.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\TabCaption.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\TextInput.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\CheckBox.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\ElevatedButton.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\FilledButton.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\FlatButton.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\MenuItem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\OnOffSwitch.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\OutlinedButton.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\PopupMenu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\ResizablePanel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\ScrollView.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\Slider.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\TabGroup.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\ToggleButton.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\TreeViewItem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\ViewItem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Appearances\Window.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\AppEntry.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Application.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\BitmapUtils.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Button.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ColorUtils.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ComboBox.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\IconLabel2.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\LabelArea.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\MenuSeparator.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\RawTextEditor.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\RawTextInput.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\TabCaption.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\TextBox.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\CheckBox.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ClickablePanel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ConstraintLayout.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Cursor.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\DraggablePanel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ElevatedButton.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Event.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\FileSystemUtils.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\FilledButton.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\FlatButton.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\GridLayout.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\HorzSlider.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\IconLabel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Label.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Layout.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ListView.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ListViewItem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\MaskStyle.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\MenuItem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\OnOffSwitch.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\OutlinedButton.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Panel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\PopupMenu.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ResizablePanel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ResourceUtils.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ScrollView.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ShadowStyle.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Slider.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\SolidStyle.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\StatefulObject.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\StrokeStyle.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\TabGroup.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\RawTextBox.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\TextEditor.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\TextInput.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\TextInputObject.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ToggleButton.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\TreeView.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\TreeViewItem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ValuefulObject.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\VertSlider.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ViewItem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\WaterfallView.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\Window.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\MainWindow.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Src\UIKit\Appearances\ColorScheme.txt" />
+    <Text Include="Src\UIKit\Appearances\ColorScheme.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </Text>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

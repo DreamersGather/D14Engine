@@ -8,19 +8,25 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
+		DRndr|x64 = DRndr|x64
+		DUIKit|x64 = DUIKit|x64
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
+		RRndr|x64 = RRndr|x64
+		RUIKit|x64 = RUIKit|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.Debug|x64.ActiveCfg = Debug|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.Debug|x64.Build.0 = Debug|x64
-		{B25FE014-979D-4E24-933A-B1E1893FB469}.Debug|x86.ActiveCfg = Debug|Win32
-		{B25FE014-979D-4E24-933A-B1E1893FB469}.Debug|x86.Build.0 = Debug|Win32
+		{B25FE014-979D-4E24-933A-B1E1893FB469}.DRndr|x64.ActiveCfg = DRndr|x64
+		{B25FE014-979D-4E24-933A-B1E1893FB469}.DRndr|x64.Build.0 = DRndr|x64
+		{B25FE014-979D-4E24-933A-B1E1893FB469}.DUIKit|x64.ActiveCfg = DUIKit|x64
+		{B25FE014-979D-4E24-933A-B1E1893FB469}.DUIKit|x64.Build.0 = DUIKit|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.Release|x64.ActiveCfg = Release|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.Release|x64.Build.0 = Release|x64
-		{B25FE014-979D-4E24-933A-B1E1893FB469}.Release|x86.ActiveCfg = Release|Win32
-		{B25FE014-979D-4E24-933A-B1E1893FB469}.Release|x86.Build.0 = Release|Win32
+		{B25FE014-979D-4E24-933A-B1E1893FB469}.RRndr|x64.ActiveCfg = RRndr|x64
+		{B25FE014-979D-4E24-933A-B1E1893FB469}.RRndr|x64.Build.0 = RRndr|x64
+		{B25FE014-979D-4E24-933A-B1E1893FB469}.RUIKit|x64.ActiveCfg = RUIKit|x64
+		{B25FE014-979D-4E24-933A-B1E1893FB469}.RUIKit|x64.Build.0 = RUIKit|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
