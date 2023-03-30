@@ -52,7 +52,7 @@ namespace d14engine::uikit
         enum class HorzAlignment { None, Left, Center, Right };
         enum class VertAlignment { None, Top, Center, Bottom };
 
-        #define CONST_ENUM constexpr static auto
+#define CONST_ENUM constexpr static auto
 
         CONST_ENUM HNone = HorzAlignment::None;
         CONST_ENUM Left = HorzAlignment::Left;
