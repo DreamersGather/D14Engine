@@ -143,7 +143,7 @@ namespace d14engine::uikit
         {
             m_content->onRendererDrawD2d1Layer(rndr);
 
-            auto& setting = getAppearance().main[(size_t)state];
+            auto& setting = getAppearance().main[(size_t)(m_enabled ? state : State::Idle)];
 
             // Set opaque background to support rendering ClearType text.
             contentMask.color = setting.background.color;
@@ -163,7 +163,7 @@ namespace d14engine::uikit
 
     void ViewItem::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        auto& setting = getAppearance().main[(size_t)state];
+        auto& setting = getAppearance().main[(size_t)(m_enabled ? state : State::Idle)];
 
         // Background
         resource_utils::g_solidColorBrush->SetColor(setting.background.color);
