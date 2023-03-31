@@ -188,6 +188,13 @@ namespace d14engine::uikit
             outlineRect, resource_utils::g_solidColorBrush.Get(), setting.stroke.width);
     }
 
+    void ViewItem::setEnabled(bool value)
+    {
+        Panel::setEnabled(value);
+
+        if (m_content) m_content->setEnabled(value);
+    }
+
     bool ViewItem::isHitHelper(const Event::Point& p) const
     {
         // Generally, two adjacent view-items adjoin each other in vertical
