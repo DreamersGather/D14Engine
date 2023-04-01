@@ -195,9 +195,6 @@
     <ClCompile Include="Src\UIKit\ComboBox.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\ListViewItem.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Src\UIKit\LabelArea.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
