@@ -2,12 +2,13 @@
 
 #include "Gallery.h"
 
-#include "UIKit/BitmapUtils.h"
-#include "UIKit/TextBox.h"
-#include "UIKit/FlatButton.h"
 #include "Common/DirectXError.h"
-#include "UIKit/TreeView.h"
+
+#include "UIKit/BitmapUtils.h"
+#include "UIKit/FlatButton.h"
 #include "UIKit/IconLabel.h"
+#include "UIKit/TextBox.h"
+#include "UIKit/TreeView.h"
 
 using namespace d14engine;
 using namespace d14engine::uikit;

@@ -3,6 +3,7 @@
 #include "Common/Precompile.h"
 
 #include "Common/CppLangUtils/EnumClassMap.h"
+
 #include "UIKit/AnimationUtils/Sequence.h"
 #include "UIKit/Panel.h"
 

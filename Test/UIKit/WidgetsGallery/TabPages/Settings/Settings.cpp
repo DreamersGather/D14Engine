@@ -3,7 +3,9 @@
 #include "Settings.h"
 
 #include "Common/DirectXError.h"
+
 #include "Renderer/TickTimer.h"
+
 #include "UIKit/Application.h"
 #include "UIKit/BitmapUtils.h"
 #include "UIKit/CheckBox.h"

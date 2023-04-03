@@ -1,8 +1,10 @@
 ﻿#include "Common/Precompile.h"
 
 #include "Common/DirectXError.h"
+
 #include "Renderer/Renderer.h"
 #include "Renderer/TickTimer.h"
+
 #include "UIKit/AppEntry.h"
 #include "UIKit/Application.h"
 #include "UIKit/Button.h"

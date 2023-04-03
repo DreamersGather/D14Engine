@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include "Common/DirectXError.h"
+
 #include "UIKit/AppEntry.h"
 #include "UIKit/Application.h"
 #include "UIKit/BitmapUtils.h"
