@@ -435,8 +435,8 @@ D14_SET_APP_ENTRY(mainListTreeView)
             ui_sideLayout->addElement(ui_label, geoInfo1);
 
             ui_slider->moveTopmost();
-            ui_slider->setMinimalValue(30.0f);
-            ui_slider->setMaximalValue(90.0f);
+            ui_slider->setMinValue(30.0f);
+            ui_slider->setMaxValue(90.0f);
             ui_slider->setValue(30.0f);
 
             ui_slider->stepMode = Slider::StepMode::Discrete;

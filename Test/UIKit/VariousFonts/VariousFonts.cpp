@@ -337,8 +337,8 @@ D14_SET_APP_ENTRY(mainVariousFonts)
         {
             ui_fontSizeSlider->resize(210.0f, 40.0f);
 
-            ui_fontSizeSlider->setMinimalValue(11.0f);
-            ui_fontSizeSlider->setMaximalValue(32.0f);
+            ui_fontSizeSlider->setMinValue(11.0f);
+            ui_fontSizeSlider->setMaxValue(32.0f);
             ui_fontSizeSlider->setValue(16.0f);
 
             ui_fontSizeSlider->stepMode = Slider::StepMode::Discrete;
@@ -372,8 +372,8 @@ D14_SET_APP_ENTRY(mainVariousFonts)
         {
             ui_fontWeightSelector->resize(180.0f, 40.0f);
 
-            ui_fontWeightSelector->setMinimalValue(0.0f);
-            ui_fontWeightSelector->setMaximalValue(4.0f);
+            ui_fontWeightSelector->setMinValue(0.0f);
+            ui_fontWeightSelector->setMaxValue(4.0f);
             ui_fontWeightSelector->setValue(2.0f);
 
             ui_fontWeightSelector->stepMode = Slider::StepMode::Discrete;

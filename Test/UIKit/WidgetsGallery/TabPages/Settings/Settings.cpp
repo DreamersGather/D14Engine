@@ -455,8 +455,8 @@ void createSettingsTabPage(ConstraintLayout* page)
         appear.valueLabel.precision = 1;
         appear.valueLabel.isResident = true;
 
-        ui_gammaValueSlider->setMinimalValue(0.1f);
-        ui_gammaValueSlider->setMaximalValue(9.9f);
+        ui_gammaValueSlider->setMinValue(0.1f);
+        ui_gammaValueSlider->setMaxValue(9.9f);
         ui_gammaValueSlider->setValue(defTextRenderingMode.gamma);
 
         ui_gammaValueSlider->stepMode = Slider::StepMode::Discrete;
@@ -486,8 +486,8 @@ void createSettingsTabPage(ConstraintLayout* page)
         appear.valueLabel.precision = 1;
         appear.valueLabel.isResident = true;
 
-        ui_enhancedContrastSlider->setMinimalValue(0.0f);
-        ui_enhancedContrastSlider->setMaximalValue(9.5f);
+        ui_enhancedContrastSlider->setMinValue(0.0f);
+        ui_enhancedContrastSlider->setMaxValue(9.5f);
         ui_enhancedContrastSlider->setValue(defTextRenderingMode.enhancedContrast);
 
         ui_enhancedContrastSlider->stepMode = Slider::StepMode::Discrete;
@@ -517,8 +517,8 @@ void createSettingsTabPage(ConstraintLayout* page)
         appear.valueLabel.precision = 1;
         appear.valueLabel.isResident = true;
 
-        ui_clearTypeLevelSlider->setMinimalValue(0.0f);
-        ui_clearTypeLevelSlider->setMaximalValue(1.0f);
+        ui_clearTypeLevelSlider->setMinValue(0.0f);
+        ui_clearTypeLevelSlider->setMaxValue(1.0f);
         ui_clearTypeLevelSlider->setValue(defTextRenderingMode.clearTypeLevel);
 
         ui_clearTypeLevelSlider->stepMode = Slider::StepMode::Discrete;
