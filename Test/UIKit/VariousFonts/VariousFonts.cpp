@@ -168,14 +168,16 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             ui_content->getAppearance().background.opacity = 1.0f;
 
             // Keep the hilite range when scrolling view with mouse button.
-            ui_content->f_onStartThumbScrolling = [=](ScrollView* sv)
+            ui_content->f_onStartThumbScrolling = [=]
+            (ScrollView* sv, const D2D1_POINT_2F& offset)
             {
                 if (!wk_block.expired())
                 {
                     wk_block.lock()->keepHiliteRange = true;
                 }
             };
-            ui_content->f_onEndThumbScrolling = [=](ScrollView* sv)
+            ui_content->f_onEndThumbScrolling = [=]
+            (ScrollView* sv, const D2D1_POINT_2F& offset)
             {
                 if (!wk_block.expired())
                 {
