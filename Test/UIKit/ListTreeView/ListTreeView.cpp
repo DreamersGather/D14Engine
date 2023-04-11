@@ -430,8 +430,8 @@ D14_SET_APP_ENTRY(mainListTreeView)
             geoInfo1.isFixedSize = false;
             geoInfo1.axis.x = { 0, 3 };
             geoInfo1.axis.y = { 9, 1 };
-            geoInfo1.spacing.left = 10.0f;
-            geoInfo1.spacing.bottom = 2.0f;
+            geoInfo1.spacing.left = 18.0f;
+            geoInfo1.spacing.bottom = 6.0f;
             ui_sideLayout->addElement(ui_label, geoInfo1);
 
             ui_slider->moveTopmost();
