@@ -31,6 +31,8 @@ namespace d14engine::uikit
         Optional<Wstring> preprocessInputStr(WstrParam in) override;
 
     public:
+        bool editable = true;
+
         void setText(WstrParam text) override;
 
     protected:

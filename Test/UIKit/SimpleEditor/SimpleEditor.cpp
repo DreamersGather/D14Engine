@@ -92,7 +92,7 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
 
             ui_characterCount->setText(L"Character count: 0");
         }
-        auto menuRect = math_utils::sizeOnlyRect({ 260.0f, 171.0f });
+        auto menuRect = math_utils::sizeOnlyRect({ 260.0f, 222.0f });
         auto ui_inputContextMenu = makeRootUIObject<PopupMenu>(menuRect);
         {
             ui_inputContextMenu->appendItem(
@@ -114,8 +114,16 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
                 makeUIObject<MenuItem>(IconLabel2::menuItemLayout
                 (
                     L"Paste", L"Ctrl+V"), math_utils::heightOnlyRect(40.0f)
+                ),
+                makeUIObject<MenuSeparator>(math_utils::heightOnlyRect(11.0f)),
+
+                makeUIObject<MenuItem>(IconLabel2::menuItemLayout
+                (
+                    L"Editable", L"✓"), math_utils::heightOnlyRect(40.0f)
                 )
             });
+            ui_inputContextMenu->childrenItems().back()->isInstant = false;
+
             ui_inputContextMenu->constrainedRectangle = { 0.0f, 0.0f, 800.0f, 600.0f };
 
             ui_inputContextMenu->setBackgroundTriggerPanel(true);
@@ -230,6 +238,22 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
                     case 2: sh_mainBodyInput->performCommandCtrlX(); break;
                     case 3: sh_mainBodyInput->performCommandCtrlC(); break;
                     case 4: sh_mainBodyInput->performCommandCtrlV(); break;
+                    case 6:
+                    {
+                        auto& editable = sh_mainBodyInput->editable;
+
+                        editable = !editable;
+                        auto content = (*itemIndex)->getContent<IconLabel2>();
+                        if (!content.expired())
+                        {
+                            content.lock()->label2()->setText(
+                                editable ? L"✓" : L"");
+                        }
+                        // Remember to disable the cut/paste if not editable.
+                        (*itemIndex.getPrev(2))->setEnabled(editable);
+                        (*itemIndex.getPrev(4))->setEnabled(editable);
+                        break;
+                    }
                     default: break;
                     }
                 }
