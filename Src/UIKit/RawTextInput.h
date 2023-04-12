@@ -30,6 +30,9 @@ namespace d14engine::uikit
     protected:
         Optional<Wstring> preprocessInputStr(WstrParam in) override;
 
+    public:
+        void setText(WstrParam text) override;
+
     protected:
         MaskStyle m_visibleTextMask = {};
 

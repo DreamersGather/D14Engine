@@ -69,6 +69,16 @@ namespace d14engine::uikit
         else return in.substr(0, lineBreakPos);
     }
 
+    void RawTextInput::setText(WstrParam text)
+    {
+        if (text != m_text)
+        {
+            LabelArea::setText(text);
+
+            onTextChange(m_text);
+        }
+    }
+
     const D2D1_RECT_F& RawTextInput::visibleTextRect() const
     {
         return m_visibleTextRect;
