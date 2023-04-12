@@ -407,16 +407,32 @@ namespace d14engine::uikit
             }
             case VK_LEFT:
             {
-                setHiliteRange({ 0, 0 });
-                auto intOffset = (int)m_indicatorCharacterOffset;
-                auto offset = (size_t)std::max(intOffset - 1, 0);
-                setIndicatorPosition(offset); // avoid underflow
+                if (m_hiliteRange.count == 0)
+                {
+                    auto intOffset = (int)m_indicatorCharacterOffset;
+                    auto offset = (size_t)std::max(intOffset - 1, 0);
+                    setIndicatorPosition(offset); // avoid underflow
+                }
+                else // move to hilite range leftmost
+                {
+                    setIndicatorPosition(m_hiliteRange.offset);
+
+                    setHiliteRange({ 0, 0 });
+                }
                 break;
             }
             case VK_RIGHT:
             {
-                setHiliteRange({ 0, 0 });
-                setIndicatorPosition(m_indicatorCharacterOffset + 1);
+                if (m_hiliteRange.count == 0)
+                {
+                    setIndicatorPosition(m_indicatorCharacterOffset + 1);
+                }
+                else // move to hilite range rightmost
+                {
+                    setIndicatorPosition(m_hiliteRange.offset + m_hiliteRange.count);
+
+                    setHiliteRange({ 0, 0 });
+                }
                 break;
             }
             case VK_DELETE:
