@@ -25,6 +25,8 @@ D14_SET_APP_ENTRY(mainVariousFonts)
     Application::CreateInfo info = {};
     info.win32WindowRect = { 0, 0, 800, 600 };
 
+    BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC;
+
     return Application(argc, argv, info).run([&](Application* app)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(L"D14Engine - VariousFonts @ UIKit");

@@ -250,6 +250,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Src\Common\ResourcePack.cpp" />
+    <ClCompile Include="Src\UIKit\BitmapObject.cpp" />
     <None Include=".editorconfig" />
     <None Include=".gitignore" />
     <None Include="Bin\Shaders\Letterbox.hlsl">
@@ -589,6 +590,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Src\UIKit\PlatformUtils.cpp" />
     <ClCompile Include="Src\UIKit\PopupMenu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -888,6 +890,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Src\UIKit\BitmapObject.h" />
     <ClInclude Include="Src\UIKit\BitmapUtils.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -916,6 +919,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Src\UIKit\PlatformUtils.h" />
     <ClInclude Include="Src\UIKit\RawTextEditor.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
