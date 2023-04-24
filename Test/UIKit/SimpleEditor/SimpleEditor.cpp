@@ -2,10 +2,12 @@
 
 #include "UIKit/AppEntry.h"
 #include "UIKit/Application.h"
+#include "UIKit/BitmapUtils.h"
 #include "UIKit/IconLabel2.h"
 #include "UIKit/MainWindow.h"
 #include "UIKit/MenuSeparator.h"
 #include "UIKit/OnOffSwitch.h"
+#include "UIKit/OutlinedButton.h"
 #include "UIKit/PopupMenu.h"
 #include "UIKit/TextBox.h"
 #include "UIKit/TextEditor.h"
@@ -27,6 +29,8 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
         {
             ui_mainWindow->moveTopmost();
             ui_mainWindow->isMaximizeEnabled = false;
+
+            ui_mainWindow->caption()->transform(300.0f, 0.0f, 376.0f, 32.0f);
         }
         auto ui_darkModeLabel = makeRootUIObject<Label>(L"Dark Mode");
         auto ui_darkModeSwitch = makeRootUIObject<OnOffSwitch>();
@@ -63,6 +67,20 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
                     customThemeStyle.mode = Application::ThemeStyle::Mode::Light;
                     app->changeTheme(L"Light");
                 }
+            };
+        }
+        auto ui_screenshot = makeRootUIObject<OutlinedButton>(L"Screenshot");
+        {
+            ui_screenshot->moveTopmost();
+            ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
+            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+
+            ui_screenshot->f_onMouseButtonRelease = []
+            (ClickablePanel* clkp, ClickablePanel::Event& e)
+            {
+                auto image = Application::g_app->screenshot();
+                CreateDirectory(L"Screenshots", nullptr);
+                bitmap_utils::saveBitmap(image.Get(), L"Screenshots/SimpleEditor.png");
             };
         }
         auto ui_clientArea = makeUIObject<Panel>();
