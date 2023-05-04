@@ -292,6 +292,117 @@
     <ClCompile Include="Src\UIKit\BitmapObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Src\UIKit\ScenePanel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Renderer\GraphUtils\Resource.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\BasicPanelPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ButtonPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\CheckBoxPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ClickablePanelPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ConstraintLayoutPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\DraggablePanelPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ElevatedButtonPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\FilledButtonPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\FlatButtonPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\GridLayoutPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\GuidancePage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\IconLabelPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\LabelAreaPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\LabelPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\LayoutPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ListViewPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\MiscellaneousPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\NumberBoxPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\OnOffSwitchPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\OutlinedButtonPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\PageTemplate.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ResizablePanelPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ScrollViewPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\SliderPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TabGroupPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TextBoxPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TextEditorPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TextPanelPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ToggleButtonPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TreeViewPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ViewPanelPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\WindowPage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Gallery.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Settings\Settings.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\WidgetsGallery\WidgetsGallery.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Precompile.h">
@@ -655,6 +766,114 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\UIKit\BitmapObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\ScenePanel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\GraphUtils\Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\BasicPanelPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ButtonPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\CheckBoxPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ClickablePanelPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ConstraintLayoutPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\DraggablePanelPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ElevatedButtonPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\FilledButtonPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\FlatButtonPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\GridLayoutPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\GuidancePage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\IconLabelPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\LabelAreaPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\LabelPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\LayoutPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ListViewPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\MiscellaneousPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\NumberBoxPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\OnOffSwitchPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\OutlinedButtonPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\PageTemplate.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ResizablePanelPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ScrollViewPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\SliderPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TabGroupPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TextBoxPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TextEditorPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TextPanelPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ToggleButtonPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TreeViewPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ViewPanelPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\WindowPage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Gallery.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Settings\Settings.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

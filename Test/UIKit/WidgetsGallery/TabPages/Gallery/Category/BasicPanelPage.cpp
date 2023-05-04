@@ -68,12 +68,12 @@ SharedPtr<TreeViewItem> createBasicPanelPage
     item->getAppearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Folded] =
     {
         { { 16.0f, 12.0f }, { 24.0f, 20.0f } }, // line 0
-        { { 24.0f, 19.0f }, { 16.0f, 27.0f } }  // line 1
+        { { 24.0f, 20.0f }, { 16.0f, 28.0f } }  // line 1
     };
     item->getAppearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Unfolded] =
     {
-        { { 13.0f, 16.0f }, { 21.0f, 24.0f } }, // line 0
-        { { 20.0f, 24.0f }, { 28.0f, 16.0f } }  // line 1
+        { { 13.0f, 16.0f }, { 20.0f, 24.0f } }, // line 0
+        { { 20.0f, 24.0f }, { 27.0f, 16.0f } }  // line 1
     };
     item->resize(item->width(), 40.0f);
     auto& label = item->getContent<IconLabel>().lock()->label();

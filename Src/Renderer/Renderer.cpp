@@ -198,7 +198,6 @@ namespace d14engine::renderer
 
         createBackBuffers();
         createSceneBuffer();
-        createStageBuffer();
         createWrappedBuffer();
 
         submitCmdList();
@@ -927,11 +926,6 @@ namespace d14engine::renderer
         return m_sceneBuffer.Get();
     }
 
-    ID3D12Resource* Renderer::stageBuffer() const
-    {
-        return m_stageBuffer.Get();;
-    }
-
     D3D12_CPU_DESCRIPTOR_HANDLE Renderer::sceneRtvHandle() const
     {
         return getRtvHandle((UINT)m_backBuffers.size());
@@ -998,45 +992,6 @@ namespace d14engine::renderer
         {
             m_d3d12Device->CreateShaderResourceView(m_sceneBuffer.Get(), nullptr, sceneSrvhandle());
         }
-    }
-
-    void Renderer::createStageBuffer()
-    {
-        auto sceneDesc = m_sceneBuffer->GetDesc();
-
-        UINT numRows = 0;
-        UINT64 rowSizeInBytes = 0;
-        UINT64 totalBytes = 0;
-
-        m_d3d12Device->GetCopyableFootprints(
-            /* pResourceDesc    */ &sceneDesc,
-            /* FirstSubresource */ 0,
-            /* NumSubresources  */ 1,
-            /* BaseOffset       */ 0,
-            /* pLayouts         */ nullptr,
-            /* pNumRows         */ &numRows,
-            /* pRowSizeInBytes  */ &rowSizeInBytes,
-            /* pTotalBytes      */ &totalBytes);
-
-        // Readback resources must be buffers.
-        D3D12_RESOURCE_DESC desc = {};
-        desc.DepthOrArraySize = 1;
-        desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-        desc.Flags = D3D12_RESOURCE_FLAG_NONE;
-        desc.Format = DXGI_FORMAT_UNKNOWN;
-        desc.Height = 1;
-        desc.Width = totalBytes;
-        desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-        desc.MipLevels = 1;
-        desc.SampleDesc.Count = 1;
-
-        THROW_IF_FAILED(m_d3d12Device->CreateCommittedResource(
-            &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_READBACK),
-            D3D12_HEAP_FLAG_NONE,
-            &desc,
-            D3D12_RESOURCE_STATE_COPY_DEST,
-            nullptr,
-            IID_PPV_ARGS(&m_stageBuffer)));
     }
 
     void Renderer::createWrappedBuffer()

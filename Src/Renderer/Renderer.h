@@ -377,7 +377,6 @@ namespace d14engine::renderer
         BackBufferArray m_backBuffers = {};
 
         ComPtr<ID3D12Resource> m_sceneBuffer = {};
-        ComPtr<ID3D12Resource> m_stageBuffer = {};
 
         ComPtr<ID3D11Resource> m_wrappedBuffer = {};
 
@@ -393,7 +392,6 @@ namespace d14engine::renderer
         UINT getSceneHeight() const;
 
         ID3D12Resource* sceneBuffer() const;
-        ID3D12Resource* stageBuffer() const;
 
         D3D12_CPU_DESCRIPTOR_HANDLE sceneRtvHandle() const;
         D3D12_CPU_DESCRIPTOR_HANDLE sceneSrvhandle() const;
@@ -406,7 +404,6 @@ namespace d14engine::renderer
         void createBackBuffers();
 
         void createSceneBuffer();
-        void createStageBuffer();
 
         void createWrappedBuffer();
 
