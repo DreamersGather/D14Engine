@@ -41,7 +41,7 @@ namespace d14engine::renderer
             // True/False ==> Disable/Enable Vertical-Synchronization.
             bool allowTearing = true;
 
-            XMVECTORF32 sceneColor = Colors::Blue;
+            XMVECTORF32 sceneColor = Colors::White;
             XMVECTORF32 letterboxColor = Colors::Black;
         };
 
@@ -204,7 +204,8 @@ namespace d14engine::renderer
             {
                 using EnableMasterPtrType::EnableMasterPtrType;
 
-                UINT queryMsaaQualityLevel(UINT sampleCount) const;
+                // Returns empty value if the GPU does not support such MSAA.
+                Optional<UINT> queryMsaaQualityLevel(UINT sampleCount) const;
 
                 D3D12_FEATURE_DATA_ROOT_SIGNATURE rootSignature = {};
             }
@@ -249,7 +250,6 @@ namespace d14engine::renderer
         void queryRootSignatureFeature();
 
         void checkD3d12DeviceConfigs();
-
         void checkDisplayModeConfig();
 
         void populateD3d12DeviceSettings();
@@ -285,7 +285,7 @@ namespace d14engine::renderer
         void createCommandObjects();
 
     private:
-        using FrameResourceArray = std::array<UniquePtr<FrameResource>, FrameResource::g_bufferCount>;
+        using FrameResourceArray = FrameResource::Array<UniquePtr<FrameResource>>;
 
         FrameResourceArray m_frameResources = {};
 
@@ -343,7 +343,7 @@ namespace d14engine::renderer
 #pragma region Graphics Resources
 
     public:
-        constexpr static DXGI_FORMAT g_renderTargetFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+        constexpr static DXGI_FORMAT g_renderTargetFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
         constexpr static DXGI_FORMAT g_depthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
     private:
@@ -372,7 +372,7 @@ namespace d14engine::renderer
         D3D12_CPU_DESCRIPTOR_HANDLE getRtvHandle(UINT offsetIndex) const;
 
     private:
-        using BackBufferArray = std::array<ComPtr<ID3D12Resource>, FrameResource::g_bufferCount>;
+        using BackBufferArray = FrameResource::Array<ComPtr<ID3D12Resource>>;
 
         BackBufferArray m_backBuffers = {};
 
@@ -407,7 +407,7 @@ namespace d14engine::renderer
 
         void createWrappedBuffer();
 
-        void releaseInterpObject();
+        void clearInterpStates();
 
 #pragma endregion
 

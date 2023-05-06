@@ -63,45 +63,71 @@ namespace d14engine::uikit
 
     protected:
         SharedPtr<Layer> m_primaryLayer = {};
+        SharedPtr<Layer> m_closingLayer = {};
 
         SharedPtr<renderer::Renderer::CommandLayer> m_cmdLayer = {};
 
     public:
         const SharedPtr<Layer>& primaryLayer() const;
+        const SharedPtr<Layer>& closingLayer() const;
 
         const SharedPtr<renderer::Renderer::CommandLayer>& cmdLayer() const;
 
         int cmdLayerPriority() const;
         void setCmdLayerPriority(int value);
 
-    protected:
-        ComPtr<ID3D12DescriptorHeap> m_rtvHeap = {};
-
-        ComPtr<ID3D12Resource> m_buffer = {};
-
-        ComPtr<ID3D11Resource> m_wrapper = {};
-
-        ComPtr<ID2D1Bitmap1> m_renderTarget = {};
-
-        void loadOffscreenTextures();
-
     public:
+        const XMVECTORF32& clearColor() const;
+        void setClearColor(const XMVECTORF32& color);
+
         ID3D12DescriptorHeap* rtvHeap() const;
 
-        ID3D12Resource* buffer() const;
+        ID3D12Resource* backBuffer() const;
 
-        ID3D11Resource* wrapper() const;
+        ID3D11Resource* wrappedBuffer() const;
 
-        ID2D1Bitmap1* renderTarget() const;
+        ID2D1Bitmap1* interpBitmap() const;
 
-        struct OffscreenTexture
+    protected:
+        XMVECTORF32 m_clearColor = Colors::White;
+
+        ComPtr<ID3D12DescriptorHeap> m_rtvHeap = {};
+
+        ComPtr<ID3D12Resource> m_msaaBuffer = {};
+        ComPtr<ID3D12Resource> m_backBuffer = {};
+
+        ComPtr<ID3D11Resource> m_wrappedBuffer = {};
+
+        ComPtr<ID2D1Bitmap1> m_interpBitmap = {};
+
+        void loadOffscreenTexture();
+
+        void createBackBuffer();
+        void createMsaaBuffer();
+
+        void createWrappedBuffer();
+
+    protected:
+        UINT m_sampleCount = 1, m_sampleQuality = 0;
+
+        bool m_msaaEnabled = false;
+
+    public:
+        UINT sampleCount() const; UINT sampleQuality() const;
+
+        // Uses the max supported MSAA quality level when quality is empty.
+        // Returns whether the target MSAA setting is enabled successfully.
+        bool setMultiSample(UINT count, OptParam<UINT> quality = std::nullopt);
+
+        bool msaaEnabled() const;
+
+    public:
+        struct BitmapSamplingSetting
         {
-            XMVECTORF32 color = Colors::Blue;
-
             float opacity = 1.0f;
             Optional<D2D1_INTERPOLATION_MODE> interpolationMode = std::nullopt;
         }
-        offscreenTexture = {};
+        bitmapSamplingSetting = {};
 
     protected:
         // IDrawObject2D

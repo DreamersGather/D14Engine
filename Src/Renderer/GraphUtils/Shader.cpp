@@ -41,10 +41,14 @@ namespace d14engine::renderer::graph_utils
                 L"-T", targetProfile.c_str(),
 #ifdef _DEBUG
                 DXC_ARG_DEBUG,
-                DXC_ARG_SKIP_OPTIMIZATIONS
+                DXC_ARG_SKIP_OPTIMIZATIONS,
 #else
-                DXC_ARG_OPTIMIZATION_LEVEL3
+                DXC_ARG_OPTIMIZATION_LEVEL3,
 #endif
+                // DirectX API (e.g. DirectXMath) typically uses row-major matrix.
+                // HLSL, however, rebelliously uses column-major matrix by default.
+                // It is always better to specify the major-type explicitly anyway.
+                DXC_ARG_PACK_MATRIX_ROW_MAJOR
             };
 
             ComPtr<IDxcResult> result;

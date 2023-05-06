@@ -190,7 +190,7 @@ namespace d14engine::renderer
 
         flushCmdQueue();
         resetCmdList();
-        releaseInterpObject();
+        clearInterpStates();
 
         resizeSwapChain();
         // The back buffer index will be reset after the swap chain resized.
@@ -415,7 +415,7 @@ namespace d14engine::renderer
         setting.allowTearing = createInfo.allowTearing;
     }
 
-    UINT Renderer::D3D12DeviceInfo::Feature::queryMsaaQualityLevel(UINT sampleCount) const
+    Optional<UINT> Renderer::D3D12DeviceInfo::Feature::queryMsaaQualityLevel(UINT sampleCount) const
     {
         D3D12DeviceInfo* info = m_master;
         THROW_IF_NULL(info);
@@ -429,11 +429,11 @@ namespace d14engine::renderer
         msaaInfo.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
         msaaInfo.NumQualityLevels = 0;
 
-        HRESULT hr = rndr->m_d3d12Device->CheckFeatureSupport(
-            D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &msaaInfo, sizeof(msaaInfo));
+        THROW_IF_FAILED(rndr->m_d3d12Device->CheckFeatureSupport(
+            D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &msaaInfo, sizeof(msaaInfo)));
 
-        // The actual level == The queried level - 1
-        return SUCCEEDED(hr) ? msaaInfo.NumQualityLevels - 1 : 0;
+        if (msaaInfo.NumQualityLevels == 0) return std::nullopt;
+        else return msaaInfo.NumQualityLevels - 1; // max-level == level-count - 1
     }
 
     bool Renderer::D3D12DeviceInfo::Setting::resolutionScaling() const
@@ -568,19 +568,20 @@ namespace d14engine::renderer
 
     void Renderer::queryRootSignatureFeature()
     {
-        D3D_ROOT_SIGNATURE_VERSION version = {};
+        D3D12_FEATURE_DATA_ROOT_SIGNATURE rootSigInfo = {};
+        rootSigInfo.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
 
-        HRESULT hr = m_d3d12Device->CheckFeatureSupport(
-            D3D12_FEATURE_ROOT_SIGNATURE, &version, sizeof(version));
+        THROW_IF_FAILED(m_d3d12Device->CheckFeatureSupport(
+            D3D12_FEATURE_ROOT_SIGNATURE,
+            &rootSigInfo, sizeof(rootSigInfo)));
 
-        m_d3d12DeviceInfo.feature.rootSignature.HighestVersion =
-            SUCCEEDED(hr) ? version : D3D_ROOT_SIGNATURE_VERSION_1_0;
+        auto& feature = m_d3d12DeviceInfo.feature.rootSignature;
+        feature.HighestVersion = rootSigInfo.HighestVersion;
     }
 
     void Renderer::checkD3d12DeviceConfigs()
     {
         checkDisplayModeConfig();
-        checkTearingConfig();
     }
 
     void Renderer::checkDisplayModeConfig()
@@ -964,13 +965,11 @@ namespace d14engine::renderer
     {
         D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Tex2D
         (
-            /* format        */ g_renderTargetFormat,
-            /* width         */ getSceneWidth(),
-            /* height        */ getSceneHeight(),
-            /* arraySize     */ 1,
-            /* mipLevels     */ 1,
-            /* sampleCount   */ 1,
-            /* sampleQuality */ 0
+            /* format    */ g_renderTargetFormat,
+            /* width     */ getSceneWidth(),
+            /* height    */ getSceneHeight(),
+            /* arraySize */ 1,
+            /* mipLevels */ 1
         );
         desc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
@@ -1021,11 +1020,8 @@ namespace d14engine::renderer
         THROW_IF_FAILED(m_d2d1DeviceContext->CreateBitmapFromDxgiSurface(surface.Get(), &props, &m_d2d1RenderTarget));
     }
 
-    void Renderer::releaseInterpObject()
+    void Renderer::clearInterpStates()
     {
-        m_d2d1RenderTarget.Reset();
-        m_wrappedBuffer.Reset();
-
         m_d2d1DeviceContext->SetTarget(nullptr);
 
         m_d3d11DeviceContext->ClearState();
@@ -1076,6 +1072,7 @@ namespace d14engine::renderer
 
     void Renderer::waitGpuCommand()
     {
+        m_d3d11DeviceContext->Flush();
         flushCmdQueue();
     }
 
@@ -1170,7 +1167,7 @@ namespace d14engine::renderer
 
         flushCmdQueue();
         resetCmdList();
-        releaseInterpObject();
+        clearInterpStates();
 
         createSceneBuffer();
         createWrappedBuffer();

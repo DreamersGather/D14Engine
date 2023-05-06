@@ -1,20 +1,26 @@
 ﻿Texture2D g_texture : register(t0);
 SamplerState g_sampler : register(s0);
 
+struct VSInput
+{
+    float4 position : POSITION;
+    float2 texcoord : TEXCOORD;
+};
+
 struct PSInput
 {
     float4 position : SV_POSITION;
     float2 texcoord : TEXCOORD;
 };
 
-PSInput VS(float4 position : POSITION, float2 texcoord : TEXCOORD)
+PSInput VS(VSInput input)
 {
-    PSInput result;
+    PSInput output;
 
-    result.position = position;
-    result.texcoord = texcoord;
+    output.position = input.position;
+    output.texcoord = input.texcoord;
 
-    return result;
+    return output;
 }
 
 float4 PS(PSInput input) : SV_TARGET

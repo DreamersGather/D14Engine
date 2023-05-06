@@ -28,7 +28,11 @@ using namespace d14engine::uikit;
 D14_SET_APP_ENTRY(mainButtonFamily)
 {
     Application::CreateInfo info = {};
-    info.dpi = 96.0f;
+    if (argc >= 2 && lstrcmp(argv[1], L"HighDPI") == 0)
+    {
+        info.dpi = 192.0f;
+    }
+    else info.dpi = 96.0f;
     info.win32WindowRect = { 0, 0, 800, 600 };
 
     return Application(argc, argv, info).run([&](Application* app)

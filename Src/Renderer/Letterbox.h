@@ -45,7 +45,7 @@ namespace d14engine::renderer
             UINT windowHeight);
 
     public:
-        XMVECTORF32 color = Colors::Blue;
+        XMVECTORF32 color = Colors::Black;
 
     private:
         ComPtr<ID3D12RootSignature> m_rootSigature = {};
