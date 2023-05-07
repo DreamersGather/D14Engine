@@ -57,7 +57,8 @@ namespace d14engine::renderer
 
     void Camera::onViewResize(UINT viewWidth, UINT viewHeight)
     {
-        if (viewWidth == 0 || viewHeight == 0) return;
+        viewWidth = std::max(viewWidth, 1u);
+        viewHeight = std::max(viewHeight, 1u);
 
         m_viewport.TopLeftX = 0.0f;
         m_viewport.TopLeftY = 0.0f;

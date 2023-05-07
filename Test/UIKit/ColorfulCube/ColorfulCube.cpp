@@ -321,6 +321,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             ui_sideLayout->transform(564.0f, 0.0f, 436.0f, 564.0f);
             ui_sideLayout->getAppearance().background.opacity = 1.0f;
             ui_sideLayout->setCellCount(8, 10);
+            ui_sideLayout->setMargin(10.0f, 0.0f);
         }
         auto ui_graphTitle = makeUIObject<Label>(L"-------------- Graph --------------");
         {
@@ -334,8 +335,6 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         }
         auto ui_graphMsaaChecker = makeUIObject<CheckBox>();
         {
-            ui_graphMsaaChecker->getAppearance().icon.geometry.checked.strokeWidth = 2.2f;
-
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
             geoInfo1.axis.x = { 0, 1 };

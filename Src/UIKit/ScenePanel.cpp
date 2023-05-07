@@ -7,6 +7,7 @@
 #include "Common/MathUtils/Basic.h"
 
 #include "Renderer/GraphUtils/Barrier.h"
+#include "Renderer/GraphUtils/ParamHelper.h"
 
 #include "UIKit/Application.h"
 #include "UIKit/BitmapObject.h"
@@ -46,6 +47,11 @@ namespace d14engine::uikit
 
         auto rndr = Application::g_app->dxRenderer();
 
+        // The back/MSAA buffers share the same RTV heap. Just 1 RTV seat
+        // is enough since only 1 of them is used as render target at the same time:
+        // MSAA Enabled: back buffer == staging, MSAA buffer == render target
+        // MSAA Disabled: back buffer == render target, MSAA buffer == not used
+
         D3D12_DESCRIPTOR_HEAP_DESC desc = {};
         desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
         desc.NumDescriptors = 1;
@@ -57,9 +63,24 @@ namespace d14engine::uikit
 
         loadOffscreenTexture();
 
+        // It is worth noting that the back buffer is always transitioned to
+        // PIXEL_SHADER_RESOURCE state after finishing the Direct3D rendering.
+        // This is because Direct2D::DrawBitmap requires the underlying resource
+        // be of such state to resample the shared bitmap to the render target.
+
         m_primaryLayer->f_onRendererDrawD3d12Layer = [this]
         (Layer* layer, Renderer* rndr)
         {
+            if (!m_msaaEnabled) // back buffer == render target
+            {
+                auto barrier = CD3DX12_RESOURCE_BARRIER::Transition
+                (
+                    m_backBuffer.Get(),
+                    D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+                    D3D12_RESOURCE_STATE_RENDER_TARGET
+                );
+                rndr->cmdList()->ResourceBarrier(1, &barrier);
+            }
             auto rtvHandle = m_rtvHeap->GetCPUDescriptorHandleForHeapStart();
 
             rndr->cmdList()->OMSetRenderTargets(1, &rtvHandle, TRUE, nullptr);
@@ -68,22 +89,38 @@ namespace d14engine::uikit
         m_closingLayer->f_onRendererDrawD3d12Layer = [this]
         (Layer* layer, Renderer* rndr)
         {
-            if (m_msaaEnabled)
+            if (m_msaaEnabled) // MSAA buffer == render target
             {
-                auto barrier = CD3DX12_RESOURCE_BARRIER::Transition
-                (
-                    m_msaaBuffer.Get(),
-                    D3D12_RESOURCE_STATE_RENDER_TARGET,
-                    D3D12_RESOURCE_STATE_RESOLVE_SOURCE
-                );
-                rndr->cmdList()->ResourceBarrier(1, &barrier);
+                D3D12_RESOURCE_BARRIER barriers[] =
+                {
+                    CD3DX12_RESOURCE_BARRIER::Transition(
+                        m_backBuffer.Get(),
+                        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+                        D3D12_RESOURCE_STATE_RESOLVE_DEST),
+
+                    CD3DX12_RESOURCE_BARRIER::Transition(
+                        m_msaaBuffer.Get(),
+                        D3D12_RESOURCE_STATE_RENDER_TARGET,
+                        D3D12_RESOURCE_STATE_RESOLVE_SOURCE),
+                };
+                rndr->cmdList()->ResourceBarrier(NUM_ARR_ARGS(barriers));
 
                 rndr->cmdList()->ResolveSubresource(
                     /* dstResource */ m_backBuffer.Get(), 0,
                     /* srcResource */ m_msaaBuffer.Get(), 0,
                     Renderer::g_renderTargetFormat);
 
-                graph_utils::revertBarrier(1, &barrier);
+                graph_utils::revertBarrier(NUM_ARR_ARGS(barriers));
+                rndr->cmdList()->ResourceBarrier(NUM_ARR_ARGS(barriers));
+            }
+            else // back buffer == render target
+            {
+                auto barrier = CD3DX12_RESOURCE_BARRIER::Transition
+                (
+                    m_backBuffer.Get(),
+                    D3D12_RESOURCE_STATE_RENDER_TARGET,
+                    D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+                );
                 rndr->cmdList()->ResourceBarrier(1, &barrier);
             }
         };
@@ -195,6 +232,7 @@ namespace d14engine::uikit
         {
             createMsaaBuffer();
         }
+        else m_msaaBuffer.Reset();
         createWrappedBuffer();
 
         rndr->endGpuCommand();
@@ -218,16 +256,16 @@ namespace d14engine::uikit
         );
         if (m_msaaEnabled)
         {
-            auto d3d12Device = rndr->d3d12Device();
-            THROW_IF_FAILED(d3d12Device->CreateCommittedResource(
+            auto device = rndr->d3d12Device();
+            THROW_IF_FAILED(device->CreateCommittedResource(
                 &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
                 D3D12_HEAP_FLAG_NONE,
                 &desc,
-                D3D12_RESOURCE_STATE_RESOLVE_DEST,
+                D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
                 nullptr,
                 IID_PPV_ARGS(&m_backBuffer)));
         }
-        else // render target
+        else // back buffer == render target
         {
             desc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
@@ -235,17 +273,17 @@ namespace d14engine::uikit
             clearValue.Format = Renderer::g_renderTargetFormat;
             memcpy(clearValue.Color, m_clearColor, 4 * sizeof(FLOAT));
 
-            auto d3d12Device = rndr->d3d12Device();
-            THROW_IF_FAILED(d3d12Device->CreateCommittedResource(
+            auto device = rndr->d3d12Device();
+            THROW_IF_FAILED(device->CreateCommittedResource(
                 &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
                 D3D12_HEAP_FLAG_NONE,
                 &desc,
-                D3D12_RESOURCE_STATE_RENDER_TARGET,
+                D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
                 &clearValue,
                 IID_PPV_ARGS(&m_backBuffer)));
 
             auto rtvHandle = m_rtvHeap->GetCPUDescriptorHandleForHeapStart();
-            d3d12Device->CreateRenderTargetView(m_backBuffer.Get(), nullptr, rtvHandle);
+            device->CreateRenderTargetView(m_backBuffer.Get(), nullptr, rtvHandle);
         }
     }
 
@@ -273,8 +311,8 @@ namespace d14engine::uikit
         clearValue.Format = Renderer::g_renderTargetFormat;
         memcpy(clearValue.Color, m_clearColor, 4 * sizeof(FLOAT));
 
-        auto d3d12Device = rndr->d3d12Device();
-        THROW_IF_FAILED(d3d12Device->CreateCommittedResource(
+        auto device = rndr->d3d12Device();
+        THROW_IF_FAILED(device->CreateCommittedResource(
             &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
             D3D12_HEAP_FLAG_NONE,
             &desc,
@@ -283,7 +321,7 @@ namespace d14engine::uikit
             IID_PPV_ARGS(&m_msaaBuffer)));
 
         auto rtvHandle = m_rtvHeap->GetCPUDescriptorHandleForHeapStart();
-        d3d12Device->CreateRenderTargetView(m_msaaBuffer.Get(), nullptr, rtvHandle);
+        device->CreateRenderTargetView(m_msaaBuffer.Get(), nullptr, rtvHandle);
     }
 
     void ScenePanel::createWrappedBuffer()
@@ -291,42 +329,29 @@ namespace d14engine::uikit
         auto rndr = Application::g_app->dxRenderer();
         auto dpi = platform_utils::dpi();
 
-        D2D1_BITMAP_PROPERTIES1 props = D2D1::BitmapProperties1
+        D2D1_BITMAP_PROPERTIES props = D2D1::BitmapProperties
         (
-            /* bitmapOptions */ D2D1_BITMAP_OPTIONS_NONE,
-            /* pixelFormat   */ D2D1::PixelFormat(Renderer::g_renderTargetFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
-            /* dpiX          */ dpi,
-            /* dpiY          */ dpi
+            /* pixelFormat */ D2D1::PixelFormat(Renderer::g_renderTargetFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
+            /* dpiX        */ dpi,
+            /* dpiY        */ dpi
         );
-        if (!m_msaaEnabled)
-        {
-            props.bitmapOptions |= D2D1_BITMAP_OPTIONS_TARGET;
-        }
         D3D11_RESOURCE_FLAGS flags = {};
         flags.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
-        if (!m_msaaEnabled)
-        {
-            flags.BindFlags |= D3D11_BIND_RENDER_TARGET;
-        }
-        auto backBufferState = m_msaaEnabled ?
-            D3D12_RESOURCE_STATE_RESOLVE_DEST :
-            D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-        auto d3d11On12Device = rndr->d3d11On12Device();
-        THROW_IF_FAILED(d3d11On12Device->CreateWrappedResource
+        auto device = rndr->d3d11On12Device();
+        THROW_IF_FAILED(device->CreateWrappedResource
         (
             /* pResource12  */ m_backBuffer.Get(),
             /* pFlags11     */ &flags,
-            /* InState      */ backBufferState,
-            /* OutState     */ backBufferState,
+            /* InState      */ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+            /* OutState     */ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
             /* ppResource11 */ IID_PPV_ARGS(&m_wrappedBuffer)
         ));
         ComPtr<IDXGISurface> surface;
         THROW_IF_FAILED(m_wrappedBuffer.As(&surface));
 
-        auto d2d1DeviceContext = rndr->d2d1DeviceContext();
-        THROW_IF_FAILED(d2d1DeviceContext->CreateBitmapFromDxgiSurface(surface.Get(), &props, &m_interpBitmap));
+        auto context = rndr->d2d1DeviceContext();
+        THROW_IF_FAILED(context->CreateSharedBitmap(__uuidof(surface), surface.Get(), &props, &m_sharedBitmap));
     }
 
     UINT ScenePanel::sampleCount() const
@@ -403,19 +428,22 @@ namespace d14engine::uikit
         return m_wrappedBuffer.Get();
     }
 
-    ID2D1Bitmap1* ScenePanel::interpBitmap() const
+    ID2D1Bitmap* ScenePanel::sharedBitmap() const
     {
-        return m_interpBitmap.Get();
+        return m_sharedBitmap.Get();
     }
 
     void ScenePanel::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
         Panel::onRendererDrawD2d1ObjectHelper(rndr);
 
+        // There is no need to acquire or release the wrapped buffer since
+        // the state transition has already been handled in Direct3D layer.
+
         auto& interpMode = bitmapSamplingSetting.interpolationMode;
 
         rndr->d2d1DeviceContext()->DrawBitmap(
-            m_interpBitmap.Get(),
+            m_sharedBitmap.Get(),
             math_utils::roundf(m_absoluteRect),
             bitmapSamplingSetting.opacity,
             interpMode.has_value() ? interpMode.value() :

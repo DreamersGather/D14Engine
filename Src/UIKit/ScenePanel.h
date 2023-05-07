@@ -86,7 +86,7 @@ namespace d14engine::uikit
 
         ID3D11Resource* wrappedBuffer() const;
 
-        ID2D1Bitmap1* interpBitmap() const;
+        ID2D1Bitmap* sharedBitmap() const;
 
     protected:
         XMVECTORF32 m_clearColor = Colors::White;
@@ -98,7 +98,7 @@ namespace d14engine::uikit
 
         ComPtr<ID3D11Resource> m_wrappedBuffer = {};
 
-        ComPtr<ID2D1Bitmap1> m_interpBitmap = {};
+        ComPtr<ID2D1Bitmap> m_sharedBitmap = {};
 
         void loadOffscreenTexture();
 
