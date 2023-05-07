@@ -115,7 +115,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         auto wk_scenePanel = (WeakPtr<ScenePanel>)ui_scenePanel;
         {
             ui_scenePanel->setUIObjectPriority(0);
-            ui_scenePanel->transform(0.0f, 0.0f, 560.0f, 564.0f);
+            ui_scenePanel->transform(0.0f, 0.0f, 564.0f, 564.0f);
 
             ui_scenePanel->f_onChangeTheme = [](Panel* p, WstrParam themeName)
             {
@@ -318,7 +318,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         auto ui_sideLayout = makeManagedUIObject<GridLayout>(ui_clientArea);
         {
             ui_sideLayout->setUIObjectPriority(1);
-            ui_sideLayout->transform(560.0f, 0.0f, 440.0f, 564.0f);
+            ui_sideLayout->transform(564.0f, 0.0f, 436.0f, 564.0f);
             ui_sideLayout->getAppearance().background.opacity = 1.0f;
             ui_sideLayout->setCellCount(8, 10);
         }
@@ -334,6 +334,8 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         }
         auto ui_graphMsaaChecker = makeUIObject<CheckBox>();
         {
+            ui_graphMsaaChecker->getAppearance().icon.geometry.checked.strokeWidth = 2.2f;
+
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
             geoInfo1.axis.x = { 0, 1 };

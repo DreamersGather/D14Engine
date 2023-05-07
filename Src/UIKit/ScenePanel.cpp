@@ -79,8 +79,8 @@ namespace d14engine::uikit
                 rndr->cmdList()->ResourceBarrier(1, &barrier);
 
                 rndr->cmdList()->ResolveSubresource(
-                    m_backBuffer.Get(), 0,
-                    m_msaaBuffer.Get(), 0,
+                    /* dstResource */ m_backBuffer.Get(), 0,
+                    /* srcResource */ m_msaaBuffer.Get(), 0,
                     Renderer::g_renderTargetFormat);
 
                 graph_utils::revertBarrier(1, &barrier);
@@ -187,12 +187,17 @@ namespace d14engine::uikit
 
     void ScenePanel::loadOffscreenTexture()
     {
+        auto rndr = Application::g_app->dxRenderer();
+        rndr->beginGpuCommand();
+
         createBackBuffer();
         if (m_msaaEnabled)
         {
             createMsaaBuffer();
         }
         createWrappedBuffer();
+
+        rndr->endGpuCommand();
     }
 
     void ScenePanel::createBackBuffer()
@@ -205,7 +210,7 @@ namespace d14engine::uikit
 
         D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Tex2D
         (
-            /* format    */ rndr->g_renderTargetFormat,
+            /* format    */ Renderer::g_renderTargetFormat,
             /* width     */ math_utils::round<UINT64>(texSize.width),
             /* height    */ math_utils::round<UINT>(texSize.height),
             /* arraySize */ 1,
@@ -227,7 +232,7 @@ namespace d14engine::uikit
             desc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
             D3D12_CLEAR_VALUE clearValue = {};
-            clearValue.Format = rndr->g_renderTargetFormat;
+            clearValue.Format = Renderer::g_renderTargetFormat;
             memcpy(clearValue.Color, m_clearColor, 4 * sizeof(FLOAT));
 
             auto d3d12Device = rndr->d3d12Device();
@@ -254,7 +259,7 @@ namespace d14engine::uikit
 
         D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Tex2D
         (
-            /* format    */ rndr->g_renderTargetFormat,
+            /* format    */ Renderer::g_renderTargetFormat,
             /* width     */ math_utils::round<UINT64>(texSize.width),
             /* height    */ math_utils::round<UINT>(texSize.height),
             /* arraySize */ 1,
@@ -265,7 +270,7 @@ namespace d14engine::uikit
         desc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
         D3D12_CLEAR_VALUE clearValue = {};
-        clearValue.Format = rndr->g_renderTargetFormat;
+        clearValue.Format = Renderer::g_renderTargetFormat;
         memcpy(clearValue.Color, m_clearColor, 4 * sizeof(FLOAT));
 
         auto d3d12Device = rndr->d3d12Device();
@@ -289,7 +294,7 @@ namespace d14engine::uikit
         D2D1_BITMAP_PROPERTIES1 props = D2D1::BitmapProperties1
         (
             /* bitmapOptions */ D2D1_BITMAP_OPTIONS_NONE,
-            /* pixelFormat   */ D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
+            /* pixelFormat   */ D2D1::PixelFormat(Renderer::g_renderTargetFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
             /* dpiX          */ dpi,
             /* dpiY          */ dpi
         );
@@ -320,8 +325,8 @@ namespace d14engine::uikit
         ComPtr<IDXGISurface> surface;
         THROW_IF_FAILED(m_wrappedBuffer.As(&surface));
 
-        auto context = rndr->d2d1DeviceContext();
-        THROW_IF_FAILED(context->CreateBitmapFromDxgiSurface(surface.Get(), &props, &m_interpBitmap));
+        auto d2d1DeviceContext = rndr->d2d1DeviceContext();
+        THROW_IF_FAILED(d2d1DeviceContext->CreateBitmapFromDxgiSurface(surface.Get(), &props, &m_interpBitmap));
     }
 
     UINT ScenePanel::sampleCount() const
@@ -345,9 +350,7 @@ namespace d14engine::uikit
             m_sampleCount = 1;
             m_sampleQuality = 0;
 
-            rndr->beginGpuCommand();
             loadOffscreenTexture();
-            rndr->endGpuCommand();
             return true;
         }
         else // Enable MSAA
@@ -361,9 +364,7 @@ namespace d14engine::uikit
 
                 m_msaaEnabled = true;
 
-                rndr->beginGpuCommand();
                 loadOffscreenTexture();
-                rndr->endGpuCommand();
                 return true;
             }
             else return false;
@@ -384,12 +385,7 @@ namespace d14engine::uikit
     {
         m_clearColor = color;
 
-        auto rndr = Application::g_app->dxRenderer();
-        rndr->beginGpuCommand();
-        
         loadOffscreenTexture();
-
-        rndr->endGpuCommand();
     }
 
     ID3D12DescriptorHeap* ScenePanel::rtvHeap() const
@@ -429,12 +425,7 @@ namespace d14engine::uikit
     void ScenePanel::onSizeHelper(SizeEvent& e)
     {
         Panel::onSizeHelper(e);
-
-        auto rndr = Application::g_app->dxRenderer();
-        rndr->beginGpuCommand();
         
         loadOffscreenTexture();
-
-        rndr->endGpuCommand();
     }
 }

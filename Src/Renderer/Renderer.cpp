@@ -424,7 +424,7 @@ namespace d14engine::renderer
         THROW_IF_NULL(rndr);
 
         D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS msaaInfo = {};
-        msaaInfo.Format = Renderer::g_renderTargetFormat;
+        msaaInfo.Format = g_renderTargetFormat;
         msaaInfo.SampleCount = sampleCount;
         msaaInfo.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
         msaaInfo.NumQualityLevels = 0;
@@ -1000,7 +1000,7 @@ namespace d14engine::renderer
         D2D1_BITMAP_PROPERTIES1 props = D2D1::BitmapProperties1
         (
             /* bitmapOptions */ D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
-            /* pixelFormat   */ D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
+            /* pixelFormat   */ D2D1::PixelFormat(g_renderTargetFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
             /* dpiX          */ dpi,
             /* dpiY          */ dpi
         );
