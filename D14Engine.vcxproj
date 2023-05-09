@@ -251,8 +251,45 @@
   <ItemGroup>
     <ClCompile Include="Src\Common\ResourcePack.cpp" />
     <ClCompile Include="Src\Renderer\GraphUtils\Resource.cpp" />
+    <ClCompile Include="Src\Renderer\Interfaces\DrawLayer.cpp" />
+    <ClCompile Include="Src\Renderer\Interfaces\DrawObject.cpp" />
+    <ClCompile Include="Src\Renderer\Interfaces\DrawObject2D.cpp" />
     <ClCompile Include="Src\UIKit\BitmapObject.cpp" />
-    <ClCompile Include="Test\UIKit\ColorfulCube\ColorfulCube.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\BasicPanelPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ButtonPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\CheckBoxPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ClickablePanelPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ConstraintLayoutPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\DraggablePanelPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ElevatedButtonPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\FilledButtonPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\FlatButtonPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\GridLayoutPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\GuidancePage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\IconLabelPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\LabelAreaPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\LabelPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\LayoutPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ListViewPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\MiscellaneousPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\NumberBoxPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\OnOffSwitchPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\OutlinedButtonPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\PageTemplate.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ResizablePanelPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ScrollViewPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\SliderPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TabGroupPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TextBoxPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TextEditorPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TextPanelPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ToggleButtonPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TreeViewPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ViewPanelPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\WindowPage.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Gallery.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\TabPages\Settings\Settings.cpp" />
+    <ClCompile Include="Test\UIKit\WidgetsGallery\WidgetsGallery.cpp" />
     <None Include=".editorconfig" />
     <None Include=".gitignore" />
     <FxCompile Include="Bin\Shaders\Letterbox.hlsl">
@@ -766,6 +803,9 @@
     <ClInclude Include="Src\Renderer\GraphUtils\PSO.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\Resource.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\Shader.h" />
+    <ClInclude Include="Src\Renderer\Interfaces\DrawLayer.h" />
+    <ClInclude Include="Src\Renderer\Interfaces\DrawObject.h" />
+    <ClInclude Include="Src\Renderer\Interfaces\DrawObject2D.h" />
     <ClInclude Include="Src\Renderer\Interfaces\ICamera.h" />
     <ClInclude Include="Src\Renderer\Interfaces\IDrawLayer.h" />
     <ClInclude Include="Src\Renderer\Interfaces\IDrawObject.h" />
@@ -1127,6 +1167,40 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\BasicPanelPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ButtonPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\CheckBoxPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ClickablePanelPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ConstraintLayoutPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\DraggablePanelPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ElevatedButtonPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\FilledButtonPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\FlatButtonPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\GridLayoutPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\GuidancePage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\IconLabelPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\LabelAreaPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\LabelPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\LayoutPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ListViewPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\MiscellaneousPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\NumberBoxPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\OnOffSwitchPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\OutlinedButtonPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\PageTemplate.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ResizablePanelPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ScrollViewPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\SliderPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TabGroupPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TextBoxPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TextEditorPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TextPanelPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ToggleButtonPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\TreeViewPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\ViewPanelPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Category\WindowPage.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Gallery\Gallery.h" />
+    <ClInclude Include="Test\UIKit\WidgetsGallery\TabPages\Settings\Settings.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Src\UIKit\Appearances\ColorScheme.txt">

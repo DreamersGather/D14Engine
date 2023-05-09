@@ -887,7 +887,7 @@ void createSettingsTabPage(ConstraintLayout* page)
 
             // TODO: Add changing frame rate limit callback.
         };
-        ui_realTimeFpsLabel->f_onRendererUpdateObject2D = [](Panel* p, Renderer* rndr)
+        ui_realTimeFpsLabel->f_onRendererUpdateObject2DAfter = [](Panel* p, Renderer* rndr)
         {
             if (p->enabled()) ((Label*)p)->setText(L"Real-time FPS: " + std::to_wstring(rndr->timer()->fps()));
         };

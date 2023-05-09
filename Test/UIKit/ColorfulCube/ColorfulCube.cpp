@@ -7,7 +7,9 @@
 #include "Renderer/GraphUtils/ParamHelper.h"
 #include "Renderer/GraphUtils/PSO.h"
 #include "Renderer/GraphUtils/Shader.h"
+#include "Renderer/Interfaces/DrawLayer.h"
 #include "Renderer/Renderer.h"
+#include "Renderer/TickTimer.h"
 
 #include "UIKit/AppEntry.h"
 #include "UIKit/Application.h"
@@ -125,6 +127,21 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             };
             ui_scenePanel->f_onChangeTheme(ui_scenePanel.get(), app->currThemeName());
         }
+        auto ui_fpsLabel = makeManagedUIObject<Label>(ui_scenePanel);
+        {
+            ui_fpsLabel->move(10.0f, 10.0f);
+            ui_fpsLabel->hardAlignment.vert = Label::VertAlignment::Top;
+
+            ui_fpsLabel->f_onRendererUpdateObject2DAfter = [](Panel* p, Renderer* rndr)
+            {
+                static UINT fps = 0;
+                if (rndr->timer()->fps() != fps)
+                {
+                    fps = rndr->timer()->fps();
+                    ((Label*)p)->setText(L"FPS: " + std::to_wstring(fps));
+                }
+            };
+        }
         // Initialize necessary graphics structures of the colorful cube.
 
         auto rndr = app->dxRenderer();
@@ -135,7 +152,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         auto& target = std::get<D3D12Target>(ui_scenePanel->cmdLayer()->drawTarget);
         auto& objset = target.at(ui_scenePanel->primaryLayer());
 
-        auto prepare = std::make_shared<ScenePanel::Object>();
+        auto prepare = std::make_shared<DrawObject>();
         {
             // Create root signature.
             CD3DX12_ROOT_PARAMETER1 rootParams[2] = {};
@@ -214,7 +231,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             ComPtr<ID3D12PipelineState> pipelineStateMsaa;
             THROW_IF_FAILED(device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&pipelineStateMsaa)));
 
-            prepare->f_onRendererDrawD3d12Object = [=](ScenePanel::Object* obj, Renderer* rndr)
+            prepare->f_onRendererDrawD3d12ObjectAfter = [=](DrawObject* obj, Renderer* rndr)
             {
                 rndr->cmdList()->SetGraphicsRootSignature(rootSignature.Get());
 
@@ -228,6 +245,8 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         prepare->setPriority(0);
         objset.insert(prepare);
 
+        auto wanderCoef = std::make_shared<XMFLOAT3>(XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+
         auto camera = std::make_shared<Camera>(device);
         {
             camera->eyePos = { -2.0f, +2.0f, -2.0f };
@@ -239,13 +258,129 @@ D14_SET_APP_ENTRY(mainColorfulCube)
 
             auto viewSize = math_utils::roundu(ui_scenePanel->size());
             camera->onViewResize(viewSize.width, viewSize.height);
+
+            camera->f_onRendererUpdateObjectBefore = [=]
+            (DrawObject* obj, Renderer* rndr)
+            {
+                auto cam = (Camera*)obj;
+                auto deltaSecs = (float)rndr->timer()->deltaSecs();
+
+                if (wanderCoef->x != 0.0f ||
+                    wanderCoef->y != 0.0f ||
+                    wanderCoef->z != 0.0f)
+                {
+                    auto zdir = XMVector3Normalize(XMLoadFloat3(&cam->eyeDir));
+                    auto ydir = XMVector3Normalize(XMLoadFloat3(&cam->up));
+                    auto xdir = XMVector3Normalize(XMVector3Cross(ydir, zdir));
+
+                    float xcoef = wanderCoef->x * deltaSecs;
+                    float ycoef = wanderCoef->y * deltaSecs;
+                    float zcoef = wanderCoef->z * deltaSecs;
+
+                    xdir = XMVectorMultiply(xdir, XMVectorReplicate(xcoef));
+                    ydir = XMVectorMultiply(ydir, XMVectorReplicate(ycoef));
+                    zdir = XMVectorMultiply(zdir, XMVectorReplicate(zcoef));
+
+                    XMStoreFloat3(&cam->eyePos,
+                        XMVectorAdd(XMVectorAdd(XMVectorAdd(
+                        XMLoadFloat3(&cam->eyePos), xdir), ydir), zdir));
+
+                    cam->updateViewMatrix();
+
+                    cam->dirtyFrameCount = FrameResource::g_bufferCount;
+                }
+            };
+            ui_scenePanel->f_onKeyboard =
+            [wk_coef = (WeakPtr<XMFLOAT3>)wanderCoef]
+            (Panel* p, KeyboardEvent& e)
+            {
+                if (!wk_coef.expired() &&
+                   (e.vkey == 'W' || e.vkey == 'S' ||
+                    e.vkey == 'A' || e.vkey == 'D' ||
+                    e.vkey == 'Q' || e.vkey == 'E'))
+                {
+                    auto sh_coef = wk_coef.lock();
+                    if (e.state.pressed())
+                    {
+                        switch (e.vkey)
+                        {
+                        case 'W': if (sh_coef->z != +1.0f) sh_coef->z = +1.0f; break; // front
+                        case 'S': if (sh_coef->z != -1.0f) sh_coef->z = -1.0f; break; // back
+                        case 'A': if (sh_coef->x != -1.0f) sh_coef->x = -1.0f; break; // left
+                        case 'D': if (sh_coef->x != +1.0f) sh_coef->x = +1.0f; break; // right
+                        case 'Q': if (sh_coef->y != +1.0f) sh_coef->y = +1.0f; break; // up
+                        case 'E': if (sh_coef->y != -1.0f) sh_coef->y = -1.0f; break; // down
+                        default: break;
+                        }
+                    }
+                    else if (e.state.released())
+                    {
+                        switch (e.vkey)
+                        {
+                        case 'W': if (sh_coef->z == +1.0f) sh_coef->z = 0.0f; break; // front
+                        case 'S': if (sh_coef->z == -1.0f) sh_coef->z = 0.0f; break; // back
+                        case 'A': if (sh_coef->x == -1.0f) sh_coef->x = 0.0f; break; // left
+                        case 'D': if (sh_coef->x == +1.0f) sh_coef->x = 0.0f; break; // right
+                        case 'Q': if (sh_coef->y == +1.0f) sh_coef->y = 0.0f; break; // up
+                        case 'E': if (sh_coef->y == -1.0f) sh_coef->y = 0.0f; break; // down
+                        default: break;
+                        }
+                    }
+                }
+            };
+            ui_scenePanel->f_onMouseLeave =
+            [wk_coef = (WeakPtr<XMFLOAT3>)wanderCoef]
+            (Panel* p, MouseMoveEvent& e)
+            {
+                if (!wk_coef.expired())
+                {
+                    auto sh_coef = wk_coef.lock();
+                    sh_coef->x = sh_coef->y = sh_coef->z = 0.0f;
+                }
+            };
+            ui_scenePanel->f_onMouseMove =
+            [wk_camera = (WeakPtr<Camera>)camera]
+            (Panel* p, MouseMoveEvent& e)
+            {
+                if (!wk_camera.expired() && e.buttonState.rightPressed)
+                {
+                    auto sh_camera = wk_camera.lock();
+
+                    auto horzDelta = e.cursorPoint.x - e.lastCursorPoint.x;
+                    auto vertDelta = e.lastCursorPoint.y - e.cursorPoint.y;
+
+                    horzDelta = XMConvertToRadians(horzDelta * 0.1f);
+                    vertDelta = XMConvertToRadians(vertDelta * 0.1f);
+
+                    auto up = XMLoadFloat3(&sh_camera->up);
+                    auto right = XMVector3Cross(
+                        XMLoadFloat3(&sh_camera->eyeDir),
+                        XMLoadFloat3(&sh_camera->up));
+
+                    auto yaw = XMQuaternionRotationAxis(up, horzDelta);
+                    auto pitch = XMQuaternionRotationAxis(right, vertDelta);
+
+                    XMStoreFloat3(&sh_camera->eyeDir,
+                        XMVector3Rotate(
+                        XMLoadFloat3(&sh_camera->eyeDir),
+                        XMQuaternionMultiply(yaw, pitch)));
+
+                    sh_camera->updateViewMatrix();
+
+                    sh_camera->dirtyFrameCount = FrameResource::g_bufferCount;
+                }
+            };
         }
         camera->setPriority(1);
         objset.insert(camera);
 
+        auto objectGeometry = std::make_shared<std::array<XMFLOAT3, 3>>();
+        (*objectGeometry)[0] = { 0.0f, 0.0f, 0.0f }; // position
+        (*objectGeometry)[1] = { 0.0f, 0.0f, 0.0f }; // rotation
+        (*objectGeometry)[2] = { 1.0f, 1.0f, 1.0f }; // scaling
         auto worldMatrix = std::make_shared<XMFLOAT4X4>(math_utils::identityFloat4x4());
 
-        auto cubeobj = std::make_shared<ScenePanel::Object>();
+        auto cubeobj = std::make_shared<DrawObject>();
         {
             Vertex vertices[] =
             {
@@ -299,9 +434,9 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             indexBufferView.SizeInBytes = sizeof(indices);
             indexBufferView.Format = DXGI_FORMAT_R32_UINT;
 
-            cubeobj->f_onRendererDrawD3d12Object =
+            cubeobj->f_onRendererDrawD3d12ObjectAfter =
             [worldMatrix, vertexBuffer, indexBuffer, vertexBufferView, indexBufferView]
-            (ScenePanel::Object* obj, Renderer* rndr)
+            (DrawObject* obj, Renderer* rndr)
             {
                 rndr->cmdList()->SetGraphicsRoot32BitConstants(1, 16, worldMatrix.get(), 0);
 
@@ -321,7 +456,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             ui_sideLayout->transform(564.0f, 0.0f, 436.0f, 564.0f);
             ui_sideLayout->getAppearance().background.opacity = 1.0f;
             ui_sideLayout->setCellCount(8, 10);
-            ui_sideLayout->setMargin(10.0f, 0.0f);
+            ui_sideLayout->setMargin(10.0f, 10.0f);
         }
         auto ui_graphTitle = makeUIObject<Label>(L"-------------- Graph --------------");
         {
@@ -474,12 +609,174 @@ D14_SET_APP_ENTRY(mainColorfulCube)
                 {
                     ui_cameraData_->resize(100.0f, 40.0f);
 
-                    XMFLOAT3* pData = nullptr;
-                    switch (towupper(which))
+                    auto syncCameraDataComponent =
+                    [=, wk_camera = (WeakPtr<Camera>)camera]
+                    (RawTextBox* dst, wchar_t component)
                     {
-                    case 'P': pData = &camera->eyePos; break;
-                    case 'D': pData = &camera->eyeDir; break;
+                        if (!wk_camera.expired())
+                        {
+                            auto sh_camera = wk_camera.lock();
+                            XMFLOAT3* pData = nullptr;
+                            switch (towupper(which))
+                            {
+                            case 'P': pData = &sh_camera->eyePos; break;
+                            case 'D': pData = &sh_camera->eyeDir; break;
+                            default: break;
+                            }
+                            if (pData != nullptr)
+                            {
+                                float* pValue = nullptr;
+                                switch (towupper(component))
+                                {
+                                case 'X': pValue = &pData->x; break;
+                                case 'Y': pValue = &pData->y; break;
+                                case 'Z': pValue = &pData->z; break;
+                                default: break;
+                                }
+                                if (pValue != nullptr)
+                                {
+                                    dst->setText(std::to_wstring(*pValue));
+                                }
+                            }
+                        }
+                    };
+                    syncCameraDataComponent(ui_cameraData_.get(), component);
+                    ui_cameraData_->setTextFormat(D14_FONT(L"Default/Normal/14"));
+                    ui_cameraData_->setVisibleTextRect({ 5.0f, 5.0f, 95.0f, 35.0f });
+
+                    GridLayout::GeometryInfo geoInfo = {};
+                    geoInfo.isFixedSize = true;
+                    geoInfo.axis.x = { offsetX, 2 };
+                    geoInfo.axis.y = { offsetY, 1 };
+                    ui_sideLayout->addElement(ui_cameraData_, geoInfo);
+
+                    ui_cameraData_->f_onRendererUpdateObject2DAfter =
+                    [=, wk_camera = (WeakPtr<Camera>)camera]
+                    (Panel* p, Renderer* rndr)
+                    {
+                        if (!wk_camera.expired() && wk_camera.lock()->dirtyFrameCount != 0)
+                        {
+                            syncCameraDataComponent((RawTextBox*)p, component);
+                        }
+                    };
+                    ui_cameraData_->f_onLoseFocus = [=](Panel* p)
+                    {
+                        updateCameraData((RawTextBox*)p, component);
+                    };
+                }
+                cameraDataFocusGroup.push_back(ui_cameraData_);
+            };
+            createCameraDataComponentEditor(2, 'X');
+            createCameraDataComponentEditor(4, 'Y');
+            createCameraDataComponentEditor(6, 'Z');
+        };
+        createCameraDataEditor(L"Origin", 3, 'P', std::nullopt);
+        createCameraDataEditor(L"Direction", 4, 'D', XMFLOAT3{ 0.0f, 0.0f, 0.0f });
+        generateTabLink(cameraDataFocusGroup);
+
+        auto ui_cameraHint = makeUIObject<Label>(L"WSADQE to wander / Right-btn to rotate");
+        {
+            THROW_IF_FAILED(ui_cameraHint->textLayout()->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
+
+            GridLayout::GeometryInfo geoInfo = {};
+            geoInfo.isFixedSize = false;
+            geoInfo.axis.x = { 0, 8 };
+            geoInfo.axis.y = { 5, 1 };
+            ui_sideLayout->addElement(ui_cameraHint, geoInfo);
+        }
+        auto ui_objectTitle = makeUIObject<Label>(L"-------------- Object --------------");
+        {
+            THROW_IF_FAILED(ui_objectTitle->textLayout()->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
+
+            GridLayout::GeometryInfo geoInfo = {};
+            geoInfo.isFixedSize = false;
+            geoInfo.axis.x = { 0, 8 };
+            geoInfo.axis.y = { 6, 1 };
+            ui_sideLayout->addElement(ui_objectTitle, geoInfo);
+        }
+        FocusGroup objectDataFocusGroup = {};
+        auto createObjectDataEditor = [&](WstrParam name, size_t offsetY, size_t index, OptParam<XMFLOAT3> invalid)
+        {
+            auto ui_objectData = makeUIObject<Label>(name);
+            {
+                THROW_IF_FAILED(ui_objectData->textLayout()->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
+
+                GridLayout::GeometryInfo geoInfo = {};
+                geoInfo.isFixedSize = false;
+                geoInfo.axis.x = { 0, 2 };
+                geoInfo.axis.y = { offsetY, 1 };
+                ui_sideLayout->addElement(ui_objectData, geoInfo);
+            }
+            auto updateObjectData = [=, wk_matrix = (WeakPtr<XMFLOAT4X4>)worldMatrix]
+            (RawTextBox* src, wchar_t component /* select from X, Y, Z */)
+            {
+                auto value = wcstof(src->text().c_str(), nullptr);
+                XMFLOAT3* pData = nullptr;
+                if (index < objectGeometry->size())
+                {
+                    pData = &((*objectGeometry)[index]);
+                }
+                if (pData != nullptr)
+                {
+                    float tempValue = 0.0f;
+                    XMFLOAT3 tempData = *pData;
+                    switch (towupper(component))
+                    {
+                    case 'X': tempValue = tempData.x; tempData.x = value; break;
+                    case 'Y': tempValue = tempData.y; tempData.y = value; break;
+                    case 'Z': tempValue = tempData.z; tempData.z = value; break;
                     default: break;
+                    }
+                    if (invalid.has_value())
+                    {
+                        auto& invalidValue = invalid.value();
+                        if (tempData.x == invalidValue.x &&
+                            tempData.y == invalidValue.y &&
+                            tempData.z == invalidValue.z)
+                        {
+                            src->setText(std::to_wstring(tempValue));
+                            return; // no need to do the remaining updating
+                        }
+                    }
+                    *pData = tempData; // given value is valid, do updating
+
+                    if (!wk_matrix.expired())
+                    {
+                        auto position = XMLoadFloat3(&((*objectGeometry)[0]));
+
+                        XMFLOAT3 rotationData = (*objectGeometry)[1];
+                        rotationData.x = XMConvertToRadians(rotationData.x);
+                        rotationData.y = XMConvertToRadians(rotationData.y);
+                        rotationData.z = XMConvertToRadians(rotationData.z);
+                        auto rotation = XMLoadFloat3(&rotationData);
+
+                        auto scaling = XMLoadFloat3(&((*objectGeometry)[2]));
+
+                        rndr->waitGpuCommand();
+
+                        XMStoreFloat4x4(wk_matrix.lock().get(), XMMatrixTransformation
+                        (
+                            /* ScalingOrigin      */ XMVectorZero(),
+                            /* ScalingOrientation */ XMQuaternionIdentity(),
+                            /* Scaling            */ scaling,
+                            /* RotationOrigin     */ XMVectorZero(),
+                            /* Rotation           */ XMQuaternionRotationRollPitchYawFromVector(rotation),
+                            /* Translation        */ position)
+                        );
+                    }
+                }
+                src->setText(std::to_wstring(value));
+            };
+            auto createObjectDataComponentEditor = [&, offsetY](size_t offsetX, wchar_t component)
+            {
+                auto ui_objectData_ = makeUIObject<RawTextBox>(5.0f);
+                {
+                    ui_objectData_->resize(100.0f, 40.0f);
+
+                    XMFLOAT3* pData = nullptr;
+                    if (index < objectGeometry->size())
+                    {
+                        pData = &((*objectGeometry)[index]);
                     }
                     if (pData != nullptr)
                     {
@@ -493,31 +790,32 @@ D14_SET_APP_ENTRY(mainColorfulCube)
                         }
                         if (pValue != nullptr)
                         {
-                            ui_cameraData_->setText(std::to_wstring(*pValue));
+                            ui_objectData_->setText(std::to_wstring(*pValue));
                         }
                     }
-                    ui_cameraData_->setTextFormat(D14_FONT(L"Default/Normal/14"));
-                    ui_cameraData_->setVisibleTextRect({ 5.0f, 5.0f, 95.0f, 35.0f });
+                    ui_objectData_->setTextFormat(D14_FONT(L"Default/Normal/14"));
+                    ui_objectData_->setVisibleTextRect({ 5.0f, 5.0f, 95.0f, 35.0f });
 
                     GridLayout::GeometryInfo geoInfo = {};
                     geoInfo.isFixedSize = true;
                     geoInfo.axis.x = { offsetX, 2 };
                     geoInfo.axis.y = { offsetY, 1 };
-                    ui_sideLayout->addElement(ui_cameraData_, geoInfo);
+                    ui_sideLayout->addElement(ui_objectData_, geoInfo);
 
-                    ui_cameraData_->f_onLoseFocus = [=](Panel* p)
+                    ui_objectData_->f_onLoseFocus = [=](Panel* p)
                     {
-                        updateCameraData((RawTextBox*)p, component);
+                        updateObjectData((RawTextBox*)p, component);
                     };
                 }
-                cameraDataFocusGroup.push_back(ui_cameraData_);
+                objectDataFocusGroup.push_back(ui_objectData_);
             };
-            createCameraDataComponentEditor(2, 'X');
-            createCameraDataComponentEditor(4, 'Y');
-            createCameraDataComponentEditor(6, 'Z');
+            createObjectDataComponentEditor(2, 'X');
+            createObjectDataComponentEditor(4, 'Y');
+            createObjectDataComponentEditor(6, 'Z');
         };
-        createCameraDataEditor(L"Eye Pos", 3, 'P', std::nullopt);
-        createCameraDataEditor(L"Eye Dir", 4, 'D', XMFLOAT3{ 0.0f, 0.0f, 0.0f });
-        generateTabLink(cameraDataFocusGroup);
+        createObjectDataEditor(L"Position", 7, 0, std::nullopt);
+        createObjectDataEditor(L"Rotation", 8, 1, std::nullopt);
+        createObjectDataEditor(L"Scaling", 9, 2, std::nullopt);
+        generateTabLink(objectDataFocusGroup);
     });
 }

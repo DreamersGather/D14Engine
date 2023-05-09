@@ -15,36 +15,6 @@ namespace d14engine::renderer
         }
     }
 
-    bool Camera::isD3d12ObjectVisible() const
-    {
-        return m_visible;
-    }
-
-    void Camera::setD3d12ObjectVisible(bool value)
-    {
-        m_visible = value;
-    }
-
-    void Camera::onRendererUpdateObject(Renderer* rndr)
-    {
-        if (dirtyFrameCount > 0)
-        {
-            --dirtyFrameCount;
-            m_buffers.at(rndr->currFrameIndex())->copyData(0, &m_data, sizeof(m_data));
-        }
-    }
-
-    void Camera::onRendererDrawD3d12Object(Renderer* rndr)
-    {
-        rndr->cmdList()->RSSetViewports(1, &m_viewport);
-        rndr->cmdList()->RSSetScissorRects(1, &m_scissors);
-
-        auto buffer = m_buffers.at(rndr->currFrameIndex())->resource();
-
-        rndr->cmdList()->SetGraphicsRootConstantBufferView(
-            rootParamIndex, buffer->GetGPUVirtualAddress());
-    }
-
     Camera::Viewport Camera::viewport() const
     {
         return m_viewport;
@@ -73,6 +43,26 @@ namespace d14engine::renderer
         m_scissors.bottom = viewHeight;
 
         updateProjMatrix();
+    }
+
+    void Camera::onRendererUpdateObjectHelper(Renderer* rndr)
+    {
+        if (dirtyFrameCount > 0)
+        {
+            --dirtyFrameCount;
+            m_buffers.at(rndr->currFrameIndex())->copyData(0, &m_data, sizeof(m_data));
+        }
+    }
+
+    void Camera::onRendererDrawD3d12ObjectHelper(Renderer* rndr)
+    {
+        rndr->cmdList()->RSSetViewports(1, &m_viewport);
+        rndr->cmdList()->RSSetScissorRects(1, &m_scissors);
+
+        auto buffer = m_buffers.at(rndr->currFrameIndex())->resource();
+
+        rndr->cmdList()->SetGraphicsRootConstantBufferView(
+            rootParamIndex, buffer->GetGPUVirtualAddress());
     }
 
     float Camera::getAspectRatio() const

@@ -15,7 +15,7 @@ namespace d14engine::renderer
     struct Letterbox;
     struct TickTimer;
 
-    struct Renderer
+    struct Renderer : cpp_lang_utils::NonCopyable
     {
         struct CreateInfo
         {

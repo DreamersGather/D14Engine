@@ -8,6 +8,8 @@
 
 #include "Renderer/GraphUtils/Barrier.h"
 #include "Renderer/GraphUtils/ParamHelper.h"
+#include "Renderer/Interfaces/DrawLayer.h"
+#include "Renderer/Interfaces/IDrawObject.h"
 
 #include "UIKit/Application.h"
 #include "UIKit/BitmapObject.h"
@@ -32,11 +34,11 @@ namespace d14engine::uikit
         using D3D12Target = Renderer::CommandLayer::D3D12Target;
         auto& target = m_cmdLayer->drawTarget.emplace<D3D12Target>();
 
-        m_primaryLayer = std::make_shared<Layer>();
+        m_primaryLayer = std::make_shared<DrawLayer>();
         m_primaryLayer->setPriority(INT_MIN);
         target[m_primaryLayer] = {};
 
-        m_closingLayer = std::make_shared<Layer>();
+        m_closingLayer = std::make_shared<DrawLayer>();
         m_closingLayer->setPriority(INT_MAX);
         target[m_closingLayer] = {};
     }
@@ -68,8 +70,8 @@ namespace d14engine::uikit
         // This is because Direct2D::DrawBitmap requires the underlying resource
         // be of such state to resample the shared bitmap to the render target.
 
-        m_primaryLayer->f_onRendererDrawD3d12Layer = [this]
-        (Layer* layer, Renderer* rndr)
+        m_primaryLayer->f_onRendererDrawD3d12LayerAfter = [this]
+        (DrawLayer* layer, Renderer* rndr)
         {
             if (!m_msaaEnabled) // back buffer == render target
             {
@@ -86,8 +88,8 @@ namespace d14engine::uikit
             rndr->cmdList()->OMSetRenderTargets(1, &rtvHandle, TRUE, nullptr);
             rndr->cmdList()->ClearRenderTargetView(rtvHandle, m_clearColor, 0, nullptr);
         };
-        m_closingLayer->f_onRendererDrawD3d12Layer = [this]
-        (Layer* layer, Renderer* rndr)
+        m_closingLayer->f_onRendererDrawD3d12LayerAfter = [this]
+        (DrawLayer* layer, Renderer* rndr)
         {
             if (m_msaaEnabled) // MSAA buffer == render target
             {
@@ -126,80 +128,12 @@ namespace d14engine::uikit
         };
     }
 
-    void ScenePanel::Layer::onRendererUpdateLayer(Renderer* rndr)
-    {
-        onRendererUpdateLayerHelper(rndr);
-
-        if (f_onRendererUpdateLayer) f_onRendererUpdateLayer(this, rndr);
-    }
-
-    void ScenePanel::Layer::onRendererDrawD3d12Layer(Renderer* rndr)
-    {
-        onRendererDrawD3d12LayerHelper(rndr);
-
-        if (f_onRendererDrawD3d12Layer) f_onRendererDrawD3d12Layer(this, rndr);
-    }
-
-    void ScenePanel::Layer::onRendererUpdateLayerHelper(Renderer* rndr)
-    {
-        // This method intentionally left blank.
-    }
-
-    void ScenePanel::Layer::onRendererDrawD3d12LayerHelper(Renderer* rndr)
-    {
-        // This method intentionally left blank.
-    }
-
-    bool ScenePanel::Layer::isD3d12LayerVisible() const
-    {
-        return m_visible;
-    }
-
-    void ScenePanel::Layer::setD3d12LayerVisible(bool value)
-    {
-        m_visible = value;
-    }
-
-    void ScenePanel::Object::onRendererUpdateObject(Renderer* rndr)
-    {
-        onRendererUpdateObjectHelper(rndr);
-
-        if (f_onRendererUpdateObject) f_onRendererUpdateObject(this, rndr);
-    }
-
-    void ScenePanel::Object::onRendererDrawD3d12Object(Renderer* rndr)
-    {
-        onRendererDrawD3d12ObjectHelper(rndr);
-
-        if (f_onRendererDrawD3d12Object) f_onRendererDrawD3d12Object(this, rndr);
-    }
-
-    void ScenePanel::Object::onRendererUpdateObjectHelper(Renderer* rndr)
-    {
-        // This method intentionally left blank.
-    }
-
-    void ScenePanel::Object::onRendererDrawD3d12ObjectHelper(Renderer* rndr)
-    {
-        // This method intentionally left blank.
-    }
-
-    bool ScenePanel::Object::isD3d12ObjectVisible() const
-    {
-        return m_visible;
-    }
-
-    void ScenePanel::Object::setD3d12ObjectVisible(bool value)
-    {
-        m_visible = value;
-    }
-
-    const SharedPtr<ScenePanel::Layer>& ScenePanel::primaryLayer() const
+    const SharedPtr<DrawLayer>& ScenePanel::primaryLayer() const
     {
         return m_primaryLayer;
     }
 
-    const SharedPtr<ScenePanel::Layer>& ScenePanel::closingLayer() const
+    const SharedPtr<DrawLayer>& ScenePanel::closingLayer() const
     {
         return m_closingLayer;
     }
@@ -220,6 +154,53 @@ namespace d14engine::uikit
         rndr->cmdLayers.erase(m_cmdLayer);
         m_cmdLayer->setPriority(value);
         rndr->cmdLayers.insert(m_cmdLayer);
+    }
+
+    UINT ScenePanel::sampleCount() const
+    {
+        return m_sampleCount;
+    }
+
+    UINT ScenePanel::sampleQuality() const
+    {
+        return m_sampleQuality;
+    }
+
+    bool ScenePanel::setMultiSample(UINT count, OptParam<UINT> quality)
+    {
+        auto rndr = Application::g_app->dxRenderer();
+
+        if (count <= 1)
+        {
+            m_msaaEnabled = false;
+
+            m_sampleCount = 1;
+            m_sampleQuality = 0;
+
+            loadOffscreenTexture();
+            return true;
+        }
+        else // Enable MSAA
+        {
+            auto& feature = rndr->d3d12DeviceInfo().feature;
+            auto level = feature.queryMsaaQualityLevel(count);
+            if (level.has_value())
+            {
+                m_sampleCount = count;
+                m_sampleQuality = level.value();
+
+                m_msaaEnabled = true;
+
+                loadOffscreenTexture();
+                return true;
+            }
+            else return false;
+        }
+    }
+
+    bool ScenePanel::msaaEnabled() const
+    {
+        return m_msaaEnabled;
     }
 
     void ScenePanel::loadOffscreenTexture()
@@ -352,53 +333,6 @@ namespace d14engine::uikit
 
         auto context = rndr->d2d1DeviceContext();
         THROW_IF_FAILED(context->CreateSharedBitmap(__uuidof(surface), surface.Get(), &props, &m_sharedBitmap));
-    }
-
-    UINT ScenePanel::sampleCount() const
-    {
-        return m_sampleCount;
-    }
-
-    UINT ScenePanel::sampleQuality() const
-    {
-        return m_sampleQuality;
-    }
-
-    bool ScenePanel::setMultiSample(UINT count, OptParam<UINT> quality)
-    {
-        auto rndr = Application::g_app->dxRenderer();
-
-        if (count <= 1)
-        {
-            m_msaaEnabled = false;
-
-            m_sampleCount = 1;
-            m_sampleQuality = 0;
-
-            loadOffscreenTexture();
-            return true;
-        }
-        else // Enable MSAA
-        {
-            auto& feature = rndr->d3d12DeviceInfo().feature;
-            auto level = feature.queryMsaaQualityLevel(count);
-            if (level.has_value())
-            {
-                m_sampleCount = count;
-                m_sampleQuality = level.value();
-
-                m_msaaEnabled = true;
-
-                loadOffscreenTexture();
-                return true;
-            }
-            else return false;
-        }
-    }
-
-    bool ScenePanel::msaaEnabled() const
-    {
-        return m_msaaEnabled;
     }
 
     const XMVECTORF32& ScenePanel::clearColor() const

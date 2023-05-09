@@ -205,7 +205,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
                     }
                 }
             };
-            ui_toggleButton->f_onRendererUpdateObject2D = [=](Panel* p, Renderer* rndr)
+            ui_toggleButton->f_onRendererUpdateObject2DAfter = [=](Panel* p, Renderer* rndr)
             {
                 if (!wk_label1.expired() && *useDynamicCursor)
                 {

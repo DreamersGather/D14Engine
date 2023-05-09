@@ -5,6 +5,7 @@
 #include "Common/MathUtils/3D.h"
 
 #include "Renderer/FrameResource.h"
+#include "Renderer/Interfaces/DrawObject.h"
 #include "Renderer/Interfaces/ICamera.h"
 
 namespace d14engine::renderer
@@ -12,32 +13,22 @@ namespace d14engine::renderer
     struct ConstantBuffer;
     struct Renderer;
 
-    struct Camera : ICamera
+    struct Camera : ICamera, DrawObject
     {
         explicit Camera(ID3D12Device* device);
 
         // prevent std::unique_ptr from generating default deleter
         virtual ~Camera() = default;
 
-    public:
-        // IDrawObject
-        bool isD3d12ObjectVisible() const override;
-
-        void setD3d12ObjectVisible(bool value) override;
-
-        void onRendererUpdateObject(Renderer* rndr) override;
-
-        void onRendererDrawD3d12Object(Renderer* rndr) override;
-
-        // ICamera
         Viewport viewport() const override;
 
         Scissors scissors() const override;
 
         void onViewResize(UINT viewWidth, UINT viewHeight) override;
 
-    protected:
-        bool m_visible = true;
+        void onRendererUpdateObjectHelper(Renderer* rndr) override;
+
+        void onRendererDrawD3d12ObjectHelper(Renderer* rndr) override;
 
     public:
         XMFLOAT3 eyePos = { 0.0f, 0.0f, 0.0f };
