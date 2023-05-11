@@ -36,6 +36,10 @@ D14_SET_APP_ENTRY(mainVariousFonts)
 
     return Application(argc, argv, info).run([&](Application* app)
     {
+        auto textDrawMode = app->dxRenderer()->getDefaultTextRenderingMode();
+        textDrawMode.renderingMode = DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC;
+        app->dxRenderer()->setTextRenderingMode(textDrawMode);
+
         auto ui_mainWindow = makeRootUIObject<MainWindow>(L"D14Engine - VariousFonts @ UIKit");
         {
             ui_mainWindow->moveTopmost();
@@ -136,7 +140,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             auto fileName = file_system_utils::extractFileName(filePath);
             auto filePrefix = file_system_utils::extractFilePrefix(fileName);
 
-            bool isLangZhCn = file_system_utils::extractFileSuffix(filePrefix) == L"language_zh-cn";
+            bool isLangZhCn = file_system_utils::extractFileSuffix(filePrefix) == L"zh_CN";
 
             auto& formats = resource_utils::g_textFormats;
             auto captionFormat = formats.at(isLangZhCn ? L"默认/正常/14" : L"Default/Normal/14").Get();
@@ -330,7 +334,6 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             std::vector<std::pair<Wstring, D2D1_TEXT_ANTIALIAS_MODE>> strModeArray =
             {
                 { L"Default", D2D1_TEXT_ANTIALIAS_MODE_DEFAULT },
-                { L"Aliased", D2D1_TEXT_ANTIALIAS_MODE_ALIASED },
                 { L"ClearType", D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE },
                 { L"Grayscale", D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE }
             };
@@ -342,7 +345,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             }
             auto& dropDownMenu = ui_textAntialiasModeSelector->dropDownMenu();
 
-            dropDownMenu->resize(dropDownMenu->width(), 160.0f);
+            dropDownMenu->resize(dropDownMenu->width(), 120.0f);
             dropDownMenu->appendItem(strModeItems);
 
             ui_textAntialiasModeSelector->setCurrSelected(0);
