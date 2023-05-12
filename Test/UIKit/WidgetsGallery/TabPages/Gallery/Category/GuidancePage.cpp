@@ -37,7 +37,7 @@ SharedPtr<TreeViewItem> createGuidancePage
         L"UIKit @ D14Engine is initially developed for creating the Editor part "
         L"of D14Engine, and with the development, it has been becoming a common "
         L"UI library on Windows-desktop.\n\n"
-        L"The kit is created to match Fluent Design, so it looks well with "
+        L"The kit is designed to match Fluent Design, so it looks well with "
         L"the native Windows-desktop environment. It is worth noting that you can "
         L"customize all UI widgets by modifying their Appearance parts, or even "
         L"create a brand-new widget by inheriting the most derived widget class "

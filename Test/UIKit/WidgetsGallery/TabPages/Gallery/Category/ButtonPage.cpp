@@ -41,8 +41,8 @@ SharedPtr<TreeViewItem> createButtonPage
     auto ui_synopsisLabel = makeUIObject<Label>
     (
         L"Button is a kind of widget used to respond to mouse click. In the library, "
-        L"it is implemented by inheriting from clickable panel. A button click event "
-        L"is usually associated with a function callback to perform a backend action."
+        L"it is implemented by inheriting ClickablePanel. A button click event is "
+        L"usually associated with a function callback to perform a backend action."
     );
     {
         ui_synopsisLabel->setTextFormat(D14_FONT(L"Default/Normal/14"));
