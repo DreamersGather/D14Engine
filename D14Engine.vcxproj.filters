@@ -307,6 +307,9 @@
     <ClCompile Include="Src\Renderer\Interfaces\DrawObject2D.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Editor\HomePage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Precompile.h">
