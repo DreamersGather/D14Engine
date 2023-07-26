@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DEditor|x64">
+      <Configuration>DEditor</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="DRndr|x64">
       <Configuration>DRndr</Configuration>
       <Platform>x64</Platform>
@@ -11,6 +15,10 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="REditor|x64">
+      <Configuration>REditor</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
@@ -47,6 +55,12 @@
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -61,6 +75,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='REditor|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
@@ -85,6 +106,9 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -92,6 +116,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='REditor|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'" Label="PropertySheets">
@@ -104,6 +131,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
@@ -111,6 +141,9 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">
@@ -136,6 +169,25 @@
     <Manifest />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+    <Manifest />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
@@ -223,6 +275,31 @@
     <Manifest />
     <PostBuildEvent />
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+    <Manifest />
+    <Manifest />
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -250,7 +327,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Src\Common\ResourcePack.cpp" />
-    <ClCompile Include="Src\Editor\HomePage.cpp" />
+    <ClCompile Include="Src\Editor\HOME.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Editor\TabPages\BasicWorks\BasicWorks.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Editor\TabPages\Settings\Settings.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Src\Renderer\GraphUtils\Resource.cpp" />
     <ClCompile Include="Src\Renderer\Interfaces\DrawLayer.cpp" />
     <ClCompile Include="Src\Renderer\Interfaces\DrawObject.cpp" />
@@ -265,16 +359,20 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <None Include="LICENSE" />
     <None Include="comment.html" />
     <ClCompile Include="Src\UIKit\Appearances\ComboBox.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -289,18 +387,22 @@
     <ClCompile Include="Src\Common\Precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Common/Precompile.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">Common/Precompile.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">Common/Precompile.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">Common/Precompile.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Src\Common\RuntimeError.cpp" />
     <ClCompile Include="Src\Renderer\Camera.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">false</ShowIncludes>
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">false</ShowIncludes>
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">false</ShowIncludes>
     </ClCompile>
     <ClCompile Include="Src\Renderer\DebugUtils.cpp" />
@@ -328,9 +430,11 @@
     <ClCompile Include="Src\UIKit\Appearances\Button.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ButtonAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -338,9 +442,11 @@
     <ClCompile Include="Src\UIKit\Appearances\CheckBox.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)CheckBoxAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -348,9 +454,11 @@
     <ClCompile Include="Src\UIKit\Appearances\ElevatedButton.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ElevatedButtonAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -358,9 +466,11 @@
     <ClCompile Include="Src\UIKit\Appearances\FilledButton.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)FilledButtonAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -368,9 +478,11 @@
     <ClCompile Include="Src\UIKit\Appearances\FlatButton.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)FlatButtonAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -378,9 +490,11 @@
     <ClCompile Include="Src\UIKit\Appearances\Label.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)LabelAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)LabelAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)LabelAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)LabelAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)LabelAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)LabelAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)LabelAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)LabelAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -388,9 +502,11 @@
     <ClCompile Include="Src\UIKit\Appearances\LabelArea.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)LabelAreaAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -398,9 +514,11 @@
     <ClCompile Include="Src\UIKit\Appearances\Layout.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)LayoutAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -408,9 +526,11 @@
     <ClCompile Include="Src\UIKit\Appearances\MenuItem.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)MenuItemAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -418,9 +538,11 @@
     <ClCompile Include="Src\UIKit\Appearances\MenuSeparator.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)MenuSeparatorAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -428,9 +550,11 @@
     <ClCompile Include="Src\UIKit\Appearances\OnOffSwitch.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)OnOffSwitchAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -438,9 +562,11 @@
     <ClCompile Include="Src\UIKit\Appearances\OutlinedButton.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)OutlinedButtonAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -448,9 +574,11 @@
     <ClCompile Include="Src\UIKit\Appearances\PopupMenu.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)PopupMenuAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -458,9 +586,11 @@
     <ClCompile Include="Src\UIKit\Appearances\RawTextInput.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)RawTextBoxAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -468,9 +598,11 @@
     <ClCompile Include="Src\UIKit\Appearances\ResizablePanel.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ResizablePanelAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -478,9 +610,11 @@
     <ClCompile Include="Src\UIKit\Appearances\ScrollView.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ScrollViewAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -488,9 +622,11 @@
     <ClCompile Include="Src\UIKit\Appearances\Slider.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)SliderAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)SliderAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)SliderAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)SliderAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)SliderAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)SliderAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)SliderAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)SliderAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -498,9 +634,11 @@
     <ClCompile Include="Src\UIKit\Appearances\TabCaption.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)TabCaptionAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -508,9 +646,11 @@
     <ClCompile Include="Src\UIKit\Appearances\TabGroup.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)TabGroupAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -518,9 +658,11 @@
     <ClCompile Include="Src\UIKit\Appearances\TextInput.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)TextBoxAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -528,9 +670,11 @@
     <ClCompile Include="Src\UIKit\Appearances\ToggleButton.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ToggleButtonAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -538,9 +682,11 @@
     <ClCompile Include="Src\UIKit\Appearances\TreeViewItem.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)TreeViewItemAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -548,9 +694,11 @@
     <ClCompile Include="Src\UIKit\Appearances\ViewItem.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)ViewItemAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -558,9 +706,11 @@
     <ClCompile Include="Src\UIKit\Appearances\Window.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)WindowAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">$(IntDir)WindowAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">$(IntDir)WindowAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">$(IntDir)WindowAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)WindowAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">$(IntDir)WindowAppearance</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">$(IntDir)WindowAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">$(IntDir)WindowAppearance</ObjectFileName>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -764,6 +914,18 @@
     <ClInclude Include="Src\Common\MathUtils\GDI.h" />
     <ClInclude Include="Src\Common\Precompile.h" />
     <ClInclude Include="Src\Common\ResourcePack.h" />
+    <ClInclude Include="Src\Editor\TabPages\BasicWorks\BasicWorks.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Src\Editor\TabPages\Settings\Settings.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\Renderer\GraphUtils\Barrier.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\ParamHelper.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\PSO.h" />
@@ -1147,7 +1309,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

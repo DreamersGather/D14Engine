@@ -307,7 +307,13 @@
     <ClCompile Include="Src\Renderer\Interfaces\DrawObject2D.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Editor\HomePage.cpp">
+    <ClCompile Include="Src\Editor\TabPages\BasicWorks\BasicWorks.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Editor\TabPages\Settings\Settings.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Editor\HOME.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -688,6 +694,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\Renderer\Interfaces\DrawObject2D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Editor\TabPages\BasicWorks\BasicWorks.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Editor\TabPages\Settings\Settings.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
