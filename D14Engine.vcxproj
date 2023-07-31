@@ -349,7 +349,10 @@
     <ClCompile Include="Src\Renderer\Interfaces\DrawLayer.cpp" />
     <ClCompile Include="Src\Renderer\Interfaces\DrawObject.cpp" />
     <ClCompile Include="Src\Renderer\Interfaces\DrawObject2D.cpp" />
-    <ClCompile Include="Src\UIKit\BitmapObject.cpp" />
+    <ClCompile Include="Src\UIKit\BitmapObject.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <None Include=".editorconfig" />
     <None Include=".gitignore" />
     <FxCompile Include="Bin\Shaders\Letterbox.hlsl">
@@ -751,7 +754,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\PlatformUtils.cpp" />
+    <ClCompile Include="Src\UIKit\PlatformUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Src\UIKit\PopupMenu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -760,7 +766,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\ScenePanel.cpp" />
+    <ClCompile Include="Src\UIKit\ScenePanel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Src\UIKit\TabCaption.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -1068,7 +1077,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Src\UIKit\BitmapObject.h" />
+    <ClInclude Include="Src\UIKit\BitmapObject.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\UIKit\BitmapUtils.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -1097,7 +1109,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Src\UIKit\PlatformUtils.h" />
+    <ClInclude Include="Src\UIKit\PlatformUtils.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\UIKit\RawTextEditor.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -1106,7 +1121,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Src\UIKit\ScenePanel.h" />
+    <ClInclude Include="Src\UIKit\ScenePanel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\UIKit\TabCaption.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>

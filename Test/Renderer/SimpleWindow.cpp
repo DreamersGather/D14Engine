@@ -17,14 +17,7 @@ int wmain(int argc, wchar_t* argv[])
         SetDllDirectory(L"Lib/");
 
         Renderer::CreateInfo info = {};
-        info.binaryPath = L"Bin/";
-        info.fullscreen = false;
-        info.adapterIndex = 0;
-        info.resolutionScaling = false;
-        info.displayModeIndex = 0;
-        info.allowTearing = true;
-        info.sceneColor = Colors::Blue;
-        info.letterboxColor = Colors::Black;
+        info.sceneColor = Colors::SteelBlue;
 
         auto rndr = initApp(800, 600, info);
 
