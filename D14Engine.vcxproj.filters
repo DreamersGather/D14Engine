@@ -316,6 +316,12 @@
     <ClCompile Include="Src\Editor\HOME.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Test\Pipeline\TestWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\Pipeline\EmptyScene.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Precompile.h">
@@ -700,6 +706,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\Editor\TabPages\Settings\Settings.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Pipeline\TestWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

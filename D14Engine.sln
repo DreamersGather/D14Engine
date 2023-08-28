@@ -9,10 +9,12 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		DEditor|x64 = DEditor|x64
+		DPipe|x64 = DPipe|x64
 		DRndr|x64 = DRndr|x64
 		DUIKit|x64 = DUIKit|x64
 		REditor|x64 = REditor|x64
 		Release|x64 = Release|x64
+		RPipe|x64 = RPipe|x64
 		RRndr|x64 = RRndr|x64
 		RUIKit|x64 = RUIKit|x64
 	EndGlobalSection
@@ -21,6 +23,8 @@ Global
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.Debug|x64.Build.0 = Debug|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.DEditor|x64.ActiveCfg = DEditor|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.DEditor|x64.Build.0 = DEditor|x64
+		{B25FE014-979D-4E24-933A-B1E1893FB469}.DPipe|x64.ActiveCfg = DPipe|x64
+		{B25FE014-979D-4E24-933A-B1E1893FB469}.DPipe|x64.Build.0 = DPipe|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.DRndr|x64.ActiveCfg = DRndr|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.DRndr|x64.Build.0 = DRndr|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.DUIKit|x64.ActiveCfg = DUIKit|x64
@@ -29,6 +33,8 @@ Global
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.REditor|x64.Build.0 = REditor|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.Release|x64.ActiveCfg = Release|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.Release|x64.Build.0 = Release|x64
+		{B25FE014-979D-4E24-933A-B1E1893FB469}.RPipe|x64.ActiveCfg = RPipe|x64
+		{B25FE014-979D-4E24-933A-B1E1893FB469}.RPipe|x64.Build.0 = RPipe|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.RRndr|x64.ActiveCfg = RRndr|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.RRndr|x64.Build.0 = RRndr|x64
 		{B25FE014-979D-4E24-933A-B1E1893FB469}.RUIKit|x64.ActiveCfg = RUIKit|x64
