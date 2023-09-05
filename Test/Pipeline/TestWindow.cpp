@@ -1,5 +1,7 @@
 ﻿#include "Common/Precompile.h"
 
+#include "Common/MathUtils/2D.h"
+
 #include "Renderer/Renderer.h"
 #include "Renderer/TickTimer.h"
 
@@ -8,6 +10,7 @@
 #include "UIKit/BitmapUtils.h"
 #include "UIKit/Label.h"
 #include "UIKit/MainWindow.h"
+#include "UIKit/PlatformUtils.h"
 #include "UIKit/ScenePanel.h"
 
 using namespace d14engine;
@@ -64,7 +67,11 @@ D14_SET_APP_ENTRY(mainTestWindow)
                 }
             };
         }
-        auto ui_resLabel = makeManagedUIObject<Label>(ui_scenePanel, L"Resolution: 1280 x 720");
+        auto pixSize = platform_utils::scaledByDpi(SIZE{ 1280, 720 });
+        auto strw = std::to_wstring((int)pixSize.cx);
+        auto strh = std::to_wstring((int)pixSize.cy);
+        auto resText = L"Resolution: " + strw + L" x " + strh;
+        auto ui_resLabel = makeManagedUIObject<Label>(ui_scenePanel, resText);
         {
             ui_resLabel->move(10.0f, 20.0f + ui_fpsLabel->textAreaSize().height);
             ui_resLabel->hardAlignment.vert = Label::VertAlignment::Top;
@@ -74,8 +81,11 @@ D14_SET_APP_ENTRY(mainTestWindow)
             {
                 if (!wk_resLabel.expired())
                 {
-                    auto strw = std::to_wstring((int)e.size.width);
-                    auto strh = std::to_wstring((int)e.size.height);
+                    auto dipSize = math_utils::roundu(e.size);
+                    SIZE sz = { (LONG)dipSize.width, (LONG)dipSize.height };
+                    auto pixSize = platform_utils::scaledByDpi(sz);
+                    auto strw = std::to_wstring((int)pixSize.cx);
+                    auto strh = std::to_wstring((int)pixSize.cy);
                     wk_resLabel.lock()->setText(L"Resolution: " + strw + L" x " + strh);
                 }
             };
