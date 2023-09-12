@@ -199,7 +199,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
-    <Manifest />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">
     <ClCompile>
@@ -218,7 +217,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
-    <Manifest />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DPipe|x64'">
     <ClCompile>
@@ -237,7 +235,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
-    <Manifest />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">
     <ClCompile>
@@ -256,7 +253,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
-    <Manifest />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">
     <ClCompile>
@@ -275,7 +271,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
-    <Manifest />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -298,9 +293,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
-    <Manifest />
-    <Manifest />
-    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">
     <ClCompile>
@@ -323,9 +315,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
-    <Manifest />
-    <Manifest />
-    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RPipe|x64'">
     <ClCompile>
@@ -348,9 +337,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
-    <Manifest />
-    <Manifest />
-    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">
     <ClCompile>
@@ -373,9 +359,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
-    <Manifest />
-    <Manifest />
-    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">
     <ClCompile>
@@ -398,9 +381,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
-    <Manifest />
-    <Manifest />
-    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Src\Common\ResourcePack.cpp" />
