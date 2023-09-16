@@ -322,6 +322,9 @@
     <ClCompile Include="Test\Pipeline\EmptyScene.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Pipeline\2D\Sprite.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Precompile.h">
@@ -709,6 +712,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Test\Pipeline\TestWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Pipeline\2D\Sprite.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
