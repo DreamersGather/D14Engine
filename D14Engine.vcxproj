@@ -408,7 +408,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RPipe|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Src\Pipeline\2D\Sprite.cpp" />
+    <ClCompile Include="Src\Pipeline\2D\Sprite.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Src\Renderer\GraphUtils\Resource.cpp" />
     <ClCompile Include="Src\Renderer\Interfaces\DrawLayer.cpp" />
     <ClCompile Include="Src\Renderer\Interfaces\DrawObject.cpp" />
@@ -1079,7 +1084,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RPipe|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Src\Pipeline\2D\Sprite.h" />
+    <ClInclude Include="Src\Pipeline\2D\Sprite.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\Renderer\GraphUtils\Barrier.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\ParamHelper.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\PSO.h" />

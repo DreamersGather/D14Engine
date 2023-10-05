@@ -384,14 +384,14 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         {
             Vertex vertices[] =
             {
-                { {+0.5f, +0.5f, +0.5f}, XMFLOAT4{Colors::Magenta} }, // 0
-                { {-0.5f, +0.5f, +0.5f}, XMFLOAT4{Colors::Red    } }, // 1
-                { {+0.5f, -0.5f, +0.5f}, XMFLOAT4{Colors::Orange } }, // 2
-                { {+0.5f, +0.5f, -0.5f}, XMFLOAT4{Colors::Yellow } }, // 3
-                { {-0.5f, -0.5f, +0.5f}, XMFLOAT4{Colors::Green  } }, // 4
-                { {-0.5f, +0.5f, -0.5f}, XMFLOAT4{Colors::Cyan   } }, // 5
-                { {+0.5f, -0.5f, -0.5f}, XMFLOAT4{Colors::Blue   } }, // 6
-                { {-0.5f, -0.5f, -0.5f}, XMFLOAT4{Colors::Purple } }  // 7
+                { {+0.5f, +0.5f, +0.5f}, XMFLOAT4{Colors::Cyan    } }, // 0
+                { {-0.5f, +0.5f, +0.5f}, XMFLOAT4{Colors::Blue    } }, // 1
+                { {+0.5f, -0.5f, +0.5f}, XMFLOAT4{Colors::Green   } }, // 2
+                { {+0.5f, +0.5f, -0.5f}, XMFLOAT4{Colors::White   } }, // 3
+                { {-0.5f, -0.5f, +0.5f}, XMFLOAT4{Colors::Black   } }, // 4
+                { {-0.5f, +0.5f, -0.5f}, XMFLOAT4{Colors::Magenta } }, // 5
+                { {+0.5f, -0.5f, -0.5f}, XMFLOAT4{Colors::Yellow  } }, // 6
+                { {-0.5f, -0.5f, -0.5f}, XMFLOAT4{Colors::Red     } }  // 7
             };
             UINT32 indices[] =
             {
