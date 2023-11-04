@@ -80,7 +80,7 @@ namespace d14engine::uikit
             icons.staticIcons[(size_t)std::get<0>(path)] =
             {
                 std::get<2>(path), // display offset
-                bitmap_utils::loadBitmap(std::get<1>(path), cursorPath) // bitmap
+                bitmap_utils::loadBitmap(cursorPath + std::get<1>(path)) // bitmap
             };
         }
 

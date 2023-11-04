@@ -10,9 +10,9 @@ using namespace d14engine::renderer;
 
 namespace d14engine::pipeline
 {
-    Sprite::Sprite(WstrParam imageFile, WstrParam binaryPath)
+    Sprite::Sprite(WstrParam imagePath)
     {
-        auto source = graph_utils::bitmap::load(imageFile, binaryPath);
+        auto source = graph_utils::bitmap::load(imagePath);
         auto data = graph_utils::bitmap::map(source.Get());
     }
 
