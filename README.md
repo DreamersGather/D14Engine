@@ -1,5 +1,7 @@
 # D14Engine
 
+[![Documentation Status](https://readthedocs.org/projects/d14engine/badge/?version=latest)](https://d14std.io/projects/engine/en/latest/?badge=latest)
+
 <img src="https://media.githubusercontent.com/media/DreamersGather/D14Engine.Res/main/logo.png" height="82"/>
 
 D14Engine 是一套适用于现代 Windows 桌面环境的游戏开发工具。
