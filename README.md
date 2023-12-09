@@ -1,6 +1,6 @@
 # D14Engine
 
-<div align=left><img src="https://media.githubusercontent.com/media/DreamersGather/D14Engine.Res/main/logo.png" height="82"/></div>
+<img src="https://media.githubusercontent.com/media/DreamersGather/D14Engine.Res/main/logo.png" height="82"/>
 
 D14Engine 是一套适用于现代 Windows 桌面环境的游戏开发工具。
 
