@@ -4,8 +4,8 @@
 
 <img src="https://media.githubusercontent.com/media/DreamersGather/D14Engine.Res/main/logo.png" height="82"/>
 
-D14Engine 是一套适用于现代 Windows 桌面环境的游戏开发工具。
+D14Engine is a set of game development tools for modern Windows platform.
 
-## 附注
+## About
 
-Logo 中的 ENGINE 为 Arcline 字体。该字体线条分明，仅包含简约的几何元素，这种风格常用于电路版图上印刷字体的显示。我们希望游戏引擎能够像这款字体一样，以强大的功能为游戏开发提供技术支持。
+The "ENGINE" in the logo is in Arcline font. This font has clear lines and only contains simple geometric elements, which is commonly used for displaying printed texts on circuit layouts. We hope that the engine can provide powerful technical support for game development like this font.
