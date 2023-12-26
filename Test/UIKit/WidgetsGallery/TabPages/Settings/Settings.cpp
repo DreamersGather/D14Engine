@@ -99,7 +99,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     auto ui_abtPicture = makeUIObject<Panel>(math_utils::sizeOnlyRect({ 256.0f, 256.0f }));
     {
 #define LOAD_ABOUT_PICTURE_BITMAP(Path) \
-    bitmap_utils::loadBitmap(Path, Application::g_app->createInfo.binaryPath);
+    bitmap_utils::loadBitmap(Application::g_app->createInfo.binaryPath + Path);
 
         auto light = LOAD_ABOUT_PICTURE_BITMAP(L"Images/DGICON/light.png");
         auto dark = LOAD_ABOUT_PICTURE_BITMAP(L"Images/DGICON/dark.png");

@@ -15,5 +15,5 @@ SharedPtr<TreeViewItem> createPageTemplate
 
 ComPtr<ID2D1Bitmap1> loadBitmap(WstrParam bitmapPath)
 {
-    return bitmap_utils::loadBitmap(bitmapPath, L"Test/UIKit/WidgetsGallery/Images/");
+    return bitmap_utils::loadBitmap(L"Test/UIKit/WidgetsGallery/Images/" + bitmapPath);
 }
