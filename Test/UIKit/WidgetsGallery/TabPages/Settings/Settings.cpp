@@ -58,12 +58,12 @@ void createSettingsTabPage(ConstraintLayout* page)
         geoInfo.Top.ToTop = 120.0f;
         ui_sideLayout->addElement(ui_abtLabel, geoInfo);
     }
-    auto ui_abtButton = makeUIObject<FlatButton>(L"https://github.com/yiyaowen/D14Engine", 5.0f);
+    auto ui_abtButton = makeUIObject<FlatButton>(L"https://github.com/DreamersGather/D14Engine", 5.0f);
     {
         ui_abtButton->resize(310.0f, 30.0f);
 
         auto& ui_btnLabel = ui_abtButton->content()->label();
-        ui_btnLabel->setTextFormat(D14_FONT(L"Default/Normal/12"));
+        ui_btnLabel->setTextFormat(D14_FONT(L"Default/Normal/10"));
         THROW_IF_FAILED(ui_btnLabel->textLayout()->SetUnderline(true, { 0, UINT32_MAX }));
 
         ui_abtButton->f_onChangeTheme = [](Panel* p, WstrParam themeName)
