@@ -200,6 +200,30 @@ D14_SET_APP_ENTRY(mainImageViewer)
                     size_t currTabIndex = sh_tabGroup->currActiveCardTabIndex().index;
                     sh_tabGroup->insertTab({ caption, wrapper }, currTabIndex);
                     sh_tabGroup->selectTab(currTabIndex);
+
+                    wrapper->f_onMouseWheel =
+                    [wk_content = (WeakPtr<Panel>)content](Panel* p, MouseWheelEvent& e)
+                    {
+                        if (e.ALT() && !wk_content.expired())
+                        {
+                            auto sh_content = wk_content.lock();
+                            auto bfsz = sh_content->size();
+                            D2D1_SIZE_F afsz =
+                            {
+                                bfsz.width + 50.0f * e.deltaCount,
+                                bfsz.height + 50.0f * e.deltaCount * bfsz.height / bfsz.width
+                            };
+                            if (afsz.width >= 50.0f && afsz.height >= 50.0f)
+                            {
+                                sh_content->resize(afsz);
+                            }
+                            auto sv = dynamic_cast<ScrollView*>(p);
+                            if (sv != nullptr)
+                            {
+                                sv->setViewportOffset(sv->viewportOffset());
+                            }
+                        }
+                    };
                 }
             };
         }
