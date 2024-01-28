@@ -328,6 +328,9 @@
     <ClCompile Include="Src\Renderer\GraphUtils\Bitmap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Test\Renderer\SimpleWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Precompile.h">
@@ -730,6 +733,7 @@
     <None Include=".editorconfig" />
     <None Include="comment.html" />
     <None Include="README.md" />
+    <None Include=".gitattributes" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Src\UIKit\Appearances\ColorScheme.txt" />
