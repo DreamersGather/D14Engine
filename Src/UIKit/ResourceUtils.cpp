@@ -21,6 +21,8 @@ namespace d14engine::uikit::resource_utils
 
     void updateSystemFontNames()
     {
+        THROW_IF_NULL(Application::g_app);
+
         g_systemFontNames.clear();
 
         auto factory = Application::g_app->dxRenderer()->dwriteFactory();
@@ -72,6 +74,8 @@ namespace d14engine::uikit::resource_utils
         DWRITE_FONT_STYLE   fontStyle,
         DWRITE_FONT_STRETCH fontStretch)
     {
+        THROW_IF_NULL(Application::g_app);
+
         THROW_IF_FAILED(Application::g_app->dxRenderer()->dwriteFactory()->CreateTextFormat(
             fontFamilyName.c_str(),
             nullptr,
@@ -163,6 +167,8 @@ namespace d14engine::uikit::resource_utils
 
     void loadCommonBrushes()
     {
+        THROW_IF_NULL(Application::g_app);
+
         auto context = Application::g_app->dxRenderer()->d2d1DeviceContext();
 
         // Solid Color Brush
@@ -173,6 +179,8 @@ namespace d14engine::uikit::resource_utils
 
     void loadCommonEffects()
     {
+        THROW_IF_NULL(Application::g_app);
+
         auto context = Application::g_app->dxRenderer()->d2d1DeviceContext();
 
         // Shadow Effect

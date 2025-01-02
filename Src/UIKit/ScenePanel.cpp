@@ -23,6 +23,8 @@ namespace d14engine::uikit
         :
         Panel(rect)
     {
+        THROW_IF_NULL(Application::g_app);
+
         auto rndr = Application::g_app->dxRenderer();
 
         auto device = rndr->d3d12Device();
@@ -45,6 +47,8 @@ namespace d14engine::uikit
 
     void ScenePanel::onInitializeFinish()
     {
+        THROW_IF_NULL(Application::g_app);
+
         Panel::onInitializeFinish();
 
         auto rndr = Application::g_app->dxRenderer();
@@ -150,6 +154,8 @@ namespace d14engine::uikit
 
     void ScenePanel::setCmdLayerPriority(int value)
     {
+        THROW_IF_NULL(Application::g_app);
+
         auto rndr = Application::g_app->dxRenderer();
         rndr->cmdLayers.erase(m_cmdLayer);
         m_cmdLayer->setPriority(value);
@@ -168,6 +174,8 @@ namespace d14engine::uikit
 
     bool ScenePanel::setMultiSample(UINT count, OptParam<UINT> quality)
     {
+        THROW_IF_NULL(Application::g_app);
+
         auto rndr = Application::g_app->dxRenderer();
 
         if (count <= 1)
@@ -205,6 +213,8 @@ namespace d14engine::uikit
 
     void ScenePanel::loadOffscreenTexture()
     {
+        THROW_IF_NULL(Application::g_app);
+
         auto rndr = Application::g_app->dxRenderer();
         rndr->beginGpuCommand();
 
@@ -221,6 +231,8 @@ namespace d14engine::uikit
 
     void ScenePanel::createBackBuffer()
     {
+        THROW_IF_NULL(Application::g_app);
+
         auto texSize = math_utils::roundu(size());
         texSize.width = std::max(texSize.width, 1u);
         texSize.height = std::max(texSize.height, 1u);
@@ -270,6 +282,8 @@ namespace d14engine::uikit
 
     void ScenePanel::createMsaaBuffer()
     {
+        THROW_IF_NULL(Application::g_app);
+
         auto texSize = math_utils::roundu(size());
         texSize.width = std::max(texSize.width, 1u);
         texSize.height = std::max(texSize.height, 1u);
@@ -307,6 +321,8 @@ namespace d14engine::uikit
 
     void ScenePanel::createWrappedBuffer()
     {
+        THROW_IF_NULL(Application::g_app);
+
         auto rndr = Application::g_app->dxRenderer();
         auto dpi = platform_utils::dpi();
 

@@ -84,10 +84,10 @@ D14_SET_APP_ENTRY(mainListTreeView)
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
             ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
 
-            ui_screenshot->f_onMouseButtonRelease = []
+            ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = Application::g_app->screenshot();
+                auto image = app->screenshot();
                 CreateDirectory(L"Screenshots", nullptr);
                 bitmap_utils::saveBitmap(image.Get(), L"Screenshots/ListTreeView.png");
             };
@@ -263,7 +263,7 @@ D14_SET_APP_ENTRY(mainListTreeView)
                     auto sd_listView = wk_listView.lock();
                     while (!sd_listView->selectedItemIndices().empty())
                     {
-                        (*sd_listView->selectedItemIndices().begin()->iterator)->destroy();
+                        (*sd_listView->selectedItemIndices().begin()->iterator)->release();
                     }
                 }
             };
@@ -442,7 +442,7 @@ D14_SET_APP_ENTRY(mainListTreeView)
                     auto sd_treeView = wk_treeView.lock();
                     while (!sd_treeView->selectedItemIndices().empty())
                     {
-                        (*sd_treeView->selectedItemIndices().begin()->iterator)->destroy();
+                        (*sd_treeView->selectedItemIndices().begin()->iterator)->release();
                     }
                 }
             };

@@ -347,6 +347,8 @@ namespace d14engine::uikit
 
     void RawTextInput::onKeyboardHelper(KeyboardEvent& e)
     {
+        THROW_IF_NULL(Application::g_app);
+
         LabelArea::onKeyboardHelper(e);
 
         if (isFocused() && e.state.pressed())

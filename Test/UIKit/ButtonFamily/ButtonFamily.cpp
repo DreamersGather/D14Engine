@@ -87,10 +87,10 @@ D14_SET_APP_ENTRY(mainButtonFamily)
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
             ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
 
-            ui_screenshot->f_onMouseButtonRelease = []
+            ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = Application::g_app->screenshot();
+                auto image = app->screenshot();
                 CreateDirectory(L"Screenshots", nullptr);
                 bitmap_utils::saveBitmap(image.Get(), L"Screenshots/ButtonFamily.png");
             };

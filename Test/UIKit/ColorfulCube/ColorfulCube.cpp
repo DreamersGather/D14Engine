@@ -46,7 +46,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
     info.win32WindowRect = { 0, 0, 1000, 600 };
 
     BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC;
-
+    
     return Application(argc, argv, info).run([&](Application* app)
     {
         app->increaseAnimationCount(); // enable renderer updating
@@ -101,10 +101,10 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
             ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
 
-            ui_screenshot->f_onMouseButtonRelease = []
+            ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = Application::g_app->screenshot();
+                auto image = app->screenshot();
                 CreateDirectory(L"Screenshots", nullptr);
                 bitmap_utils::saveBitmap(image.Get(), L"Screenshots/ColorfulCube.png");
             };
@@ -378,6 +378,9 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         (*objectGeometry)[0] = { 0.0f, 0.0f, 0.0f }; // position
         (*objectGeometry)[1] = { 0.0f, 0.0f, 0.0f }; // rotation
         (*objectGeometry)[2] = { 1.0f, 1.0f, 1.0f }; // scaling
+        // It is worth noting that there is only one instance of [worldMatrix] in CPU side,
+        // which will be bound as a 32bit-constant of the related graphics root-signature, 
+        // and thus we must wait all GPU commands finished before updating it in each frame.
         auto worldMatrix = std::make_shared<XMFLOAT4X4>(math_utils::identityFloat4x4());
 
         auto cubeobj = std::make_shared<DrawObject>();
@@ -511,7 +514,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         }
         // Press TAB to move focus between the group members.
         using FocusGroup = std::list<SharedPtr<Panel>>;
-        auto generateTabLink = [](const std::list<SharedPtr<Panel>>& group)
+        auto generateTabLink = [=](const std::list<SharedPtr<Panel>>& group)
         {
             for (auto itor = group.begin(); itor != group.end(); ++itor)
             {
@@ -520,12 +523,12 @@ D14_SET_APP_ENTRY(mainColorfulCube)
                 {
                     nextItor = group.begin();
                 }
-                (*itor)->f_onKeyboard = [wk_next = (WeakPtr<Panel>)(*nextItor)](Panel* p, KeyboardEvent& e)
+                (*itor)->f_onKeyboard = [=, wk_next = (WeakPtr<Panel>)(*nextItor)](Panel* p, KeyboardEvent& e)
                 {
                     if (e.vkey == VK_TAB && e.state.pressed() && !wk_next.expired())
                     {
                         auto sh_next = wk_next.lock();
-                        Application::g_app->focusUIObject(sh_next);
+                        app->focusUIObject(sh_next);
 
                         auto sh_input = std::dynamic_pointer_cast<RawTextBox>(sh_next);
                         if (sh_input != nullptr)
@@ -752,6 +755,8 @@ D14_SET_APP_ENTRY(mainColorfulCube)
 
                         auto scaling = XMLoadFloat3(&((*objectGeometry)[2]));
 
+                        // Also see where the only instance of [worldMatrix] is created,
+                        // and it is necessary to wait here to synchronize CPU/GPU data.
                         rndr->waitGpuCommand();
 
                         XMStoreFloat4x4(wk_matrix.lock().get(), XMMatrixTransformation

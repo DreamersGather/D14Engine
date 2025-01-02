@@ -184,6 +184,8 @@ namespace d14engine::uikit
 
     ComPtr<IDWriteTextLayout> Label::getTextLayout(const TextLayoutParams& params) const
     {
+        THROW_IF_NULL(Application::g_app);
+
         auto string = params.text.has_value() ? params.text.value().data() : m_text.data();
         auto stringLength = (UINT32)(params.text.has_value() ? params.text.value().size() : m_text.size());
 

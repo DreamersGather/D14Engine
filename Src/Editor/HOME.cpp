@@ -81,7 +81,7 @@ D14_SET_APP_ENTRY(mainEditor)
                 w->isMinimizeEnabled = false;
                 w->isMaximizeEnabled = false;
 
-                w->f_onClose = [](Window* w) { w->destroy(); };
+                w->f_onClose = [](Window* w) { w->release(); };
             };
         }
         auto appendTabPage = [&](WstrParam title)

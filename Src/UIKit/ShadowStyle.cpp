@@ -18,6 +18,8 @@ namespace d14engine::uikit
 
     void ShadowStyle::loadBitmap(UINT width, UINT height)
     {
+        THROW_IF_NULL(Application::g_app);
+
         resource_utils::g_shadowEffect->SetInput(0, nullptr);
 
         auto rndr = Application::g_app->dxRenderer();

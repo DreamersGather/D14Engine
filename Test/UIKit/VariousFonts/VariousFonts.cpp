@@ -90,10 +90,10 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
             ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
 
-            ui_screenshot->f_onMouseButtonRelease = []
+            ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = Application::g_app->screenshot();
+                auto image = app->screenshot();
                 CreateDirectory(L"Screenshots", nullptr);
                 bitmap_utils::saveBitmap(image.Get(), L"Screenshots/VariousFonts.png");
             };
@@ -111,9 +111,9 @@ D14_SET_APP_ENTRY(mainVariousFonts)
     ui_textViewer->getAppearance().tabBar.card.main \
     [(size_t)TabGroup::CardState::State].geometry.size = { Width, Height }
 
-            SET_CARD_SIZE(Dormant, 250.0f,  32.0f);
-            SET_CARD_SIZE(Hover,   250.0f,  32.0f);
-            SET_CARD_SIZE(Active,  266.0f,  40.0f);
+            SET_CARD_SIZE(Dormant, 250.0f, 32.0f);
+            SET_CARD_SIZE(Hover, 250.0f, 32.0f);
+            SET_CARD_SIZE(Active, 266.0f, 40.0f);
 
 #undef SET_CARD_SIZE
             ui_textViewer->loadActiveCardShadowBitmap();

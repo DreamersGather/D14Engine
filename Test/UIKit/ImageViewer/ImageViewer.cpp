@@ -93,10 +93,10 @@ D14_SET_APP_ENTRY(mainImageViewer)
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
             ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
 
-            ui_screenshot->f_onMouseButtonRelease = []
+            ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = Application::g_app->screenshot();
+                auto image = app->screenshot();
                 CreateDirectory(L"Screenshots", nullptr);
                 bitmap_utils::saveBitmap(image.Get(), L"Screenshots/ImageViewer.png");
             };
@@ -244,22 +244,22 @@ D14_SET_APP_ENTRY(mainImageViewer)
             auto ui_label = makeUIObject<Label>(L"~");
             THROW_IF_FAILED(ui_label->textLayout()->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
 
-            GridLayout::GeometryInfo geoInfo = {};
-            geoInfo.isFixedSize = false;
-            geoInfo.axis.x = { 2, 1 };
-            geoInfo.axis.y = { 2, 1 };
-            ui_sideLayout->addElement(ui_label, geoInfo);
+            GridLayout::GeometryInfo geoInfo2 = {};
+            geoInfo2.isFixedSize = false;
+            geoInfo2.axis.x = { 2, 1 };
+            geoInfo2.axis.y = { 2, 1 };
+            ui_sideLayout->addElement(ui_label, geoInfo2);
 
             ui_textBox2->setTextFormat(D14_FONT(L"Default/Normal/12"));
             ui_textBox2->setVisibleTextRect({ 5.0f, 8.0f, 75.0f, 32.0f });
             ui_textBox2->placeholder()->setText(L"last");
             ui_textBox2->placeholder()->setTextFormat(D14_FONT(L"Default/Normal/12"));
 
-            GridLayout::GeometryInfo geoInfo2 = {};
-            geoInfo2.isFixedSize = true;
-            geoInfo2.axis.x = { 3, 2 };
-            geoInfo2.axis.y = { 2, 1 };
-            ui_sideLayout->addElement(ui_textBox2, geoInfo2);
+            GridLayout::GeometryInfo geoInfo3 = {};
+            geoInfo3.isFixedSize = true;
+            geoInfo3.axis.x = { 3, 2 };
+            geoInfo3.axis.y = { 2, 1 };
+            ui_sideLayout->addElement(ui_textBox2, geoInfo3);
         }
         auto ui_removeButton = makeUIObject<FilledButton>(L"Remove specified range");
         {
@@ -458,7 +458,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
                 w->isMinimizeEnabled = false;
                 w->isMaximizeEnabled = false;
 
-                w->f_onClose = [](Window* w) { w->destroy(); };
+                w->f_onClose = [](Window* w) { w->release(); };
             };
         }
     });

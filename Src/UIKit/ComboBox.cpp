@@ -49,6 +49,8 @@ namespace d14engine::uikit
 
     void ComboBox::loadArrowIconStrokeStyle()
     {
+        THROW_IF_NULL(Application::g_app);
+
         auto factory = Application::g_app->dxRenderer()->d2d1Factory();
 
         auto properties = D2D1::StrokeStyleProperties
@@ -124,7 +126,7 @@ namespace d14engine::uikit
         {
             setCurrSelected(SIZE_MAX);
 
-            m_dropDownMenu->destroy();
+            m_dropDownMenu->release();
             m_dropDownMenu = menu;
         }
     }

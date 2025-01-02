@@ -17,6 +17,8 @@ namespace d14engine::uikit
 
     void MaskStyle::loadBitmap(UINT width, UINT height)
     {
+        THROW_IF_NULL(Application::g_app);
+
         auto rndr = Application::g_app->dxRenderer();
         rndr->beginGpuCommand();
 

@@ -36,7 +36,7 @@
     <ClCompile Include="Src\Renderer\GraphUtils\StaticSampler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Renderer\FrameResource.cpp">
+    <ClCompile Include="Src\Renderer\FrameData\FrameResource.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Src\Renderer\DebugUtils.cpp">
@@ -316,12 +316,6 @@
     <ClCompile Include="Src\Editor\HOME.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Test\Pipeline\TestWindow.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Test\Pipeline\EmptyScene.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Pipeline\2D\Sprite.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -329,6 +323,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Test\Renderer\SimpleWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Pipeline\2D\SpriteGroup.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Pipeline\Cameras\Camera2D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Pipeline\Cameras\Camera3D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\UIKit\FanimPanel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\Pipeline\TestWindow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -351,7 +360,7 @@
     <ClInclude Include="Src\Renderer\DebugUtils.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Renderer\FrameResource.h">
+    <ClInclude Include="Src\Renderer\FrameData\FrameResource.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\Renderer\GpuBuffer.h">
@@ -717,13 +726,28 @@
     <ClInclude Include="Src\Editor\TabPages\Settings\Settings.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Test\Pipeline\TestWindow.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Pipeline\2D\Sprite.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\Renderer\GraphUtils\Bitmap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Pipeline\2D\SpriteGroup.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Pipeline\Cameras\Camera2D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Pipeline\Cameras\Camera3D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\FrameData\FrameAnimation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\FanimPanel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Pipeline\TestWindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -741,5 +765,6 @@
   <ItemGroup>
     <FxCompile Include="Test\UIKit\ColorfulCube\ColorfulCube.hlsl" />
     <FxCompile Include="Bin\Shaders\Letterbox.hlsl" />
+    <FxCompile Include="Bin\Shaders\Sprite.hlsl" />
   </ItemGroup>
 </Project>
