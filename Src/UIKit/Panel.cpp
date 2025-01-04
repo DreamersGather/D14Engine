@@ -60,7 +60,7 @@ namespace d14engine::uikit
         if (m_parent.expired())
         {
             auto& app = Application::g_app;
-            app->dxRenderer()->waitGpuCommand();
+            app->dx12Renderer()->waitGpuCommand();
 
             unregisterDrawObjects();
             unregisterApplicationEvents();
@@ -81,7 +81,7 @@ namespace d14engine::uikit
         THROW_IF_NULL(Application::g_app);
 
         auto& app = Application::g_app;
-        app->dxRenderer()->waitGpuCommand();
+        app->dx12Renderer()->waitGpuCommand();
 
         if (f_onReleaseUIObject)
         {

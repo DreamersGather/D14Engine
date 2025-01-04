@@ -158,11 +158,8 @@ D14_SET_APP_ENTRY(mainImageViewer)
                 }
             };
         }
-#ifdef _DEBUG
         Wstring assetsPath = L"Test/UIKit/ImageViewer/";
-#else
-        Wstring assetsPath = L""; // same path with the executable
-#endif
+
         std::vector<std::pair<Wstring, ComPtr<ID2D1Bitmap1>>> images;
         file_system_utils::foreachFileInDir(assetsPath, L"*.png", [&](WstrParam filePath)
         {

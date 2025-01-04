@@ -36,9 +36,9 @@ D14_SET_APP_ENTRY(mainVariousFonts)
 
     return Application(argc, argv, info).run([&](Application* app)
     {
-        auto textDrawMode = app->dxRenderer()->getDefaultTextRenderingMode();
+        auto textDrawMode = app->dx12Renderer()->getDefaultTextRenderingMode();
         textDrawMode.renderingMode = DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC;
-        app->dxRenderer()->setTextRenderingMode(textDrawMode);
+        app->dx12Renderer()->setTextRenderingMode(textDrawMode);
 
         auto ui_mainWindow = makeRootUIObject<MainWindow>(L"D14Engine - VariousFonts @ UIKit");
         {
@@ -124,11 +124,8 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             barAppear.separator.geometry.size.height = 24.0f;
             barAppear.moreCards.control.button.geometry.offset.y = 7.0f;
         }
-#ifdef _DEBUG
         Wstring excerptDir = L"Test/UIKit/VariousFonts/";
-#else
-        Wstring excerptDir = L""; // same path with the executable
-#endif
+
         auto getFileSize = [](WstrParam filePath) -> size_t
         {
             struct _stat fileinfo;
@@ -252,7 +249,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
                         fontWeightArray[w] + L"/" +
                         std::to_wstring(fontSize);
 
-                    auto factory = app->dxRenderer()->dwriteFactory();
+                    auto factory = app->dx12Renderer()->dwriteFactory();
                     THROW_IF_FAILED(factory->CreateTextFormat(
                         fontNameArray[n].c_str(),
                         nullptr,
@@ -357,7 +354,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             ]
             (ComboBox* cb, IconLabel* content)
             {
-                app->dxRenderer()->setTextAntialiasMode(strModeMap.at(content->label()->text()));
+                app->dx12Renderer()->setTextAntialiasMode(strModeMap.at(content->label()->text()));
             };
         }
         auto ui_fontSizeSlider = makeUIObject<HorzSlider>();

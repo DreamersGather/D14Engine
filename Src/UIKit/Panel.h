@@ -9,34 +9,6 @@
 
 namespace d14engine::uikit
 {
-    template<typename T = Panel>
-    SharedPtr<T> nullUIObj() { return nullptr; }
-
-    template<typename T, typename... Types>
-    SharedPtr<T> makeUIObject(Types&& ...args)
-    {
-        auto uiobj = std::make_shared<T>(args...);
-        uiobj->onInitializeFinish();
-        return uiobj;
-    }
-
-    template<typename T, typename... Types>
-    SharedPtr<T> makeRootUIObject(Types&& ...args)
-    {
-        auto uiobj = makeUIObject<T>(args...);
-        uiobj->registerDrawObjects();
-        uiobj->registerApplicationEvents();
-        return uiobj;
-    }
-
-    template<typename T, typename... Types>
-    SharedPtr<T> makeManagedUIObject(ShrdPtrParam<Panel> parent, Types&& ...args)
-    {
-        auto uiobj = makeUIObject<T>(args...);
-        parent->addUIObject(uiobj);
-        return uiobj;
-    }
-
     struct Panel : cpp_lang_utils::NonCopyable, renderer::IDrawObject2D,
                    std::enable_shared_from_this<Panel>, ISortable<Panel>
     {
@@ -464,4 +436,32 @@ namespace d14engine::uikit
         void updateDiffPinnedUIObjects();
         void updateDiffPinnedUIObjectsLater();  
     };
+
+    template<typename T = Panel>
+    SharedPtr<T> nullUIObj() { return nullptr; }
+
+    template<typename T, typename... Types>
+    SharedPtr<T> makeUIObject(Types&& ...args)
+    {
+        auto uiobj = std::make_shared<T>(args...);
+        uiobj->onInitializeFinish();
+        return uiobj;
+    }
+
+    template<typename T, typename... Types>
+    SharedPtr<T> makeRootUIObject(Types&& ...args)
+    {
+        auto uiobj = makeUIObject<T>(args...);
+        uiobj->registerDrawObjects();
+        uiobj->registerApplicationEvents();
+        return uiobj;
+    }
+
+    template<typename T, typename... Types>
+    SharedPtr<T> makeManagedUIObject(ShrdPtrParam<Panel> parent, Types&& ...args)
+    {
+        auto uiobj = makeUIObject<T>(args...);
+        parent->addUIObject(uiobj);
+        return uiobj;
+    }
 }

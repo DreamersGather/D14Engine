@@ -69,7 +69,7 @@
     <ClCompile Include="Src\UIKit\Appearances\Appearance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\AnimationUtils\Sequence.cpp">
+    <ClCompile Include="Src\UIKit\AnimationUtils\BitmapSequence.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Application.cpp">
@@ -174,7 +174,7 @@
     <ClCompile Include="Src\UIKit\Window.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\AnimationUtils\Motion.cpp">
+    <ClCompile Include="Src\UIKit\AnimationUtils\MotionFunctions.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Src\UIKit\MenuItem.cpp">
@@ -334,10 +334,22 @@
     <ClCompile Include="Src\Pipeline\Cameras\Camera3D.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\FanimPanel.cpp">
+    <ClCompile Include="Src\UIKit\FrameAnimPanel.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Test\Pipeline\TestWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Pipeline\2D\TextureSequence.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Renderer\GraphUtils\Texture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Pipeline\Data\Transformation.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\Pipeline\2D\ManySprites.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -471,7 +483,7 @@
     <ClInclude Include="Src\UIKit\Appearances\Window.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UIKit\AnimationUtils\Sequence.h">
+    <ClInclude Include="Src\UIKit\AnimationUtils\BitmapSequence.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\UIKit\Application.h">
@@ -606,7 +618,7 @@
     <ClInclude Include="Src\UIKit\Window.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UIKit\AnimationUtils\Motion.h">
+    <ClInclude Include="Src\UIKit\AnimationUtils\MotionFunctions.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\Common\CppLangUtils\EnumClassMap.h">
@@ -744,10 +756,25 @@
     <ClInclude Include="Src\Renderer\FrameData\FrameAnimation.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UIKit\FanimPanel.h">
+    <ClInclude Include="Src\UIKit\FrameAnimPanel.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Test\Pipeline\TestWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Pipeline\2D\TextureSequence.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\GraphUtils\Texture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\FrameData\FrameSequence.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Pipeline\Data\Vertex.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Pipeline\Data\Transformation.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -764,7 +791,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Test\UIKit\ColorfulCube\ColorfulCube.hlsl" />
-    <FxCompile Include="Bin\Shaders\Letterbox.hlsl" />
-    <FxCompile Include="Bin\Shaders\Sprite.hlsl" />
+    <FxCompile Include="Bin\Shaders\HLSL\Letterbox.hlsl" />
+    <FxCompile Include="Bin\Shaders\HLSL\Sprite.hlsl" />
   </ItemGroup>
 </Project>

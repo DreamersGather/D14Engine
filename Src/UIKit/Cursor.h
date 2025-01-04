@@ -4,7 +4,7 @@
 
 #include "Common/CppLangUtils/EnumClassMap.h"
 
-#include "UIKit/AnimationUtils/Sequence.h"
+#include "UIKit/AnimationUtils/BitmapSequence.h"
 #include "UIKit/Panel.h"
 
 namespace d14engine::uikit
@@ -20,27 +20,27 @@ namespace d14engine::uikit
         {
             Busy, Working, Count
         };
-#define SET_STATIC_ALIAS(Name) constexpr static auto Name = StaticIconIndex::Name
-#define SET_DYNAMIC_ALIAS(Name) constexpr static auto Name = DynamicIconIndex::Name
+#define SET_STATIC_ALIAS(Name) constexpr static auto Name = StaticIconIndex::Name;
+#define SET_DYNAMIC_ALIAS(Name) constexpr static auto Name = DynamicIconIndex::Name;
 
-        SET_STATIC_ALIAS(Alternate);
-        SET_STATIC_ALIAS(Arrow);
-        SET_STATIC_ALIAS(BackDiag);
-        SET_STATIC_ALIAS(Beam);
-        SET_STATIC_ALIAS(Hand);
-        SET_STATIC_ALIAS(Help);
-        SET_STATIC_ALIAS(HorzSize);
-        SET_STATIC_ALIAS(MainDiag);
-        SET_STATIC_ALIAS(Move);
-        SET_STATIC_ALIAS(Pen);
-        SET_STATIC_ALIAS(Person);
-        SET_STATIC_ALIAS(Pin);
-        SET_STATIC_ALIAS(Select);
-        SET_STATIC_ALIAS(Stop);
-        SET_STATIC_ALIAS(VertSize);
+        SET_STATIC_ALIAS(Alternate)
+        SET_STATIC_ALIAS(Arrow)
+        SET_STATIC_ALIAS(BackDiag)
+        SET_STATIC_ALIAS(Beam)
+        SET_STATIC_ALIAS(Hand)
+        SET_STATIC_ALIAS(Help)
+        SET_STATIC_ALIAS(HorzSize)
+        SET_STATIC_ALIAS(MainDiag)
+        SET_STATIC_ALIAS(Move)
+        SET_STATIC_ALIAS(Pen)
+        SET_STATIC_ALIAS(Person)
+        SET_STATIC_ALIAS(Pin)
+        SET_STATIC_ALIAS(Select)
+        SET_STATIC_ALIAS(Stop)
+        SET_STATIC_ALIAS(VertSize)
 
-        SET_DYNAMIC_ALIAS(Busy);
-        SET_DYNAMIC_ALIAS(Working);
+        SET_DYNAMIC_ALIAS(Busy)
+        SET_DYNAMIC_ALIAS(Working)
 
 #undef SET_STATIC
 #undef SET_DYNAMIC
@@ -52,7 +52,7 @@ namespace d14engine::uikit
             T bitmapData = {};
         };
         using StaticIcon = Icon<BitmapObject>;
-        using DynamicIcon = Icon<animation_utils::DynamicBitmap>;
+        using DynamicIcon = Icon<animation_utils::BitmapSequence>;
 
         using StaticIconMap = cpp_lang_utils::EnumClassMap<StaticIconIndex, StaticIcon>;
         using DynamicIconMap = cpp_lang_utils::EnumClassMap<DynamicIconIndex, DynamicIcon>;

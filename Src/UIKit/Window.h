@@ -145,7 +145,7 @@ namespace d14engine::uikit
         D2D1_RECT_F nonClientAreaMinimalSelfcoordRect() const;
 
         constexpr static float nonClientAreaMinimalWidth() { return 144.0f; }
-        constexpr static float nonClientAreaDefaultHeight() { return 40.0f; }
+        constexpr static float nonClientAreaDefaultHeight() { return 36.0f; }
 
     protected:
         DisplayState m_displayState = DisplayState::Normal;

@@ -267,6 +267,9 @@ void createGalleryTabPage(ConstraintLayout* page)
     ]
     (Panel* p, KeyboardEvent& e)
     {
+        // The following code contains a bug:
+        // When using an input method that requires secondary selection, the Enter key
+        // used toconfirm a candidate word will also trigger the search action. (´･_･`)
         if (e.vkey == VK_RETURN && e.state.released())
         {
             auto& categoryName = ((TextBox*)p)->text();

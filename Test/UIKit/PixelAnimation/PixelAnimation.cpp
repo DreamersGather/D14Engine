@@ -6,8 +6,8 @@
 #include "UIKit/AppEntry.h"
 #include "UIKit/Application.h"
 #include "UIKit/BitmapUtils.h"
-#include "UIKit/FanimPanel.h"
 #include "UIKit/FileSystemUtils.h"
+#include "UIKit/FrameAnimPanel.h"
 #include "UIKit/GridLayout.h"
 #include "UIKit/HorzSlider.h"
 #include "UIKit/IconLabel.h"
@@ -106,17 +106,14 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
         {
             ui_pixelViewer->transform(0.0f, 40.0f, 500.0f, 524.0f);
         }
-        auto rawFrames = std::make_shared<animation_utils::FramePackage>();
-        auto ui_stickBoy = makeUIObject<FanimPanel>();
-        auto wk_stickBoy = (WeakPtr<FanimPanel>)ui_stickBoy;
+        auto rawFrames = std::make_shared<animation_utils::BitmapSequence::FramePackage>();
+        auto ui_stickBoy = makeUIObject<FrameAnimPanel>();
+        auto wk_stickBoy = (WeakPtr<FrameAnimPanel>)ui_stickBoy;
         {
             ui_stickBoy->resize(256.0f, 256.0f);
 
-#ifdef _DEBUG
             Wstring assetsPath = L"Test/UIKit/PixelAnimation/stick_boy/";
-#else
-            Wstring assetsPath = L"stick_boy/"; // same path with the executable
-#endif
+
             file_system_utils::foreachFileInDir(assetsPath, L"*.png", [&](WstrParam& path)
             {
                 auto name = file_system_utils::extractFilePrefix(

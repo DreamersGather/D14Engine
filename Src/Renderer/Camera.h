@@ -73,7 +73,8 @@ namespace d14engine::renderer
         UINT dirtyFrameCount = FrameResource::g_bufferCount;
 
     protected:
-        using BufferArray = FrameResource::Array<UniquePtr<ConstantBuffer>>;
+        using Buffer = UniquePtr<ConstantBuffer>;
+        using BufferArray = FrameResource::Array<Buffer>;
 
         BufferArray m_buffers = {};
 

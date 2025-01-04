@@ -6,7 +6,6 @@
 #include "Common/RuntimeError.h"
 
 #include "UIKit/Application.h"
-#include "UIKit/BitmapObject.h"
 #include "UIKit/BitmapUtils.h"
 #include "UIKit/FileSystemUtils.h"
 
@@ -110,7 +109,7 @@ namespace d14engine::uikit
     {
         DynamicIcon icon = {};
 
-        animation_utils::FramePackage frames = {};
+        animation_utils::BitmapSequence::FramePackage frames = {};
 
         file_system_utils::foreachFileInDir
         (framesPath, L"*.png", [&](WstrParam path)

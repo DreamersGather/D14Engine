@@ -2,16 +2,16 @@
 
 #include "Common/Precompile.h"
 
-#include "UIKit/AnimationUtils/Sequence.h"
+#include "UIKit/AnimationUtils/BitmapSequence.h"
 #include "UIKit/Panel.h"
 
 namespace d14engine::uikit
 {
-    struct FanimPanel : Panel
+    struct FrameAnimPanel : Panel
     {
         using Panel::Panel;
 
-        animation_utils::DynamicBitmap bitmapData = {};
+        animation_utils::BitmapSequence bitmapData = {};
 
     protected:
         // IDrawObject2D

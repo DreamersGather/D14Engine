@@ -187,7 +187,6 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -200,13 +199,18 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath)  $(ProjectDir)$(TargetFileName) &gt;nul</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying Target to Project Directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -219,13 +223,18 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath)  $(ProjectDir)$(TargetFileName) &gt;nul</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying Target to Project Directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DPipe|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -238,13 +247,18 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath)  $(ProjectDir)$(TargetFileName) &gt;nul</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying Target to Project Directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -257,13 +271,18 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath)  $(ProjectDir)$(TargetFileName) &gt;nul</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying Target to Project Directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -276,6 +295,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath)  $(ProjectDir)$(TargetFileName) &gt;nul</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying Target to Project Directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -284,7 +309,6 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -299,6 +323,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath)  $(ProjectDir)$(TargetFileName) &gt;nul</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying Target to Project Directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">
     <ClCompile>
@@ -307,7 +337,6 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -322,6 +351,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath)  $(ProjectDir)$(TargetFileName) &gt;nul</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying Target to Project Directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RPipe|x64'">
     <ClCompile>
@@ -330,7 +365,6 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -345,6 +379,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath)  $(ProjectDir)$(TargetFileName) &gt;nul</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying Target to Project Directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">
     <ClCompile>
@@ -353,7 +393,6 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -368,6 +407,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath)  $(ProjectDir)$(TargetFileName) &gt;nul</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying Target to Project Directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">
     <ClCompile>
@@ -376,7 +421,6 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -391,6 +435,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <DelayLoadDLLs>dxcompiler.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y $(TargetPath)  $(ProjectDir)$(TargetFileName) &gt;nul</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying Target to Project Directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Src\Common\ResourcePack.cpp" />
@@ -418,6 +468,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RPipe|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Src\Pipeline\2D\TextureSequence.cpp" />
     <ClCompile Include="Src\Pipeline\2D\Sprite.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -442,8 +493,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Src\Pipeline\Data\Transformation.cpp" />
     <ClCompile Include="Src\Renderer\GraphUtils\Bitmap.cpp" />
     <ClCompile Include="Src\Renderer\GraphUtils\Resource.cpp" />
+    <ClCompile Include="Src\Renderer\GraphUtils\Texture.cpp" />
     <ClCompile Include="Src\Renderer\Interfaces\DrawLayer.cpp" />
     <ClCompile Include="Src\Renderer\Interfaces\DrawObject.cpp" />
     <ClCompile Include="Src\Renderer\Interfaces\DrawObject2D.cpp" />
@@ -451,7 +504,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\FanimPanel.cpp" />
+    <ClCompile Include="Src\UIKit\FrameAnimPanel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Test\Pipeline\2D\ManySprites.cpp" />
     <ClCompile Include="Test\Pipeline\TestWindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
@@ -475,7 +532,7 @@
     <None Include=".editorconfig" />
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
-    <FxCompile Include="Bin\Shaders\Letterbox.hlsl">
+    <FxCompile Include="Bin\Shaders\HLSL\Letterbox.hlsl">
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
@@ -546,11 +603,11 @@
     <ClCompile Include="Src\Renderer\Renderer.cpp" />
     <ClCompile Include="Src\Renderer\GraphUtils\StaticSampler.cpp" />
     <ClCompile Include="Src\Renderer\TickTimer.cpp" />
-    <ClCompile Include="Src\UIKit\AnimationUtils\Sequence.cpp">
+    <ClCompile Include="Src\UIKit\AnimationUtils\BitmapSequence.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\AnimationUtils\Motion.cpp">
+    <ClCompile Include="Src\UIKit\AnimationUtils\MotionFunctions.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -1115,6 +1172,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RPipe|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Src\Pipeline\2D\TextureSequence.h" />
     <ClInclude Include="Src\Pipeline\2D\Sprite.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -1139,12 +1197,16 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Src\Pipeline\Data\Vertex.h" />
+    <ClInclude Include="Src\Pipeline\Data\Transformation.h" />
+    <ClInclude Include="Src\Renderer\FrameData\FrameSequence.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\Barrier.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\Bitmap.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\ParamHelper.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\PSO.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\Resource.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\Shader.h" />
+    <ClInclude Include="Src\Renderer\GraphUtils\Texture.h" />
     <ClInclude Include="Src\Renderer\Interfaces\DrawLayer.h" />
     <ClInclude Include="Src\Renderer\Interfaces\DrawObject.h" />
     <ClInclude Include="Src\Renderer\Interfaces\DrawObject2D.h" />
@@ -1163,11 +1225,11 @@
     <ClInclude Include="Src\Common\RuntimeError.h" />
     <ClInclude Include="Src\Renderer\GraphUtils\StaticSampler.h" />
     <ClInclude Include="Src\Renderer\TickTimer.h" />
-    <ClInclude Include="Src\UIKit\AnimationUtils\Sequence.h">
+    <ClInclude Include="Src\UIKit\AnimationUtils\BitmapSequence.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Src\UIKit\AnimationUtils\Motion.h">
+    <ClInclude Include="Src\UIKit\AnimationUtils\MotionFunctions.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -1303,7 +1365,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Src\UIKit\FanimPanel.h" />
+    <ClInclude Include="Src\UIKit\FrameAnimPanel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\UIKit\IconLabel2.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -1536,7 +1601,7 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Bin\Shaders\Sprite.hlsl">
+    <FxCompile Include="Bin\Shaders\HLSL\Sprite.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DPipe|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">Pixel</ShaderType>

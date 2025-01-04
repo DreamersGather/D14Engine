@@ -144,7 +144,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         }
         // Initialize necessary graphics structures of the colorful cube.
 
-        auto rndr = app->dxRenderer();
+        auto rndr = app->dx12Renderer();
         auto device = rndr->d3d12Device();
         auto cmdList = rndr->cmdList();
 
@@ -155,6 +155,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         auto prepare = std::make_shared<DrawObject>();
         {
             // Create root signature.
+
             CD3DX12_ROOT_PARAMETER1 rootParams[2] = {};
 
             // camera data
@@ -185,13 +186,11 @@ D14_SET_APP_ENTRY(mainColorfulCube)
                 0, BLB_PSZ_ARGS(rootBlob), IID_PPV_ARGS(&rootSignature)));
 
             // Create pipeline state.
-#ifdef _DEBUG
+
             Wstring shaderPath = L"Test/UIKit/ColorfulCube/ColorfulCube.hlsl";
-#else
-            Wstring shaderPath = L"ColorfulCube.hlsl";
-#endif
-            auto vs = graph_utils::shader::compile(shaderPath.c_str(), L"VS", L"vs_6_0");
-            auto ps = graph_utils::shader::compile(shaderPath.c_str(), L"PS", L"ps_6_0");
+
+            auto vs = graph_utils::shader::compile(shaderPath.c_str(), { L"VS", L"vs_6_0" });
+            auto ps = graph_utils::shader::compile(shaderPath.c_str(), { L"PS", L"ps_6_0" });
 
             D3D12_INPUT_ELEMENT_DESC inputElemDescs[] =
             {
@@ -214,7 +213,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
                     /* InstanceDataStepRate */ 0
                 }
             };
-            auto psoDesc = graph_utils::graphicsPipelineStateDescTemplate();
+            auto psoDesc = graph_utils::GPSODescTemplate();
 
             psoDesc.pRootSignature = rootSignature.Get();
             psoDesc.VS = { BLB_PSZ_ARGS(vs) };
@@ -512,25 +511,34 @@ D14_SET_APP_ENTRY(mainColorfulCube)
                 ui_label->setEnabled(false);
             }
         }
-        // Press TAB to move focus between the group members.
+        // Press (SHIFT+)TAB to move focus between the group members.
         using FocusGroup = std::list<SharedPtr<Panel>>;
         auto generateTabLink = [=](const std::list<SharedPtr<Panel>>& group)
         {
             for (auto itor = group.begin(); itor != group.end(); ++itor)
             {
-                auto nextItor = std::next(itor);
-                if (nextItor == group.end())
+                WeakPtr<Panel> wk_prev, wk_next;
+
+                if (itor == group.begin())
                 {
-                    nextItor = group.begin();
+                    wk_prev = group.back();
                 }
-                (*itor)->f_onKeyboard = [=, wk_next = (WeakPtr<Panel>)(*nextItor)](Panel* p, KeyboardEvent& e)
+                else wk_prev = *std::prev(itor);
+
+                if (itor == --group.end())
+                {
+                    wk_next = group.front();
+                }
+                else wk_next = *std::next(itor);
+
+                (*itor)->f_onKeyboard = [=](Panel* p, KeyboardEvent& e)
                 {
                     if (e.vkey == VK_TAB && e.state.pressed() && !wk_next.expired())
                     {
-                        auto sh_next = wk_next.lock();
-                        app->focusUIObject(sh_next);
+                        auto sh_target = e.SHIFT() ? wk_prev.lock() : wk_next.lock();
+                        app->focusUIObject(sh_target);
 
-                        auto sh_input = std::dynamic_pointer_cast<RawTextBox>(sh_next);
+                        auto sh_input = std::dynamic_pointer_cast<RawTextBox>(sh_target);
                         if (sh_input != nullptr)
                         {
                             sh_input->setHiliteRange({ 0, sh_input->text().size() });

@@ -372,7 +372,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         ]
         (ComboBox* cb, IconLabel* content)
         {
-            Application::g_app->dxRenderer()->setAntialiasMode2D(strModeMap.at(content->label()->text()));
+            Application::g_app->dx12Renderer()->setAntialiasMode2D(strModeMap.at(content->label()->text()));
         };
         ui_2dAntialiasModeSelector->setCurrSelected(1);
 
@@ -444,7 +444,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         geoInfo.Top.ToTop = 394.0f;
         ui_settingsLayout->addElement(ui_textRenderingModeLabel, geoInfo);
     }
-    auto defTextRenderingMode = Application::g_app->dxRenderer()->getDefaultTextRenderingMode();
+    auto defTextRenderingMode = Application::g_app->dx12Renderer()->getDefaultTextRenderingMode();
 
     auto ui_gammaValueSlider = makeUIObject<HorzSlider>();
     auto wk_gammaValueSlider = (WeakPtr<HorzSlider>)ui_gammaValueSlider;
@@ -666,7 +666,7 @@ void createSettingsTabPage(ConstraintLayout* page)
             settings.pixelGeometry = pixelGeometryMap->at(pixelGeoStr);
             settings.renderingMode = renderingModeMap->at(rndrModeStr);
 
-            Application::g_app->dxRenderer()->setTextRenderingMode(settings);
+            Application::g_app->dx12Renderer()->setTextRenderingMode(settings);
         }
     };
     ui_gammaValueSlider->f_onValueChange =
@@ -744,7 +744,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     ]
     (ComboBox* cb, IconLabel* content)
     {
-        Application::g_app->dxRenderer()->setTextAntialiasMode(textAntialiasModeMap.at(content->label()->text()));
+        Application::g_app->dx12Renderer()->setTextAntialiasMode(textAntialiasModeMap.at(content->label()->text()));
 
         // Text Antialias Mode Conflict:
         //

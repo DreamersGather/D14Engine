@@ -390,7 +390,7 @@ namespace d14engine::uikit
                     }
                     break;
                 }
-                // fallthrough
+                [[fallthrough]];
             }
             case VK_ESCAPE:
             {

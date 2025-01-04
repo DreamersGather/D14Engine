@@ -21,24 +21,57 @@ namespace d14engine::renderer::graph_utils
             THROW_IF_FAILED(g_utils->CreateDefaultIncludeHandler(&g_defaultIncludeHandler));
         }
 
-        ComPtr<IDxcBlob> compile(
-            WstrParam fileName,
-            WstrParam entryPoint,
-            WstrParam targetProfile)
+        ComPtr<IDxcBlob> load(WstrParam csoFileName)
         {
-            ComPtr<IDxcBlobEncoding> file;
-            THROW_IF_FAILED(g_utils->LoadFile(fileName.c_str(), nullptr, &file));
+            ComPtr<IDxcBlobEncoding> cso;
+            THROW_IF_FAILED(g_utils->LoadFile(csoFileName.c_str(), nullptr, &cso));
+            return cso; // no encoding for binary data
+        }
+
+        void save(WstrParam csoFileName, IDxcBlob* blob)
+        {
+            auto hFile = CreateFile
+            (
+                /* lpFileName            */ csoFileName.c_str(),
+                /* dwDesiredAccess       */ GENERIC_WRITE,
+                /* dwShareMode           */ 0,
+                /* lpSecurityAttributes  */ nullptr,
+                /* dwCreationDisposition */ CREATE_ALWAYS,
+                /* dwFlagsAndAttributes  */ FILE_ATTRIBUTE_NORMAL,
+                /* hTemplateFile         */ nullptr
+            );
+            THROW_IF_TRUE(hFile == INVALID_HANDLE_VALUE);
+
+            auto result = WriteFile
+            (
+                /* hFile                  */ hFile,
+                /* lpBuffer               */ blob->GetBufferPointer(),
+                /* nNumberOfBytesToWrite  */ (DWORD)blob->GetBufferSize(),
+                /* lpNumberOfBytesWritten */ nullptr,
+                /* lpOverlapped           */ nullptr
+            );
+            THROW_IF_FALSE(result);
+
+            THROW_IF_FALSE(CloseHandle(hFile));
+        }
+
+        ComPtr<IDxcBlob> compile(
+            WstrParam hlslFileName,
+            const CompileOption& option)
+        {
+            ComPtr<IDxcBlobEncoding> hlsl;
+            THROW_IF_FAILED(g_utils->LoadFile(hlslFileName.c_str(), nullptr, &hlsl));
 
             DxcBuffer source = {};
-            source.Ptr = file->GetBufferPointer();
-            source.Size = file->GetBufferSize();
+            source.Ptr = hlsl->GetBufferPointer();
+            source.Size = hlsl->GetBufferSize();
             source.Encoding = DXC_CP_ACP;
 
             LPCWSTR arguments[] =
             {
-                fileName.c_str(),
-                L"-E", entryPoint.c_str(),
-                L"-T", targetProfile.c_str(),
+                hlslFileName.c_str(),
+                L"-E", option.entryPoint.c_str(),
+                L"-T", option.targetProfile.c_str(),
 #ifdef _DEBUG
                 DXC_ARG_DEBUG,
                 DXC_ARG_SKIP_OPTIMIZATIONS,
@@ -85,6 +118,59 @@ namespace d14engine::renderer::graph_utils
             THROW_IF_FAILED(result->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shader), nullptr));
 
             return shader;
+        }
+
+        Object::Object(const CompileOption& option) : option(option) {}
+
+        void processDefaultObject(WstrParam path, WstrParam name, ProcessOption option, Package& shaders)
+        {
+            if (option.in.has_value())
+            {
+                switch (option.in.value())
+                {
+                case CSO:
+                {
+                    auto csoPath = path + L"CSO/" + name;
+                    for (auto& s : shaders)
+                    {
+                        s.second.blob = load(csoPath + L"_" + s.first + L".cso");
+                    }
+                    break;
+                }
+                case HLSL:
+                {
+                    auto hlslPath = path + L"HLSL/" + name;
+                    for (auto& s : shaders)
+                    {
+                        auto& option = s.second.option;
+                        THROW_IF_FALSE(option.has_value());
+                        s.second.blob = compile(hlslPath + L".hlsl", option.value());
+                    }
+                    break;
+                }
+                default: break;
+                }
+            }
+            if (option.out.has_value())
+            {
+                switch (option.out.value())
+                {
+                case CSO:
+                {
+                    auto csoPath = path + L"CSO/" + name;
+                    for (auto& s : shaders)
+                    {
+                        save(csoPath + L"_" + s.first + L".cso", s.second.blob.Get());
+                    }
+                    break;
+                }
+                case HLSL:
+                {
+                    break; // HLSL can only be used as input data
+                }
+                default: break;
+                }
+            }
         }
     }
 }

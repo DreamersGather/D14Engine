@@ -25,7 +25,7 @@ namespace d14engine::uikit::resource_utils
 
         g_systemFontNames.clear();
 
-        auto factory = Application::g_app->dxRenderer()->dwriteFactory();
+        auto factory = Application::g_app->dx12Renderer()->dwriteFactory();
 
         ComPtr<IDWriteFontCollection1> fontCollection;
         THROW_IF_FAILED(factory->GetSystemFontCollection(FALSE, &fontCollection, TRUE));
@@ -76,7 +76,7 @@ namespace d14engine::uikit::resource_utils
     {
         THROW_IF_NULL(Application::g_app);
 
-        THROW_IF_FAILED(Application::g_app->dxRenderer()->dwriteFactory()->CreateTextFormat(
+        THROW_IF_FAILED(Application::g_app->dx12Renderer()->dwriteFactory()->CreateTextFormat(
             fontFamilyName.c_str(),
             nullptr,
             fontWeight,
@@ -169,7 +169,7 @@ namespace d14engine::uikit::resource_utils
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto context = Application::g_app->dxRenderer()->d2d1DeviceContext();
+        auto context = Application::g_app->dx12Renderer()->d2d1DeviceContext();
 
         // Solid Color Brush
         THROW_IF_FAILED(context->CreateSolidColorBrush(D2D1::ColorF{ 0x000000 }, &g_solidColorBrush));
@@ -181,7 +181,7 @@ namespace d14engine::uikit::resource_utils
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto context = Application::g_app->dxRenderer()->d2d1DeviceContext();
+        auto context = Application::g_app->dx12Renderer()->d2d1DeviceContext();
 
         // Shadow Effect
         THROW_IF_FAILED(context->CreateEffect(CLSID_D2D1Shadow, &g_shadowEffect));

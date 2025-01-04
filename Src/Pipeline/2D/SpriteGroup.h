@@ -4,8 +4,11 @@
 
 #include "Renderer/Interfaces/DrawLayer.h"
 
-namespace d14engine::renderer { struct DefaultBuffer; }
-
+namespace d14engine::renderer
+{
+    struct DefaultBuffer;
+    struct Renderer;
+}
 namespace d14engine::pipeline
 {
     struct SpriteGroup : renderer::DrawLayer
@@ -15,6 +18,7 @@ namespace d14engine::pipeline
         // prevent std::unique_ptr from generating default deleter
         virtual ~SpriteGroup() = default;
 
+    protected:
         void onRendererDrawD3d12LayerHelper(renderer::Renderer* rndr) override;
 
     protected:

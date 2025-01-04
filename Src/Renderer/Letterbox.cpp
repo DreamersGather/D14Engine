@@ -30,6 +30,8 @@ namespace d14engine::renderer
 
     void Letterbox::setEnabled(bool value)
     {
+        THROW_IF_NULL(rndr);
+
         m_enabled = value;
         if (m_enabled)
         {
@@ -83,6 +85,8 @@ namespace d14engine::renderer
         CD3DX12_DESCRIPTOR_RANGE1 descRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
         rootParam.InitAsDescriptorTable(1, &descRange, D3D12_SHADER_VISIBILITY_PIXEL);
 
+        CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSigDesc = {};
+        auto sampler = graph_utils::static_sampler::linearBorder(0);
         D3D12_ROOT_SIGNATURE_FLAGS rootSigFlags =
         (
             D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
@@ -92,22 +96,46 @@ namespace d14engine::renderer
             D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
             D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS
         );
-        CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSigDesc = {};
-        rootSigDesc.Init_1_1(1, &rootParam, 1, &graph_utils::static_sampler::linearBorder(0), rootSigFlags);
-
+        rootSigDesc.Init_1_1
+        (
+            /* numParameters     */ 1,
+            /* _pParameters      */ &rootParam,
+            /* numStaticSamplers */ 1,
+            /* _pStaticSamplers  */ &sampler,
+            /* flags             */ rootSigFlags
+        );
+        ComPtr<ID3DBlob> rootSigBlob;
         auto& maxVersion = rndr->d3d12DeviceInfo().feature.rootSignature.HighestVersion;
 
-        ComPtr<ID3DBlob> rootSigBlob;
-        THROW_IF_ERROR(D3DX12SerializeVersionedRootSignature(&rootSigDesc, maxVersion, &rootSigBlob, &error));
-        THROW_IF_FAILED(rndr->d3d12Device()->CreateRootSignature(0, BLB_PSZ_ARGS(rootSigBlob), IID_PPV_ARGS(&m_rootSigature)));
+        THROW_IF_ERROR(D3DX12SerializeVersionedRootSignature
+        (
+            /* pRootSignatureDesc */ &rootSigDesc,
+            /* MaxVersion         */ maxVersion,
+            /* ppBlob             */ &rootSigBlob,
+            /* ppErrorBlob        */ &error
+        ));
+        THROW_IF_FAILED(rndr->d3d12Device()->CreateRootSignature
+        (
+            /* nodeMask               */ 0,
+            /* pBlobWithRootSignature */ 
+            /* blobLengthInBytes      */ BLB_PSZ_ARGS(rootSigBlob),
+            /* riid                   */
+            /* ppvRootSignature       */ IID_PPV_ARGS(&m_rootSigature)
+        ));
     }
 
     void Letterbox::createPipelineState()
     {
-        auto shaderPath = rndr->createInfo.binaryPath + L"Shaders/Letterbox.hlsl";
-
-        auto vs = graph_utils::shader::compile(shaderPath, L"VS", L"vs_6_0");
-        auto ps = graph_utils::shader::compile(shaderPath, L"PS", L"ps_6_0");
+        graph_utils::shader::Package shaders =
+        {
+            { L"VS", {{ L"VS", L"vs_6_0" }} }, 
+            { L"PS", {{ L"PS", L"ps_6_0" }} }
+        };
+        graph_utils::shader::processDefaultObject
+        (
+            rndr->createInfo.binaryPath + L"Shaders/", L"Letterbox",
+            { graph_utils::shader::HLSL, graph_utils::shader::CSO }, shaders
+        );
 
         D3D12_INPUT_ELEMENT_DESC inputElemDescs[] =
         {
@@ -130,15 +158,20 @@ namespace d14engine::renderer
                 /* InstanceDataStepRate */ 0
             }
         };
-        auto psoDesc = graph_utils::graphicsPipelineStateDescTemplate();
+        auto psoDesc = graph_utils::GPSODescTemplate();
 
         psoDesc.pRootSignature = m_rootSigature.Get();
-        psoDesc.VS = { BLB_PSZ_ARGS(vs) };
-        psoDesc.PS = { BLB_PSZ_ARGS(ps) };
+        psoDesc.VS = { BLB_PSZ_ARGS(shaders[L"VS"].blob) };
+        psoDesc.PS = { BLB_PSZ_ARGS(shaders[L"PS"].blob) };
         psoDesc.InputLayout = { ARR_NUM_ARGS(inputElemDescs) };
         psoDesc.DepthStencilState.DepthEnable = FALSE;
 
-        THROW_IF_FAILED(rndr->d3d12Device()->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_pipelineState)));
+        THROW_IF_FAILED(rndr->d3d12Device()->CreateGraphicsPipelineState
+        (
+            /* pDesc                */ &psoDesc,
+            /* riid                 */
+            /* ppPipelineState      */ IID_PPV_ARGS(&m_pipelineState)
+        ));
     }
 
     void Letterbox::createVertexBuffer()
@@ -160,6 +193,8 @@ namespace d14engine::renderer
 
     void Letterbox::present()
     {
+        THROW_IF_NULL(rndr);
+
         auto& cmdAlloc = m_cmdAllocs.at(rndr->currFrameIndex());
 
         THROW_IF_FAILED(cmdAlloc->Reset());
@@ -178,15 +213,18 @@ namespace d14engine::renderer
     {
         D3D12_RESOURCE_BARRIER barriers[] =
         {
-            CD3DX12_RESOURCE_BARRIER::Transition(
+            CD3DX12_RESOURCE_BARRIER::Transition
+            (
                 rndr->currBackBuffer(),
                 D3D12_RESOURCE_STATE_PRESENT,
-                D3D12_RESOURCE_STATE_COPY_DEST),
-
-            CD3DX12_RESOURCE_BARRIER::Transition(
+                D3D12_RESOURCE_STATE_COPY_DEST
+            ),
+            CD3DX12_RESOURCE_BARRIER::Transition
+            (
                 rndr->sceneBuffer(),
                 D3D12_RESOURCE_STATE_COMMON,
-                D3D12_RESOURCE_STATE_COPY_SOURCE),
+                D3D12_RESOURCE_STATE_COPY_SOURCE
+            ),
         };
         rndr->cmdList()->ResourceBarrier(NUM_ARR_ARGS(barriers));
 
@@ -204,15 +242,18 @@ namespace d14engine::renderer
     {
         D3D12_RESOURCE_BARRIER barriers[] =
         {
-            CD3DX12_RESOURCE_BARRIER::Transition(
+            CD3DX12_RESOURCE_BARRIER::Transition
+            (
                 rndr->currBackBuffer(),
                 D3D12_RESOURCE_STATE_PRESENT,
-                D3D12_RESOURCE_STATE_RENDER_TARGET),
-
-            CD3DX12_RESOURCE_BARRIER::Transition(
+                D3D12_RESOURCE_STATE_RENDER_TARGET
+            ),
+            CD3DX12_RESOURCE_BARRIER::Transition
+            (
                 rndr->sceneBuffer(),
                 D3D12_RESOURCE_STATE_COMMON,
-                D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE)
+                D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+            )
         };
         rndr->cmdList()->ResourceBarrier(NUM_ARR_ARGS(barriers));
 

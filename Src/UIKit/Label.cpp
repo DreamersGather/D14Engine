@@ -201,7 +201,7 @@ namespace d14engine::uikit
             ((m_textLayout != nullptr) ? m_textLayout->GetMaxHeight() : height());
 
         ComPtr<IDWriteTextLayout> textLayout;
-        THROW_IF_FAILED(Application::g_app->dxRenderer()->dwriteFactory()->CreateTextLayout(
+        THROW_IF_FAILED(Application::g_app->dx12Renderer()->dwriteFactory()->CreateTextLayout(
             string,
             stringLength,
             textFormat.Get(),

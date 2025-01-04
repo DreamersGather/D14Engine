@@ -67,7 +67,7 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto context = Application::g_app->dxRenderer()->d2d1DeviceContext();
+        auto context = Application::g_app->dx12Renderer()->d2d1DeviceContext();
 
         D2D1_GRADIENT_STOP stop[] =
         {
