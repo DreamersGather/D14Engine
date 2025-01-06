@@ -244,6 +244,19 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             {
                 for (int fontSize = 11; fontSize <= 32; ++fontSize)
                 {
+                    // Method 1: Use the built-in resource_utils.
+
+                    //resource_utils::loadSystemTextFormat
+                    //(
+                    //    /* textFormatName */ textFormatName,
+                    //    /* fontFamilyName */ fontNameArray[n],
+                    //    /* fontSize       */ (float)fontSize,
+                    //    /* localeName     */ fontLocaleNameArray[n],
+                    //    /* fontWeight     */ fontWeightEnumArray[w]
+                    //);
+
+                    // Method 2: Create and manage it yourself.
+
                     auto textFormatName =
                         fontNameArray[n] + L"/" +
                         fontWeightArray[w] + L"/" +
