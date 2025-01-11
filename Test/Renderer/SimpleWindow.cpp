@@ -17,8 +17,11 @@ int wmain(int argc, wchar_t* argv[])
 {
     try // D14Engine - SimpleWindow @ Renderer
     {
-        SetDllDirectory(L"Lib/");
-
+#ifdef _WIN64
+        SetDllDirectory(L"Lib/x64");
+#else
+        SetDllDirectory(L"Lib/x86");
+#endif
         SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
         Renderer::CreateInfo info = {};

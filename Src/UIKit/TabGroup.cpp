@@ -120,7 +120,7 @@ namespace d14engine::uikit
         if (!tab.caption || !tab.content) return;
 
         // "index == m_tabs.size()" ---> append
-        index = std::clamp(index, 0ull, m_tabs.size());
+        index = std::clamp(index, 0uz, m_tabs.size());
 
         insertTab(tab, { &m_tabs, index });
     }

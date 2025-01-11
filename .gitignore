@@ -1,4 +1,17 @@
-﻿D14Engine.exe
+﻿D14Engine
+Debug
+DEditor
+DPipe
+DRndr
+DUIKit
+Release
+REditor
+RPipe
+RRndr
+RUIKit
+x64
+
+D14Engine.exe
 Screenshots
 
 ## Ignore Visual Studio temporary files, build results, and
