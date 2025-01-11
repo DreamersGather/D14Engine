@@ -18,9 +18,9 @@ int wmain(int argc, wchar_t* argv[])
     try // D14Engine - SimpleWindow @ Renderer
     {
 #ifdef _WIN64
-        SetDllDirectory(L"Lib/x64");
+        SetDllDirectory(L"Lib/_x64_");
 #else
-        SetDllDirectory(L"Lib/x86");
+        SetDllDirectory(L"Lib/_x86_");
 #endif
         SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
