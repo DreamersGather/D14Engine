@@ -28,22 +28,6 @@ SharedPtr<TreeViewItem> createNumberBoxPage(ConstraintLayout* page)
             dark.background.color = D2D1::ColorF{ 0x272727 };
         }
     }
-    auto item = makeUIObject<TreeViewItem>(
-        IconLabel::compactLayout(L"Number Box", nullptr, 1.0f, 9.0f, 21.0f));
-
-    item->resize(item->width(), 40.0f);
-    item->getContent<IconLabel>().lock()->label()->
-        setTextFormat(D14_FONT(L"Default/Normal/14"));
-
-    auto icon1 = loadBitmap(L"SideCategory/Light/NumberBox.png");
-    auto icon2 = loadBitmap(L"SideCategory/Dark/NumberBox.png");
-
-    item->f_onChangeTheme = [=](Panel* p, WstrParam themeName)
-    {
-        auto content = ((TreeViewItem*)p)->getContent<IconLabel>().lock();
-        if (themeName == L"Light") content->icon.bitmap = icon1;
-        else if (themeName == L"Dark") content->icon.bitmap = icon2;
-        content->updateLayout();
-    };
-    return item;
+    DEF_CATEGORY_ITEM(SLAVER, NumberBox, Number Box, 30X18)
+    RET_CATEGORY_ITEM
 }

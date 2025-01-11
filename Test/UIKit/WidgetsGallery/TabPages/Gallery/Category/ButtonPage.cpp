@@ -63,48 +63,13 @@ SharedPtr<TreeViewItem> createButtonPage
 
         ui_layout->addElement(ui_synopsisLabel, geoInfo);
     }
-    auto item = makeUIObject<TreeViewItem>(
-        IconLabel::compactLayout(L"Button", nullptr, 1.0f, 9.0f, 21.0f));
-
-    item->getAppearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Folded] =
-    {
-        { { 16.0f, 12.0f }, { 24.0f, 20.0f } }, // line 0
-        { { 24.0f, 20.0f }, { 16.0f, 28.0f } }  // line 1
-    };
-    item->getAppearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Unfolded] =
-    {
-        { { 13.0f, 16.0f }, { 20.0f, 24.0f } }, // line 0
-        { { 20.0f, 24.0f }, { 27.0f, 16.0f } }  // line 1
-    };
-    item->resize(item->width(), 40.0f);
-    item->getContent<IconLabel>().lock()->label()->
-        setTextFormat(D14_FONT(L"Default/Normal/14"));
-
-    auto icon1 = loadBitmap(L"SideCategory/Light/Button.png");
-    auto icon2 = loadBitmap(L"SideCategory/Dark/Button.png");
-
-    item->f_onChangeTheme = [=](Panel* p, WstrParam themeName)
-    {
-        auto content = ((TreeViewItem*)p)->getContent<IconLabel>().lock();
-        if (themeName == L"Light") content->icon.bitmap = icon1;
-        else if (themeName == L"Dark") content->icon.bitmap = icon2;
-        content->updateLayout();
-    };
-    TreeViewItem::ChildItemList childrenItems =
-    {
-#define PUSH_CHILD_ITEM_PAGE(Id, Name) \
-    create##Id##Page((pages[Name] = \
-    makeUIObject<ConstraintLayout>()).get())
-
-        PUSH_CHILD_ITEM_PAGE(FlatButton, L"Flat Button"),
-        PUSH_CHILD_ITEM_PAGE(OutlinedButton, L"Outlined Button"),
-        PUSH_CHILD_ITEM_PAGE(FilledButton, L"Filled Button"),
-        PUSH_CHILD_ITEM_PAGE(ElevatedButton, L"Elevated Button"),
-        PUSH_CHILD_ITEM_PAGE(ToggleButton, L"Toggle Button")
-
-#undef PUSH_CHILD_ITEM_PAGE
-    };
-    item->appendItem(childrenItems);
-    item->setFolded(TreeViewItem::FOLDED);
-    return item;
+    DEF_CATEGORY_ITEM(MASTER, Button, Button, 30X18)
+    START_ADD_CHILDREN_ITEMS
+    ADD_CHILD_ITEM_PAGE(FlatButton, Flat Button),
+    ADD_CHILD_ITEM_PAGE(OutlinedButton, Outlined Button),
+    ADD_CHILD_ITEM_PAGE(FilledButton, Filled Button),
+    ADD_CHILD_ITEM_PAGE(ElevatedButton, Elevated Button),
+    ADD_CHILD_ITEM_PAGE(ToggleButton, Toggle Button),
+    END_ADD_CHILDREN_ITEMS
+    RET_CATEGORY_ITEM
 }

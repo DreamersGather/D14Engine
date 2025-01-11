@@ -102,7 +102,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
 
             ui_mainWindow->setCenterUIObject(ui_centerLayout);
         }
-        auto ui_button = makeUIObject<Button>(L"Change click count");
+        auto ui_button = makeUIObject<Button>(L"Click to change count");
         {
             ui_button->resize(200.0f, 50.0f);
 

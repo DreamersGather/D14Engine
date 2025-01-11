@@ -28,22 +28,6 @@ SharedPtr<TreeViewItem> createConstraintLayoutPage(ConstraintLayout* page)
             dark.background.color = D2D1::ColorF{ 0x272727 };
         }
     }
-    auto item = makeUIObject<TreeViewItem>(
-        IconLabel::compactLayout(L"Constraint Layout", nullptr, 1.0f, 11.0f, 23.0f));
-
-    item->resize(item->width(), 40.0f);
-    item->getContent<IconLabel>().lock()->label()->
-        setTextFormat(D14_FONT(L"Default/Normal/14"));
-
-    auto icon1 = loadBitmap(L"SideCategory/Light/ConstraintLayout.png");
-    auto icon2 = loadBitmap(L"SideCategory/Dark/ConstraintLayout.png");
-
-    item->f_onChangeTheme = [=](Panel* p, WstrParam themeName)
-    {
-        auto content = ((TreeViewItem*)p)->getContent<IconLabel>().lock();
-        if (themeName == L"Light") content->icon.bitmap = icon1;
-        else if (themeName == L"Dark") content->icon.bitmap = icon2;
-        content->updateLayout();
-    };
-    return item;
+    DEF_CATEGORY_ITEM(SLAVER, ConstraintLayout, Constraint Layout, 26X26)
+    RET_CATEGORY_ITEM
 }

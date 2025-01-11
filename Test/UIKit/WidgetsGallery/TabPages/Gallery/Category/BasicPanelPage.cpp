@@ -62,45 +62,11 @@ SharedPtr<TreeViewItem> createBasicPanelPage
 
         ui_layout->addElement(ui_synopsisLabel, geoInfo);
     }
-    auto item = makeUIObject<TreeViewItem>(
-        IconLabel::compactLayout(L"Basic Panel", nullptr, 1.0f, 11.0f, 23.0f));
-
-    item->getAppearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Folded] =
-    {
-        { { 16.0f, 12.0f }, { 24.0f, 20.0f } }, // line 0
-        { { 24.0f, 20.0f }, { 16.0f, 28.0f } }  // line 1
-    };
-    item->getAppearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Unfolded] =
-    {
-        { { 13.0f, 16.0f }, { 20.0f, 24.0f } }, // line 0
-        { { 20.0f, 24.0f }, { 27.0f, 16.0f } }  // line 1
-    };
-    item->resize(item->width(), 40.0f);
-    auto& label = item->getContent<IconLabel>().lock()->label();
-    label->setTextFormat(D14_FONT(L"Default/Normal/14"));
-
-    auto icon1 = loadBitmap(L"SideCategory/Light/BasicPanel.png");
-    auto icon2 = loadBitmap(L"SideCategory/Dark/BasicPanel.png");
-
-    item->f_onChangeTheme = [=](Panel* p, WstrParam themeName)
-    {
-        auto content = ((TreeViewItem*)p)->getContent<IconLabel>().lock();
-        if (themeName == L"Light") content->icon.bitmap = icon1;
-        else if (themeName == L"Dark") content->icon.bitmap = icon2;
-        content->updateLayout();
-    };
-    TreeViewItem::ChildItemList childrenItems =
-    {
-#define PUSH_CHILD_ITEM_PAGE(Id, Name) \
-    create##Id((pages[Name] = makeUIObject<ConstraintLayout>()).get())
-
-        PUSH_CHILD_ITEM_PAGE(ClickablePanelPage, L"Clickable Panel"),
-        PUSH_CHILD_ITEM_PAGE(DraggablePanelPage, L"Draggable Panel"),
-        PUSH_CHILD_ITEM_PAGE(ResizablePanelPage, L"Resizable Panel")
-
-#undef PUSH_CHILD_ITEM_PAGE
-    };
-    item->appendItem(childrenItems);
-    item->setFolded(TreeViewItem::FOLDED);
-    return item;
+    DEF_CATEGORY_ITEM(MASTER, BasicPanel, Basic Panel, 26X26)
+    START_ADD_CHILDREN_ITEMS
+    ADD_CHILD_ITEM_PAGE(ClickablePanel, Clickable Panel),
+    ADD_CHILD_ITEM_PAGE(DraggablePanel, Draggable Panel),
+    ADD_CHILD_ITEM_PAGE(ResizablePanel, Resizable Panel)
+    END_ADD_CHILDREN_ITEMS
+    RET_CATEGORY_ITEM
 }

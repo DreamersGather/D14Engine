@@ -529,6 +529,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DPipe|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Test\UIKit\ButtonFamily\ButtonFamily.cpp" />
     <None Include=".editorconfig" />
     <None Include=".gitattributes" />
     <None Include=".gitignore" />

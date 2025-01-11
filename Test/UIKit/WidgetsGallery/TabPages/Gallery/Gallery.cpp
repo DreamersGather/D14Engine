@@ -96,6 +96,9 @@ void createGalleryTabPage(ConstraintLayout* page)
             auto& content = dynamic_cast<Button*>(p)->content();
             if (themeName == L"Light") content->icon.bitmap = clearIconLight;
             else if (themeName == L"Dark") content->icon.bitmap = clearIconDark;
+            content->icon.bitmap.interpolationMode = D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR;
+            // This ensures visual size of icons is consistent across different DPIs
+            content->icon.customSize = convert(content->icon.bitmap.data->GetPixelSize());
             content->updateLayout();
         };
         ui_clearButton->f_onMouseEnter = keepSearchBoxFocus;
@@ -128,6 +131,9 @@ void createGalleryTabPage(ConstraintLayout* page)
             auto& content = dynamic_cast<Button*>(p)->content();
             if (themeName == L"Light") content->icon.bitmap = searchIconLight;
             else if (themeName == L"Dark") content->icon.bitmap = searchIconDark;
+            content->icon.bitmap.interpolationMode = D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR;
+            // This ensures visual size of icons is consistent across different DPIs
+            content->icon.customSize = convert(content->icon.bitmap.data->GetPixelSize());
             content->updateLayout();
         };
         ui_searchButton->f_onMouseEnter = keepSearchBoxFocus;

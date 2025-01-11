@@ -756,7 +756,7 @@ do { \
             auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Active];
 
             rndr->d2d1DeviceContext()->DrawBitmap(
-                activeCardShadow.bitmap.Get(), cardAbsoluteRect(m_currActiveCardTabIndex),
+                activeCardShadow.data.Get(), cardAbsoluteRect(m_currActiveCardTabIndex),
                 setting.background.opacity, activeCardShadow.getInterpolationMode());
         }
         // Background

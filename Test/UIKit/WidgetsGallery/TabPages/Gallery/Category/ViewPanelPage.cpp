@@ -62,46 +62,11 @@ SharedPtr<TreeViewItem> createViewPanelPage
 
         ui_layout->addElement(ui_synopsisLabel, geoInfo);
     }
-    auto item = makeUIObject<TreeViewItem>(
-        IconLabel::compactLayout(L"View Panel", nullptr, 1.0f, 11.0f, 23.0f));
-
-    item->getAppearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Folded] =
-    {
-        { { 16.0f, 12.0f }, { 24.0f, 20.0f } }, // line 0
-        { { 24.0f, 20.0f }, { 16.0f, 28.0f } }  // line 1
-    };
-    item->getAppearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Unfolded] =
-    {
-        { { 13.0f, 16.0f }, { 20.0f, 24.0f } }, // line 0
-        { { 20.0f, 24.0f }, { 27.0f, 16.0f } }  // line 1
-    };
-    item->resize(item->width(), 40.0f);
-    item->getContent<IconLabel>().lock()->label()->
-        setTextFormat(D14_FONT(L"Default/Normal/14"));
-
-    auto icon1 = loadBitmap(L"SideCategory/Light/ViewPanel.png");
-    auto icon2 = loadBitmap(L"SideCategory/Dark/ViewPanel.png");
-
-    item->f_onChangeTheme = [=](Panel* p, WstrParam themeName)
-    {
-        auto content = ((TreeViewItem*)p)->getContent<IconLabel>().lock();
-        if (themeName == L"Light") content->icon.bitmap = icon1;
-        else if (themeName == L"Dark") content->icon.bitmap = icon2;
-        content->updateLayout();
-    };
-    TreeViewItem::ChildItemList childrenItems =
-    {
-#define PUSH_CHILD_ITEM_PAGE(Id, Name) \
-    create##Id##Page((pages[Name] = \
-    makeUIObject<ConstraintLayout>()).get())
-
-        PUSH_CHILD_ITEM_PAGE(ScrollView, L"Scroll View"),
-        PUSH_CHILD_ITEM_PAGE(ListView, L"List View"),
-        PUSH_CHILD_ITEM_PAGE(TreeView, L"Tree View")
-
-#undef PUSH_CHILD_ITEM_PAGE
-    };
-    item->appendItem(childrenItems);
-    item->setFolded(TreeViewItem::FOLDED);
-    return item;
+    DEF_CATEGORY_ITEM(MASTER, ViewPanel, View Panel, 26X26)
+    START_ADD_CHILDREN_ITEMS
+    ADD_CHILD_ITEM_PAGE(ScrollView, Scroll View),
+    ADD_CHILD_ITEM_PAGE(ListView, List View),
+    ADD_CHILD_ITEM_PAGE(TreeView, Tree View)
+    END_ADD_CHILDREN_ITEMS
+    RET_CATEGORY_ITEM
 }
