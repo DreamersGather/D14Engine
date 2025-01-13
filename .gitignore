@@ -1,15 +1,7 @@
-﻿D14Engine
-Debug
-DEditor
-DPipe
-DRndr
-DUIKit
-Release
-REditor
-RPipe
-RRndr
-RUIKit
-x64
+﻿# Output
+Out
+# Intermediate
+Int
 
 D14Engine.exe
 Screenshots
