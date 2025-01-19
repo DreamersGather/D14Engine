@@ -115,7 +115,14 @@ namespace d14engine::renderer::graph_utils
             THROW_IF_FAILED(hrStatus);
 
             ComPtr<IDxcBlob> shader;
+
+#pragma warning(push)
+// Please refer to the above comment; the same warning applies here as well.
+#pragma warning(disable : 6387)
+
             THROW_IF_FAILED(result->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shader), nullptr));
+
+#pragma warning(pop)
 
             return shader;
         }
