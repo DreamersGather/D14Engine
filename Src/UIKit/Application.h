@@ -20,10 +20,18 @@ namespace d14engine::uikit
 
             // Resources (such as cursors) are loaded from this path.
             Wstring binaryPath = L"Bin/";
+
+            using LibraryPathArray = std::vector<Wstring>;
 #ifdef _WIN64
-            Wstring libraryPath = L"Lib/x64";
+            LibraryPathArray libraryPaths =
+            {
+                L"Lib/DirectXShaderCompiler/x64"
+            };
 #else
-            Wstring libraryPath = L"Lib/x86";
+            LibraryPathArray libraryPaths =
+            {
+                L"Lib/DirectXShaderCompiler/x86"
+            };
 #endif
             Optional<float> dpi = std::nullopt;
 

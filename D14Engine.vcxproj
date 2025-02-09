@@ -396,7 +396,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -420,7 +420,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -444,7 +444,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -468,7 +468,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -492,7 +492,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -516,7 +516,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -540,7 +540,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -564,7 +564,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -588,7 +588,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -612,7 +612,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -638,7 +638,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -667,7 +667,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -696,7 +696,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -724,7 +724,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -752,7 +752,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -780,7 +780,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -808,7 +808,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -836,7 +836,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -864,7 +864,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -892,7 +892,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Common/Precompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Inc;Src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;Inc\DirectX;Src</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -1064,7 +1064,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Test\UIKit\ButtonFamily\ButtonFamily.cpp" />
+    <ClCompile Include="Test\UIKit\ColorfulCube\ColorfulCube.cpp" />
     <None Include=".editorconfig" />
     <None Include=".gitattributes" />
     <None Include=".gitignore" />

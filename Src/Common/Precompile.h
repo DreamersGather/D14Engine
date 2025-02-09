@@ -1,6 +1,9 @@
 ﻿#pragma once
 
-// Standard Library
+//////////////////////
+// Standard Library //
+//////////////////////
+
 #include <algorithm>
 #include <array>
 #include <exception>
@@ -65,14 +68,30 @@ namespace d14engine
     using WstrViewParam = const WstringView&;
 }
 
-// Windows & DirectX SDK
+///////////////////////////
+// Windows & DirectX SDK //
+///////////////////////////
+
+// Refer to https://devblogs.microsoft.com/directx/gettingstarted-dx12agility/#header-include-order
+// It is recommended to include Agility SDK headers before the Windows 10 SDK to avoid conflicts.
+#include <d3d12.h>
+#include "d3dx12/d3dx12.h"
+
+// Refer to https://devblogs.microsoft.com/directx/gettingstarted-dx12agility/#2.-set-agility-sdk-parameters
+// We need to set Agility SDK parameters to help locate the custom D3D12Core.dll during building.
+extern "C" { __declspec(dllexport) extern const UINT D3D12SDKVersion = 615; }
+#ifdef _WIN64
+extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = "Lib/DirectX/x64/"; }
+#else
+extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = "Lib/DirectX/x86/"; }
+#endif
+
 #include <comdef.h>
 #include <d2d1.h>
 #include <d2d1_1.h>
 #include <d2d1effects_2.h>
 #include <d3d11.h>
 #include <d3d11on12.h>
-#include <d3d12.h>
 #include <DirectXColors.h>
 #include <DirectXMath.h>
 #include <dwmapi.h>
@@ -88,8 +107,7 @@ namespace d14engine
 #include <dxgidebug.h>
 #endif
 
-#include "DirectX/d3dx12.h"
-#include "DirectX/dxcapi.h"
+#include "DirectXShaderCompiler/dxcapi.h"
 
 namespace d14engine
 {
@@ -111,6 +129,10 @@ namespace d14engine
 #pragma comment(lib, "WindowsCodecs.lib")
 
 #pragma comment(lib, "dxcompiler.lib")
+
+///////////////////
+// Miscellaneous //
+///////////////////
 
 #if __cplusplus <= 202002L // "uz" was introduced in C++23
 #pragma warning(push)
