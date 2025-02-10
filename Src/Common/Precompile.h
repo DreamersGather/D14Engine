@@ -85,7 +85,12 @@ namespace d14engine
 // Refer to https://devblogs.microsoft.com/directx/gettingstarted-dx12agility/#header-include-order
 // It is recommended to include Agility SDK headers before the Windows 10 SDK to avoid conflicts.
 #include <d3d12.h>
+
+#if _D14_AGILITY_SDK
 #include "d3dx12/d3dx12.h"
+#else
+#include "DirectX-Headers/d3dx12.h"
+#endif
 
 // Refer to https://devblogs.microsoft.com/directx/gettingstarted-dx12agility/#2.-set-agility-sdk-parameters
 // We need to set Agility SDK parameters to help locate the custom D3D12Core.dll during building.
