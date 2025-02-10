@@ -72,6 +72,16 @@ namespace d14engine
 // Windows & DirectX SDK //
 ///////////////////////////
 
+#define _D14_AGILITY_SDK true
+
+#if _D14_AGILITY_SDK
+#define _D14_AGILITY_VER 615
+#ifdef _WIN64
+#define _D14_AGILITY_PATH "Lib/DirectX/x64/"
+#else
+#define _D14_AGILITY_PATH "Lib/DirectX/x86/"
+#endif
+#endif
 // Refer to https://devblogs.microsoft.com/directx/gettingstarted-dx12agility/#header-include-order
 // It is recommended to include Agility SDK headers before the Windows 10 SDK to avoid conflicts.
 #include <d3d12.h>
@@ -79,11 +89,9 @@ namespace d14engine
 
 // Refer to https://devblogs.microsoft.com/directx/gettingstarted-dx12agility/#2.-set-agility-sdk-parameters
 // We need to set Agility SDK parameters to help locate the custom D3D12Core.dll during building.
-extern "C" { __declspec(dllexport) extern const UINT D3D12SDKVersion = 615; }
-#ifdef _WIN64
-extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = "Lib/DirectX/x64/"; }
-#else
-extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = "Lib/DirectX/x86/"; }
+#if _D14_AGILITY_SDK
+extern "C" { __declspec(dllexport) extern const UINT D3D12SDKVersion = _D14_AGILITY_VER; }
+extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = _D14_AGILITY_PATH; }
 #endif
 
 #include <comdef.h>
