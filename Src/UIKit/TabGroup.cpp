@@ -628,79 +628,82 @@ do { \
             {
                 m_currActiveCardTabIndex->content->onRendererDrawD2d1Layer(rndr);
             }
-            // Active-Card Shadow
-            activeCardShadow.beginDraw(rndr->d2d1DeviceContext());
+            if (m_currActiveCardTabIndex.index < m_candidateTabCount)
             {
-                auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Active];
-
-                float cardWidth = setting.geometry.size.width;
-                float cardHeight = setting.geometry.size.height;
-
-                float cardRoundRadius = setting.geometry.roundRadius;
-                D2D1_SIZE_F cardCornerSize = { cardRoundRadius, cardRoundRadius };
-
-                ComPtr<ID2D1PathGeometry> pathGeo;
-                THROW_IF_FAILED(rndr->d2d1Factory()->CreatePathGeometry(&pathGeo));
-
-                ComPtr<ID2D1GeometrySink> geoSink;
-                THROW_IF_FAILED(pathGeo->Open(&geoSink));
+                // Active-Card Shadow
+                activeCardShadow.beginDraw(rndr->d2d1DeviceContext());
                 {
-                    geoSink->BeginFigure({ 0.0f, cardHeight }, D2D1_FIGURE_BEGIN_FILLED);
+                    auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Active];
 
-                    // Left Bottom Corner
-                    geoSink->AddArc(
+                    float cardWidth = setting.geometry.size.width;
+                    float cardHeight = setting.geometry.size.height;
+
+                    float cardRoundRadius = setting.geometry.roundRadius;
+                    D2D1_SIZE_F cardCornerSize = { cardRoundRadius, cardRoundRadius };
+
+                    ComPtr<ID2D1PathGeometry> pathGeo;
+                    THROW_IF_FAILED(rndr->d2d1Factory()->CreatePathGeometry(&pathGeo));
+
+                    ComPtr<ID2D1GeometrySink> geoSink;
+                    THROW_IF_FAILED(pathGeo->Open(&geoSink));
                     {
-                        /* point            */ { cardRoundRadius, cardHeight - cardRoundRadius },
-                        /* size             */ cardCornerSize,
-                        /* rotation degrees */ 90.0f,
-                        /* sweep direction  */ D2D1_SWEEP_DIRECTION_COUNTER_CLOCKWISE,
-                        /* arc size         */ D2D1_ARC_SIZE_SMALL
-                    });
-                    geoSink->AddLine({ cardRoundRadius, cardRoundRadius });
+                        geoSink->BeginFigure({ 0.0f, cardHeight }, D2D1_FIGURE_BEGIN_FILLED);
 
-                    // Left Top Corner
-                    geoSink->AddArc(
-                    {
-                        /* point            */ { cardRoundRadius * 2.0f, 0.0f },
-                        /* size             */ cardCornerSize,
-                        /* rotation degrees */ 90.0f,
-                        /* sweep direction  */ D2D1_SWEEP_DIRECTION_CLOCKWISE,
-                        /* arc size         */ D2D1_ARC_SIZE_SMALL
-                    });
-                    geoSink->AddLine({ cardWidth -  cardRoundRadius * 2.0f, 0.0f });
+                        // Left Bottom Corner
+                        geoSink->AddArc(
+                        {
+                            /* point            */ { cardRoundRadius, cardHeight - cardRoundRadius },
+                            /* size             */ cardCornerSize,
+                            /* rotation degrees */ 90.0f,
+                            /* sweep direction  */ D2D1_SWEEP_DIRECTION_COUNTER_CLOCKWISE,
+                            /* arc size         */ D2D1_ARC_SIZE_SMALL
+                        });
+                        geoSink->AddLine({ cardRoundRadius, cardRoundRadius });
 
-                    // Right Top Corner
-                    geoSink->AddArc(
-                    {
-                        /* point            */ { cardWidth - cardRoundRadius, cardRoundRadius },
-                        /* size             */ cardCornerSize,
-                        /* rotation degrees */ 90.0f,
-                        /* sweep direction  */ D2D1_SWEEP_DIRECTION_CLOCKWISE,
-                        /* arc size         */ D2D1_ARC_SIZE_SMALL
-                    });
-                    geoSink->AddLine({ cardWidth - cardRoundRadius, cardHeight - cardRoundRadius });
+                        // Left Top Corner
+                        geoSink->AddArc(
+                        {
+                            /* point            */ { cardRoundRadius * 2.0f, 0.0f },
+                            /* size             */ cardCornerSize,
+                            /* rotation degrees */ 90.0f,
+                            /* sweep direction  */ D2D1_SWEEP_DIRECTION_CLOCKWISE,
+                            /* arc size         */ D2D1_ARC_SIZE_SMALL
+                        });
+                        geoSink->AddLine({ cardWidth -  cardRoundRadius * 2.0f, 0.0f });
 
-                    // Right Bottom Corner
-                    geoSink->AddArc(
-                    {
-                        /* point            */ { cardWidth, cardHeight },
-                        /* size             */ cardCornerSize,
-                        /* rotation degrees */ 90.0f,
-                        /* sweep direction  */ D2D1_SWEEP_DIRECTION_COUNTER_CLOCKWISE,
-                        /* arc size         */ D2D1_ARC_SIZE_SMALL
-                    });
-                    geoSink->AddLine({ 0.0f, cardHeight });
+                        // Right Top Corner
+                        geoSink->AddArc(
+                        {
+                            /* point            */ { cardWidth - cardRoundRadius, cardRoundRadius },
+                            /* size             */ cardCornerSize,
+                            /* rotation degrees */ 90.0f,
+                            /* sweep direction  */ D2D1_SWEEP_DIRECTION_CLOCKWISE,
+                            /* arc size         */ D2D1_ARC_SIZE_SMALL
+                        });
+                        geoSink->AddLine({ cardWidth - cardRoundRadius, cardHeight - cardRoundRadius });
 
-                    geoSink->EndFigure(D2D1_FIGURE_END_CLOSED);
+                        // Right Bottom Corner
+                        geoSink->AddArc(
+                        {
+                            /* point            */ { cardWidth, cardHeight },
+                            /* size             */ cardCornerSize,
+                            /* rotation degrees */ 90.0f,
+                            /* sweep direction  */ D2D1_SWEEP_DIRECTION_COUNTER_CLOCKWISE,
+                            /* arc size         */ D2D1_ARC_SIZE_SMALL
+                        });
+                        geoSink->AddLine({ 0.0f, cardHeight });
+
+                        geoSink->EndFigure(D2D1_FIGURE_END_CLOSED);
+                    }
+                    THROW_IF_FAILED(geoSink->Close());
+
+                    resource_utils::g_solidColorBrush->SetColor(setting.background.color);
+                    resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
+
+                    rndr->d2d1DeviceContext()->FillGeometry(pathGeo.Get(), resource_utils::g_solidColorBrush.Get());
                 }
-                THROW_IF_FAILED(geoSink->Close());
-
-                resource_utils::g_solidColorBrush->SetColor(setting.background.color);
-                resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
-
-                rndr->d2d1DeviceContext()->FillGeometry(pathGeo.Get(), resource_utils::g_solidColorBrush.Get());
+                activeCardShadow.endDraw(rndr->d2d1DeviceContext());
             }
-            activeCardShadow.endDraw(rndr->d2d1DeviceContext());
         }
     }
 
@@ -741,7 +744,7 @@ do { \
             }
         }
         // Active-Card
-        if (m_currActiveCardTabIndex.valid())
+        if (m_currActiveCardTabIndex.valid() && m_currActiveCardTabIndex.index < m_candidateTabCount)
         {
             // Shadow
             activeCardShadow.color = getAppearance().tabBar.card.activeShadowColor;
