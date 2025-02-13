@@ -39,34 +39,34 @@ void createSettingsTabPage(ConstraintLayout* page)
 
         page->addElement(ui_sideLayout, geoInfo);
     }
-    auto ui_abtTitle = makeUIObject<Label>(L"About");
+    auto ui_aboutTitle = makeUIObject<Label>(L"About");
     {
-        ui_abtTitle->setTextFormat(D14_FONT(L"Default/SemiBold/22"));
-        ui_abtTitle->hardAlignment.vert = Label::VertAlignment::Top;
+        ui_aboutTitle->setTextFormat(D14_FONT(L"Default/SemiBold/22"));
+        ui_aboutTitle->hardAlignment.vert = Label::VertAlignment::Top;
 
         ConstraintLayout::GeometryInfo geoInfo = {};
         geoInfo.Left.ToLeft = 40.0f;
         geoInfo.Top.ToTop = 60.0f;
-        ui_sideLayout->addElement(ui_abtTitle, geoInfo);
+        ui_sideLayout->addElement(ui_aboutTitle, geoInfo);
     }
-    auto ui_abtLabel = makeUIObject<Label>(L"UIKit @ D14Engine");
+    auto ui_aboutLabel = makeUIObject<Label>(L"UIKit @ D14Engine");
     {
-        ui_abtTitle->hardAlignment.vert = Label::VertAlignment::Top;
+        ui_aboutTitle->hardAlignment.vert = Label::VertAlignment::Top;
 
         ConstraintLayout::GeometryInfo geoInfo = {};
         geoInfo.Left.ToLeft = 40.0f;
         geoInfo.Top.ToTop = 120.0f;
-        ui_sideLayout->addElement(ui_abtLabel, geoInfo);
+        ui_sideLayout->addElement(ui_aboutLabel, geoInfo);
     }
-    auto ui_abtButton = makeUIObject<FlatButton>(L"https://github.com/DreamersGather/D14Engine", 5.0f);
+    auto ui_aboutButton = makeUIObject<FlatButton>(L"D14Engine repo @ GitHub", 5.0f);
     {
-        ui_abtButton->resize(310.0f, 30.0f);
+        ui_aboutButton->resize(250.0f, 40.0f);
 
-        auto& ui_btnLabel = ui_abtButton->content()->label();
-        ui_btnLabel->setTextFormat(D14_FONT(L"Default/Normal/10"));
+        auto& ui_btnLabel = ui_aboutButton->content()->label();
+        ui_btnLabel->setTextFormat(D14_FONT(L"Default/Normal/14"));
         THROW_IF_FAILED(ui_btnLabel->textLayout()->SetUnderline(true, { 0, UINT32_MAX }));
 
-        ui_abtButton->f_onChangeTheme = [](Panel* p, WstrParam themeName)
+        ui_aboutButton->f_onChangeTheme = [](Panel* p, WstrParam themeName)
         {
             auto& appear = dynamic_cast<FlatButton*>(p)->getAppearance();
 
@@ -78,56 +78,54 @@ void createSettingsTabPage(ConstraintLayout* page)
 
 #undef BUTTON_FOREGROUND_COLOR
         };
-        ui_abtButton->f_onMouseMove = [](Panel* p, MouseMoveEvent& e)
+        ui_aboutButton->f_onMouseMove = [](Panel* p, MouseMoveEvent& e)
         {
             Application::g_app->cursor()->setIcon(Cursor::Hand);
         };
-        ui_abtButton->f_onMouseButtonRelease = [](ClickablePanel* clkp, ClickablePanel::Event& e)
+        ui_aboutButton->f_onMouseButtonRelease = [](ClickablePanel* clkp, ClickablePanel::Event& e)
         {
             if (e.left())
             {
                 auto wnd = Application::g_app->win32Window();
-                auto url = ((Button*)clkp)->content()->label()->text().c_str();
+                auto url = L"https://github.com/DreamersGather/D14Engine";
                 ShellExecute(wnd, nullptr, url, nullptr, nullptr, SW_NORMAL);
             }
         };
         ConstraintLayout::GeometryInfo geoInfo = {};
-        geoInfo.Left.ToLeft = 20.0f;
-        geoInfo.Top.ToTop = 160.0f;
-        ui_sideLayout->addElement(ui_abtButton, geoInfo);
+        geoInfo.Left.ToLeft = 25.0f;
+        geoInfo.Top.ToTop = 150.0f;
+        ui_sideLayout->addElement(ui_aboutButton, geoInfo);
     }
-    auto ui_abtPicture = makeUIObject<Panel>(math_utils::sizeOnlyRect({ 256.0f, 256.0f }));
+    auto ui_engineIcon = makeUIObject<Panel>(math_utils::sizeOnlyRect({ 266.0f, 55.0f }));
     {
-#define LOAD_ABOUT_PICTURE_BITMAP(Path) \
-    bitmap_utils::loadBitmap(Application::g_app->createInfo.binaryPath + Path);
-
-        auto light = LOAD_ABOUT_PICTURE_BITMAP(L"Images/DGICON/light.png");
-        auto dark = LOAD_ABOUT_PICTURE_BITMAP(L"Images/DGICON/dark.png");
-
-#undef LOAD_ABOUT_PICTURE_BITMAP
-
-        ui_abtPicture->f_onChangeTheme = [=](Panel* p, WstrParam themeName)
-        {
-            if (themeName == L"Light") p->bitmap = light;
-            else if (themeName == L"Dark") p->bitmap = dark;
-        };
-        ui_abtPicture->f_onChangeTheme(ui_abtPicture.get(), Application::g_app->currThemeName());
+        ui_engineIcon->bitmap = bitmap_utils::loadBitmap(
+            L"Test/UIKit/WidgetsGallery/Images/AboutPanel/D14Engine.png");
         
         ConstraintLayout::GeometryInfo geoInfo = {};
-        geoInfo.Left.ToLeft = 47.0f;
-        geoInfo.Top.ToTop = 200.0f;
-        ui_sideLayout->addElement(ui_abtPicture, geoInfo);
+        geoInfo.Left.ToLeft = 40.0f;
+        geoInfo.Top.ToTop = 220.0f;
+        ui_sideLayout->addElement(ui_engineIcon, geoInfo);
     }
-    auto ui_abtComment = makeUIObject<Label>(L"—— D14 means DreamersGather.");
+    auto ui_uikitIcon = makeUIObject<Panel>(math_utils::sizeOnlyRect({ 233.0f, 55.0f }));
     {
-        ui_abtComment->setTextFormat(D14_FONT(L"Default/Normal/14"));
-        THROW_IF_FAILED(ui_abtComment->textLayout()->SetFontStyle(DWRITE_FONT_STYLE_ITALIC, { 0, UINT32_MAX }));
-        ui_abtComment->hardAlignment.vert = Label::VertAlignment::Top;
+        ui_uikitIcon->bitmap = bitmap_utils::loadBitmap(
+            L"Test/UIKit/WidgetsGallery/Images/AboutPanel/D14UIKit.png");
 
         ConstraintLayout::GeometryInfo geoInfo = {};
         geoInfo.Left.ToLeft = 40.0f;
-        geoInfo.Top.ToTop = 466.0f;
-        ui_sideLayout->addElement(ui_abtComment, geoInfo);
+        geoInfo.Top.ToTop = 300.0f;
+        ui_sideLayout->addElement(ui_uikitIcon, geoInfo);
+    }
+    auto ui_aboutComment = makeUIObject<Label>(L"—— D14 means DreamersGather.");
+    {
+        ui_aboutComment->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        THROW_IF_FAILED(ui_aboutComment->textLayout()->SetFontStyle(DWRITE_FONT_STYLE_ITALIC, { 0, UINT32_MAX }));
+        ui_aboutComment->hardAlignment.vert = Label::VertAlignment::Top;
+
+        ConstraintLayout::GeometryInfo geoInfo = {};
+        geoInfo.Left.ToLeft = 40.0f;
+        geoInfo.Top.ToTop = 400.0f;
+        ui_sideLayout->addElement(ui_aboutComment, geoInfo);
     }
     auto ui_contentLayout = makeUIObject<ConstraintLayout>();
     {

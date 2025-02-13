@@ -1997,7 +1997,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\MaskStyle.cpp">
+    <ClCompile Include="Src\UIKit\MaskObject.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -2039,7 +2039,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\ShadowStyle.cpp">
+    <ClCompile Include="Src\UIKit\ShadowMask.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -2618,7 +2618,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Src\UIKit\MaskStyle.h">
+    <ClInclude Include="Src\UIKit\MaskObject.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -2672,7 +2672,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Src\UIKit\ShadowStyle.h">
+    <ClInclude Include="Src\UIKit\ShadowMask.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>

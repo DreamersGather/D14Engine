@@ -7,7 +7,7 @@
 
 #include "UIKit/Appearances/TabGroup.h"
 #include "UIKit/ResizablePanel.h"
-#include "UIKit/ShadowStyle.h"
+#include "UIKit/ShadowMask.h"
 
 namespace d14engine::uikit
 {
@@ -26,9 +26,9 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        ShadowStyle activeCardShadow = {};
+        ShadowMask activeCardMask = {};
 
-        void loadActiveCardShadowBitmap();
+        void loadActiveCardMaskBitmap();
 
         D2D1_RECT_F cardBarExtendedAbsoluteRect() const;
         D2D1_RECT_F cardBarExtendedCardBarAbsoluteRect() const;

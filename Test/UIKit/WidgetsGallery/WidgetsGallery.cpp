@@ -65,7 +65,7 @@ D14_SET_APP_ENTRY(mainWidgetsGallery)
             SET_CARD_SIZE(Active,  266.0f,  40.0f);
 
 #undef SET_CARD_SIZE
-            ui_tabGroup->loadActiveCardShadowBitmap();
+            ui_tabGroup->loadActiveCardMaskBitmap();
 
             auto& barAppear = ui_tabGroup->getAppearance().tabBar;
 

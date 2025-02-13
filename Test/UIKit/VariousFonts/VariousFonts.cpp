@@ -116,7 +116,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             SET_CARD_SIZE(Active, 266.0f, 40.0f);
 
 #undef SET_CARD_SIZE
-            ui_textViewer->loadActiveCardShadowBitmap();
+            ui_textViewer->loadActiveCardMaskBitmap();
 
             auto& barAppear = ui_textViewer->getAppearance().tabBar;
 
@@ -385,7 +385,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             auto& valueLabelAppear = ui_fontSizeSlider->getAppearance().valueLabel;
             valueLabelAppear.offset = 14.0f;
             valueLabelAppear.mainRect.geometry.size = { 100.0f, 40.0f };
-            ui_fontSizeSlider->loadValueLabelShadowBitmap();
+            ui_fontSizeSlider->loadValueLabelMaskBitmap();
             valueLabelAppear.isResident = true;
 
             ui_fontSizeSlider->valueLabel()->setTextFormat(D14_FONT(L"Default/Normal/16"));
@@ -420,7 +420,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             auto& valueLabelAppear = ui_fontWeightSelector->getAppearance().valueLabel;
             valueLabelAppear.offset = 14.0f;
             valueLabelAppear.mainRect.geometry.size = { 120.0f, 40.0f };
-            ui_fontWeightSelector->loadValueLabelShadowBitmap();
+            ui_fontWeightSelector->loadValueLabelMaskBitmap();
             valueLabelAppear.isResident = true;
 
             ui_fontWeightSelector->valueLabel()->setTextFormat(D14_FONT(L"Default/Normal/16"));

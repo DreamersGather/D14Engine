@@ -126,7 +126,7 @@
     <ClCompile Include="Src\UIKit\ListView.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\MaskStyle.cpp">
+    <ClCompile Include="Src\UIKit\MaskObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Src\UIKit\OnOffSwitch.cpp">
@@ -147,7 +147,7 @@
     <ClCompile Include="Src\UIKit\ScrollView.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UIKit\ShadowStyle.cpp">
+    <ClCompile Include="Src\UIKit\ShadowMask.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Src\UIKit\Slider.cpp">
@@ -552,7 +552,7 @@
     <ClInclude Include="Src\UIKit\ListViewItem.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UIKit\MaskStyle.h">
+    <ClInclude Include="Src\UIKit\MaskObject.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\UIKit\OnOffSwitch.h">
@@ -573,7 +573,7 @@
     <ClInclude Include="Src\UIKit\ScrollView.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UIKit\ShadowStyle.h">
+    <ClInclude Include="Src\UIKit\ShadowMask.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\UIKit\Slider.h">

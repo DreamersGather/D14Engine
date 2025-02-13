@@ -6,7 +6,7 @@
 
 #include "UIKit/Appearances/Slider.h"
 #include "UIKit/Panel.h"
-#include "UIKit/ShadowStyle.h"
+#include "UIKit/ShadowMask.h"
 #include "UIKit/ValuefulObject.h"
 
 namespace d14engine::uikit
@@ -23,11 +23,11 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        ShadowStyle handleShadow = {};
-        ShadowStyle valueLabelShadow = {};
+        ShadowMask handleMask = {};
+        ShadowMask valueLabelMask = {};
 
-        void loadHandleShadowBitmap();
-        virtual void loadValueLabelShadowBitmap() = 0;
+        void loadHandleMaskBitmap();
+        virtual void loadValueLabelMaskBitmap() = 0;
 
         virtual D2D1_RECT_F thumbAreaExtendedRect(const D2D1_RECT_F& flatRect) const = 0;
 

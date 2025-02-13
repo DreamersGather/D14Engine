@@ -150,7 +150,7 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
             {
                 auto ui_stickBoyFrame = makeUIObject<Panel>();
                 ui_stickBoyFrame->resize(256.0f, 256.0f);
-                ui_stickBoyFrame->bitmap = frames[i].bitmap;
+                ui_stickBoyFrame->bitmap = frames[i].data;
                 auto& interpMode = ui_stickBoyFrame->bitmapProperty.interpolationMode;
                 interpMode = D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR;
 

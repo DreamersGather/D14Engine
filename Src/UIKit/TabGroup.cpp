@@ -42,15 +42,15 @@ namespace d14engine::uikit
     {
         ResizablePanel::onInitializeFinish();
 
-        loadActiveCardShadowBitmap();
+        loadActiveCardMaskBitmap();
     }
 
-    void TabGroup::loadActiveCardShadowBitmap()
+    void TabGroup::loadActiveCardMaskBitmap()
     {
         auto& setting = getAppearance().
             tabBar.card.main[(size_t)CardState::Active];
 
-        activeCardShadow.loadBitmap(
+        activeCardMask.loadBitmap(
             math_utils::roundu(setting.geometry.size));
     }
 
@@ -631,7 +631,7 @@ do { \
             if (m_currActiveCardTabIndex.index < m_candidateTabCount)
             {
                 // Active-Card Shadow
-                activeCardShadow.beginDraw(rndr->d2d1DeviceContext());
+                activeCardMask.beginDraw(rndr->d2d1DeviceContext());
                 {
                     auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Active];
 
@@ -702,7 +702,7 @@ do { \
 
                     rndr->d2d1DeviceContext()->FillGeometry(pathGeo.Get(), resource_utils::g_solidColorBrush.Get());
                 }
-                activeCardShadow.endDraw(rndr->d2d1DeviceContext());
+                activeCardMask.endDraw(rndr->d2d1DeviceContext());
             }
         }
     }
@@ -747,9 +747,9 @@ do { \
         if (m_currActiveCardTabIndex.valid() && m_currActiveCardTabIndex.index < m_candidateTabCount)
         {
             // Shadow
-            activeCardShadow.color = getAppearance().tabBar.card.activeShadowColor;
+            activeCardMask.color = getAppearance().tabBar.card.activeShadowColor;
 
-            activeCardShadow.configEffectInput(resource_utils::g_shadowEffect.Get());
+            activeCardMask.configEffectInput(resource_utils::g_shadowEffect.Get());
 
             auto shadowPosition = math_utils::roundf(math_utils::leftTop(cardAbsoluteRect(m_currActiveCardTabIndex)));
 
@@ -759,8 +759,8 @@ do { \
             auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Active];
 
             rndr->d2d1DeviceContext()->DrawBitmap(
-                activeCardShadow.data.Get(), cardAbsoluteRect(m_currActiveCardTabIndex),
-                setting.background.opacity, activeCardShadow.getInterpolationMode());
+                activeCardMask.data.Get(), cardAbsoluteRect(m_currActiveCardTabIndex),
+                setting.background.opacity, activeCardMask.getInterpolationMode());
         }
         // Background
         {

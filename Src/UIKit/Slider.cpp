@@ -53,8 +53,8 @@ namespace d14engine::uikit
 
         m_valueLabel->setText(ss.str());
 
-        loadHandleShadowBitmap();
-        loadValueLabelShadowBitmap();
+        loadHandleMaskBitmap();
+        loadValueLabelMaskBitmap();
     }
 
     void Slider::onStartSliding(float value)
@@ -81,11 +81,11 @@ namespace d14engine::uikit
         forceGlobalExclusiveFocusing = false;
     }
 
-    void Slider::loadHandleShadowBitmap()
+    void Slider::loadHandleMaskBitmap()
     {
         auto& geoSetting = getAppearance().handle.geometry;
 
-        handleShadow.loadBitmap(math_utils::roundu(geoSetting.size));
+        handleMask.loadBitmap(math_utils::roundu(geoSetting.size));
     }
 
     bool Slider::setValue(float value)
@@ -137,7 +137,7 @@ namespace d14engine::uikit
     void Slider::onRendererDrawD2d1LayerHelper(Renderer* rndr)
     {
         // Handle Shadow
-        handleShadow.beginDraw(rndr->d2d1DeviceContext());
+        handleMask.beginDraw(rndr->d2d1DeviceContext());
         {
             auto& geoSetting = getAppearance().handle.geometry;
 
@@ -152,12 +152,12 @@ namespace d14engine::uikit
             },
             resource_utils::g_solidColorBrush.Get());
         }
-        handleShadow.endDraw(rndr->d2d1DeviceContext());
+        handleMask.endDraw(rndr->d2d1DeviceContext());
 
         // Value Label Shadow
         if (m_valueLabel->isD2d1ObjectVisible())
         {
-            valueLabelShadow.beginDraw(rndr->d2d1DeviceContext());
+            valueLabelMask.beginDraw(rndr->d2d1DeviceContext());
             {
                 auto& setting = getAppearance().valueLabel;
 
@@ -200,7 +200,7 @@ namespace d14engine::uikit
                 rndr->d2d1DeviceContext()->FillGeometry(
                     pathGeo.Get(), resource_utils::g_solidColorBrush.Get());
             }
-            valueLabelShadow.endDraw(rndr->d2d1DeviceContext());
+            valueLabelMask.endDraw(rndr->d2d1DeviceContext());
         }
     }
 
@@ -234,9 +234,9 @@ namespace d14engine::uikit
         {
             // Shadow
             auto& shadow = getAppearance().handle.shadow;
-            handleShadow.color = m_enabled ? shadow.color : shadow.secondaryColor;
+            handleMask.color = m_enabled ? shadow.color : shadow.secondaryColor;
 
-            handleShadow.configEffectInput(resource_utils::g_shadowEffect.Get());
+            handleMask.configEffectInput(resource_utils::g_shadowEffect.Get());
 
             rndr->d2d1DeviceContext()->DrawImage(
                 resource_utils::g_shadowEffect.Get(), math_utils::leftTop(handleAbsoluteRect()));
@@ -266,10 +266,10 @@ namespace d14engine::uikit
             // Shadow
             auto& shadowSetting = getAppearance().valueLabel.shadow;
 
-            valueLabelShadow.color = shadowSetting.color;
-            valueLabelShadow.standardDeviation = shadowSetting.standardDeviation;
+            valueLabelMask.color = shadowSetting.color;
+            valueLabelMask.standardDeviation = shadowSetting.standardDeviation;
 
-            valueLabelShadow.configEffectInput(resource_utils::g_shadowEffect.Get());
+            valueLabelMask.configEffectInput(resource_utils::g_shadowEffect.Get());
 
             auto targetOffset = math_utils::roundf(math_utils::leftTop(vlblRect));
 
@@ -279,8 +279,8 @@ namespace d14engine::uikit
             auto destinationRect = math_utils::roundf(vlblRect);
 
             rndr->d2d1DeviceContext()->DrawBitmap(
-                valueLabelShadow.data.Get(), destinationRect,
-                valueLabelShadow.opacity, valueLabelShadow.getInterpolationMode());
+                valueLabelMask.data.Get(), destinationRect,
+                valueLabelMask.opacity, valueLabelMask.getInterpolationMode());
 
             // Text
             m_valueLabel->onRendererDrawD2d1Object(rndr);
@@ -298,8 +298,8 @@ namespace d14engine::uikit
 
         m_valueLabel->transform(valueLabelSelfCoordRect());
 
-        loadHandleShadowBitmap();
-        loadValueLabelShadowBitmap();
+        loadHandleMaskBitmap();
+        loadValueLabelMaskBitmap();
     }
 
     void Slider::onChangeThemeHelper(WstrParam themeName)
