@@ -116,7 +116,8 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             SET_CARD_SIZE(Active, 266.0f, 40.0f);
 
 #undef SET_CARD_SIZE
-            ui_textViewer->loadActiveCardMaskBitmap();
+            ui_textViewer->activeCard.loadMaskBitmap();
+            ui_textViewer->activeCard.loadPathGeo();
 
             auto& barAppear = ui_textViewer->getAppearance().tabBar;
 

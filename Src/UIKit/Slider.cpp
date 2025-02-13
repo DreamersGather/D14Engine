@@ -53,8 +53,10 @@ namespace d14engine::uikit
 
         m_valueLabel->setText(ss.str());
 
-        loadHandleMaskBitmap();
+        loadHandleShadowBitmap();
         loadValueLabelMaskBitmap();
+
+        loadSideTrianglePathGeo();
     }
 
     void Slider::onStartSliding(float value)
@@ -81,11 +83,30 @@ namespace d14engine::uikit
         forceGlobalExclusiveFocusing = false;
     }
 
-    void Slider::loadHandleMaskBitmap()
+    void Slider::loadHandleShadowBitmap()
     {
         auto& geoSetting = getAppearance().handle.geometry;
 
-        handleMask.loadBitmap(math_utils::roundu(geoSetting.size));
+        handleShadow.loadBitmap(math_utils::roundu(geoSetting.size));
+    }
+
+    void Slider::loadSideTrianglePathGeo()
+    {
+        auto factory = Application::g_app->dx12Renderer()->d2d1Factory();
+        THROW_IF_FAILED(factory->CreatePathGeometry(&sideTrianglePathGeo));
+
+        ComPtr<ID2D1GeometrySink> geoSink;
+        THROW_IF_FAILED(sideTrianglePathGeo->Open(&geoSink));
+        {
+            auto triangleVertices = valueLabelSideTriangleInShadow();
+
+            geoSink->BeginFigure(triangleVertices[2], D2D1_FIGURE_BEGIN_FILLED);
+
+            geoSink->AddLines(triangleVertices.data(), (UINT32)triangleVertices.size());
+
+            geoSink->EndFigure(D2D1_FIGURE_END_CLOSED);
+        }
+        THROW_IF_FAILED(geoSink->Close());
     }
 
     bool Slider::setValue(float value)
@@ -137,7 +158,7 @@ namespace d14engine::uikit
     void Slider::onRendererDrawD2d1LayerHelper(Renderer* rndr)
     {
         // Handle Shadow
-        handleMask.beginDraw(rndr->d2d1DeviceContext());
+        handleShadow.beginDraw(rndr->d2d1DeviceContext());
         {
             auto& geoSetting = getAppearance().handle.geometry;
 
@@ -152,9 +173,9 @@ namespace d14engine::uikit
             },
             resource_utils::g_solidColorBrush.Get());
         }
-        handleMask.endDraw(rndr->d2d1DeviceContext());
+        handleShadow.endDraw(rndr->d2d1DeviceContext());
 
-        // Value Label Shadow
+        // Value Label Mask
         if (m_valueLabel->isD2d1ObjectVisible())
         {
             valueLabelMask.beginDraw(rndr->d2d1DeviceContext());
@@ -176,29 +197,14 @@ namespace d14engine::uikit
                 resource_utils::g_solidColorBrush.Get());
 
                 // Side Triangle
-                ComPtr<ID2D1PathGeometry> pathGeo;
-                THROW_IF_FAILED(rndr->d2d1Factory()->CreatePathGeometry(&pathGeo));
-
-                ComPtr<ID2D1GeometrySink> geoSink;
-                THROW_IF_FAILED(pathGeo->Open(&geoSink));
-                {
-                    auto triangleVertices = valueLabelSideTriangleInShadow();
-
-                    geoSink->BeginFigure(triangleVertices[2], D2D1_FIGURE_BEGIN_FILLED);
-
-                    geoSink->AddLines(triangleVertices.data(), (UINT32)triangleVertices.size());
-
-                    geoSink->EndFigure(D2D1_FIGURE_END_CLOSED);
-                }
-                THROW_IF_FAILED(geoSink->Close());
-
                 auto& trngBkgn = setting.sideTriangle.background;
 
                 resource_utils::g_solidColorBrush->SetColor(trngBkgn.color);
                 resource_utils::g_solidColorBrush->SetOpacity(trngBkgn.opacity);
 
                 rndr->d2d1DeviceContext()->FillGeometry(
-                    pathGeo.Get(), resource_utils::g_solidColorBrush.Get());
+                    sideTrianglePathGeo.Get(),
+                    resource_utils::g_solidColorBrush.Get());
             }
             valueLabelMask.endDraw(rndr->d2d1DeviceContext());
         }
@@ -234,9 +240,9 @@ namespace d14engine::uikit
         {
             // Shadow
             auto& shadow = getAppearance().handle.shadow;
-            handleMask.color = m_enabled ? shadow.color : shadow.secondaryColor;
+            handleShadow.color = m_enabled ? shadow.color : shadow.secondaryColor;
 
-            handleMask.configEffectInput(resource_utils::g_shadowEffect.Get());
+            handleShadow.configEffectInput(resource_utils::g_shadowEffect.Get());
 
             rndr->d2d1DeviceContext()->DrawImage(
                 resource_utils::g_shadowEffect.Get(), math_utils::leftTop(handleAbsoluteRect()));
@@ -298,7 +304,7 @@ namespace d14engine::uikit
 
         m_valueLabel->transform(valueLabelSelfCoordRect());
 
-        loadHandleMaskBitmap();
+        loadHandleShadowBitmap();
         loadValueLabelMaskBitmap();
     }
 

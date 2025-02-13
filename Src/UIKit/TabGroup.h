@@ -2,6 +2,7 @@
 
 #include "Common/Precompile.h"
 
+#include "Common/CppLangUtils/EnableMasterPtr.h"
 #include "Common/CppLangUtils/IndexIterator.h"
 #include "Common/MathUtils/2D.h"
 
@@ -26,9 +27,17 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        ShadowMask activeCardMask = {};
+        struct ActiveCard : cpp_lang_utils::EnableMasterPtr<TabGroup>
+        {
+            using EnableMasterPtr::EnableMasterPtr;
 
-        void loadActiveCardMaskBitmap();
+            ShadowMask mask = {};
+            ComPtr<ID2D1PathGeometry> pathGeo = {};
+
+            void loadMaskBitmap();
+            void loadPathGeo();
+        }
+        activeCard{ this };
 
         D2D1_RECT_F cardBarExtendedAbsoluteRect() const;
         D2D1_RECT_F cardBarExtendedCardBarAbsoluteRect() const;

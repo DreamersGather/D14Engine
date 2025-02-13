@@ -23,11 +23,15 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        ShadowMask handleMask = {};
+        ShadowMask handleShadow = {};
         ShadowMask valueLabelMask = {};
 
-        void loadHandleMaskBitmap();
+        void loadHandleShadowBitmap();
         virtual void loadValueLabelMaskBitmap() = 0;
+
+        ComPtr<ID2D1PathGeometry> sideTrianglePathGeo = {};
+
+        void loadSideTrianglePathGeo();
 
         virtual D2D1_RECT_F thumbAreaExtendedRect(const D2D1_RECT_F& flatRect) const = 0;
 
