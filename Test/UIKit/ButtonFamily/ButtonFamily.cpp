@@ -1,5 +1,8 @@
 ﻿#include "Common/Precompile.h"
 
+#include <cstdlib>
+#include <ctime>
+
 #include "Common/DirectXError.h"
 
 #include "Renderer/Renderer.h"
@@ -214,8 +217,8 @@ D14_SET_APP_ENTRY(mainButtonFamily)
                 }
             };
         }
-        auto ui_flatButton = makeUIObject<FlatButton>(L"Add X-radius");
-        auto ui_filledButton = makeUIObject<FilledButton>(L"Reduce X-radius");
+        auto ui_flatButton = makeUIObject<FlatButton>(L"(+/-) X-radius");
+        auto ui_filledButton = makeUIObject<FilledButton>(L"Random X-radius");
         auto ui_xRadLabel = makeManagedUIObject<Label>(ui_centerLayout);
         {
             ui_flatButton->resize(200.0f, 50.0f);
@@ -238,8 +241,8 @@ D14_SET_APP_ENTRY(mainButtonFamily)
             ui_xRadLabel->setText(L"Round radius X: 0px\n(Try wheel above this)");
             THROW_IF_FAILED(ui_xRadLabel->textLayout()->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
         }
-        auto ui_outlinedButton = makeUIObject<OutlinedButton>(L"Add Y-radius");
-        auto ui_elevatedButton = makeUIObject<ElevatedButton>(L"Reduce Y-radius");
+        auto ui_outlinedButton = makeUIObject<OutlinedButton>(L"(+/-) Y-radius");
+        auto ui_elevatedButton = makeUIObject<ElevatedButton>(L"Random Y-radius");
         auto ui_yRadLabel = makeManagedUIObject<Label>(ui_centerLayout);
         {
             ui_outlinedButton->resize(200.0f, 50.0f);
@@ -262,7 +265,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
             ui_yRadLabel->setText(L"Round radius Y: 0px\n(Try wheel above this)");
             THROW_IF_FAILED(ui_yRadLabel->textLayout()->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
         }
-        // Set add/reduce round-radius callbacks.
+        // Set add/reduce/random round-radius callbacks.
         {
             std::array<WeakPtr<Button>, 6> wk_buttons =
             {
@@ -282,7 +285,14 @@ D14_SET_APP_ENTRY(mainButtonFamily)
                     if (!wk_button.expired())
                     {
                         auto sh_button = wk_button.lock();
-                        roundRadiusX = (int)++sh_button->roundRadiusX;
+                        if (e.left())
+                        {
+                            roundRadiusX = (int)++sh_button->roundRadiusX;
+                        }
+                        if (e.right())
+                        {
+                            roundRadiusX = (int)--sh_button->roundRadiusX;
+                        }
                     }
                 }
                 if (!wk_labelX.expired())
@@ -295,21 +305,32 @@ D14_SET_APP_ENTRY(mainButtonFamily)
             ui_filledButton->f_onMouseButtonRelease = [=]
             (ClickablePanel* p, ClickablePanel::Event& e)
             {
-                int roundRadiusX = 0;
-                for (auto& wk_button : wk_buttons)
+                static int roundRadiusX = 0;
+                // Test Multi-threading Functionality
+                app->registerThreadCallback(0, [=]
                 {
-                    if (!wk_button.expired())
+                    for (auto& wk_button : wk_buttons)
                     {
-                        auto sh_button = wk_button.lock();
-                        roundRadiusX = (int)--sh_button->roundRadiusX;
+                        if (!wk_button.expired())
+                        {
+                            auto sh_button = wk_button.lock();
+                            sh_button->roundRadiusX = (float)roundRadiusX;
+                        }
                     }
-                }
-                if (!wk_labelX.expired())
+                    if (!wk_labelX.expired())
+                    {
+                        wk_labelX.lock()->setText(
+                            L"Round radius X: " + std::to_wstring(roundRadiusX) +
+                            L"px" + L"\n(Try wheel above this)");
+                    }
+                });
+                Thread([=]
                 {
-                    wk_labelX.lock()->setText(
-                        L"Round radius X: " + std::to_wstring(roundRadiusX) +
-                        L"px" + L"\n(Try wheel above this)");
-                }
+                    srand((unsigned int)time(0));
+                    roundRadiusX = rand() % 30;
+                    app->triggerThreadEvent(0);
+                })
+                .detach();
             };
             ui_outlinedButton->f_onMouseButtonRelease = [=]
             (ClickablePanel* p, ClickablePanel::Event& e)
@@ -320,7 +341,14 @@ D14_SET_APP_ENTRY(mainButtonFamily)
                     if (!wk_button.expired())
                     {
                         auto sh_button = wk_button.lock();
-                        roundRadiusY = (int)++sh_button->roundRadiusY;
+                        if (e.left())
+                        {
+                            roundRadiusY = (int)++sh_button->roundRadiusY;
+                        }
+                        if (e.right())
+                        {
+                            roundRadiusY = (int)--sh_button->roundRadiusY;
+                        }
                     }
                 }
                 if (!wk_labelY.expired())
@@ -333,21 +361,37 @@ D14_SET_APP_ENTRY(mainButtonFamily)
             ui_elevatedButton->f_onMouseButtonRelease = [=]
             (ClickablePanel* p, ClickablePanel::Event& e)
             {
-                int roundRadiusY = 0;
-                for (auto& wk_button : wk_buttons)
+                static int roundRadiusY = 0;
+                // Test Multi-threading Functionality
+                app->startThread(Thread([=]
                 {
-                    if (!wk_button.expired())
+                    srand((unsigned int)time(0));
+                    roundRadiusY = rand() % 30;
+                    app->triggerThreadEvent(0);
+                }),
+                // callbacks
+                {
                     {
-                        auto sh_button = wk_button.lock();
-                        roundRadiusY = (int)--sh_button->roundRadiusY;
+                        0, // id
+                        [=] // callback
+                        {
+                            for (auto& wk_button : wk_buttons)
+                            {
+                                if (!wk_button.expired())
+                                {
+                                    auto sh_button = wk_button.lock();
+                                    sh_button->roundRadiusY = (float)roundRadiusY;
+                                }
+                            }
+                            if (!wk_labelY.expired())
+                            {
+                                wk_labelY.lock()->setText(
+                                    L"Round radius Y: " + std::to_wstring(roundRadiusY) +
+                                    L"px" + L"\n(Try wheel above this)");
+                            }
+                        }
                     }
-                }
-                if (!wk_labelY.expired())
-                {
-                    wk_labelY.lock()->setText(
-                        L"Round radius Y: " + std::to_wstring(roundRadiusY) +
-                        L"px" + L"\n(Try wheel above this)");
-                }
+                });
             };
             ui_xRadLabel->f_onMouseWheel = [=](Panel* p, MouseWheelEvent& e)
             {
