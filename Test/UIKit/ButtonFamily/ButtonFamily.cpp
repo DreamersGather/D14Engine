@@ -363,35 +363,30 @@ D14_SET_APP_ENTRY(mainButtonFamily)
             {
                 static int roundRadiusY = 0;
                 // Test Multi-threading Functionality
-                app->startThread(Thread([=]
+                app->registerThreadCallback(1, [=]
+                {
+                    for (auto& wk_button : wk_buttons)
+                    {
+                        if (!wk_button.expired())
+                        {
+                            auto sh_button = wk_button.lock();
+                            sh_button->roundRadiusY = (float)roundRadiusY;
+                        }
+                    }
+                    if (!wk_labelY.expired())
+                    {
+                        wk_labelY.lock()->setText(
+                            L"Round radius Y: " + std::to_wstring(roundRadiusY) +
+                            L"px" + L"\n(Try wheel above this)");
+                    }
+                });
+                Thread([=]
                 {
                     srand((unsigned int)time(0));
                     roundRadiusY = rand() % 30;
-                    app->triggerThreadEvent(0);
-                }),
-                // callbacks
-                {
-                    {
-                        0, // id
-                        [=] // callback
-                        {
-                            for (auto& wk_button : wk_buttons)
-                            {
-                                if (!wk_button.expired())
-                                {
-                                    auto sh_button = wk_button.lock();
-                                    sh_button->roundRadiusY = (float)roundRadiusY;
-                                }
-                            }
-                            if (!wk_labelY.expired())
-                            {
-                                wk_labelY.lock()->setText(
-                                    L"Round radius Y: " + std::to_wstring(roundRadiusY) +
-                                    L"px" + L"\n(Try wheel above this)");
-                            }
-                        }
-                    }
-                });
+                    app->triggerThreadEvent(1);
+                })
+                .detach();
             };
             ui_xRadLabel->f_onMouseWheel = [=](Panel* p, MouseWheelEvent& e)
             {
