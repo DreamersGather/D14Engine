@@ -326,8 +326,9 @@ namespace d14engine::uikit
     // Handle Thread Event
     public:
         using ThreadEventID = UINT64; // matches WPARAM
+        using ThreadEventData = UINT64; // matches LPARAM
 
-        using ThreadCallback = Function<void()>;
+        using ThreadCallback = Function<void(ThreadEventData)>;
         using ThreadCallbackParam = const ThreadCallback&;
 
     private:
@@ -339,6 +340,6 @@ namespace d14engine::uikit
         void registerThreadCallback(ThreadEventID id, ThreadCallbackParam callback);
         void unregisterThreadCallback(ThreadEventID id);
 
-        void triggerThreadEvent(ThreadEventID id);
+        void triggerThreadEvent(ThreadEventID id, ThreadEventData data = {});
     };
 }

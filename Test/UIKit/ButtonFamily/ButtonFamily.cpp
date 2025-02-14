@@ -322,7 +322,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
                 })
                 .detach();
             };
-            app->registerThreadCallback(idx, [=]
+            app->registerThreadCallback(idx, [=](auto data)
             {
                 for (auto& wk_button : wk_buttons)
                 {
@@ -384,7 +384,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
                 })
                 .detach();
             };
-            app->registerThreadCallback(idy, [=]
+            app->registerThreadCallback(idy, [=](auto data)
             {
                 for (auto& wk_button : wk_buttons)
                 {
