@@ -887,7 +887,6 @@ namespace d14engine::uikit
                 {
                     callback->second();
                 }
-                app->m_threadCallbacks.erase(callback);
             }
             return 0;
         }
