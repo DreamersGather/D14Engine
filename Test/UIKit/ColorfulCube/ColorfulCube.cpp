@@ -186,12 +186,18 @@ D14_SET_APP_ENTRY(mainColorfulCube)
                 0, BLB_PSZ_ARGS(rootBlob), IID_PPV_ARGS(&rootSignature)));
 
             // Create pipeline state.
-
             Wstring shaderPath = L"Test/UIKit/ColorfulCube/ColorfulCube.hlsl";
 
+#ifdef _DEBUG
+            Wstring vsPdbPath = app->createInfo.binaryPath + L"Shaders/PDB/ColorfulCube_VS.pdb";
+            Wstring psPdbPath = app->createInfo.binaryPath + L"Shaders/PDB/ColorfulCube_PS.pdb";
+
+            auto vs = graph_utils::shader::compile(shaderPath.c_str(), { L"VS", L"vs_6_0", true, true, vsPdbPath });
+            auto ps = graph_utils::shader::compile(shaderPath.c_str(), { L"PS", L"ps_6_0", true, true, psPdbPath });
+#else
             auto vs = graph_utils::shader::compile(shaderPath.c_str(), { L"VS", L"vs_6_0" });
             auto ps = graph_utils::shader::compile(shaderPath.c_str(), { L"PS", L"ps_6_0" });
-
+#endif
             D3D12_INPUT_ELEMENT_DESC inputElemDescs[] =
             {
                 {
@@ -386,14 +392,14 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         {
             Vertex vertices[] =
             {
-                { {+0.5f, +0.5f, +0.5f}, XMFLOAT4{Colors::Cyan    } }, // 0
-                { {-0.5f, +0.5f, +0.5f}, XMFLOAT4{Colors::Blue    } }, // 1
-                { {+0.5f, -0.5f, +0.5f}, XMFLOAT4{Colors::Green   } }, // 2
-                { {+0.5f, +0.5f, -0.5f}, XMFLOAT4{Colors::White   } }, // 3
-                { {-0.5f, -0.5f, +0.5f}, XMFLOAT4{Colors::Black   } }, // 4
-                { {-0.5f, +0.5f, -0.5f}, XMFLOAT4{Colors::Magenta } }, // 5
-                { {+0.5f, -0.5f, -0.5f}, XMFLOAT4{Colors::Yellow  } }, // 6
-                { {-0.5f, -0.5f, -0.5f}, XMFLOAT4{Colors::Red     } }  // 7
+                { { +0.5f, +0.5f, +0.5f }, XMFLOAT4{ Colors::Cyan    } }, // 0
+                { { -0.5f, +0.5f, +0.5f }, XMFLOAT4{ Colors::Blue    } }, // 1
+                { { +0.5f, -0.5f, +0.5f }, XMFLOAT4{ Colors::Green   } }, // 2
+                { { +0.5f, +0.5f, -0.5f }, XMFLOAT4{ Colors::White   } }, // 3
+                { { -0.5f, -0.5f, +0.5f }, XMFLOAT4{ Colors::Black   } }, // 4
+                { { -0.5f, +0.5f, -0.5f }, XMFLOAT4{ Colors::Magenta } }, // 5
+                { { +0.5f, -0.5f, -0.5f }, XMFLOAT4{ Colors::Yellow  } }, // 6
+                { { -0.5f, -0.5f, -0.5f }, XMFLOAT4{ Colors::Red     } }  // 7
             };
             UINT32 indices[] =
             {

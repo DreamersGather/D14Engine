@@ -21,18 +21,18 @@ namespace d14engine::renderer::graph_utils
             THROW_IF_FAILED(g_utils->CreateDefaultIncludeHandler(&g_defaultIncludeHandler));
         }
 
-        ComPtr<IDxcBlob> load(WstrParam csoFileName)
+        ComPtr<IDxcBlob> load(WstrParam fileName)
         {
             ComPtr<IDxcBlobEncoding> cso;
-            THROW_IF_FAILED(g_utils->LoadFile(csoFileName.c_str(), nullptr, &cso));
+            THROW_IF_FAILED(g_utils->LoadFile(fileName.c_str(), nullptr, &cso));
             return cso; // no encoding for binary data
         }
 
-        void save(WstrParam csoFileName, IDxcBlob* blob)
+        void save(WstrParam fileName, IDxcBlob* blob)
         {
             auto hFile = CreateFile
             (
-                /* lpFileName            */ csoFileName.c_str(),
+                /* lpFileName            */ fileName.c_str(),
                 /* dwDesiredAccess       */ GENERIC_WRITE,
                 /* dwShareMode           */ 0,
                 /* lpSecurityAttributes  */ nullptr,
@@ -67,32 +67,50 @@ namespace d14engine::renderer::graph_utils
             source.Size = hlsl->GetBufferSize();
             source.Encoding = DXC_CP_ACP;
 
-            LPCWSTR arguments[] =
+            std::vector<LPCWSTR> arguments =
             {
                 hlslFileName.c_str(),
                 L"-E", option.entryPoint.c_str(),
                 L"-T", option.targetProfile.c_str(),
-#ifdef _DEBUG
-                DXC_ARG_DEBUG,
-                DXC_ARG_SKIP_OPTIMIZATIONS,
-#else
-                DXC_ARG_OPTIMIZATION_LEVEL3,
-#endif
+
                 // DirectX API (e.g. DirectXMath) typically uses row-major matrix.
                 // HLSL, however, rebelliously uses column-major matrix by default.
                 // It is always better to specify the major-type explicitly anyway.
                 DXC_ARG_PACK_MATRIX_ROW_MAJOR
             };
+            if (option.debug)
+            {
+                std::vector<LPCWSTR> debugArguments =
+                {
+                    DXC_ARG_DEBUG,
+                    DXC_ARG_SKIP_OPTIMIZATIONS
+                };
+                arguments.insert(
+                    arguments.end(),
+                    debugArguments.begin(),
+                    debugArguments.end());
+            }
+            else arguments.push_back(DXC_ARG_OPTIMIZATION_LEVEL3);
 
+            if (option.pdb)
+            {
+                std::vector<LPCWSTR> pdbArguments =
+                {
+                    L"-Qstrip_debug",
+                    L"-Qstrip_reflect"
+                };
+                arguments.insert(
+                    arguments.end(),
+                    pdbArguments.begin(),
+                    pdbArguments.end());
+            }
             ComPtr<IDxcResult> result;
             THROW_IF_FAILED(g_compiler->Compile(
                 &source,
-                ARR_NUM_ARGS(arguments),
+                arguments.data(),
+                (UINT32)arguments.size(),
                 g_defaultIncludeHandler.Get(),
                 IID_PPV_ARGS(&result)));
-
-#ifdef _DEBUG
-            ComPtr<IDxcBlobUtf8> error;
 
 #pragma warning(push)
 // This warning will be raised if an annotated function parameter is passed
@@ -101,9 +119,9 @@ namespace d14engine::renderer::graph_utils
 // is annotated as _COM_Outptr_ instead of _COM_Outptr_opt_result_maybenull_.
 #pragma warning(disable : 6387)
 
+#ifdef _DEBUG
+            ComPtr<IDxcBlobUtf8> error;
             THROW_IF_FAILED(result->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&error), nullptr));
-
-#pragma warning(pop)
 
             if (error && error->GetStringLength() != 0)
             {
@@ -114,12 +132,13 @@ namespace d14engine::renderer::graph_utils
             THROW_IF_FAILED(result->GetStatus(&hrStatus));
             THROW_IF_FAILED(hrStatus);
 
+            if (option.pdb)
+            {
+                ComPtr<IDxcBlob> pdb;
+                THROW_IF_FAILED(result->GetOutput(DXC_OUT_PDB, IID_PPV_ARGS(&pdb), nullptr));
+                save(option.pdbOutPath, pdb.Get());
+            }
             ComPtr<IDxcBlob> shader;
-
-#pragma warning(push)
-// Please refer to the above comment; the same warning applies here as well.
-#pragma warning(disable : 6387)
-
             THROW_IF_FAILED(result->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shader), nullptr));
 
 #pragma warning(pop)

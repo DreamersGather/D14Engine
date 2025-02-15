@@ -8,15 +8,20 @@ namespace d14engine::renderer::graph_utils
     {
         void initialize();
 
-        // CSO: Compiled Shader Object
-
-        ComPtr<IDxcBlob> load(WstrParam csoFileName);
-        void save(WstrParam csoFileName, IDxcBlob* blob);
+        ComPtr<IDxcBlob> load(WstrParam fileName);
+        void save(WstrParam fileName, IDxcBlob* blob);
 
         struct CompileOption
         {
             Wstring entryPoint;
             Wstring targetProfile;
+#ifdef _DEBUG
+            bool debug = true;
+#else
+            bool debug = false;
+#endif
+            bool pdb = false;
+            Wstring pdbOutPath;
         };
         ComPtr<IDxcBlob> compile(
             WstrParam hlslFileName,
@@ -24,7 +29,8 @@ namespace d14engine::renderer::graph_utils
 
         enum class Format
         {
-            CSO, HLSL
+            CSO, // Compiled Shader Object
+            HLSL // High Level Shader Language
         };
         constexpr static auto CSO = Format::CSO;
         constexpr static auto HLSL = Format::HLSL;
