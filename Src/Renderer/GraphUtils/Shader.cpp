@@ -105,12 +105,15 @@ namespace d14engine::renderer::graph_utils
                     pdbArguments.end());
             }
             ComPtr<IDxcResult> result;
-            THROW_IF_FAILED(g_compiler->Compile(
-                &source,
-                arguments.data(),
-                (UINT32)arguments.size(),
-                g_defaultIncludeHandler.Get(),
-                IID_PPV_ARGS(&result)));
+            THROW_IF_FAILED(g_compiler->Compile
+            (
+                /* pSource         */ &source,
+                /* pArguments      */ arguments.data(),
+                /* argCount        */ (UINT32)arguments.size(),
+                /* pIncludeHandler */ g_defaultIncludeHandler.Get(),
+                /* riid            */
+                /* ppResult        */ IID_PPV_ARGS(&result)
+            ));
 
 #pragma warning(push)
 // This warning will be raised if an annotated function parameter is passed
