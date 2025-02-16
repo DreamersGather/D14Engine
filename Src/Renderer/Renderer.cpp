@@ -453,7 +453,7 @@ namespace d14engine::renderer
     {
         if (m_dxgiFactoryInfo.setting.m_allowTearing && !m_dxgiFactoryInfo.feature.allowTearing)
         {
-            THROW_ERROR(L"Tearing (a.k.a VSync/Off) support is not available.");
+            THROW_ERROR(L"Tearing (required for VRR displays) is not supported.");
         }
     }
 
@@ -848,7 +848,7 @@ namespace d14engine::renderer
 
         // DirectX 12 3D does not support creating MSAA swap chain anymore.
         // In fact, it is the Flip-Mode that disables the direct MSAA usage,
-        // and this is achieved by using DXGI_SWAP_EFFECT_FLIP_DISCARD.
+        // and this is restricted by using DXGI_SWAP_EFFECT_FLIP_DISCARD.
         // 
         // In traditional methods, the back buffers of a MSAA swap chain will
         // be resolved automatically during presenting, but it is not allowed
@@ -858,11 +858,6 @@ namespace d14engine::renderer
         desc.SampleDesc.Count = 1;
         desc.SampleDesc.Quality = 0;
 
-        // Under current architecture, the renderer only supports the max
-        // FPS of (MaxLatency - 1) * Monitor_RefreshRate, where the default
-        // latency of 3 means the FPS can't go higher than 2 * RefreshRate,
-        // so for a 60_Hz monitor the FPS can't go above 120 (enough though).
-
         desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         desc.BufferCount = (UINT)m_backBuffers.size();
 
@@ -870,10 +865,8 @@ namespace d14engine::renderer
         desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // NO direct MSAA!
         desc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
 
-        // To adjust the latency, FRAME_LATENCY_WAITABLE_OBJECT must be used.
-
-        desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH |
-            DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+        // Allows the swap chain to call IDXGISwapChain::ResizeTarget.
+        desc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
         if (m_dxgiFactoryInfo.feature.allowTearing)
         {
@@ -890,7 +883,7 @@ namespace d14engine::renderer
 
         if (m_dxgiFactoryInfo.feature.allowTearing)
         {
-            // IDXGIFactory::MakeWindowAssociation must be called on the
+            // IDXGIFactory::MakeWindowAssociation can be called only on the
             // factory associated with the target HWND swap chain.
             // 
             // We can guarantee that by calling IDXGIObject::GetParent on the
@@ -899,7 +892,7 @@ namespace d14engine::renderer
             ComPtr<IDXGIFactory> tmpDxgiFactory;
             m_swapChain->GetParent(IID_PPV_ARGS(&tmpDxgiFactory));
 
-            // When tearing is available we will handle "ALT+Enter" in
+            // When tearing is supported we will handle "ALT+Enter" in
             // fnWndProc rather than let the factory set fullscreen state.
 
             THROW_IF_FAILED(tmpDxgiFactory->MakeWindowAssociation(

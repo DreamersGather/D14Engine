@@ -29,7 +29,7 @@ namespace d14engine::renderer
             // Select GPU device.  Set to 0 to use the default one.
             UINT adapterIndex = 0;
 
-            // For [bitblt] model, which is used by default, values are:
+            // For [flip] model, which is used by default, values are:
             // 0 - The presentation occurs immediately, there is no synchronization.
             // 1 through 4 - Synchronize presentation after the nth vertical blank.
             UINT syncInterval = 0;
@@ -136,7 +136,7 @@ namespace d14engine::renderer
 
             struct Feature
             {
-                bool allowTearing = {}; // Tearing-On == VSync-Off
+                bool allowTearing = {}; // Tearing-On --> VSync-Off
             }
             feature = {};
 
