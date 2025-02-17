@@ -1091,6 +1091,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='REditor|Win32'">true</ExcludedFromBuild>
     </FxCompile>
+    <None Include="format.ps1" />
     <None Include="LICENSE" />
     <None Include="comment.html" />
     <ClCompile Include="Src\UIKit\Appearances\ComboBox.cpp">
@@ -1120,6 +1121,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <None Include="README.md" />
+    <None Include="sortxml.cs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Common\DirectXError.cpp" />

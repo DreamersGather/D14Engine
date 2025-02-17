@@ -788,6 +788,8 @@
     <None Include="comment.html" />
     <None Include="README.md" />
     <None Include=".gitattributes" />
+    <None Include="sortxml.cs" />
+    <None Include="format.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Src\UIKit\Appearances\ColorScheme.txt" />
