@@ -1064,7 +1064,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Test\UIKit\ColorfulCube\ColorfulCube.cpp" />
     <None Include=".editorconfig" />
     <None Include=".gitattributes" />
     <None Include=".gitignore" />

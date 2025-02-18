@@ -31,7 +31,10 @@ namespace d14engine::renderer
         populateDxgiFactorySettings();
         populateD3d12DeviceSettings();
 
+        m_composition = createInfo.composition;
+
         m_sceneColor = createInfo.sceneColor;
+        m_layerColor = createInfo.layerColor;
 
         m_timer = std::make_unique<TickTimer>();
         
@@ -39,17 +42,35 @@ namespace d14engine::renderer
         queryDxgiFactoryInfo();
         checkDxgiFactoryConfigs();
 
-        m_dxgiFactoryInfo.setting.selectAdapter(createInfo.adapterIndex);
+        m_dxgiFactoryInfo.setting.setAdapter(createInfo.adapterIndex);
 
-        // The letterbox will not be created until selectAdapter called.
-        m_letterbox->color = createInfo.letterboxColor;
-
+        // Letterbox will only be created when 1.Using Direct3D textures
+        // as back buffers and 2.The adapter has already been configured.
+        if (!createInfo.composition)
+        {
+            m_letterbox->color = createInfo.letterboxColor;
+        }
         if (createInfo.fullscreen) m_window.enterFullscreenMode();
     }
 
     Renderer::~Renderer()
     {
         waitGpuCommand();
+    }
+
+    RECT Renderer::queryDesktopRectGDI()
+    {
+        DEVMODE devMode = {};
+        devMode.dmSize = sizeof(DEVMODE);
+
+        EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS, &devMode);
+        return
+        {
+            devMode.dmPosition.x,
+            devMode.dmPosition.y,
+            devMode.dmPosition.x + (LONG)devMode.dmPelsWidth,
+            devMode.dmPosition.y + (LONG)devMode.dmPelsHeight
+        };
     }
 
     Renderer::Window::Window(Renderer* master, HWND ptr)
@@ -116,8 +137,14 @@ namespace d14engine::renderer
         SetWindowLong(ptr, GWL_STYLE, WS_POPUP);
 
         RECT fullRect = {};
-        // Try to query the size of current output screen from the swap chain.
-        try
+        if (rndr->m_composition)
+        {
+            // Because GetContainingOutput is invalid for the swap chain
+            // created with IDXGIFactory2::CreateSwapChainForComposition,
+            // we have to directly query the desktop coordinate from GDI.
+            fullRect = queryDesktopRectGDI();
+        }
+        else // Query the size of current output screen from the swap chain.
         {
             ComPtr<IDXGIOutput> output;
             THROW_IF_FAILED(rndr->m_swapChain->GetContainingOutput(&output));
@@ -126,21 +153,6 @@ namespace d14engine::renderer
             THROW_IF_FAILED(output->GetDesc(&outputDesc));
 
             fullRect = outputDesc.DesktopCoordinates;
-        }
-        catch (...) // Call GDI interface to query it from the primary device.
-        {
-            DEVMODE devMode = {};
-            devMode.dmSize = sizeof(DEVMODE);
-
-            EnumDisplaySettings(nullptr, ENUM_CURRENT_SETTINGS, &devMode);
-
-            fullRect =
-            {
-                devMode.dmPosition.x,
-                devMode.dmPosition.y,
-                devMode.dmPosition.x + (LONG)devMode.dmPelsWidth,
-                devMode.dmPosition.y + (LONG)devMode.dmPelsHeight
-            };
         }
 
         SetWindowPos(
@@ -190,24 +202,11 @@ namespace d14engine::renderer
     {
         m_window.onResize();
 
-        flushCmdQueue();
-        resetCmdList();
-        clearInterpStates();
-
         resizeSwapChain();
-        // The back buffer index will be reset after the swap chain resized.
-        m_currFrameIndex = m_swapChain->GetCurrentBackBufferIndex();
 
-        createBackBuffers();
-        createSceneBuffer();
-        createWrappedBuffer();
-
-        submitCmdList();
-        flushCmdQueue();
-
-        if (m_d3d12DeviceInfo.setting.m_resolutionScaling)
+        if (!m_composition && m_d3d12DeviceInfo.setting.m_scaling)
         {
-            auto& dispMode = m_d3d12DeviceInfo.setting.currDisplayMode();
+            auto& dispMode = m_d3d12DeviceInfo.setting.displayMode();
 
             m_letterbox->resize(
                 dispMode.Width,
@@ -227,7 +226,7 @@ namespace d14engine::renderer
         {
             update();
         }
-        clearSceneBuffer();
+        clearRenderTarget();
 
         submitCmdList();
 
@@ -253,20 +252,20 @@ namespace d14engine::renderer
         m_timer->tick();
     }
 
-    UINT Renderer::DxgiFactoryInfo::Setting::currSelectedAdapterIndex() const
+    UINT Renderer::DxgiFactoryInfo::Setting::adapterIndex() const
     {
-        return m_currSelectedAdapterIndex;
+        return m_adapterIndex;
     }
 
-    IDXGIAdapter* Renderer::DxgiFactoryInfo::Setting::currSelectedAdapter() const
+    IDXGIAdapter* Renderer::DxgiFactoryInfo::Setting::adapter() const
     {
         DxgiFactoryInfo* info = m_master;
         THROW_IF_NULL(info);
 
-        return info->property.availableAdapters.at(m_currSelectedAdapterIndex).Get();
+        return info->property.availableAdapters.at(m_adapterIndex).Get();
     }
 
-    void Renderer::DxgiFactoryInfo::Setting::selectAdapter(UINT index) const
+    void Renderer::DxgiFactoryInfo::Setting::setAdapter(UINT index) const
     {
         DxgiFactoryInfo* info = m_master;
         THROW_IF_NULL(info);
@@ -274,7 +273,7 @@ namespace d14engine::renderer
         Renderer* rndr = info->m_master;
         THROW_IF_NULL(rndr);
 
-        auto& target = info->setting.m_currSelectedAdapterIndex;
+        auto& target = info->setting.m_adapterIndex;
         auto operation = [&]
         {
             target = index;
@@ -282,6 +281,10 @@ namespace d14engine::renderer
         };
         cpp_lang_utils::restoreFromException(target, operation);
 
+        if (rndr->m_cmdQueue)
+        {
+            rndr->waitGpuCommand();
+        }
         rndr->createD3d12Device();
         rndr->queryD3d12DeviceInfo();
         rndr->checkD3d12DeviceConfigs();
@@ -289,34 +292,71 @@ namespace d14engine::renderer
         rndr->createFence();
         rndr->createCommandObjects();
 
-        if (rndr->m_letterbox == nullptr)
+        // Depending on the user-specified composition flag (configurable),
+        // the back buffer will be obtained from different swap chains,
+        // so the objects that need to be set (initialized) also differ:
+        //
+        // 1. When composition=true, the back buffer is obtained from
+        // the composition swap chain, and dcompObjects need to be created.
+        //
+        // 2. When composition=false, the back buffer is obtained from
+        // the d3d12CmdQueue swap chain, where letterBox needs to be set;
+        // rtvHeap, srvHeap, sceneBuffer, wrappedBuffer need to be created.
+
+        if (rndr->m_composition)
+        {
+            rndr->m_letterbox.reset();
+        }
+        // no need to recreate the letterbox for the new swap chain
+        else if (!rndr->m_letterbox)
         {
             rndr->m_letterbox = std::make_unique<Letterbox>(rndr, Letterbox::Token{});
         }
-        rndr->resetCmdList();
-
         rndr->createFrameResources();
 
-        rndr->createRtvHeap();
-        if (rndr->m_d3d12DeviceInfo.setting.m_resolutionScaling) rndr->createSrvHeap();
-
-        rndr->m_window.onResize();
-        rndr->createSwapChain();
-
+        if (rndr->m_composition)
+        {
+            rndr->m_rtvHeap.Reset();
+            rndr->m_srvHeap.Reset();
+        }
+        else // self-maintained back buffers
+        {
+            rndr->createRtvHeap();
+            if (rndr->m_d3d12DeviceInfo.setting.m_scaling)
+            {
+                rndr->createSrvHeap();
+            }
+        }
         rndr->createD3d11On12Objects();
         rndr->createD2d1Objects();
 
-        if (rndr->m_d3d12DeviceInfo.setting.m_resolutionScaling)
+        if (rndr->m_composition)
         {
-            rndr->m_letterbox->setEnabled(true);
+            rndr->createDcompObjects();
         }
-        else rndr->m_letterbox->setEnabled(false);
+        else // self-maintained back buffers
+        {
+            rndr->m_dcompDevice.Reset();
+            rndr->m_dcompVisual.Reset();
+            rndr->m_dcompTarget.Reset();
+        }
+        // Ensures the swap chain is created with the actual size.
+        rndr->m_window.onResize();
+        rndr->createSwapChain();
 
-        rndr->submitCmdList();
-        rndr->flushCmdQueue();
+        if (!rndr->m_composition)
+        {
+            rndr->resetCmdList();
 
-        rndr->m_timer->start();
+            if (rndr->m_d3d12DeviceInfo.setting.m_scaling)
+            {
+                rndr->m_letterbox->setEnabled(true);
+            }
+            else rndr->m_letterbox->setEnabled(false);
 
+            rndr->submitCmdList();
+            rndr->flushCmdQueue();
+        }
         rndr->onWindowResize();
     }
 
@@ -417,20 +457,20 @@ namespace d14engine::renderer
 
     void Renderer::checkAdapterConfig()
     {
-        auto& availableAdpts = m_dxgiFactoryInfo.property.availableAdapters;
-        auto& currSelectedAdptIndex = m_dxgiFactoryInfo.setting.m_currSelectedAdapterIndex;
+        auto& adapters = m_dxgiFactoryInfo.property.availableAdapters;
+        auto& adapterIndex = m_dxgiFactoryInfo.setting.m_adapterIndex;
 
-        if (currSelectedAdptIndex >= availableAdpts.size())
+        if (adapterIndex >= adapters.size())
         {
             auto descText = L"Selected adapter index out of range. A total of " +
-                            std::to_wstring(availableAdpts.size()) +
+                            std::to_wstring(adapters.size()) +
                             L" adapters are available under current environment:\n";
 
-            for (size_t i = 0; i < availableAdpts.size(); ++i)
+            for (size_t i = 0; i < adapters.size(); ++i)
             {
-                DXGI_ADAPTER_DESC adptDesc;
-                availableAdpts[i]->GetDesc(&adptDesc);
-                descText += (L"Adapter " + std::to_wstring(i) + L": " + adptDesc.Description + L"\n");
+                DXGI_ADAPTER_DESC desc;
+                adapters[i]->GetDesc(&desc);
+                descText += (L"Adapter " + std::to_wstring(i) + L": " + desc.Description + L"\n");
             }
             THROW_ERROR(descText);
         }
@@ -461,7 +501,7 @@ namespace d14engine::renderer
     {
         auto& setting = m_dxgiFactoryInfo.setting;
 
-        setting.m_currSelectedAdapterIndex = createInfo.adapterIndex;
+        setting.m_adapterIndex = createInfo.adapterIndex;
         setting.m_syncInterval = createInfo.syncInterval;
         setting.m_allowTearing = createInfo.allowTearing;
     }
@@ -487,22 +527,22 @@ namespace d14engine::renderer
         else return msaaInfo.NumQualityLevels - 1; // max-level == level-count - 1
     }
 
-    bool Renderer::D3D12DeviceInfo::Setting::resolutionScaling() const
+    bool Renderer::D3D12DeviceInfo::Setting::scaling() const
     {
-        return m_resolutionScaling;
+        return m_scaling;
     }
 
-    UINT Renderer::D3D12DeviceInfo::Setting::currDisplayModeIndex() const
+    UINT Renderer::D3D12DeviceInfo::Setting::displayModeIndex() const
     {
-        return m_currDisplayModeIndex;
+        return m_displayModeIndex;
     }
 
-    const DXGI_MODE_DESC& Renderer::D3D12DeviceInfo::Setting::currDisplayMode() const
+    const DXGI_MODE_DESC& Renderer::D3D12DeviceInfo::Setting::displayMode() const
     {
         D3D12DeviceInfo* info = m_master;
         THROW_IF_NULL(info);
 
-        return info->property.availableDisplayModes.at(m_currDisplayModeIndex);
+        return info->property.availableDisplayModes.at(m_displayModeIndex);
     }
 
     void Renderer::D3D12DeviceInfo::Setting::setDisplayMode(bool scaling, UINT index) const
@@ -513,29 +553,29 @@ namespace d14engine::renderer
         Renderer* rndr = info->m_master;
         THROW_IF_NULL(rndr);
 
-        auto& target = info->setting.m_currDisplayModeIndex;
+        auto& target = info->setting.m_displayModeIndex;
         auto operation = [&]
         {
             target = index;
             rndr->checkDisplayModeConfig();
-            info->setting.m_resolutionScaling = scaling;
+            info->setting.m_scaling = scaling;
         };
         cpp_lang_utils::restoreFromException(target, operation);
 
-        rndr->flushCmdQueue();
-        rndr->resetCmdList();
-
-        if (info->setting.m_resolutionScaling)
+        if (!rndr->m_composition)
         {
-            rndr->createSrvHeap();
-            rndr->m_letterbox->setEnabled(true);
+            rndr->beginGpuCommand();
+
+            if (info->setting.m_scaling)
+            {
+                rndr->createSrvHeap();
+                rndr->m_letterbox->setEnabled(true);
+            }
+            else rndr->m_letterbox->setEnabled(false);
+
+            rndr->endGpuCommand();
+            rndr->onWindowResize();
         }
-        else rndr->m_letterbox->setEnabled(false);
-
-        rndr->submitCmdList();
-        rndr->flushCmdQueue();
-
-        rndr->onWindowResize();
     }
 
     ID3D12Device* Renderer::d3d12Device() const
@@ -555,10 +595,10 @@ namespace d14engine::renderer
         debug_utils::enableD3d12DebugLayer();
 #endif
 
-        auto currAdpt = m_dxgiFactoryInfo.setting.currSelectedAdapter();
+        auto adapter = m_dxgiFactoryInfo.setting.adapter();
 
         THROW_IF_FAILED(D3D12CreateDevice(
-            currAdpt, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&m_d3d12Device)));
+            adapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&m_d3d12Device)));
 
 #ifdef _DEBUG
         debug_utils::suppressWarnings(m_d3d12Device.Get());
@@ -591,25 +631,30 @@ namespace d14engine::renderer
 
     void Renderer::queryAvailableDisplayModes()
     {
-        auto currAdpt = m_dxgiFactoryInfo.setting.currSelectedAdapter();
+        auto adapter = m_dxgiFactoryInfo.setting.adapter();
 
         ComPtr<IDXGIOutput> output;
         // TODO: Support multiple display outputs.
-        THROW_IF_FAILED(currAdpt->EnumOutputs(0, &output));
+        THROW_IF_FAILED(adapter->EnumOutputs(0, &output));
 
         UINT modeCount = 0;
-        output->GetDisplayModeList(
-            g_renderTargetFormat,
-            0,
-            &modeCount,
-            nullptr);
+        THROW_IF_FAILED(output->GetDisplayModeList
+        (
+            /* EnumFormat */ g_renderTargetFormat,
+            /* Flags      */ 0,
+            /* pNumModes  */ &modeCount,
+            /* pDesc      */ nullptr
+        ));
+        auto& modes = m_d3d12DeviceInfo.property.availableDisplayModes;
+        modes.resize(modeCount);
 
-        m_d3d12DeviceInfo.property.availableDisplayModes.resize(modeCount);
-        output->GetDisplayModeList(
-            g_renderTargetFormat,
-            0,
-            &modeCount,
-            m_d3d12DeviceInfo.property.availableDisplayModes.data());
+        THROW_IF_FAILED(output->GetDisplayModeList
+        (
+            /* EnumFormat */ g_renderTargetFormat,
+            /* Flags      */ 0,
+            /* pNumModes  */ &modeCount,
+            /* pDesc      */ modes.data()
+        ));
     }
 
     void Renderer::queryD3d12DeviceFeatures()
@@ -637,18 +682,18 @@ namespace d14engine::renderer
 
     void Renderer::checkDisplayModeConfig()
     {
-        auto& currDispModeIndex = m_d3d12DeviceInfo.setting.m_currDisplayModeIndex;
-        auto& availableDispModes = m_d3d12DeviceInfo.property.availableDisplayModes;
+        auto& displayModeIndex = m_d3d12DeviceInfo.setting.m_displayModeIndex;
+        auto& availableDisplayModes = m_d3d12DeviceInfo.property.availableDisplayModes;
 
-        if (currDispModeIndex >= availableDispModes.size())
+        if (displayModeIndex >= availableDisplayModes.size())
         {            
             auto descText = L"Specified display mode not supported. A total of " +
-                            std::to_wstring(availableDispModes.size()) +
+                            std::to_wstring(availableDisplayModes.size()) +
                             L" display modes are available on current selected GPU device:\n";
 
-            for (size_t n = 0; n < availableDispModes.size(); ++n)
+            for (size_t n = 0; n < availableDisplayModes.size(); ++n)
             {
-                auto& mode = availableDispModes[n];
+                auto& mode = availableDisplayModes[n];
                 descText += (L"Display mode " + std::to_wstring(n) + L": "
                              L"width " + std::to_wstring(mode.Width) + L", "
                              L"height " + std::to_wstring(mode.Height) + L"\n");
@@ -661,8 +706,8 @@ namespace d14engine::renderer
     {
         auto& setting = m_d3d12DeviceInfo.setting;
 
-        setting.m_resolutionScaling = createInfo.resolutionScaling;
-        setting.m_currDisplayModeIndex = createInfo.displayModeIndex;
+        setting.m_scaling = createInfo.scaling;
+        setting.m_displayModeIndex = createInfo.displayModeIndex;
     }
 
     ID3D12Fence* Renderer::fence() const
@@ -750,11 +795,16 @@ namespace d14engine::renderer
 
     void Renderer::createD3d11On12Objects()
     {
+        // Required for Direct2D interoperability with Direct3D resources.
+        UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+#ifdef _DEBUG
+        flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
         ComPtr<ID3D11Device> d3d11Device;
         THROW_IF_FAILED(D3D11On12CreateDevice
         (
             /* pDevice             */ m_d3d12Device.Get(),
-            /* Flags               */ D3D11_CREATE_DEVICE_BGRA_SUPPORT,
+            /* Flags               */ flags,
             /* pFeatureLevels      */ nullptr,
             /* FeatureLevels       */ 0,
             /* ppCommandQueues     */ (IUnknown**)m_cmdQueue.GetAddressOf(),
@@ -810,6 +860,106 @@ namespace d14engine::renderer
         THROW_IF_FAILED(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(m_dwriteFactory), &m_dwriteFactory));
     }
 
+    bool Renderer::composition() const
+    {
+        return m_composition;
+    }
+
+    void Renderer::setComposition(bool value)
+    {
+        // FIXME: After recreating the swapchain, the background color
+        // cannot be cleared correctly. The reason is currently unclear.
+
+        m_composition = value;
+        waitGpuCommand();
+
+        if (value)
+        {
+            m_letterbox.reset();
+
+            m_rtvHeap.Reset();
+            m_srvHeap.Reset();
+
+            createDcompObjects();
+        }
+        else // self-maintained back buffers
+        {
+            m_letterbox = std::make_unique<Letterbox>(this, Letterbox::Token{});
+            m_letterbox->color = createInfo.letterboxColor;
+
+            createRtvHeap();
+            if (m_d3d12DeviceInfo.setting.m_scaling)
+            {
+                createSrvHeap();
+            }
+            m_dcompDevice.Reset();
+            m_dcompVisual.Reset();
+            m_dcompTarget.Reset();
+        }
+        // Ensures the swap chain is created with the actual size.
+        m_window.onResize();
+        createSwapChain();
+
+        if (!value)
+        {
+            resetCmdList();
+
+            if (m_d3d12DeviceInfo.setting.m_scaling)
+            {
+                m_letterbox->setEnabled(true);
+            }
+            else m_letterbox->setEnabled(false);
+
+            submitCmdList();
+            flushCmdQueue();
+        }
+        onWindowResize();
+    }
+
+    Optional<IDCompositionDevice*> Renderer::dcompDevice() const
+    {
+        if (m_composition)
+        {
+            return m_dcompDevice.Get();
+        }
+        return std::nullopt;
+    }
+
+    Optional<IDCompositionVisual*> Renderer::dcompVisual() const
+    {
+        if (m_composition)
+        {
+            return m_dcompVisual.Get();
+        }
+        return std::nullopt;
+    }
+
+    Optional<IDCompositionTarget*> Renderer::dcompTarget() const
+    {
+        if (m_composition)
+        {
+            return m_dcompTarget.Get();
+        }
+        return std::nullopt;
+    }
+
+    void Renderer::createDcompObjects()
+    {
+        // FIXME: DCompositionCreateDevice(D3D11On12Device) throws a warning,
+        // but the application runs normally. The reason is currently unclear.
+
+        // DComposition Device
+        ComPtr<IDXGIDevice> dxgiDevice;
+        THROW_IF_FAILED(m_d3d11On12Device.As(&dxgiDevice));
+        THROW_IF_FAILED(DCompositionCreateDevice(dxgiDevice.Get(), IID_PPV_ARGS(&m_dcompDevice)));
+
+        // DComposition Visual
+        THROW_IF_FAILED(m_dcompDevice->CreateVisual(&m_dcompVisual));
+
+        // DComposition Target
+        THROW_IF_FAILED(m_dcompDevice->CreateTargetForHwnd(m_window.ptr, TRUE, &m_dcompTarget));
+    }
+
     IDXGISwapChain3* Renderer::swapChain() const
     {
         return m_swapChain.Get();
@@ -829,7 +979,7 @@ namespace d14engine::renderer
         //
         // 2. Init the swap chain in Flip-Mode (NO Blt-Mode).
         //
-        // 3. Enable tearing (Vsync-Off) when it is supported.
+        // 3. Enable tearing (required for VRR) when it is supported.
         //
         // 4. Create multiple back buffers for the swap chain.
 
@@ -837,95 +987,154 @@ namespace d14engine::renderer
 
         // The resolution of the buffers follows the resolution of the window.
         // 
-        // We will create a separate buffer outside the swap chain as the
-        // intermediate render target, which will be resized to follow the
-        // resolution of the actual scene.
+        // If this is a d3d12CmdQueue swap chain, we will also maintain
+        // a separate buffer outside the swap chain as the intermediate target,
+        // which will be resized to follow the resolution of the actual scene.
 
         desc.Width = m_window.clientWidth();
         desc.Height = m_window.clientHeight();
         
         desc.Format = g_renderTargetFormat;
 
-        // DirectX 12 3D does not support creating MSAA swap chain anymore.
-        // In fact, it is the Flip-Mode that disables the direct MSAA usage,
-        // and this is restricted by using DXGI_SWAP_EFFECT_FLIP_DISCARD.
-        // 
-        // In traditional methods, the back buffers of a MSAA swap chain will
-        // be resolved automatically during presenting, but it is not allowed
-        // in UWP programs.  The modern solution is to create an intermediate
-        // MSAA render target.
+        // DirectX 12 does not support creating MSAA swap chain anymore.
+        // In fact, it is the Flip-Mode that disables the multisampling,
+        // and this is restricted by using DXGI_SWAP_EFFECT_FLIP_* flags.
+        // The modern solution is to create an intermediate MSAA buffer.
 
         desc.SampleDesc.Count = 1;
         desc.SampleDesc.Quality = 0;
 
         desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        desc.BufferCount = (UINT)m_backBuffers.size();
+        desc.BufferCount = FrameResource::g_bufferCount;
 
-        desc.Scaling = DXGI_SCALING_NONE;
-        desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // NO direct MSAA!
-        desc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
-
-        // Allows the swap chain to call IDXGISwapChain::ResizeTarget.
-        desc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+        if (m_composition)
+        {
+            desc.Scaling = DXGI_SCALING_STRETCH;
+            desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+            desc.AlphaMode = DXGI_ALPHA_MODE_PREMULTIPLIED;
+        }
+        else // d3d12CmdQueue swap chain
+        {
+            desc.Scaling = DXGI_SCALING_NONE;
+            desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+            desc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
+        }
 
         if (m_dxgiFactoryInfo.feature.allowTearing)
         {
             desc.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
         }
-        DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsdesc = { .Windowed = TRUE };
+        // DirectX does not provide an interface to create IDXGISwapChainX (where X > 1),
+        // so here we first create IDXGISwapChain1 and then forward it to the higher one.
+        ComPtr<IDXGISwapChain1> swapChain;
 
-        ComPtr<IDXGISwapChain1> tmpSwapChain;
-        THROW_IF_FAILED(m_dxgiFactory->CreateSwapChainForHwnd(
-            m_cmdQueue.Get(), m_window.ptr, &desc, &fsdesc, nullptr, &tmpSwapChain));
+        clearSwapChainRefs();
 
-        THROW_IF_FAILED(tmpSwapChain.As(&m_swapChain));
+        // Deferred Destruction Issues with Flip Presentation Swap Chains:
+        // https://learn.microsoft.com/en-us/windows/win32/api/d3d11/nf-d3d11-id3d11devicecontext-flush
+        // 
+        // Call ID3D11DeviceContext::ClearState/Flush to force destroying the swap chain.
+
+        m_d3d11DeviceContext->ClearState();
+        m_d3d11DeviceContext->Flush();
+
+        if (m_composition)
+        {
+            ComPtr<IDXGIDevice> dxgiDevice;
+            THROW_IF_FAILED(m_d3d11On12Device.As(&dxgiDevice));
+            THROW_IF_FAILED(m_dxgiFactory->CreateSwapChainForComposition
+            (
+                /* pDevice           */ dxgiDevice.Get(),
+                /* pDesc             */ &desc,
+                /* pRestrictToOutput */ nullptr,
+                /* ppSwapChain       */ &swapChain
+            ));
+        }
+        else // d3d12CmdQueue swap chain
+        {
+            THROW_IF_FAILED(m_dxgiFactory->CreateSwapChainForHwnd
+            (
+                /* pDevice           */ m_cmdQueue.Get(),
+                /* hWnd              */ m_window.ptr,
+                /* pDesc             */ &desc,
+                /* pFullscreenDesc   */ nullptr,
+                /* pRestrictToOutput */ nullptr,
+                /* ppSwapChain       */ &swapChain
+            ));
+        }
+        THROW_IF_FAILED(swapChain.As(&m_swapChain));
         m_currFrameIndex = m_swapChain->GetCurrentBackBufferIndex();
 
         if (m_dxgiFactoryInfo.feature.allowTearing)
         {
             // IDXGIFactory::MakeWindowAssociation can be called only on the
-            // factory associated with the target HWND swap chain.
-            // 
-            // We can guarantee that by calling IDXGIObject::GetParent on the
-            // swap chain to locate the factory.
+            // factory associated with the target d3d12CmdQueue swap chain,
+            // and we could guarantee that by calling IDXGIObject::GetParent
+            // of the target swap chain to locate the correct factory object.
 
-            ComPtr<IDXGIFactory> tmpDxgiFactory;
-            m_swapChain->GetParent(IID_PPV_ARGS(&tmpDxgiFactory));
+            ComPtr<IDXGIFactory> dxgiFactory;
+            m_swapChain->GetParent(IID_PPV_ARGS(&dxgiFactory));
 
             // When tearing is supported we will handle "ALT+Enter" in
             // fnWndProc rather than let the factory set fullscreen state.
 
-            THROW_IF_FAILED(tmpDxgiFactory->MakeWindowAssociation(
+            THROW_IF_FAILED(dxgiFactory->MakeWindowAssociation(
                 m_window.ptr, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER));
         }
     }
 
     void Renderer::resizeSwapChain()
     {
-        for (auto& buffer : m_backBuffers)
-        {
-            buffer.Reset();
-        }
+        // You can't resize a swap chain unless you release
+        // all outstanding references to its back buffers.
+        clearSwapChainRefs();
+        m_d3d11DeviceContext->ClearState();
+
         DXGI_SWAP_CHAIN_DESC desc;
-        m_swapChain->GetDesc(&desc);
+        THROW_IF_FAILED(m_swapChain->GetDesc(&desc));
 
         THROW_IF_FAILED(m_swapChain->ResizeBuffers
         (
-            /* BufferCount    */ (UINT)m_backBuffers.size(),
+            /* BufferCount    */ FrameResource::g_bufferCount,
             /* Width          */ m_window.clientWidth(),
             /* Height         */ m_window.clientHeight(),
             /* NewFormat      */ desc.BufferDesc.Format,
             /* SwapChainFlags */ desc.Flags
         ));
+        // The back buffer index will be reset after the swap chain resized.
+        m_currFrameIndex = m_swapChain->GetCurrentBackBufferIndex();
+
+        if (m_composition)
+        {
+            m_sceneBuffer.Reset();
+            m_wrappedBuffer.Reset();
+
+            createRenderTarget();
+        }
+        else // self-maintained back buffers
+        {
+            createBackBuffers();
+            createSceneBuffer();
+            // m_renderTarget will be recreated with the wrapped buffer.
+            createWrappedBuffer();
+        }
     }
 
-    ID3D12DescriptorHeap* Renderer::rtvHeap() const
+    Optional<ID3D12DescriptorHeap*> Renderer::rtvHeap() const
     {
+        if (m_composition)
+        {
+            return std::nullopt;
+        }
         return m_rtvHeap.Get();
     }
 
-    ID3D12DescriptorHeap* Renderer::srvHeap() const
+    Optional<ID3D12DescriptorHeap*> Renderer::srvHeap() const
     {
+        if (m_composition)
+        {
+            return std::nullopt;
+        }
         return m_srvHeap.Get();
     }
 
@@ -955,70 +1164,102 @@ namespace d14engine::renderer
         THROW_IF_FAILED(m_d3d12Device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_srvHeap)));
     }
 
-    D3D12_CPU_DESCRIPTOR_HANDLE Renderer::getRtvHandle(UINT offsetIndex) const
+    Optional<D3D12_CPU_DESCRIPTOR_HANDLE> Renderer::getRtvHandle(UINT offsetIndex) const
     {
+        if (m_composition)
+        {
+            return std::nullopt;
+        }
         return CD3DX12_CPU_DESCRIPTOR_HANDLE(
             m_rtvHeap->GetCPUDescriptorHandleForHeapStart(),
             (INT)offsetIndex,
             (UINT)m_d3d12DeviceInfo.property.descHandleIncrementSize.RTV);
     }
 
-    const Renderer::BackBufferArray& Renderer::backBuffers() const
+    Optional<ID3D12Resource*> Renderer::getBackBuffer(UINT index) const
     {
-        return m_backBuffers;
+        if (m_composition)
+        {
+            return std::nullopt;
+        }
+        return m_backBuffers.at(index).Get();
     }
 
-    ID3D12Resource* Renderer::currBackBuffer() const
+    Optional<ID3D12Resource*> Renderer::currBackBuffer() const
     {
+        if (m_composition)
+        {
+            return std::nullopt;
+        }
         return m_backBuffers.at(m_currFrameIndex).Get();
     }
 
-    D3D12_CPU_DESCRIPTOR_HANDLE Renderer::backRtvHandle() const
+    Optional<D3D12_CPU_DESCRIPTOR_HANDLE> Renderer::backRtvHandle() const
     {
+        if (m_composition)
+        {
+            return std::nullopt;
+        }
         return getRtvHandle(m_currFrameIndex);
     }
 
     UINT Renderer::getSceneWidth() const
     {
-        if (m_d3d12DeviceInfo.setting.m_resolutionScaling)
+        if (m_d3d12DeviceInfo.setting.m_scaling)
         {
-            return m_d3d12DeviceInfo.setting.currDisplayMode().Width;
+            return m_d3d12DeviceInfo.setting.displayMode().Width;
         }
         else return m_window.clientWidth();
     }
 
     UINT Renderer::getSceneHeight() const
     {
-        if (m_d3d12DeviceInfo.setting.m_resolutionScaling)
+        if (m_d3d12DeviceInfo.setting.m_scaling)
         {
-            return m_d3d12DeviceInfo.setting.currDisplayMode().Height;
+            return m_d3d12DeviceInfo.setting.displayMode().Height;
         }
         else return m_window.clientHeight();
     }
 
-    ID3D12Resource* Renderer::sceneBuffer() const
+    Optional<ID3D12Resource*> Renderer::sceneBuffer() const
     {
+        if (m_composition)
+        {
+            return std::nullopt;
+        }
         return m_sceneBuffer.Get();
     }
 
-    D3D12_CPU_DESCRIPTOR_HANDLE Renderer::sceneRtvHandle() const
+    Optional<D3D12_CPU_DESCRIPTOR_HANDLE> Renderer::sceneRtvHandle() const
     {
+        if (m_composition)
+        {
+            return std::nullopt;
+        }
         return getRtvHandle((UINT)m_backBuffers.size());
     }
 
-    D3D12_CPU_DESCRIPTOR_HANDLE Renderer::sceneSrvhandle() const
+    Optional<D3D12_CPU_DESCRIPTOR_HANDLE> Renderer::sceneSrvhandle() const
     {
+        if (m_composition)
+        {
+            return std::nullopt;
+        }
         return m_srvHeap->GetCPUDescriptorHandleForHeapStart();
     }
 
-    ID3D11Resource* Renderer::wrappedBuffer() const
+    Optional<ID3D11Resource*> Renderer::wrappedBuffer() const
     {
+        if (m_composition)
+        {
+            return std::nullopt;
+        }
         return m_wrappedBuffer.Get();
     }
 
-    ID2D1Bitmap1* Renderer::d2d1RenderTarget() const
+    ID2D1Bitmap1* Renderer::renderTarget() const
     {
-        return m_d2d1RenderTarget.Get();
+        return m_renderTarget.Get();
     }
 
     void Renderer::createBackBuffers()
@@ -1050,6 +1291,7 @@ namespace d14engine::renderer
 
         D3D12_CLEAR_VALUE clearValue = {};
         clearValue.Format = g_renderTargetFormat;
+
         memcpy(clearValue.Color, m_sceneColor, 4 * sizeof(FLOAT));
 
         THROW_IF_FAILED(m_d3d12Device->CreateCommittedResource
@@ -1062,39 +1304,27 @@ namespace d14engine::renderer
             /* riidResource         */
             /* ppvResource          */ IID_PPV_ARGS(&m_sceneBuffer)
         ));
+        // sceneRtvHandle is guaranteed to be valid when composition=false
         m_d3d12Device->CreateRenderTargetView
         (
             /* pResource      */ m_sceneBuffer.Get(),
             /* pDesc          */ nullptr,
-            /* DestDescriptor */ sceneRtvHandle()
+            /* DestDescriptor */ sceneRtvHandle().value()
         );
-        if (m_d3d12DeviceInfo.setting.m_resolutionScaling)
+        if (m_d3d12DeviceInfo.setting.m_scaling)
         {
+            // sceneSrvhandle is guaranteed to be valid when composition=false
             m_d3d12Device->CreateShaderResourceView
             (
                 /* pResource      */ m_sceneBuffer.Get(),
                 /* pDesc          */ nullptr,
-                /* DestDescriptor */ sceneSrvhandle()
+                /* DestDescriptor */ sceneSrvhandle().value()
             );
         }
     }
 
     void Renderer::createWrappedBuffer()
     {
-        FLOAT dpi = 96.0f;
-        if (createInfo.dpi.has_value())
-        {
-            dpi = createInfo.dpi.value();
-        }
-        else dpi = (FLOAT)GetDpiForWindow(m_window.ptr);
-
-        auto props = D2D1::BitmapProperties1
-        (
-            /* bitmapOptions */ D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
-            /* pixelFormat   */ D2D1::PixelFormat(g_renderTargetFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
-            /* dpiX          */ dpi,
-            /* dpiY          */ dpi
-        );
         D3D11_RESOURCE_FLAGS flags = {};
         flags.BindFlags = D3D11_BIND_RENDER_TARGET;
 
@@ -1110,20 +1340,70 @@ namespace d14engine::renderer
         ComPtr<IDXGISurface> surface;
         THROW_IF_FAILED(m_wrappedBuffer.As(&surface));
 
+        FLOAT dpi = 96.0f;
+        if (createInfo.dpi.has_value())
+        {
+            dpi = createInfo.dpi.value();
+        }
+        else dpi = (FLOAT)GetDpiForWindow(m_window.ptr);
+
+        auto props = D2D1::BitmapProperties1
+        (
+            /* bitmapOptions */ D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
+            /* pixelFormat   */ D2D1::PixelFormat(g_renderTargetFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
+            /* dpiX          */ dpi,
+            /* dpiY          */ dpi
+        );
         THROW_IF_FAILED(m_d2d1DeviceContext->CreateBitmapFromDxgiSurface
         (
             /* surface          */ surface.Get(),
             /* bitmapProperties */ &props,
-            /* bitmap           */ &m_d2d1RenderTarget
+            /* bitmap           */ &m_renderTarget
         ));
     }
 
-    void Renderer::clearInterpStates()
+    void Renderer::createRenderTarget()
     {
+        ComPtr<IDXGISurface> surface;
+        // For DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL,
+        // only the swap chain's zero-index buffer can be read from and written to.
+        // The swap chain's buffers with indexes greater than zero can only be read from.
+        THROW_IF_FAILED(m_swapChain->GetBuffer(0, IID_PPV_ARGS(&surface)));
+
+        FLOAT dpi = 96.0f;
+        if (createInfo.dpi.has_value())
+        {
+            dpi = createInfo.dpi.value();
+        }
+        else dpi = (FLOAT)GetDpiForWindow(m_window.ptr);
+
+        auto props = D2D1::BitmapProperties1
+        (
+            /* bitmapOptions */ D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
+            /* pixelFormat   */ D2D1::PixelFormat(g_renderTargetFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
+            /* dpiX          */ dpi,
+            /* dpiY          */ dpi
+        );
+        THROW_IF_FAILED(m_d2d1DeviceContext->CreateBitmapFromDxgiSurface
+        (
+            /* surface          */ surface.Get(),
+            /* bitmapProperties */ props,
+            /* bitmap           */ &m_renderTarget
+        ));
+    }
+
+    void Renderer::clearSwapChainRefs()
+    {
+        // back buffers of d3d12CmdQueue swap chain
+        for (auto& buffer : m_backBuffers)
+        {
+            buffer.Reset();
+        }
+        // SetTarget also increases the reference count!
         m_d2d1DeviceContext->SetTarget(nullptr);
 
-        m_d3d11DeviceContext->ClearState();
-        m_d3d11DeviceContext->Flush();
+        // back buffer of dcomposition swap chain
+        m_renderTarget.Reset();
     }
 
     void Renderer::resetCmdList()
@@ -1156,8 +1436,6 @@ namespace d14engine::renderer
 
     void Renderer::beginGpuCommand()
     {
-        m_d3d11DeviceContext->Flush();
-
         flushCmdQueue();
         resetCmdList();
     }
@@ -1170,7 +1448,6 @@ namespace d14engine::renderer
 
     void Renderer::waitGpuCommand()
     {
-        m_d3d11DeviceContext->Flush();
         flushCmdQueue();
     }
 
@@ -1224,8 +1501,10 @@ namespace d14engine::renderer
 
     void Renderer::present()
     {
-        m_letterbox->present();
-
+        if (!m_composition)
+        {
+            m_letterbox->present();
+        }
         auto& syncInterval = m_dxgiFactoryInfo.setting.m_syncInterval;
 
         UINT presentFlags = 0;
@@ -1235,6 +1514,12 @@ namespace d14engine::renderer
         }
         THROW_IF_FAILED(m_swapChain->Present(syncInterval, presentFlags));
 
+        if (m_composition)
+        {
+            THROW_IF_FAILED(m_dcompVisual->SetContent(m_swapChain.Get()));
+            THROW_IF_FAILED(m_dcompTarget->SetRoot(m_dcompVisual.Get()));
+            THROW_IF_FAILED(m_dcompDevice->Commit());
+        }
         currFrameResource()->m_fenceValue = ++m_fenceValue;
         THROW_IF_FAILED(m_cmdQueue->Signal(m_fence.Get(), m_fenceValue));
 
@@ -1251,12 +1536,36 @@ namespace d14engine::renderer
         );
         m_cmdList->ResourceBarrier(1, &barrier);
 
-        auto rtvHandle = sceneRtvHandle();
+        // sceneRtvHandle is guaranteed to be valid when composition=false
+        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = sceneRtvHandle().value();
+
         m_cmdList->OMSetRenderTargets(1, &rtvHandle, TRUE, nullptr);
         m_cmdList->ClearRenderTargetView(rtvHandle, m_sceneColor, 0, nullptr);
 
         graph_utils::revertBarrier(1, &barrier);
         m_cmdList->ResourceBarrier(1, &barrier);
+    }
+
+    void Renderer::clearLayerBuffer()
+    {
+        m_d2d1DeviceContext->SetTarget(m_renderTarget.Get());
+        m_d2d1DeviceContext->BeginDraw();
+
+        m_d2d1DeviceContext->Clear(m_layerColor);
+
+        THROW_IF_FAILED(m_d2d1DeviceContext->EndDraw());
+    }
+
+    void Renderer::clearRenderTarget()
+    {
+        if (m_composition)
+        {
+            clearLayerBuffer();
+        }
+        else // self-maintained back buffers
+        {
+            clearSceneBuffer();
+        }
     }
 
     const XMVECTORF32& Renderer::sceneColor() const
@@ -1270,15 +1579,25 @@ namespace d14engine::renderer
 
         // Recreate the scene buffer with the new color to optimize clearing.
 
-        flushCmdQueue();
-        resetCmdList();
-        clearInterpStates();
+        if (!m_composition)
+        {
+            beginGpuCommand();
 
-        createSceneBuffer();
-        createWrappedBuffer();
+            createSceneBuffer();
+            createWrappedBuffer();
 
-        submitCmdList();
-        flushCmdQueue();
+            endGpuCommand();
+        }
+    }
+
+    const D2D1_COLOR_F& Renderer::layerColor() const
+    {
+        return m_layerColor;
+    }
+
+    void Renderer::setLayerColor(const D2D1_COLOR_F& color)
+    {
+        m_layerColor = color;
     }
 
     TickTimer* Renderer::timer() const
@@ -1286,8 +1605,12 @@ namespace d14engine::renderer
         return m_timer.get();
     }
 
-    Letterbox* Renderer::letterbox() const
+    Optional<Letterbox*> Renderer::letterbox() const
     {
+        if (m_composition)
+        {
+            return std::nullopt;
+        }
         return m_letterbox.get();
     }
 
@@ -1310,14 +1633,17 @@ namespace d14engine::renderer
 
     void Renderer::drawD3d12Target(CommandLayer::D3D12Target& target)
     {
-        auto barrier = CD3DX12_RESOURCE_BARRIER::Transition
-        (
-            m_sceneBuffer.Get(),
-            D3D12_RESOURCE_STATE_COMMON,
-            D3D12_RESOURCE_STATE_RENDER_TARGET
-        );
-        m_cmdList->ResourceBarrier(1, &barrier);
-
+        D3D12_RESOURCE_BARRIER barrier = {};
+        if (!m_composition)
+        {
+            barrier = CD3DX12_RESOURCE_BARRIER::Transition
+            (
+                m_sceneBuffer.Get(),
+                D3D12_RESOURCE_STATE_COMMON,
+                D3D12_RESOURCE_STATE_RENDER_TARGET
+            );
+            m_cmdList->ResourceBarrier(1, &barrier);
+        }
         for (auto& layer : target)
         {
             if (layer.first->isD3d12LayerVisible())
@@ -1332,8 +1658,11 @@ namespace d14engine::renderer
                 }
             }
         }
-        graph_utils::revertBarrier(1, &barrier);
-        m_cmdList->ResourceBarrier(1, &barrier);
+        if (!m_composition)
+        {
+            graph_utils::revertBarrier(1, &barrier);
+            m_cmdList->ResourceBarrier(1, &barrier);
+        }
     }
 
     void Renderer::drawD2d1Target(CommandLayer::D2D1Target& target)
@@ -1345,12 +1674,14 @@ namespace d14engine::renderer
                 obj2d->onRendererDrawD2d1Layer(this);
             }
         }
-        m_d3d11On12Device->AcquireWrappedResources(m_wrappedBuffer.GetAddressOf(), 1);
-
+        if (!m_composition)
+        {
+            m_d3d11On12Device->AcquireWrappedResources(m_wrappedBuffer.GetAddressOf(), 1);
+        }
         // It is recommended to call SetTarget before BeginDraw.
         // The program may crash if the previous target is a synchronized
         // resource and still bound to the context when calling BeginDraw.
-        m_d2d1DeviceContext->SetTarget(m_d2d1RenderTarget.Get());
+        m_d2d1DeviceContext->SetTarget(m_renderTarget.Get());
 
         m_d2d1DeviceContext->BeginDraw();
         m_d2d1DeviceContext->SetTransform(D2D1::Matrix3x2F::Identity());
@@ -1364,7 +1695,11 @@ namespace d14engine::renderer
         }
         THROW_IF_FAILED(m_d2d1DeviceContext->EndDraw());
 
-        m_d3d11On12Device->ReleaseWrappedResources(m_wrappedBuffer.GetAddressOf(), 1);
+        if (!m_composition)
+        {
+            m_d3d11On12Device->ReleaseWrappedResources(m_wrappedBuffer.GetAddressOf(), 1);
+        }
+        // Submits the D3D11 command list to the shared command queue.
         m_d3d11DeviceContext->Flush();
     }
 

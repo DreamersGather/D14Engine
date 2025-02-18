@@ -109,6 +109,7 @@ extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = _D14_AGILIT
 #include <d2d1effects_2.h>
 #include <d3d11.h>
 #include <d3d11on12.h>
+#include <dcomp.h>
 #include <DirectXColors.h>
 #include <DirectXMath.h>
 #include <dwmapi.h>
@@ -138,6 +139,7 @@ namespace d14engine
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "D3D11.lib")
 #pragma comment(lib, "D3D12.lib")
+#pragma comment(lib, "Dcomp.lib")
 #pragma comment(lib, "Dwmapi.lib")
 #pragma comment(lib, "dwrite.lib")
 #pragma comment(lib, "dxgi.lib")

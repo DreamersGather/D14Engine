@@ -61,13 +61,11 @@ namespace d14engine::renderer::debug_utils
 
             D3D12_MESSAGE_ID_DESCRIPTOR_HANDLE_WITH_INVALID_RESOURCE,
 
-            // Creating D2D1 device will trigger this warning. The debugger
-            // outputs the following message ID, but it can not be found in
-            // d3d12sdklayers.h for the time being.
-            //
-            // Maybe the SDK is too old and I will consider update it later...
+            // Creating D2D1 device from D3D11On12 device will trigger this warning,
+            // and it says "Ignoring InitialState D3D12_RESOURCE_STATE_GENERIC_READ.
+            // Buffers are effectively created in state D3D12_RESOURCE_STATE_COMMON"
 
-            D3D12_MESSAGE_ID(1328) // STATE_CREATION WARNING #1328: CREATERESOURCE STATE IGNORED
+            D3D12_MESSAGE_ID_CREATERESOURCE_STATE_IGNORED
         };
 
         D3D12_INFO_QUEUE_FILTER filter = {};

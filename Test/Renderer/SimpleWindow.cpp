@@ -17,15 +17,55 @@ int wmain(int argc, wchar_t* argv[])
 {
     try // D14Engine - SimpleWindow @ Renderer
     {
-#ifdef _WIN64
-        SetDllDirectory(L"Lib/_x64_");
-#else
-        SetDllDirectory(L"Lib/_x86_");
-#endif
+        // Place this setting at the very beginning to ensure that the MessageBox
+        // with relevant information for initialization errors also supports HiDPI.
         SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
+        Wstring exePath(MAX_PATH, 0);
+        GetModuleFileName(nullptr, exePath.data(), MAX_PATH);
+        // There is no need to check the result of find_last_of
+        // because the exe-path is guaranteed to contain a "\".
+        exePath.resize(exePath.find_last_of(L'\\') + 1);
+
+        // Set this before calling AddDllDirectory to ensure that
+        // subsequent LoadLibrary calls search user-defined paths.
+        SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+
+        std::wstring libPaths[] =
+        {
+            L"Lib/DirectXShaderCompiler"
+        };
+#ifdef _WIN64
+        std::wstring arch = L"x64";
+#else
+        std::wstring arch = L"x86";
+#endif
+        for (auto& libPath : libPaths)
+        {
+            // Special note: AddDllDirectory only accepts absolute paths!
+            THROW_IF_NULL(AddDllDirectory((exePath + libPath + L"/" + arch).c_str()));
+        }
+        //-----------------------------------------------
+        //-------------------- Usage --------------------
+        //-----------------------------------------------
+        // The window is in free scaling mode by default:
+        // 
+        // 1. Press [Space] to switch between different display modes,
+        //    in which cases the letterbox will be used for stretching.
+        // 
+        // 2. Press [Backspace] to return free scaling mode.
+        //-----------------------------------------------
+        // The window background is in solid color by default:
+        //
+        // 1. Try to change Renderer::CreateInfo::sceneColor.
+        //
+        // 2. Press [Enter] to turn on/off composition mode,
+        //    which allows an alpha bitmap as the background.
+        //-----------------------------------------------
 
         Renderer::CreateInfo info = {};
         info.sceneColor = Colors::SteelBlue;
+        info.composition = true;
 
         auto rndr = initApp(800, 600, info);
 
@@ -71,7 +111,8 @@ std::unique_ptr<Renderer> initApp(UINT width, UINT height, Renderer::CreateInfo&
 
     THROW_IF_NULL(hInstance);
 
-    WNDCLASS wndclass = {};
+    WNDCLASSEX wndclass = {};
+    wndclass.cbSize = sizeof(wndclass);
     wndclass.style = CS_HREDRAW | CS_VREDRAW;
     wndclass.lpfnWndProc = fnWndProc;
     // We will populate GWLP_USERDATA with the renderer instance pointer.
@@ -81,7 +122,7 @@ std::unique_ptr<Renderer> initApp(UINT width, UINT height, Renderer::CreateInfo&
     wndclass.hCursor = LoadCursor(nullptr, IDC_ARROW);
     wndclass.lpszClassName = DEMO_NAME;
 
-    RegisterClass(&wndclass);
+    RegisterClassEx(&wndclass);
 
     // GetSystemMetrics is inaccurate, use SystemParametersInfo instead
     RECT workAreaRect = {};
@@ -101,14 +142,19 @@ std::unique_ptr<Renderer> initApp(UINT width, UINT height, Renderer::CreateInfo&
     };
     RECT dst = { 0, 0, workAreaWidth, workAreaHeight };
 
-    auto wndrect = math_utils::centered(dst, src);
-    AdjustWindowRectExForDpi(&wndrect, WS_OVERLAPPEDWINDOW, FALSE, 0, dpi);
+    DWORD dwStyle = WS_OVERLAPPEDWINDOW;
+    // Prevent DWM from drawing the window again.
+    DWORD dwExStyle = WS_EX_NOREDIRECTIONBITMAP;
 
-    auto window = CreateWindow
+    auto wndrect = math_utils::centered(dst, src);
+    AdjustWindowRectExForDpi(&wndrect, dwStyle, FALSE, dwExStyle, dpi);
+
+    auto window = CreateWindowEx
     (
+        /* dwExStyle    */ dwExStyle,
         /* lpClassName  */ DEMO_NAME,
         /* lpWindowName */ DEMO_NAME,
-        /* dwStyle      */ WS_OVERLAPPEDWINDOW,
+        /* dwStyle      */ dwStyle,
         /* X            */ wndrect.left,
         /* Y            */ wndrect.top,
         /* nWidth       */ math_utils::width(wndrect),
@@ -181,6 +227,30 @@ LRESULT CALLBACK fnWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
     {
         switch (wParam)
         {
+        case VK_BACK:
+        {
+            auto& setting = rndr->d3d12DeviceInfo().setting;
+            setting.setDisplayMode(!setting.scaling(), setting.displayModeIndex());
+
+            if (setting.scaling())
+            {
+                auto& currDispMode = setting.displayMode();
+                auto captionText = DEMO_NAME L", Resolution: " +
+                                   std::to_wstring(currDispMode.Width) + L" x " +
+                                   std::to_wstring(currDispMode.Height) + L" (" +
+                                   std::to_wstring(setting.displayModeIndex()) + L")";
+
+                SetWindowText(rndr->window().ptr, captionText.c_str());
+            }
+            else SetWindowText(rndr->window().ptr, DEMO_NAME);
+
+            break;
+        }
+        case VK_RETURN:
+        {
+            rndr->setComposition(!rndr->composition());
+            break;
+        }
         case VK_ESCAPE:
         {
             if (rndr->window().fullscreen())
@@ -189,38 +259,19 @@ LRESULT CALLBACK fnWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
             }
             break;
         }
-        case VK_RETURN:
-        {
-            auto& setting = rndr->d3d12DeviceInfo().setting;
-            setting.setDisplayMode(!setting.resolutionScaling(), setting.currDisplayModeIndex());
-
-            if (setting.resolutionScaling())
-            {
-                auto& currDispMode = setting.currDisplayMode();
-                auto captionText = DEMO_NAME L", Resolution: " +
-                                   std::to_wstring(currDispMode.Width) + L" x " +
-                                   std::to_wstring(currDispMode.Height) + L" (" +
-                                   std::to_wstring(setting.currDisplayModeIndex()) + L")";
-
-                SetWindowText(rndr->window().ptr, captionText.c_str());
-            }
-            else SetWindowText(rndr->window().ptr, DEMO_NAME);
-
-            break;
-        }
         case VK_SPACE:
         {
             auto& property = rndr->d3d12DeviceInfo().property;
             auto availableDispModeCount = (UINT)property.availableDisplayModes.size();
 
             auto& setting = rndr->d3d12DeviceInfo().setting;
-            setting.setDisplayMode(true, (setting.currDisplayModeIndex() + 1) % availableDispModeCount);
+            setting.setDisplayMode(true, (setting.displayModeIndex() + 1) % availableDispModeCount);
 
-            auto& currDispMode = setting.currDisplayMode();
+            auto& currDispMode = setting.displayMode();
             auto captionText = DEMO_NAME L", Resolution: " +
                                std::to_wstring(currDispMode.Width) + L" x " +
                                std::to_wstring(currDispMode.Height) + L" (" +
-                               std::to_wstring(setting.currDisplayModeIndex()) + L")";
+                               std::to_wstring(setting.displayModeIndex()) + L")";
 
             SetWindowText(rndr->window().ptr, captionText.c_str());
 
