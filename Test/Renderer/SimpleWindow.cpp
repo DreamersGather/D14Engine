@@ -53,19 +53,20 @@ int wmain(int argc, wchar_t* argv[])
         // 1. Press [Space] to switch between different display modes,
         //    in which cases the letterbox will be used for stretching.
         // 
-        // 2. Press [Backspace] to return free scaling mode.
+        // 2. Press [Enter] to turn on/off free scaling mode.
         //-----------------------------------------------
         // The window background is in solid color by default:
         //
-        // 1. Try to change Renderer::CreateInfo::sceneColor.
+        // 1. Change info.sceneColor for different colors.
         //
-        // 2. Press [Enter] to turn on/off composition mode,
-        //    which allows an alpha bitmap as the background.
+        // 2. Change info.composition and info.layerColor
+        //    for transparent background (with alpha enabled).
         //-----------------------------------------------
-
+         
         Renderer::CreateInfo info = {};
         info.sceneColor = Colors::SteelBlue;
-        info.composition = true;
+        //info.composition = true;
+        //info.layerColor = { .a = 0.5f };
 
         auto rndr = initApp(800, 600, info);
 
@@ -227,7 +228,7 @@ LRESULT CALLBACK fnWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
     {
         switch (wParam)
         {
-        case VK_BACK:
+        case VK_RETURN:
         {
             auto& setting = rndr->d3d12DeviceInfo().setting;
             setting.setDisplayMode(!setting.scaling(), setting.displayModeIndex());
@@ -244,11 +245,6 @@ LRESULT CALLBACK fnWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
             }
             else SetWindowText(rndr->window().ptr, DEMO_NAME);
 
-            break;
-        }
-        case VK_RETURN:
-        {
-            rndr->setComposition(!rndr->composition());
             break;
         }
         case VK_ESCAPE:

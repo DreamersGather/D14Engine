@@ -35,7 +35,7 @@ namespace d14engine::renderer::graph_utils
         constexpr static auto CSO = Format::CSO;
         constexpr static auto HLSL = Format::HLSL;
 
-        struct ProcessOption
+        struct StreamOption
         {
             Optional<Format> in;
             Optional<Format> out;
@@ -50,8 +50,8 @@ namespace d14engine::renderer::graph_utils
         };
         using Package = std::unordered_map<Wstring, Object>;
         
-        void processDefaultObject(
+        void loadDefaultObject(
             WstrParam path, WstrParam name,
-            ProcessOption option, Package& shaders);
+            StreamOption option, Package& shaders);
     }
 }

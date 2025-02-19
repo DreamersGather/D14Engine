@@ -131,10 +131,10 @@ namespace d14engine::renderer
             { L"VS", {{ L"VS", L"vs_6_0" }} }, 
             { L"PS", {{ L"PS", L"ps_6_0" }} }
         };
-        graph_utils::shader::processDefaultObject
+        graph_utils::shader::loadDefaultObject
         (
             rndr->createInfo.binaryPath + L"Shaders/", L"Letterbox",
-            { graph_utils::shader::HLSL, graph_utils::shader::CSO }, shaders
+            { graph_utils::shader::CSO }, shaders
         );
 
         D3D12_INPUT_ELEMENT_DESC inputElemDescs[] =

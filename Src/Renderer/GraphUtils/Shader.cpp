@@ -151,7 +151,7 @@ namespace d14engine::renderer::graph_utils
 
         Object::Object(const CompileOption& option) : option(option) {}
 
-        void processDefaultObject(WstrParam path, WstrParam name, ProcessOption option, Package& shaders)
+        void loadDefaultObject(WstrParam path, WstrParam name, StreamOption option, Package& shaders)
         {
             if (option.in.has_value())
             {

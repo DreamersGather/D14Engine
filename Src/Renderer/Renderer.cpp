@@ -406,7 +406,17 @@ namespace d14engine::renderer
 
     void Renderer::createDxgiFactory()
     {
-        THROW_IF_FAILED(CreateDXGIFactory(IID_PPV_ARGS(&m_dxgiFactory)));
+#ifdef _DEBUG
+        UINT flags = DXGI_CREATE_FACTORY_DEBUG;
+#else
+        UINT flags = 0;
+#endif
+        THROW_IF_FAILED(CreateDXGIFactory2
+        (
+            /* Flags     */ flags,
+            /* riid      */
+            /* ppFactory */ IID_PPV_ARGS(&m_dxgiFactory)
+        ));
     }
 
     void Renderer::queryDxgiFactoryInfo()
@@ -863,57 +873,6 @@ namespace d14engine::renderer
     bool Renderer::composition() const
     {
         return m_composition;
-    }
-
-    void Renderer::setComposition(bool value)
-    {
-        // FIXME: After recreating the swapchain, the background color
-        // cannot be cleared correctly. The reason is currently unclear.
-
-        m_composition = value;
-        waitGpuCommand();
-
-        if (value)
-        {
-            m_letterbox.reset();
-
-            m_rtvHeap.Reset();
-            m_srvHeap.Reset();
-
-            createDcompObjects();
-        }
-        else // self-maintained back buffers
-        {
-            m_letterbox = std::make_unique<Letterbox>(this, Letterbox::Token{});
-            m_letterbox->color = createInfo.letterboxColor;
-
-            createRtvHeap();
-            if (m_d3d12DeviceInfo.setting.m_scaling)
-            {
-                createSrvHeap();
-            }
-            m_dcompDevice.Reset();
-            m_dcompVisual.Reset();
-            m_dcompTarget.Reset();
-        }
-        // Ensures the swap chain is created with the actual size.
-        m_window.onResize();
-        createSwapChain();
-
-        if (!value)
-        {
-            resetCmdList();
-
-            if (m_d3d12DeviceInfo.setting.m_scaling)
-            {
-                m_letterbox->setEnabled(true);
-            }
-            else m_letterbox->setEnabled(false);
-
-            submitCmdList();
-            flushCmdQueue();
-        }
-        onWindowResize();
     }
 
     Optional<IDCompositionDevice*> Renderer::dcompDevice() const

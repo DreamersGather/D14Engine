@@ -380,7 +380,6 @@ namespace d14engine::renderer
 
     public:
         bool composition() const;
-        void setComposition(bool value);
 
         Optional<IDCompositionDevice*> dcompDevice() const;
 
