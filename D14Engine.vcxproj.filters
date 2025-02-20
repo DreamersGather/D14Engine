@@ -352,6 +352,9 @@
     <ClCompile Include="Test\Pipeline\2D\ManySprites.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Test\UIKit\ColorfulCube\ColorfulCube.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Precompile.h">
@@ -782,11 +785,8 @@
     <None Include=".gitignore" />
     <None Include="LICENSE" />
     <None Include=".editorconfig" />
-    <None Include="comment.html" />
     <None Include="README.md" />
     <None Include=".gitattributes" />
-    <None Include="sortxml.cs" />
-    <None Include="format.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Src\UIKit\Appearances\ColorScheme.txt" />

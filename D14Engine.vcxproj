@@ -1064,6 +1064,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Test\UIKit\ColorfulCube\ColorfulCube.cpp" />
     <None Include=".editorconfig" />
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
@@ -1090,9 +1091,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='REditor|Win32'">true</ExcludedFromBuild>
     </FxCompile>
-    <None Include="format.ps1" />
     <None Include="LICENSE" />
-    <None Include="comment.html" />
     <ClCompile Include="Src\UIKit\Appearances\ComboBox.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)ComboBoxAppearance</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)ComboBoxAppearance</ObjectFileName>
@@ -1120,7 +1119,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <None Include="README.md" />
-    <None Include="sortxml.cs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Common\DirectXError.cpp" />
