@@ -158,11 +158,11 @@ namespace d14engine::uikit
         drawOutline(rndr);
     }
 
-    void LabelArea::onChangeThemeHelper(WstrParam themeName)
+    void LabelArea::onChangeThemeStyleHelper(const ThemeStyle& style)
     {
-        Label::onChangeThemeHelper(themeName);
+        Label::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(themeName);
+        getAppearance().changeTheme(style.mode);
     }
 
     void LabelArea::onGetFocusHelper()

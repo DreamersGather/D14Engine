@@ -35,6 +35,11 @@ struct Vertex
     XMFLOAT4 color;
 };
 
+#define D14_DEMO_NAME L"ColorfulCube"
+
+#define D14_MAINWINDOW_TITLE L"D14Engine - " D14_DEMO_NAME L" @ UIKit"
+#define D14_SCREENSHOT_PATH L"Screenshots/" D14_DEMO_NAME L".png"
+
 D14_SET_APP_ENTRY(mainColorfulCube)
 {
     Application::CreateInfo info = {};
@@ -51,7 +56,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
     {
         app->increaseAnimationCount(); // enable renderer updating
 
-        auto ui_mainWindow = makeRootUIObject<MainWindow>(L"D14Engine - ColorfulCube @ UIKit");
+        auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
             ui_mainWindow->moveTopmost();
             ui_mainWindow->isMaximizeEnabled = false;
@@ -67,32 +72,24 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             ui_darkModeSwitch->moveTopmost();
             ui_darkModeSwitch->move(130.0f, 4.0f);
 
-            if (app->systemThemeStyle().mode == Application::ThemeStyle::Mode::Light)
+            if (app->themeStyle().mode == L"Light")
             {
                 ui_darkModeSwitch->setOnOffState(OnOffSwitch::OFF);
             }
             else ui_darkModeSwitch->setOnOffState(OnOffSwitch::ON);
 
-            app->customThemeStyle = app->systemThemeStyle();
             app->f_onSystemThemeStyleChange = [app]
+            (const Application::ThemeStyle& style)
             {
-                app->customThemeStyle.value().color = app->systemThemeStyle().color;
-                app->changeTheme(app->currThemeName());
+                app->setThemeStyle(style);
             };
             ui_darkModeSwitch->f_onStateChange = [app]
             (OnOffSwitch::StatefulObject* obj, OnOffSwitch::StatefulObject::Event& e)
             {
-                auto& customThemeStyle = app->customThemeStyle.value();
-                if (e.on())
-                {
-                    customThemeStyle.mode = Application::ThemeStyle::Mode::Dark;
-                    app->changeTheme(L"Dark");
-                }
-                else if (e.off())
-                {
-                    customThemeStyle.mode = Application::ThemeStyle::Mode::Light;
-                    app->changeTheme(L"Light");
-                }
+                Application::ThemeStyle style = app->themeStyle();
+                if (e.on()) style.mode = L"Dark";
+                else if (e.off()) style.mode = L"Light";
+                app->setThemeStyle(style);
             };
         }
         auto ui_screenshot = makeRootUIObject<OutlinedButton>(L"Screenshot");
@@ -106,7 +103,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             {
                 auto image = app->screenshot();
                 CreateDirectory(L"Screenshots", nullptr);
-                bitmap_utils::saveBitmap(image.Get(), L"Screenshots/ColorfulCube.png");
+                bitmap_utils::saveBitmap(image.Get(), D14_SCREENSHOT_PATH);
             };
         }
         auto ui_clientArea = makeUIObject<Panel>();
@@ -119,13 +116,17 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             ui_scenePanel->setUIObjectPriority(0);
             ui_scenePanel->transform(0.0f, 0.0f, 564.0f, 564.0f);
 
-            ui_scenePanel->f_onChangeTheme = [](Panel* p, WstrParam themeName)
+            ui_scenePanel->f_onChangeThemeStyle = []
+            (Panel* p, const Panel::ThemeStyle& style)
             {
                 auto sp = (ScenePanel*)p;
-                if (themeName == L"Light") sp->setClearColor(Colors::White);
-                else if (themeName == L"Dark") sp->setClearColor(Colors::Black);
+                if (style.mode == L"Light")
+                {
+                    sp->setClearColor(Colors::White);
+                }
+                else sp->setClearColor(Colors::Black);
             };
-            ui_scenePanel->f_onChangeTheme(ui_scenePanel.get(), app->currThemeName());
+            ui_scenePanel->f_onChangeThemeStyle(ui_scenePanel.get(), app->themeStyle());
         }
         auto ui_fpsLabel = makeManagedUIObject<Label>(ui_scenePanel);
         {

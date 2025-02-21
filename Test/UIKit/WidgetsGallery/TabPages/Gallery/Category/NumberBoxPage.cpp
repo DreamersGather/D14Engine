@@ -19,11 +19,11 @@ SharedPtr<TreeViewItem> createNumberBoxPage(ConstraintLayout* page)
         auto& appear = page->getAppearance();
         appear.background.opacity = 1.0f;
 
-        auto& light = appear.g_themeStyles.at(L"Light");
+        auto& light = appear.g_themeData.at(L"Light");
         {
             light.background.color = D2D1::ColorF{ 0xf9f9f9 };
         }
-        auto& dark = appear.g_themeStyles.at(L"Dark");
+        auto& dark = appear.g_themeData.at(L"Dark");
         {
             dark.background.color = D2D1::ColorF{ 0x272727 };
         }

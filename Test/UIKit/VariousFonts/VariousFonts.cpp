@@ -22,6 +22,11 @@
 using namespace d14engine;
 using namespace d14engine::uikit;
 
+#define D14_DEMO_NAME L"VariousFonts"
+
+#define D14_MAINWINDOW_TITLE L"D14Engine - " D14_DEMO_NAME L" @ UIKit"
+#define D14_SCREENSHOT_PATH L"Screenshots/" D14_DEMO_NAME L".png"
+
 D14_SET_APP_ENTRY(mainVariousFonts)
 {
     Application::CreateInfo info = {};
@@ -40,7 +45,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
         textDrawMode.renderingMode = DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC;
         app->dx12Renderer()->setTextRenderingMode(textDrawMode);
 
-        auto ui_mainWindow = makeRootUIObject<MainWindow>(L"D14Engine - VariousFonts @ UIKit");
+        auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
             ui_mainWindow->moveTopmost();
             ui_mainWindow->isMaximizeEnabled = false;
@@ -56,32 +61,24 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             ui_darkModeSwitch->moveTopmost();
             ui_darkModeSwitch->move(130.0f, 4.0f);
 
-            if (app->systemThemeStyle().mode == Application::ThemeStyle::Mode::Light)
+            if (app->themeStyle().mode == L"Light")
             {
                 ui_darkModeSwitch->setOnOffState(OnOffSwitch::OFF);
             }
             else ui_darkModeSwitch->setOnOffState(OnOffSwitch::ON);
 
-            app->customThemeStyle = app->systemThemeStyle();
             app->f_onSystemThemeStyleChange = [app]
+            (const Application::ThemeStyle& style)
             {
-                app->customThemeStyle.value().color = app->systemThemeStyle().color;
-                app->changeTheme(app->currThemeName());
+                app->setThemeStyle(style);
             };
             ui_darkModeSwitch->f_onStateChange = [app]
             (OnOffSwitch::StatefulObject* obj, OnOffSwitch::StatefulObject::Event& e)
             {
-                auto& customThemeStyle = app->customThemeStyle.value();
-                if (e.on())
-                {
-                    customThemeStyle.mode = Application::ThemeStyle::Mode::Dark;
-                    app->changeTheme(L"Dark");
-                }
-                else if (e.off())
-                {
-                    customThemeStyle.mode = Application::ThemeStyle::Mode::Light;
-                    app->changeTheme(L"Light");
-                }
+                Application::ThemeStyle style = app->themeStyle();
+                if (e.on()) style.mode = L"Dark";
+                else if (e.off()) style.mode = L"Light";
+                app->setThemeStyle(style);
             };
         }
         auto ui_screenshot = makeRootUIObject<OutlinedButton>(L"Screenshot");
@@ -95,7 +92,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             {
                 auto image = app->screenshot();
                 CreateDirectory(L"Screenshots", nullptr);
-                bitmap_utils::saveBitmap(image.Get(), L"Screenshots/VariousFonts.png");
+                bitmap_utils::saveBitmap(image.Get(), D14_SCREENSHOT_PATH);
             };
         }
         auto ui_clientArea = makeUIObject<Panel>();
@@ -387,6 +384,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             valueLabelAppear.offset = 14.0f;
             valueLabelAppear.mainRect.geometry.size = { 100.0f, 40.0f };
             ui_fontSizeSlider->loadValueLabelMaskBitmap();
+            ui_fontSizeSlider->loadSideTrianglePathGeo();
             valueLabelAppear.isResident = true;
 
             ui_fontSizeSlider->valueLabel()->setTextFormat(D14_FONT(L"Default/Normal/16"));
@@ -422,6 +420,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             valueLabelAppear.offset = 14.0f;
             valueLabelAppear.mainRect.geometry.size = { 120.0f, 40.0f };
             ui_fontWeightSelector->loadValueLabelMaskBitmap();
+            ui_fontWeightSelector->loadSideTrianglePathGeo();
             valueLabelAppear.isResident = true;
 
             ui_fontWeightSelector->valueLabel()->setTextFormat(D14_FONT(L"Default/Normal/16"));

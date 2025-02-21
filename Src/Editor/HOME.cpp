@@ -36,7 +36,7 @@ D14_SET_APP_ENTRY(mainEditor)
 
             ui_mainWindow->moveTopmost();
 
-            ui_mainWindow->setDisplayState(Window::DisplayState::Maximized);
+            ui_mainWindow->setDisplayState(Window::Maximized);
         }
         auto ui_centerLayout = makeUIObject<ConstraintLayout>();
         {

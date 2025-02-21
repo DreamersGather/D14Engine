@@ -124,7 +124,8 @@ namespace d14engine::uikit
         };
         m_textLayout = getTextLayout(layoutParams);
 
-#define COPY_TEXT_LAYOUT_FONT_ARRT(Property_Name) do { \
+#define COPY_TEXT_LAYOUT_FONT_ARRT(Property_Name) \
+do { \
         auto& src = source->m_textLayout; \
         decltype(src->GetFont##Property_Name()) value; \
         if (FAILED(src->GetFont##Property_Name(0, &value))) \
@@ -385,10 +386,10 @@ namespace d14engine::uikit
         updateTextOverhangMetrics();
     }
 
-    void Label::onChangeThemeHelper(WstrParam themeName)
+    void Label::onChangeThemeStyleHelper(const ThemeStyle& style)
     {
-        Panel::onChangeThemeHelper(themeName);
+        Panel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(themeName);
+        getAppearance().changeTheme(style.mode);
     }
 }

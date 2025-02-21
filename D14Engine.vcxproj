@@ -2106,7 +2106,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Common\CppLangUtils\EnumClassMap.h" />
+    <ClInclude Include="Src\Common\CppLangUtils\EnumMagic.h" />
     <ClInclude Include="Src\Common\CppLangUtils\IndexIterator.h" />
     <ClInclude Include="Src\Common\CppLangUtils\EnableMasterPtr.h" />
     <ClInclude Include="Src\Common\CppLangUtils\NonCopyable.h" />

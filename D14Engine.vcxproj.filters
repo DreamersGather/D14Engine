@@ -624,9 +624,6 @@
     <ClInclude Include="Src\UIKit\AnimationUtils\MotionFunctions.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Common\CppLangUtils\EnumClassMap.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Common\CppLangUtils\PointerEquality.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -778,6 +775,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\Pipeline\Data\Transformation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\CppLangUtils\EnumMagic.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

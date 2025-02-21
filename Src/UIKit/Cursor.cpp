@@ -251,7 +251,7 @@ namespace d14engine::uikit
         THROW_IF_NULL(Application::g_app);
 
         auto& iconID = std::get<g_staticIconSeat>(m_selectedIconID);
-        auto& basicIcons = m_classifiedBasicIcons.at(Application::g_app->currThemeName());
+        auto& basicIcons = m_classifiedBasicIcons.at(Application::g_app->themeStyle().mode);
 
         return (iconID.index() == g_basicIconSeat) ?
             basicIcons.staticIcons[(size_t)std::get<g_basicIconSeat>(iconID)] :
@@ -263,7 +263,7 @@ namespace d14engine::uikit
         THROW_IF_NULL(Application::g_app);
 
         auto& iconID = std::get<g_dynamicIconSeat>(m_selectedIconID);
-        auto& basicIcons = m_classifiedBasicIcons.at(Application::g_app->currThemeName());
+        auto& basicIcons = m_classifiedBasicIcons.at(Application::g_app->themeStyle().mode);
 
         return (iconID.index() == g_basicIconSeat) ?
             basicIcons.dynamicIcons[(size_t)std::get<g_basicIconSeat>(iconID)] :

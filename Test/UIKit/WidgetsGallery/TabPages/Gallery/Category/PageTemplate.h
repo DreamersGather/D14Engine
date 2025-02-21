@@ -52,11 +52,11 @@ auto& label = item->getContent<IconLabel>().lock()->label(); \
 label->setTextFormat(D14_FONT(L"Default/Normal/14")); \
 auto icon1 = loadBitmap(L"SideCategory/Light/" L#Id L".png"); \
 auto icon2 = loadBitmap(L"SideCategory/Dark/" L#Id L".png"); \
-item->f_onChangeTheme = [=](Panel* p, WstrParam themeName) \
+item->f_onChangeThemeStyle = [=](Panel* p, const Panel::ThemeStyle& style) \
 { \
     auto content = ((TreeViewItem*)p)->getContent<IconLabel>().lock(); \
-    if (themeName == L"Light") content->icon.bitmap = icon1; \
-    else if (themeName == L"Dark") content->icon.bitmap = icon2; \
+    if (style.mode == L"Light") content->icon.bitmap = icon1; \
+    else if (style.mode == L"Dark") content->icon.bitmap = icon2; \
     content->icon.bitmap.interpolationMode = D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR; \
     /* This ensures visual size of icons is consistent across different DPIs */ \
     content->icon.customSize = convert(content->icon.bitmap.data->GetPixelSize()); \

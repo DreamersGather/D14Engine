@@ -1024,7 +1024,7 @@ namespace d14engine::renderer
         THROW_IF_FAILED(swapChain.As(&m_swapChain));
         m_currFrameIndex = m_swapChain->GetCurrentBackBufferIndex();
 
-        if (m_dxgiFactoryInfo.feature.allowTearing)
+        if (!m_composition && m_dxgiFactoryInfo.feature.allowTearing)
         {
             // IDXGIFactory::MakeWindowAssociation can be called only on the
             // factory associated with the target d3d12CmdQueue swap chain,
@@ -1044,6 +1044,8 @@ namespace d14engine::renderer
 
     void Renderer::resizeSwapChain()
     {
+        waitGpuCommand();
+
         // You can't resize a swap chain unless you release
         // all outstanding references to its back buffers.
         clearSwapChainRefs();

@@ -91,11 +91,11 @@ void createGalleryTabPage(ConstraintLayout* page)
         auto clearIconLight = loadBitmap(L"SearchBox/Light/Clear.png");
         auto clearIconDark = loadBitmap(L"SearchBox/Dark/Clear.png");
 
-        ui_clearButton->f_onChangeTheme = [=](Panel* p, WstrParam themeName)
+        ui_clearButton->f_onChangeThemeStyle = [=](Panel* p, const Panel::ThemeStyle& style)
         {
             auto& content = dynamic_cast<Button*>(p)->content();
-            if (themeName == L"Light") content->icon.bitmap = clearIconLight;
-            else if (themeName == L"Dark") content->icon.bitmap = clearIconDark;
+            if (style.mode == L"Light") content->icon.bitmap = clearIconLight;
+            else if (style.mode == L"Dark") content->icon.bitmap = clearIconDark;
             content->icon.bitmap.interpolationMode = D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR;
             // This ensures visual size of icons is consistent across different DPIs
             content->icon.customSize = convert(content->icon.bitmap.data->GetPixelSize());
@@ -126,11 +126,11 @@ void createGalleryTabPage(ConstraintLayout* page)
         auto searchIconLight = loadBitmap(L"SearchBox/Light/Search.png");
         auto searchIconDark = loadBitmap(L"SearchBox/Dark/Search.png");
 
-        ui_searchButton->f_onChangeTheme = [=](Panel* p, WstrParam themeName)
+        ui_searchButton->f_onChangeThemeStyle = [=](Panel* p, const Panel::ThemeStyle& style)
         {
             auto& content = dynamic_cast<Button*>(p)->content();
-            if (themeName == L"Light") content->icon.bitmap = searchIconLight;
-            else if (themeName == L"Dark") content->icon.bitmap = searchIconDark;
+            if (style.mode == L"Light") content->icon.bitmap = searchIconLight;
+            else if (style.mode == L"Dark") content->icon.bitmap = searchIconDark;
             content->icon.bitmap.interpolationMode = D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR;
             // This ensures visual size of icons is consistent across different DPIs
             content->icon.customSize = convert(content->icon.bitmap.data->GetPixelSize());
@@ -189,11 +189,11 @@ void createGalleryTabPage(ConstraintLayout* page)
         };
         ui_sideCategory->appendRootItem(items);
 
-        ui_sideCategory->f_onChangeTheme = [=](Panel* p, WstrParam themeName)
+        ui_sideCategory->f_onChangeThemeStyle = [=](Panel* p, const Panel::ThemeStyle& style)
         {
             for (auto& page : *categoryPages)
             {
-                page.second->onChangeTheme(themeName);
+                page.second->onChangeThemeStyle(style);
             }
         };
     }
@@ -205,11 +205,11 @@ void createGalleryTabPage(ConstraintLayout* page)
         appear.stroke.width = 2.0f;
         appear.stroke.opacity = 1.0f;
 
-        auto& light = appear.g_themeStyles.at(L"Light");
+        auto& light = appear.g_themeData.at(L"Light");
         {
             light.background.color = D2D1::ColorF{ 0xf9f9f9 };
         }
-        auto& dark = appear.g_themeStyles.at(L"Dark");
+        auto& dark = appear.g_themeData.at(L"Dark");
         {
             dark.background.color = D2D1::ColorF{ 0x272727 };
         }

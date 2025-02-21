@@ -16,6 +16,11 @@
 using namespace d14engine;
 using namespace d14engine::uikit;
 
+#define D14_DEMO_NAME L"SimpleEditor"
+
+#define D14_MAINWINDOW_TITLE L"D14Engine - " D14_DEMO_NAME L" @ UIKit"
+#define D14_SCREENSHOT_PATH L"Screenshots/" D14_DEMO_NAME L".png"
+
 D14_SET_APP_ENTRY(mainSimpleEditor)
 {
     Application::CreateInfo info = {};
@@ -30,7 +35,7 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
 
     return Application(argc, argv, info).run([&](Application* app)
     {
-        auto ui_mainWindow = makeRootUIObject<MainWindow>(L"D14Engine - SimpleEditor @ UIKit");
+        auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
             ui_mainWindow->moveTopmost();
             ui_mainWindow->isMaximizeEnabled = false;
@@ -46,32 +51,24 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
             ui_darkModeSwitch->moveTopmost();
             ui_darkModeSwitch->move(130.0f, 4.0f);
 
-            if (app->systemThemeStyle().mode == Application::ThemeStyle::Mode::Light)
+            if (app->themeStyle().mode == L"Light")
             {
                 ui_darkModeSwitch->setOnOffState(OnOffSwitch::OFF);
             }
             else ui_darkModeSwitch->setOnOffState(OnOffSwitch::ON);
 
-            app->customThemeStyle = app->systemThemeStyle();
             app->f_onSystemThemeStyleChange = [app]
+            (const Application::ThemeStyle& style)
             {
-                app->customThemeStyle.value().color = app->systemThemeStyle().color;
-                app->changeTheme(app->currThemeName());
+                app->setThemeStyle(style);
             };
             ui_darkModeSwitch->f_onStateChange = [app]
             (OnOffSwitch::StatefulObject* obj, OnOffSwitch::StatefulObject::Event& e)
             {
-                auto& customThemeStyle = app->customThemeStyle.value();
-                if (e.on())
-                {
-                    customThemeStyle.mode = Application::ThemeStyle::Mode::Dark;
-                    app->changeTheme(L"Dark");
-                }
-                else if (e.off())
-                {
-                    customThemeStyle.mode = Application::ThemeStyle::Mode::Light;
-                    app->changeTheme(L"Light");
-                }
+                Application::ThemeStyle style = app->themeStyle();
+                if (e.on()) style.mode = L"Dark";
+                else if (e.off()) style.mode = L"Light";
+                app->setThemeStyle(style);
             };
         }
         auto ui_screenshot = makeRootUIObject<OutlinedButton>(L"Screenshot");
@@ -85,7 +82,7 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
             {
                 auto image = app->screenshot();
                 CreateDirectory(L"Screenshots", nullptr);
-                bitmap_utils::saveBitmap(image.Get(), L"Screenshots/SimpleEditor.png");
+                bitmap_utils::saveBitmap(image.Get(), D14_SCREENSHOT_PATH);
             };
         }
         auto ui_clientArea = makeUIObject<Panel>();

@@ -10,18 +10,18 @@ using namespace d14engine::uikit::color_utils;
 std::ostream& operator<<(std::ostream& out, const iRGB& rgb)
 {
     out << "RGB: ( " <<
-        std::setw(3) << rgb.R << ", " <<
-        std::setw(3) << rgb.G << ", " <<
-        std::setw(3) << rgb.B << " )";
+        std::setw(3) << rgb.r << ", " <<
+        std::setw(3) << rgb.g << ", " <<
+        std::setw(3) << rgb.b << " )";
     return out;
 }
 
 std::ostream& operator<<(std::ostream& out, const iHSB& hsb)
 {
     out << "HSB: ( " <<
-        std::setw(3) << hsb.H << ", " <<
-        std::setw(3) << hsb.S << ", " <<
-        std::setw(3) << hsb.B << " )";
+        std::setw(3) << hsb.h << ", " <<
+        std::setw(3) << hsb.s << ", " <<
+        std::setw(3) << hsb.b << " )";
     return out;
 }
 

@@ -22,7 +22,7 @@ namespace d14engine::uikit::appearance
             }
             bottomLine = {};
 
-            struct ThemeStyle
+            struct ThemeData
             {
                 SolidStyle background = {};
                 StrokeStyle stroke = {};
@@ -33,9 +33,9 @@ namespace d14engine::uikit::appearance
                 }
                 bottomLine = {};
             };
-            _D14_SET_THEME_STYLE_MAP_DECL;
+            _D14_SET_THEME_DATA_MAP_DECL;
 
-            void changeTheme(Label::Appearance& appearance, WstrParam themeName) override;
+            void changeTheme(Label::Appearance& appearance, WstrParam modeName) override;
         }
         appearance = {};
     };

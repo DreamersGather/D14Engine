@@ -66,7 +66,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         ui_btnLabel->setTextFormat(D14_FONT(L"Default/Normal/14"));
         THROW_IF_FAILED(ui_btnLabel->textLayout()->SetUnderline(true, { 0, UINT32_MAX }));
 
-        ui_aboutButton->f_onChangeTheme = [](Panel* p, WstrParam themeName)
+        ui_aboutButton->f_onChangeThemeStyle = [=](Panel* p, const Panel::ThemeStyle& style)
         {
             auto& appear = dynamic_cast<FlatButton*>(p)->getAppearance();
 
@@ -135,11 +135,11 @@ void createSettingsTabPage(ConstraintLayout* page)
         appear.stroke.width = 2.0f;
         appear.stroke.opacity = 1.0f;
 
-        auto& light = appear.g_themeStyles.at(L"Light");
+        auto& light = appear.g_themeData.at(L"Light");
         {
             light.background.color = D2D1::ColorF{ 0xf9f9f9 };
         }
-        auto& dark = appear.g_themeStyles.at(L"Dark");
+        auto& dark = appear.g_themeData.at(L"Dark");
         {
             dark.background.color = D2D1::ColorF{ 0x272727 };
         }
@@ -200,11 +200,11 @@ void createSettingsTabPage(ConstraintLayout* page)
         auto& appear = ui_settingsLayout->getAppearance();
         appear.background.opacity = 1.0f;
 
-        auto& light = appear.g_themeStyles.at(L"Light");
+        auto& light = appear.g_themeData.at(L"Light");
         {
             light.background.color = D2D1::ColorF{ 0xf9f9f9 };
         }
-        auto& dark = appear.g_themeStyles.at(L"Dark");
+        auto& dark = appear.g_themeData.at(L"Dark");
         {
             dark.background.color = D2D1::ColorF{ 0x272727 };
         }
@@ -268,20 +268,14 @@ void createSettingsTabPage(ConstraintLayout* page)
             return math_utils::isOverlapped(pt, math_utils::increaseRight(p->absoluteRect(), horzOffset));
         };
 
-        Application::g_app->f_onSystemThemeStyleChange = [=]
+        Application::g_app->f_onSystemThemeStyleChange = [=](const Application::ThemeStyle& style)
         {
-            if (Application::g_app->customThemeStyle.has_value())
-            {
-                auto& customThemeStyle = Application::g_app->customThemeStyle.value();
-                customThemeStyle.color = Application::g_app->systemThemeStyle().color;
-            }
             if (!wk_autoThemeCheckBox.expired() && wk_autoThemeCheckBox.lock()->currState().checked())
             {
                 if (!wk_darkModeSwitch.expired())
                 {
                     auto sh_darkModeSwitch = wk_darkModeSwitch.lock();
-                    auto& mode = Application::g_app->systemThemeStyle().mode;
-                    bool light = (mode == Application::ThemeStyle::Mode::Light);
+                    bool light = (style.mode == L"Light");
                     sh_darkModeSwitch->setOnOffState(light ? OnOffSwitch::OFF : OnOffSwitch::ON);
                     sh_darkModeSwitch->forceUpdateCurrState();
                 }
@@ -292,21 +286,17 @@ void createSettingsTabPage(ConstraintLayout* page)
         {
             if (e.unchecked()) // user selected
             {
-                Application::g_app->customThemeStyle = Application::g_app->systemThemeStyle();
-
                 if (!wk_darkModeSwitch.expired()) wk_darkModeSwitch.lock()->setEnabled(true);
                 if (!wk_label.expired()) wk_label.lock()->setEnabled(true);
             }
             if (e.checked()) // system setting
             {
-                Application::g_app->customThemeStyle.reset();
-
                 if (!wk_darkModeSwitch.expired())
                 {
                     auto sh_darkModeSwitch = wk_darkModeSwitch.lock();
                     sh_darkModeSwitch->setEnabled(false);
-                    auto& mode = Application::g_app->systemThemeStyle().mode;
-                    bool light = (mode == Application::ThemeStyle::Mode::Light);
+                    auto style = Application::querySystemThemeStyle();
+                    bool light = (style.mode == L"Light");
                     sh_darkModeSwitch->setOnOff(light ? OnOffSwitch::OFF : OnOffSwitch::ON);
                 }
                 if (!wk_label.expired()) wk_label.lock()->setEnabled(false);
@@ -315,14 +305,10 @@ void createSettingsTabPage(ConstraintLayout* page)
         ui_darkModeSwitch->f_onStateChange = []
         (OnOffSwitch::StatefulObject* obj, OnOffSwitch::StatefulObject::Event& e)
         {
-            if (Application::g_app->customThemeStyle.has_value())
-            {
-                auto& customThemeStyle = Application::g_app->customThemeStyle.value();
-                if (e.on()) customThemeStyle.mode = Application::ThemeStyle::Mode::Dark;
-                else if (e.off()) customThemeStyle.mode = Application::ThemeStyle::Mode::Light;
-            }
-            if (e.on()) Application::g_app->changeTheme(L"Dark");
-            else if (e.off()) Application::g_app->changeTheme(L"Light");
+            Application::ThemeStyle style = Application::g_app->themeStyle();
+            if (e.on()) style.mode = L"Dark";
+            else if (e.off()) style.mode = L"Light";
+            Application::g_app->setThemeStyle(style);
         };
         ui_autoThemeCheckBox->setChecked(CheckBox::CHECKED);
     }

@@ -2,7 +2,7 @@
 
 #include "Common/Precompile.h"
 
-#include "Common/CppLangUtils/EnumClassMap.h"
+#include "Common/CppLangUtils/EnumMagic.h"
 
 #include "UIKit/AnimationUtils/BitmapSequence.h"
 #include "UIKit/Panel.h"
@@ -14,11 +14,11 @@ namespace d14engine::uikit
         enum class StaticIconIndex
         {
             Alternate, Arrow, BackDiag, Beam, Hand, Help, HorzSize,
-            MainDiag, Move, Pen, Person, Pin, Select, Stop, VertSize, Count
+            MainDiag, Move, Pen, Person, Pin, Select, Stop, VertSize
         };
         enum class DynamicIconIndex
         {
-            Busy, Working, Count
+            Busy, Working
         };
 #define SET_STATIC_ALIAS(Name) constexpr static auto Name = StaticIconIndex::Name;
 #define SET_DYNAMIC_ALIAS(Name) constexpr static auto Name = DynamicIconIndex::Name;
@@ -42,8 +42,8 @@ namespace d14engine::uikit
         SET_DYNAMIC_ALIAS(Busy)
         SET_DYNAMIC_ALIAS(Working)
 
-#undef SET_STATIC
-#undef SET_DYNAMIC
+#undef SET_STATIC_ALIAS
+#undef SET_DYNAMIC_ALIAS
 
         template<typename BitmapData>
         struct Icon
@@ -54,8 +54,8 @@ namespace d14engine::uikit
         using StaticIcon = Icon<BitmapObject>;
         using DynamicIcon = Icon<animation_utils::BitmapSequence>;
 
-        using StaticIconMap = cpp_lang_utils::EnumClassMap<StaticIconIndex, StaticIcon>;
-        using DynamicIconMap = cpp_lang_utils::EnumClassMap<DynamicIconIndex, DynamicIcon>;
+        using StaticIconMap = cpp_lang_utils::EnumMap<StaticIconIndex, StaticIcon>;
+        using DynamicIconMap = cpp_lang_utils::EnumMap<DynamicIconIndex, DynamicIcon>;
 
         struct IconSeries
         {
