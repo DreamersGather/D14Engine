@@ -13,6 +13,15 @@ namespace d14engine::uikit::appearance
         struct ThemeStyle
         {
             Wstring mode = {}; D2D1_COLOR_F color = {};
+
+            bool operator==(const ThemeStyle& rhs)
+            {
+                return mode == rhs.mode &&
+                    color.r == rhs.color.r &&
+                    color.g == rhs.color.g &&
+                    color.b == rhs.color.b &&
+                    color.a == rhs.color.a;
+            }
         };
         virtual void changeTheme(WstrParam modeName) = 0;
     };

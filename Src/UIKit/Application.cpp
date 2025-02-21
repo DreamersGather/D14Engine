@@ -287,8 +287,11 @@ namespace d14engine::uikit
                 if (lstrcmp(LPCTSTR(lParam), L"ImmersiveColorSet") == 0)
                 {
                     auto style = Application::querySystemThemeStyle();
-                
-                    if (app->f_onSystemThemeStyleChange) app->f_onSystemThemeStyleChange(style);
+
+                    if (app->themeStyle() != style && app->f_onSystemThemeStyleChange)
+                    {
+                        app->f_onSystemThemeStyleChange(style);
+                    }
                 }
             }
             return 0;

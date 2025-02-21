@@ -72,18 +72,20 @@ namespace d14engine::uikit
         constexpr static BorderColor DefaultColor = DWMWA_COLOR_DEFAULT;
 
     protected:
-        bool m_accentBorder = false;
-
         // This value is supported starting with Windows 11 Build 22000!
         BorderColor m_borderColor = {};
 
-    public:
-        bool accentBorder() const;
-        bool setAccentBorder(bool value);
+        bool setBorderColorAttr(BorderColor color);
 
+        bool m_accentBorder = false;
+
+    public:
         BorderColor borderColor() const;
         // Returns whether the setting was successful.
         bool setBorderColor(BorderColor color);
+
+        bool accentBorder() const;
+        bool setAccentBorder(bool value);
 
     protected:
         // Panel

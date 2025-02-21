@@ -28,6 +28,7 @@ namespace d14engine::uikit
         // Try to adapt the fluent design of Windows 11.
         setImmersiveDarkMode(true);
         setCornerState(Round);
+        setBorderColor(DefaultColor);
 
         operationTarget = OperationTarget::GlobalWin32Window;
 
@@ -121,28 +122,7 @@ namespace d14engine::uikit
         return ret;
     }
 
-    bool MainWindow::accentBorder() const
-    {
-        return m_accentBorder;
-    }
-
-    bool MainWindow::setAccentBorder(bool value)
-    {
-        bool ret = false;
-        if (m_borderColor != NoneColor)
-        {
-            ret = setBorderColor((color_utils::iRGB)appearance::g_colorGroup.primary);
-            if (ret) m_accentBorder = value;
-        }
-        return ret;
-    }
-
-    MainWindow::BorderColor MainWindow::borderColor() const
-    {
-        return m_borderColor;
-    }
-
-    bool MainWindow::setBorderColor(BorderColor color)
+    bool MainWindow::setBorderColorAttr(BorderColor color)
     {
         THROW_IF_NULL(Application::g_app);
 
@@ -159,13 +139,53 @@ namespace d14engine::uikit
         return ret;
     }
 
+    MainWindow::BorderColor MainWindow::borderColor() const
+    {
+        return m_borderColor;
+    }
+
+    bool MainWindow::setBorderColor(BorderColor color)
+    {
+        THROW_IF_NULL(Application::g_app);
+
+        if (m_accentBorder && color != NoneColor)
+        {
+            return false;
+        }
+        auto window = Application::g_app->win32Window();
+
+        return setBorderColorAttr(color);
+    }
+
+    bool MainWindow::accentBorder() const
+    {
+        return m_accentBorder;
+    }
+
+    bool MainWindow::setAccentBorder(bool value)
+    {
+        bool ret = false;
+        if (m_borderColor != NoneColor)
+        {
+            if (value)
+            {
+                auto& color = appearance::g_colorGroup.primary;
+                ret = setBorderColorAttr((color_utils::iRGB)color);
+            }
+            else ret = setBorderColorAttr(m_borderColor);
+        }
+        if (ret) m_accentBorder = value;
+        return ret;
+    }
+
     void MainWindow::onChangeThemeStyleHelper(const ThemeStyle& style)
     {
         Window::onChangeThemeStyleHelper(style);
 
         if (m_accentBorder && m_borderColor != NoneColor)
         {
-            setBorderColor((color_utils::iRGB)appearance::g_colorGroup.primary);
+            auto& color = appearance::g_colorGroup.primary;
+            setBorderColorAttr((color_utils::iRGB)color);
         }
     }
 
