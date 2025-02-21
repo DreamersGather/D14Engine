@@ -13,6 +13,8 @@ namespace d14engine::uikit
 
         _D14_SET_APPEARANCE_GETTER(Label)
 
+        static Wstring defaultTextFormatName;
+
     protected:
         Wstring m_text = {};
 

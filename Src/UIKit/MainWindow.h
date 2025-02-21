@@ -28,9 +28,11 @@ namespace d14engine::uikit
         /////////////////////////
         // Immersive Dark Mode //
         /////////////////////////
+        //----------------------------------------------------------------
+        // This setting is supported starting with Windows 11 Build 22000!
+        //----------------------------------------------------------------
 
     protected:
-        // This value is supported starting with Windows 11 Build 22000!
         bool m_immersiveDarkMode = false;
 
     public:
@@ -41,6 +43,9 @@ namespace d14engine::uikit
         //////////////////
         // Corner State //
         //////////////////
+        //----------------------------------------------------------------
+        // This setting is supported starting with Windows 11 Build 22000!
+        //----------------------------------------------------------------
 
     public:
         using CornerState = DWM_WINDOW_CORNER_PREFERENCE;
@@ -50,7 +55,6 @@ namespace d14engine::uikit
         constexpr static CornerState DoNotRound = DWMWCP_DONOTROUND;
 
     protected:
-        // This value is supported starting with Windows 11 Build 22000!
         CornerState m_cornerState = {};
 
         // Helps set the correct state after restored from maximized.
@@ -64,6 +68,9 @@ namespace d14engine::uikit
         //////////////////
         // Border Color //
         //////////////////
+        //----------------------------------------------------------------
+        // This setting is supported starting with Windows 11 Build 22000!
+        //----------------------------------------------------------------
 
     public:
         using BorderColor = color_utils::HEX;
@@ -72,7 +79,6 @@ namespace d14engine::uikit
         constexpr static BorderColor DefaultColor = DWMWA_COLOR_DEFAULT;
 
     protected:
-        // This value is supported starting with Windows 11 Build 22000!
         BorderColor m_borderColor = {};
 
         bool setBorderColorAttr(BorderColor color);
@@ -86,6 +92,34 @@ namespace d14engine::uikit
 
         bool accentBorder() const;
         bool setAccentBorder(bool value);
+
+        //////////////////////
+        // Special Material //
+        //////////////////////
+        //----------------------------------------------------------------
+        // This setting is supported starting with Windows 11 Build 22621!
+        //----------------------------------------------------------------
+
+#define _D14_MAINWINDOW_MATERIAL_TYPE false
+
+#if _D14_MAINWINDOW_MATERIAL_TYPE
+    public:
+        using MaterialType = DWM_SYSTEMBACKDROP_TYPE;
+
+        constexpr static MaterialType NoneType = DWMSBT_NONE;
+        constexpr static MaterialType AutoType = DWMSBT_AUTO;
+        constexpr static MaterialType Mica = DWMSBT_MAINWINDOW;
+        constexpr static MaterialType Acrylic = DWMSBT_TRANSIENTWINDOW;
+        constexpr static MaterialType MicaAlt = DWMSBT_TABBEDWINDOW;
+
+    protected:
+        MaterialType m_materialType = AutoType;
+
+    public:
+        MaterialType materialType() const;
+        // Returns whether the setting was successful.
+        bool setMaterialType(MaterialType type);
+#endif
 
     protected:
         // Panel

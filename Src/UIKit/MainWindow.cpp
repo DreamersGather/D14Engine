@@ -26,7 +26,6 @@ namespace d14engine::uikit
         THROW_IF_NULL(Application::g_app);
 
         // Try to adapt the fluent design of Windows 11.
-        setImmersiveDarkMode(true);
         setCornerState(Round);
         setBorderColor(DefaultColor);
 
@@ -177,6 +176,30 @@ namespace d14engine::uikit
         if (ret) m_accentBorder = value;
         return ret;
     }
+
+#if _D14_MAINWINDOW_MATERIAL_TYPE
+    MainWindow::MaterialType MainWindow::materialType() const
+    {
+        return m_materialType;
+    }
+
+    bool MainWindow::setMaterialType(MaterialType type)
+    {
+        THROW_IF_NULL(Application::g_app);
+
+        auto window = Application::g_app->win32Window();
+
+        auto ret = SUCCEEDED(DwmSetWindowAttribute
+        (
+            /* hwnd        */ window,
+            /* dwAttribute */ DWMWA_SYSTEMBACKDROP_TYPE,
+            /* pvAttribute */ &type,
+            /* cbAttribute */ sizeof(MaterialType))
+        );
+        if (ret) m_materialType = type;
+        return ret;
+    }
+#endif
 
     void MainWindow::onChangeThemeStyleHelper(const ThemeStyle& style)
     {
