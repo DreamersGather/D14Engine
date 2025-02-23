@@ -32,20 +32,23 @@ namespace d14engine::renderer
     {
         THROW_IF_NULL(rndr);
 
-        m_enabled = value;
-        if (m_enabled)
+        if (value != m_enabled)
         {
-            createRootSignature();
-            createPipelineState();
-            createVertexBuffer();
-        }
-        else // Clear created components.
-        {
-            m_rootSigature.Reset();
-            m_pipelineState.Reset();
+            if (value)
+            {
+                createRootSignature();
+                createPipelineState();
+                createVertexBuffer();
+            }
+            else // Clear created components.
+            {
+                m_rootSigature.Reset();
+                m_pipelineState.Reset();
 
-            m_vertexBuffer.reset();
-            m_vertexBufferView = {};
+                m_vertexBuffer.reset();
+                m_vertexBufferView = {};
+            }
+            m_enabled = value;
         }
     }
 
@@ -112,7 +115,7 @@ namespace d14engine::renderer
             /* pRootSignatureDesc */ &rootSigDesc,
             /* MaxVersion         */ maxVersion,
             /* ppBlob             */ &rootSigBlob,
-            /* ppErrorBlob        */ &error
+            /* ppErrorBlob        */ ppErrorBlob
         ));
         THROW_IF_FAILED(rndr->d3d12Device()->CreateRootSignature
         (

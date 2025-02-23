@@ -48,11 +48,11 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         info.dpi = 192.0f;
     }
     else info.dpi = 96.0f;
-    info.win32WindowRect = { 0, 0, 1000, 600 };
+    info.windowSize = { 1000, 600 };
 
     BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC;
     
-    return Application(argc, argv, info).run([&](Application* app)
+    return Application(info).run([&](Application* app)
     {
         app->increaseAnimationCount(); // enable renderer updating
 
@@ -180,7 +180,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             auto& maxVersion = rndr->d3d12DeviceInfo().feature.rootSignature.HighestVersion;
 
             ComPtr<ID3DBlob> rootBlob;
-            THROW_IF_ERROR(D3DX12SerializeVersionedRootSignature(&rootDesc, maxVersion, &rootBlob, &error));
+            THROW_IF_ERROR(D3DX12SerializeVersionedRootSignature(&rootDesc, maxVersion, &rootBlob, ppErrorBlob));
 
             ComPtr<ID3D12RootSignature> rootSignature;
             THROW_IF_FAILED(rndr->d3d12Device()->CreateRootSignature(

@@ -352,6 +352,9 @@
     <ClCompile Include="Test\Pipeline\2D\ManySprites.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Renderer\InfoUtils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="Test\UIKit\ColorfulCube\ColorfulCube.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -778,6 +781,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\Common\CppLangUtils\EnumMagic.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\InfoUtils.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

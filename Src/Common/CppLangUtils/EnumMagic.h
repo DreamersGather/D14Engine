@@ -44,7 +44,7 @@ namespace d14engine::cpp_lang_utils
     // Enum Check //
     ////////////////
     //
-    // enum Animal { Cat, Dog };
+    // enum class Animal { Cat, Dog };
     // 
     // hasEnum<Animal, Animal::Cat> // true
     // hasEnum<Animal, Animal::Dog> // true
@@ -77,8 +77,8 @@ namespace d14engine::cpp_lang_utils
     // Enum Count //
     ////////////////
     //
-    // enum Animal { Cat, Dog };
-    // enum Language { C, Cpp, Python };
+    // enum class Animal { Cat, Dog };
+    // enum class Language { C, Cpp, Python };
     // 
     // enumCount<Animal> // 2
     // enumCount<Language> // 3
@@ -107,11 +107,25 @@ namespace d14engine::cpp_lang_utils
     template<typename Enum_T>
     constexpr auto enumCount = _enumCount<Enum_T>();
 
+    //////////////
+    // Enum Map //
+    //////////////
+    //
+    // enum class Animal { Cat, Dog };
+    // using Name = std::string;
+    // 
+    // EnumMap<Animal, Name> names = {};
+    // names[(size_t)Animal::Cat] = "happy";
+    // names[(size_t)Animal::Dog] = "smile";
+
+    template<typename Key_T, typename Value_T = Key_T>
+    using EnumMap = std::array<Value_T, enumCount<Key_T>>;
+
     ///////////////
     // Enum Name //
     ///////////////
     //
-    // enum Animal { Cat, Dog };
+    // enum class Animal { Cat, Dog };
     // 
     // enumName(Animal::Cat) // L"Cat"
     // enumName((Animal)1) // L"Dog"
@@ -192,10 +206,4 @@ namespace d14engine::cpp_lang_utils
         }
         else return g_invalidEnumName;
     }
-
-    // The structure supports random-access and the lookup will be processed
-    // by the compiler since the enum class is static.
-
-    template<typename Key_T, typename Value_T = Key_T>
-    using EnumMap = std::array<Value_T, enumCount<Key_T>>;
 }

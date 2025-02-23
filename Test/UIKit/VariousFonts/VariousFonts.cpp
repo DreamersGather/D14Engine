@@ -35,11 +35,11 @@ D14_SET_APP_ENTRY(mainVariousFonts)
         info.dpi = 192.0f;
     }
     else info.dpi = 96.0f;
-    info.win32WindowRect = { 0, 0, 800, 600 };
+    info.windowSize = { 800, 600 };
 
     BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC;
 
-    return Application(argc, argv, info).run([&](Application* app)
+    return Application(info).run([&](Application* app)
     {
         auto textDrawMode = app->dx12Renderer()->getDefaultTextRenderingMode();
         textDrawMode.renderingMode = DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC;

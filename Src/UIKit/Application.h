@@ -35,14 +35,9 @@ namespace d14engine::uikit
                 L"Lib/DirectXShaderCompiler/x86"
             };
 #endif
-            Optional<float> dpi = std::nullopt;
+            Optional<float> dpi = {};
 
-            bool showCentered = true;
-
-            bool showMaximized = false;
-            bool showFullscreen = false;
-
-            Optional<RECT> win32WindowRect = std::nullopt;
+            SIZE windowSize = { 800, 600 };
 
             // Whether to enable the DWM composition.
             bool composition = false;
@@ -50,7 +45,7 @@ namespace d14engine::uikit
 
         static Application* g_app;
 
-        Application(int argc, wchar_t* argv[], const CreateInfo& info = {});
+        explicit Application(const CreateInfo& info = {});
 
         // After exiting the program, the application is destroyed at first,
         // and other objects are destroyed subsequently, in which situation

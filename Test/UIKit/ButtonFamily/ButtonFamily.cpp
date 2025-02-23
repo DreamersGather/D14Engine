@@ -42,9 +42,9 @@ D14_SET_APP_ENTRY(mainButtonFamily)
         info.dpi = 192.0f;
     }
     else info.dpi = 96.0f;
-    info.win32WindowRect = { 0, 0, 800, 600 };
+    info.windowSize = { 800, 600 };
 
-    return Application(argc, argv, info).run([&](Application* app)
+    return Application(info).run([&](Application* app)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {

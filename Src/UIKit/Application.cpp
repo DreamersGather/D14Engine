@@ -24,12 +24,7 @@ namespace d14engine::uikit
 {
     Application* Application::g_app = nullptr;
 
-    Application::Application(
-        int argc,
-        wchar_t* argv[],
-        const CreateInfo& info)
-        :
-        createInfo(info)
+    Application::Application(const CreateInfo& info) : createInfo(info)
     {
         g_app = this;
 
@@ -83,29 +78,9 @@ namespace d14engine::uikit
         auto workAreaWidth = math_utils::width(workAreaRect);
         auto workAreaHeight = math_utils::height(workAreaRect);
 
-        RECT wndrect = {};
-        if (createInfo.showMaximized)
-        {
-            wndrect = { 0, 0, workAreaWidth, workAreaHeight };
-        }
-        else if (createInfo.win32WindowRect.has_value())
-        {
-            auto srcrc = platform_utils::scaledByDpi(createInfo.win32WindowRect.value());
-
-            if (createInfo.showCentered)
-            {
-                wndrect = math_utils::centered(
-                    { 0, 0, workAreaWidth, workAreaHeight },
-                    math_utils::size(srcrc));
-            }
-            else wndrect = createInfo.win32WindowRect.value();
-        }
-        else // Display in the default rectangle area (800 x 600).
-        {
-            wndrect = math_utils::centered(
-                { 0, 0, workAreaWidth, workAreaHeight },
-                platform_utils::scaledByDpi(SIZE{ 800, 600 }));
-        }
+        RECT wndrect = math_utils::centered(
+            { 0, 0, workAreaWidth, workAreaHeight },
+            platform_utils::scaledByDpi(createInfo.windowSize));
 
         DWORD dwStyle = WS_POPUP;
         // Prevent DWM from drawing the window again.
@@ -191,12 +166,7 @@ namespace d14engine::uikit
 
         m_renderer->renderNextFrame();
 
-        if (createInfo.showFullscreen)
-        {
-            m_renderer->window().enterFullscreenMode();
-        }
-        else ShowWindow(m_win32Window, SW_SHOW);
-
+        ShowWindow(m_win32Window, SW_SHOW);
         UpdateWindow(m_win32Window);
 
         MSG msg;
@@ -509,7 +479,7 @@ namespace d14engine::uikit
             }
             // Register mouse-leave event for the Win32 window.
             TRACKMOUSEEVENT tme = {};
-            tme.cbSize = sizeof(TRACKMOUSEEVENT);
+            tme.cbSize = sizeof(tme);
             tme.dwFlags = TME_LEAVE;
             tme.hwndTrack = hwnd;
 

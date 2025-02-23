@@ -86,7 +86,7 @@ namespace d14engine::uikit
             /* hwnd        */ window,
             /* dwAttribute */ DWMWA_USE_IMMERSIVE_DARK_MODE,
             /* pvAttribute */ &value,
-            /* cbAttribute */ sizeof(BOOL))
+            /* cbAttribute */ sizeof(value))
         );
         if (ret) m_immersiveDarkMode = value;
         return ret;
@@ -108,7 +108,7 @@ namespace d14engine::uikit
             /* hwnd        */ window,
             /* dwAttribute */ DWMWA_WINDOW_CORNER_PREFERENCE,
             /* pvAttribute */ &state,
-            /* cbAttribute */ sizeof(CornerState))
+            /* cbAttribute */ sizeof(state))
         );
         if (ret)
         {
@@ -132,7 +132,7 @@ namespace d14engine::uikit
             /* hwnd        */ window,
             /* dwAttribute */ DWMWA_BORDER_COLOR,
             /* pvAttribute */ &color,
-            /* cbAttribute */ sizeof(BorderColor))
+            /* cbAttribute */ sizeof(color))
         );
         if (ret) m_borderColor = color;
         return ret;
@@ -194,7 +194,7 @@ namespace d14engine::uikit
             /* hwnd        */ window,
             /* dwAttribute */ DWMWA_SYSTEMBACKDROP_TYPE,
             /* pvAttribute */ &type,
-            /* cbAttribute */ sizeof(MaterialType))
+            /* cbAttribute */ sizeof(type))
         );
         if (ret) m_materialType = type;
         return ret;

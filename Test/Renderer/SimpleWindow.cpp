@@ -4,6 +4,7 @@
 #include "Common/MathUtils/GDI.h"
 #include "Common/RuntimeError.h"
 
+#include "Renderer/InfoUtils.h"
 #include "Renderer/Renderer.h"
 
 using namespace d14engine;
@@ -45,29 +46,39 @@ int wmain(int argc, wchar_t* argv[])
             // Special note: AddDllDirectory only accepts absolute paths!
             THROW_IF_NULL(AddDllDirectory((exePath + libPath + L"/" + arch).c_str()));
         }
-        //-----------------------------------------------
-        //-------------------- Usage --------------------
-        //-----------------------------------------------
+        //-------------------------------------------------------------
+        //--------------------------- Usage ---------------------------
+        //-------------------------------------------------------------
         // The window is in free scaling mode by default:
         // 
         // 1. Press [Space] to switch between different display modes,
         //    in which cases the letterbox will be used for stretching.
         // 
-        // 2. Press [Enter] to turn on/off free scaling mode.
-        //-----------------------------------------------
-        // The window background is in solid color by default:
+        // 2. Press [Backspace] to turn on/off free scaling mode.
+        //-------------------------------------------------------------
+        // The window is rendered with the letterbox by default:
         //
-        // 1. Change info.sceneColor for different colors.
+        // 1. Press [Enter] to enable/disable the composition layer:
+        // 
+        //    (composition=true) The letterbox will be released,
+        //    and the window is rendered with the composition layer,
+        //    in which case the background color can be transparent.
         //
-        // 2. Change info.composition and info.layerColor
-        //    for transparent background (with alpha enabled).
-        //-----------------------------------------------
-         
+        //    (composition=false) The letterbox will be created,
+        //    and the window is rendered with the letterbox scene,
+        //    in which case the background color is not transparent.
+        //-------------------------------------------------------------
+        // NOTE: When using the composition layer, the window is
+        //       always in free scalilng mode, and the layer bitmap
+        //       costs extra GPU commands for alpha blending.
+        //       It is recommended to disable the composition layer
+        //       if the application is designed for high-performance
+        //       rendering without any transparent background.
+        //-------------------------------------------------------------
+
         Renderer::CreateInfo info = {};
         info.sceneColor = Colors::SteelBlue;
-        //info.composition = true;
-        //info.layerColor = { .a = 0.5f };
-
+        
         auto rndr = initApp(800, 600, info);
 
         ShowWindow(rndr->window().ptr, SW_SHOW);
@@ -214,10 +225,8 @@ LRESULT CALLBACK fnWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
         {
         case VK_RETURN:
         {
-            if (!rndr->window().fullscreen())
-            {
-                rndr->window().enterFullscreenMode();
-            }
+            auto& window = rndr->window();
+            window.setFullscreen(!window.fullscreen());
             break;
         }
         default: break;
@@ -228,18 +237,16 @@ LRESULT CALLBACK fnWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
     {
         switch (wParam)
         {
-        case VK_RETURN:
+        case VK_BACK:
         {
             auto& setting = rndr->d3d12DeviceInfo().setting;
-            setting.setDisplayMode(!setting.scaling(), setting.displayModeIndex());
+            setting.setScaling(!setting.scaling());
 
             if (setting.scaling())
             {
-                auto& currDispMode = setting.displayMode();
-                auto captionText = DEMO_NAME L", Resolution: " +
-                                   std::to_wstring(currDispMode.Width) + L" x " +
-                                   std::to_wstring(currDispMode.Height) + L" (" +
-                                   std::to_wstring(setting.displayModeIndex()) + L")";
+                auto captionText = std::wstring(DEMO_NAME) + L" (" +
+                    std::to_wstring(setting.displayModeIndex()) + L") " +
+                    info_utils::text(setting.displayMode());
 
                 SetWindowText(rndr->window().ptr, captionText.c_str());
             }
@@ -247,27 +254,47 @@ LRESULT CALLBACK fnWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
 
             break;
         }
+        case VK_RETURN:
+        {
+            if (rndr->composition())
+            {
+                rndr->setComposition(false);
+
+                auto& setting = rndr->d3d12DeviceInfo().setting;
+                if (setting.scaling())
+                {
+                    auto captionText = std::wstring(DEMO_NAME) + L" (" +
+                        std::to_wstring(setting.displayModeIndex()) + L") " +
+                        info_utils::text(setting.displayMode());
+
+                    SetWindowText(rndr->window().ptr, captionText.c_str());
+                }
+                else SetWindowText(rndr->window().ptr, DEMO_NAME);
+            }
+            else // switch the mode
+            {
+                rndr->setComposition(true);
+                SetWindowText(rndr->window().ptr, DEMO_NAME L" (Composition)");
+            }
+            break;
+        }
         case VK_ESCAPE:
         {
-            if (rndr->window().fullscreen())
-            {
-                rndr->window().restoreWindowedMode();
-            }
+            rndr->window().setFullscreen(false);
             break;
         }
         case VK_SPACE:
         {
             auto& property = rndr->d3d12DeviceInfo().property;
-            auto availableDispModeCount = (UINT)property.availableDisplayModes.size();
+            auto displayModeCount = (UINT)property.availableDisplayModes.size();
 
             auto& setting = rndr->d3d12DeviceInfo().setting;
-            setting.setDisplayMode(true, (setting.displayModeIndex() + 1) % availableDispModeCount);
+            setting.setScaling(true);
+            setting.setDisplayMode((setting.displayModeIndex() + 1) % displayModeCount);
 
-            auto& currDispMode = setting.displayMode();
-            auto captionText = DEMO_NAME L", Resolution: " +
-                               std::to_wstring(currDispMode.Width) + L" x " +
-                               std::to_wstring(currDispMode.Height) + L" (" +
-                               std::to_wstring(setting.displayModeIndex()) + L")";
+            auto captionText = std::wstring(DEMO_NAME) + L" (" +
+                std::to_wstring(setting.displayModeIndex()) + L") " +
+                info_utils::text(setting.displayMode());
 
             SetWindowText(rndr->window().ptr, captionText.c_str());
 
