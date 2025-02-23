@@ -155,7 +155,7 @@ namespace d14engine::uikit
 
     public:
         DisplayState displayState() const;
-        virtual void setDisplayState(DisplayState state);
+        void setDisplayState(DisplayState state);
 
     public:
         bool isMinimizeEnabled = true, isMaximizeEnabled = true, isCloseEnabled = true;

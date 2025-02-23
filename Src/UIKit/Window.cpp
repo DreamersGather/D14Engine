@@ -334,20 +334,17 @@ namespace d14engine::uikit
 
     void Window::setDisplayState(DisplayState state)
     {
-        if (state == Normal &&
-            m_displayState != Normal)
+        if (state != m_displayState)
         {
-            onRestore();
+            switch (state)
+            {
+            case Normal: onRestore(); break;
+            case Minimized: onMinimize(); break;
+            case Maximized: onMaximize(); break;
+            default: break;
+            }
+            m_displayState = state;
         }
-        if (state == Minimized)
-        {
-            onMinimize();
-        }
-        if (state == Maximized)
-        {
-            onMaximize();
-        }
-        m_displayState = state;
     }
 
     Window::ThreeBrosState Window::getMinMaxBroState(bool isHover, bool isDown) const
