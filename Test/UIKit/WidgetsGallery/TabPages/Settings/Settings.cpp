@@ -275,7 +275,7 @@ void createSettingsTabPage(ConstraintLayout* page)
                 if (!wk_darkModeSwitch.expired())
                 {
                     auto sh_darkModeSwitch = wk_darkModeSwitch.lock();
-                    bool light = (style.mode == L"Light");
+                    bool light = (style.name == L"Light");
                     sh_darkModeSwitch->setOnOffState(light ? OnOffSwitch::OFF : OnOffSwitch::ON);
                     sh_darkModeSwitch->forceUpdateCurrState();
                 }
@@ -296,7 +296,7 @@ void createSettingsTabPage(ConstraintLayout* page)
                     auto sh_darkModeSwitch = wk_darkModeSwitch.lock();
                     sh_darkModeSwitch->setEnabled(false);
                     auto style = Application::querySystemThemeStyle();
-                    bool light = (style.mode == L"Light");
+                    bool light = (style.name == L"Light");
                     sh_darkModeSwitch->setOnOff(light ? OnOffSwitch::OFF : OnOffSwitch::ON);
                 }
                 if (!wk_label.expired()) wk_label.lock()->setEnabled(false);
@@ -306,8 +306,8 @@ void createSettingsTabPage(ConstraintLayout* page)
         (OnOffSwitch::StatefulObject* obj, OnOffSwitch::StatefulObject::Event& e)
         {
             Application::ThemeStyle style = Application::g_app->themeStyle();
-            if (e.on()) style.mode = L"Dark";
-            else if (e.off()) style.mode = L"Light";
+            if (e.on()) style.name = L"Dark";
+            else if (e.off()) style.name = L"Light";
             Application::g_app->setThemeStyle(style);
         };
         ui_autoThemeCheckBox->setChecked(CheckBox::CHECKED);

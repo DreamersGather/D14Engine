@@ -265,7 +265,7 @@ namespace d14engine::uikit
     {
         WaterfallView::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.mode);
+        getAppearance().changeTheme(style.name);
     }
 
     void PopupMenu::onMouseMoveHelper(MouseMoveEvent& e)

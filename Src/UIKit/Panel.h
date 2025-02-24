@@ -216,7 +216,7 @@ namespace d14engine::uikit
         Function<void(Panel*, MouseMoveEvent&)> f_onMouseLeave = {};
 
         bool forceSingleMouseEnterLeaveEvent = true;
-        bool forceTriggerChildrenMouseLeaveEvents = true;
+        bool forceTriggerChildrenMouseLeaveEvent = true;
 
         void onMouseButton(MouseButtonEvent& e);
 
@@ -265,7 +265,7 @@ namespace d14engine::uikit
         bool m_skipChangeChildrenThemeStyle = false;
         bool m_skipChangeChildrenLangLocale = false;
         bool m_skipDeliverNextMouseMoveEventToChildren = false;
-        bool m_skipUpdateChildrenHitStatesInMouseMoveEvent = false;
+        bool m_skipUpdateChildrenHitStateInMouseMoveEvent = false;
 
     public:
         int d2d1ObjectPriority() const;

@@ -354,7 +354,7 @@ namespace d14engine::uikit
     {
         ResizablePanel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.mode);
+        getAppearance().changeTheme(style.name);
     }
 
     void ScrollView::onMouseMoveHelper(MouseMoveEvent& e)
@@ -403,7 +403,7 @@ namespace d14engine::uikit
 
             m_isVertBarHover = math_utils::isOverlapped(p, vrect);
         }
-        m_skipUpdateChildrenHitStatesInMouseMoveEvent = isControllingScrollBars();
+        m_skipUpdateChildrenHitStateInMouseMoveEvent = isControllingScrollBars();
     }
 
     void ScrollView::onMouseLeaveHelper(MouseMoveEvent& e)

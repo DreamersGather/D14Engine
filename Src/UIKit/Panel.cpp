@@ -421,7 +421,7 @@ namespace d14engine::uikit
         }
         ChildObjectTempSet currHitChildren = {};
 
-        if (!m_skipUpdateChildrenHitStatesInMouseMoveEvent)
+        if (!m_skipUpdateChildrenHitStateInMouseMoveEvent)
         {
             for (auto& child : m_children)
             {
@@ -515,7 +515,7 @@ namespace d14engine::uikit
 
     void Panel::onMouseLeaveHelper(MouseMoveEvent& e)
     {
-        if (forceTriggerChildrenMouseLeaveEvents)
+        if (forceTriggerChildrenMouseLeaveEvent)
         {
             ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrParam<Panel> child)
             {

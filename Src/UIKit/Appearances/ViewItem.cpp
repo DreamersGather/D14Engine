@@ -155,9 +155,9 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(ViewItem);
 
-    void ViewItem::Appearance::changeTheme(WstrParam modeName)
+    void ViewItem::Appearance::changeTheme(WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(modeName);
+        _D14_FIND_THEME_DATA(themeName);
 
         _D14_UPDATE_THEME_DATA_ARRAY_1(main);
     }

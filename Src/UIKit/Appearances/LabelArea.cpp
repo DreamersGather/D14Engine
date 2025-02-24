@@ -24,9 +24,9 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(LabelArea);
 
-    void LabelArea::Appearance::changeTheme(WstrParam modeName)
+    void LabelArea::Appearance::changeTheme(WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(modeName);
+        _D14_FIND_THEME_DATA(themeName);
 
         _D14_UPDATE_THEME_DATA_1(hiliteRange.background.color);
         _D14_UPDATE_THEME_DATA_1(indicator.background.color);

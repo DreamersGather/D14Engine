@@ -104,7 +104,7 @@ namespace d14engine::uikit
     {
         RawTextInput::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.mode);
+        getAppearance().changeTheme(style.name);
     }
 
     void TextInput::onGetFocusHelper()

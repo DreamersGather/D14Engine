@@ -176,7 +176,7 @@ namespace d14engine::uikit
     {
         ClickablePanel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.mode);
+        getAppearance().changeTheme(style.name);
     }
 
     void CheckBox::onMouseEnterHelper(MouseMoveEvent& e)

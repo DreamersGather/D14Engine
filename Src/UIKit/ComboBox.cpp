@@ -169,7 +169,7 @@ namespace d14engine::uikit
     {
         Button::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(FlatButton::getAppearance(), style.mode);
+        getAppearance().changeTheme(FlatButton::getAppearance(), style.name);
     }
 
     void ComboBox::onMouseButtonReleaseHelper(ClickablePanel::Event& e)

@@ -397,6 +397,6 @@ do { \
     {
         Panel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.mode);
+        getAppearance().changeTheme(style.name);
     }
 }

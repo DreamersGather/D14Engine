@@ -94,8 +94,8 @@ void createGalleryTabPage(ConstraintLayout* page)
         ui_clearButton->f_onChangeThemeStyle = [=](Panel* p, const Panel::ThemeStyle& style)
         {
             auto& content = dynamic_cast<Button*>(p)->content();
-            if (style.mode == L"Light") content->icon.bitmap = clearIconLight;
-            else if (style.mode == L"Dark") content->icon.bitmap = clearIconDark;
+            if (style.name == L"Light") content->icon.bitmap = clearIconLight;
+            else if (style.name == L"Dark") content->icon.bitmap = clearIconDark;
             content->icon.bitmap.interpolationMode = D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR;
             // This ensures visual size of icons is consistent across different DPIs
             content->icon.customSize = convert(content->icon.bitmap.data->GetPixelSize());
@@ -129,8 +129,8 @@ void createGalleryTabPage(ConstraintLayout* page)
         ui_searchButton->f_onChangeThemeStyle = [=](Panel* p, const Panel::ThemeStyle& style)
         {
             auto& content = dynamic_cast<Button*>(p)->content();
-            if (style.mode == L"Light") content->icon.bitmap = searchIconLight;
-            else if (style.mode == L"Dark") content->icon.bitmap = searchIconDark;
+            if (style.name == L"Light") content->icon.bitmap = searchIconLight;
+            else if (style.name == L"Dark") content->icon.bitmap = searchIconDark;
             content->icon.bitmap.interpolationMode = D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR;
             // This ensures visual size of icons is consistent across different DPIs
             content->icon.customSize = convert(content->icon.bitmap.data->GetPixelSize());

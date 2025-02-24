@@ -334,15 +334,15 @@ namespace d14engine::uikit
     {
         LabelArea::onChangeThemeStyleHelper(style);
 
-        if (style.mode == L"Light")
+        if (style.name == L"Light")
         {
             m_placeholder->getAppearance().foreground.color = D2D1::ColorF{ 0x8c8c8c };
         }
-        else if (style.mode == L"Dark")
+        else if (style.name == L"Dark")
         {
             m_placeholder->getAppearance().foreground.color = D2D1::ColorF{ 0xa6a6a6 };
         }
-        getAppearance().changeTheme(Label::getAppearance(), style.mode);
+        getAppearance().changeTheme(Label::getAppearance(), style.name);
     }
 
     void RawTextInput::onKeyboardHelper(KeyboardEvent& e)

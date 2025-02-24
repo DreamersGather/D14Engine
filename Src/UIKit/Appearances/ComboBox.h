@@ -48,7 +48,7 @@ namespace d14engine::uikit::appearance
             };
             _D14_SET_THEME_DATA_MAP_DECL;
 
-            void changeTheme(FlatButton::Appearance& appearance, WstrParam modeName) override;
+            void changeTheme(FlatButton::Appearance& appearance, WstrParam themeName) override;
         }
         appearance = {};
     };

@@ -70,7 +70,7 @@ namespace d14engine::uikit
     {
         FilledButton::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.mode);
+        getAppearance().changeTheme(style.name);
     }
 
     void ToggleButton::onMouseButtonReleaseHelper(Button::Event& e)

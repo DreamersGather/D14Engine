@@ -23,9 +23,9 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(Button);
 
-    void Button::Appearance::changeTheme(WstrParam modeName)
+    void Button::Appearance::changeTheme(WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(modeName);
+        _D14_FIND_THEME_DATA(themeName);
 
         _D14_UPDATE_THEME_DATA_1(foreground.color);
     }

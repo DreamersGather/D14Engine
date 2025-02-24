@@ -122,9 +122,9 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(TabGroup);
 
-    void TabGroup::Appearance::changeTheme(WstrParam modeName)
+    void TabGroup::Appearance::changeTheme(WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(modeName);
+        _D14_FIND_THEME_DATA(themeName);
 
         _ref.maskWhenBelowDragWindow =
         {

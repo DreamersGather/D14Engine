@@ -312,7 +312,7 @@ namespace d14engine::uikit
     {
         Panel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.mode);
+        getAppearance().changeTheme(style.name);
     }
 
     void Slider::onMouseMoveHelper(MouseMoveEvent& e)

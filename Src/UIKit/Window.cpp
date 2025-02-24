@@ -647,7 +647,7 @@ namespace d14engine::uikit
     {
         ResizablePanel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.mode);
+        getAppearance().changeTheme(style.name);
 
         loadDecorativeBarBrush();
     }

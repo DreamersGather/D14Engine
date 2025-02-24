@@ -193,7 +193,7 @@ namespace d14engine::uikit::appearance
             };
             _D14_SET_THEME_DATA_MAP_DECL;
 
-            void changeTheme(WstrParam modeName) override;
+            void changeTheme(WstrParam themeName) override;
         }
         appearance = {};
     };

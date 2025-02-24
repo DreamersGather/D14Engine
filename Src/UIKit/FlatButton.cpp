@@ -43,6 +43,6 @@ namespace d14engine::uikit
     {
         Button::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.mode);
+        getAppearance().changeTheme(style.name);
     }
 }

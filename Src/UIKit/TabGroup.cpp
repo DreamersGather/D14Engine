@@ -962,7 +962,7 @@ do { \
     {
         ResizablePanel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.mode);
+        getAppearance().changeTheme(style.name);
 
         for (auto& tab : m_tabs)
         {

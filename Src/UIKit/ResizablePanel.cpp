@@ -196,7 +196,7 @@ namespace d14engine::uikit
 
     void ResizablePanel::onChangeThemeWrapper(const ThemeStyle& style)
     {
-        getAppearance().changeTheme(style.mode);
+        getAppearance().changeTheme(style.name);
     }
 
     void ResizablePanel::onMouseMoveHelper(MouseMoveEvent& e)

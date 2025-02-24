@@ -53,9 +53,9 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(OutlinedButton);
 
-    void OutlinedButton::Appearance::changeTheme(FlatButton::Appearance& appearance, WstrParam modeName)
+    void OutlinedButton::Appearance::changeTheme(FlatButton::Appearance& appearance, WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(modeName);
+        _D14_FIND_THEME_DATA(themeName);
 
         _ref.main[(size_t)uikit::Button::State::Idle] =
         {

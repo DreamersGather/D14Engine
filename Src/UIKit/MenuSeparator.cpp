@@ -33,6 +33,6 @@ namespace d14engine::uikit
     {
         MenuItem::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(ViewItem::getAppearance(), style.mode);
+        getAppearance().changeTheme(ViewItem::getAppearance(), style.name);
     }
 }

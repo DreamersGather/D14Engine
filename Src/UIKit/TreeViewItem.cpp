@@ -493,7 +493,7 @@ namespace d14engine::uikit
     {
         ViewItem::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.mode);
+        getAppearance().changeTheme(style.name);
     }
 
     void TreeViewItem::onMouseButtonHelper(MouseButtonEvent& e)

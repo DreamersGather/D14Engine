@@ -72,7 +72,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             ui_darkModeSwitch->moveTopmost();
             ui_darkModeSwitch->move(130.0f, 4.0f);
 
-            if (app->themeStyle().mode == L"Light")
+            if (app->themeStyle().name == L"Light")
             {
                 ui_darkModeSwitch->setOnOffState(OnOffSwitch::OFF);
             }
@@ -87,8 +87,8 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             (OnOffSwitch::StatefulObject* obj, OnOffSwitch::StatefulObject::Event& e)
             {
                 Application::ThemeStyle style = app->themeStyle();
-                if (e.on()) style.mode = L"Dark";
-                else if (e.off()) style.mode = L"Light";
+                if (e.on()) style.name = L"Dark";
+                else if (e.off()) style.name = L"Light";
                 app->setThemeStyle(style);
             };
         }
@@ -120,7 +120,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             (Panel* p, const Panel::ThemeStyle& style)
             {
                 auto sp = (ScenePanel*)p;
-                if (style.mode == L"Light")
+                if (style.name == L"Light")
                 {
                     sp->setClearColor(Colors::White);
                 }

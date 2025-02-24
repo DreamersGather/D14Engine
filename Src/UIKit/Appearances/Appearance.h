@@ -12,18 +12,18 @@ namespace d14engine::uikit::appearance
     {
         struct ThemeStyle
         {
-            Wstring mode = {}; D2D1_COLOR_F color = {};
+            Wstring name = {}; D2D1_COLOR_F color = {};
 
             bool operator==(const ThemeStyle& rhs)
             {
-                return mode == rhs.mode &&
+                return name == rhs.name &&
                     color.r == rhs.color.r &&
                     color.g == rhs.color.g &&
                     color.b == rhs.color.b &&
                     color.a == rhs.color.a;
             }
         };
-        virtual void changeTheme(WstrParam modeName) = 0;
+        virtual void changeTheme(WstrParam themeName) = 0;
     };
 
 #define _D14_SET_APPEARANCE_GETTER(Type_Name) \
@@ -67,7 +67,7 @@ namespace d14engine::uikit::appearance
         static_assert(std::is_base_of<Appearance, T>::value,
             "T must inherit d14engine::uikit::appearance::Appearance");
 
-        virtual void changeTheme(T& appearance, WstrParam modeName) = 0;
+        virtual void changeTheme(T& appearance, WstrParam themeName) = 0;
     };
 
 #pragma endregion

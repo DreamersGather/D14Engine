@@ -143,11 +143,11 @@ namespace d14engine::uikit
         // appearance::initialize depends on Application::m_themeStyle
         appearance::initialize();
 
-        if (m_themeStyle.mode == L"Light")
+        if (m_themeStyle.name == L"Light")
         {
             m_renderer->setSceneColor(Colors::White);
         }
-        else if (m_themeStyle.mode == L"Dark")
+        else if (m_themeStyle.name == L"Dark")
         {
             m_renderer->setSceneColor(Colors::Black);
         }
@@ -289,23 +289,17 @@ namespace d14engine::uikit
         {
             if (app != nullptr && LOWORD(lParam) == HTCLIENT)
             {
-                if (app->m_cursor->useSystemIcons)
+                if (app->m_cursor->m_iconSource == Cursor::System)
                 {
                     app->m_cursor->setSystemIcon();
                 }
                 else SetCursor(nullptr); // Take over cursor drawing from GDI.
-                return 0;
-            }
-            return DefWindowProc(hwnd, message, wParam, lParam);
-        }
-        case WM_NCHITTEST:
-        {
-            if (app != nullptr)
-            {
-                POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
-                ScreenToClient(hwnd, &pt);
 
-                return app->handleWin32NCHITTESTMessage(platform_utils::restoredByDpi(pt));
+                app->m_cursor->m_systemIconUpdateFlag = false;
+
+                // If an application processes this message,
+                // it should return TRUE to halt further processing.
+                return TRUE;
             }
             return DefWindowProc(hwnd, message, wParam, lParam);
         }
@@ -331,6 +325,17 @@ namespace d14engine::uikit
                 pMinMaxInfo->ptMinTrackSize = platform_utils::scaledByDpi(minSize);
             }
             return 0;
+        }
+        case WM_NCHITTEST:
+        {
+            if (app != nullptr)
+            {
+                POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+                ScreenToClient(hwnd, &pt);
+
+                return app->handleWin32NCHITTESTMessage(platform_utils::restoredByDpi(pt));
+            }
+            return DefWindowProc(hwnd, message, wParam, lParam);
         }
         case WM_MOUSEMOVE:
         {
@@ -488,7 +493,7 @@ namespace d14engine::uikit
             // The cursor will be hidden if moves out of the Win32 window,
             // so we need to show it explicitly in every mouse-move event.
             app->m_cursor->setPrivateVisible(true);
-            if (app->m_cursor->useSystemIcons)
+            if (app->m_cursor->m_iconSource == Cursor::System)
             {
                 app->m_cursor->setSystemIcon();
             }
@@ -1181,11 +1186,11 @@ namespace d14engine::uikit
     {
         appearance::g_colorGroup.generateTonedColors(style);
 
-        if (style.mode == L"Light")
+        if (style.name == L"Light")
         {
             m_renderer->setSceneColor(Colors::White);
         }
-        else if (style.mode == L"Dark")
+        else if (style.name == L"Dark")
         {
             m_renderer->setSceneColor(Colors::Black);
         }        

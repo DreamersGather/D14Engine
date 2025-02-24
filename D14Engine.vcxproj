@@ -2803,6 +2803,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Bin\Images\Cursors\MacOS_for_Win\README.txt" />
+    <Text Include="Bin\Shaders\PDB\README.txt" />
     <Text Include="Src\UIKit\Appearances\ColorScheme.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|Win32'">true</ExcludedFromBuild>

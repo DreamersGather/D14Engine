@@ -75,9 +75,9 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(TabCaption);
 
-    void TabCaption::Appearance::changeTheme(WstrParam modeName)
+    void TabCaption::Appearance::changeTheme(WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(modeName);
+        _D14_FIND_THEME_DATA(themeName);
 
         _D14_UPDATE_THEME_DATA_ARRAY_1(closeX.icon.background);
         _D14_UPDATE_THEME_DATA_ARRAY_1(closeX.button.background);

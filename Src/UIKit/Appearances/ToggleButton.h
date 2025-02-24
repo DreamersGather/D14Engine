@@ -14,7 +14,7 @@ namespace d14engine::uikit::appearance
 
             static ThemeDataMap g_themeData;
 
-            void changeTheme(WstrParam modeName) override;
+            void changeTheme(WstrParam themeName) override;
         }
         appearance = {};
     };

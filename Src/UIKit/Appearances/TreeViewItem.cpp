@@ -19,9 +19,9 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(TreeViewItem);
 
-    void TreeViewItem::Appearance::changeTheme(WstrParam modeName)
+    void TreeViewItem::Appearance::changeTheme(WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(modeName);
+        _D14_FIND_THEME_DATA(themeName);
 
         _D14_UPDATE_THEME_DATA_1(arrow.background.color);
         _D14_UPDATE_THEME_DATA_1(arrow.secondaryBackground.color);

@@ -83,7 +83,7 @@ namespace d14engine::uikit
     {
         ViewItem::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(ViewItem::getAppearance(), style.mode);
+        getAppearance().changeTheme(ViewItem::getAppearance(), style.name);
     }
 
     void MenuItem::onMouseButtonHelper(MouseButtonEvent& e)

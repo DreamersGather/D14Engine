@@ -25,9 +25,9 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(Label);
 
-    void Label::Appearance::changeTheme(WstrParam modeName)
+    void Label::Appearance::changeTheme(WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(modeName);
+        _D14_FIND_THEME_DATA(themeName);
 
         _D14_UPDATE_THEME_DATA_1(foreground.color);
         _D14_UPDATE_THEME_DATA_1(secondaryForeground.color);

@@ -205,9 +205,9 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(CheckBox);
 
-    void CheckBox::Appearance::changeTheme(WstrParam modeName)
+    void CheckBox::Appearance::changeTheme(WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(modeName);
+        _D14_FIND_THEME_DATA(themeName);
 
         _ref.button[(size_t)CheckBoxState::Flag::IntermediateIdle] =
         _ref.button[(size_t)CheckBoxState::Flag::CheckedIdle] =

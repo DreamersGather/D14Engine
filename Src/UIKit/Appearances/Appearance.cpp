@@ -80,7 +80,7 @@ namespace d14engine::uikit::appearance
 
         // Transform HSB color according to the selected color mode.
         // Also see D14Engine/Src/UIKit/Appearances/ColorScheme.txt.
-        if (style.mode == L"Light")
+        if (style.name == L"Light")
         {
             primary.s = 100;
             secondary.s = 85;
@@ -89,7 +89,7 @@ namespace d14engine::uikit::appearance
             secondary.b = 75;
             tertiary.b = 80;
         }
-        else if (style.mode == L"Dark")
+        else if (style.name == L"Dark")
         {
             primary.s = 50;
             secondary.s = 50;

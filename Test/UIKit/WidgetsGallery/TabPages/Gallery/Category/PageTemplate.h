@@ -55,8 +55,8 @@ auto icon2 = loadBitmap(L"SideCategory/Dark/" L#Id L".png"); \
 item->f_onChangeThemeStyle = [=](Panel* p, const Panel::ThemeStyle& style) \
 { \
     auto content = ((TreeViewItem*)p)->getContent<IconLabel>().lock(); \
-    if (style.mode == L"Light") content->icon.bitmap = icon1; \
-    else if (style.mode == L"Dark") content->icon.bitmap = icon2; \
+    if (style.name == L"Light") content->icon.bitmap = icon1; \
+    else if (style.name == L"Dark") content->icon.bitmap = icon2; \
     content->icon.bitmap.interpolationMode = D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR; \
     /* This ensures visual size of icons is consistent across different DPIs */ \
     content->icon.customSize = convert(content->icon.bitmap.data->GetPixelSize()); \

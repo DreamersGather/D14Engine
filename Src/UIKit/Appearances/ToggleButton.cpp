@@ -167,9 +167,9 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(ToggleButton);
 
-    void ToggleButton::Appearance::changeTheme(WstrParam modeName)
+    void ToggleButton::Appearance::changeTheme(WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(modeName);
+        _D14_FIND_THEME_DATA(themeName);
 
 #define UPDATE_MAIN_BKGN_COLOR(Btn_State, Btn_Color) \
 _ref.main[(size_t)uikit::Button::State::Btn_State].background.color = g_colorGroup.Btn_Color

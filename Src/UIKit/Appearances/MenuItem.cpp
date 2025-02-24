@@ -113,9 +113,9 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(MenuItem);
 
-    void MenuItem::Appearance::changeTheme(ViewItem::Appearance& appearance, WstrParam modeName)
+    void MenuItem::Appearance::changeTheme(ViewItem::Appearance& appearance, WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(modeName);
+        _D14_FIND_THEME_DATA(themeName);
 
         _D14_UPDATE_THEME_DATA_ARRAY_2(main);
         _D14_UPDATE_THEME_DATA_1(arrow.background);

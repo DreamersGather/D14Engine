@@ -796,6 +796,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Src\UIKit\Appearances\ColorScheme.txt" />
+    <Text Include="Bin\Images\Cursors\MacOS_for_Win\README.txt" />
+    <Text Include="Bin\Shaders\PDB\README.txt" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Test\UIKit\ColorfulCube\ColorfulCube.hlsl" />
