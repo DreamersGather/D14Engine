@@ -53,7 +53,7 @@ namespace d14engine::uikit
         IconSeries icons = {};
 
         auto cursorPath = Application::g_app->createInfo.binaryPath +
-                          L"Images/Cursors/MacOS_for_Win/" + themeName + L"/";
+                          L"Images/Cursors/MacOS/" + themeName + L"/";
 
         // Load static icons.
 
