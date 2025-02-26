@@ -25,16 +25,16 @@ D14_SET_APP_ENTRY(mainEditor)
         info.dpi = 192.0f;
     }
     else info.dpi = 96.0f;
-    info.win32WindowRect = { 0, 0, 1280, 720 };
+    info.windowSize = { 1280, 720 };
 
-    return Application(argc, argv, info).run([&](Application* app)
+    return Application(info).run([&](Application* app)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(L"D14Engine - Editor");
         {
+            ui_mainWindow->moveTopmost();
+
             ui_mainWindow->setCaptionPanelHeight(40.0f);
             ui_mainWindow->setDecorativeBarHeight(2.0f);
-
-            ui_mainWindow->moveTopmost();
 
             ui_mainWindow->setDisplayState(Window::Maximized);
         }
@@ -47,10 +47,12 @@ D14_SET_APP_ENTRY(mainEditor)
             ConstraintLayout::GeometryInfo geoInfo = {};
 
             geoInfo.keepWidth = false;
-            geoInfo.Left.ToLeft = 0.0f; geoInfo.Right.ToRight = 0.0f;
+            geoInfo.Left.ToLeft = 0.0f;
+            geoInfo.Right.ToRight = 0.0f;
 
             geoInfo.keepHeight = false;
-            geoInfo.Top.ToTop = 50.0f; geoInfo.Bottom.ToBottom = 0.0f;
+            geoInfo.Top.ToTop = 50.0f;
+            geoInfo.Bottom.ToBottom = 0.0f;
 
             ui_centerLayout->addElement(ui_tabGroup, geoInfo);
 
@@ -58,9 +60,9 @@ D14_SET_APP_ENTRY(mainEditor)
     ui_tabGroup->getAppearance().tabBar.card.main \
     [(size_t)TabGroup::CardState::State].geometry.size = { Width, Height }
 
-            SET_CARD_SIZE(Dormant, 250.0f,  32.0f);
-            SET_CARD_SIZE(Hover,   250.0f,  32.0f);
-            SET_CARD_SIZE(Active,  266.0f,  40.0f);
+            SET_CARD_SIZE(Dormant, 250.0f, 32.0f);
+            SET_CARD_SIZE(Hover,   250.0f, 32.0f);
+            SET_CARD_SIZE(Active,  266.0f, 40.0f);
 
 #undef SET_CARD_SIZE
             ui_tabGroup->activeCard.loadMaskBitmap();
@@ -98,9 +100,13 @@ D14_SET_APP_ENTRY(mainEditor)
 
             return ui_content;
         };
-        createBasicWorksTabPage(appendTabPage(L"Basic Works").get());
-        createSettingsTabPage(appendTabPage(L"Settings").get());
+#define SET_TAB_PAGE(Name, Title) \
+        create##Name##TabPage(appendTabPage(L#Title).get())
 
+        SET_TAB_PAGE(BasicWorks, Basic Works);
+        SET_TAB_PAGE(Settings,   Settings);
+
+#undef SET_TAB_PAGE
         ui_tabGroup->selectTab(0);
 
         app->win32WindowSettings.geometry.minTrackSize = { 1280, 720 };
