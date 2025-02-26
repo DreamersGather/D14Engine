@@ -10,9 +10,9 @@ namespace d14engine::renderer
     {
         THROW_IF_FAILED(device->CreateCommandAllocator
         (
-            /* type               */ D3D12_COMMAND_LIST_TYPE_DIRECT,
-            /* riid               */
-            /* ppCommandAllocator */ IID_PPV_ARGS(&m_cmdAlloc)
+        /* type               */ D3D12_COMMAND_LIST_TYPE_DIRECT,
+        /* riid               */
+        /* ppCommandAllocator */ IID_PPV_ARGS(&m_cmdAlloc)
         ));
     }
 
