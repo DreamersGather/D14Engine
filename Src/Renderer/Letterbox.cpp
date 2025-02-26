@@ -89,7 +89,6 @@ namespace d14engine::renderer
         rootParam.InitAsDescriptorTable(1, &descRange, D3D12_SHADER_VISIBILITY_PIXEL);
 
         CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSigDesc = {};
-        auto sampler = graph_utils::static_sampler::linearBorder(0);
         D3D12_ROOT_SIGNATURE_FLAGS rootSigFlags =
         (
             D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
@@ -104,7 +103,7 @@ namespace d14engine::renderer
             /* numParameters     */ 1,
             /* _pParameters      */ &rootParam,
             /* numStaticSamplers */ 1,
-            /* _pStaticSamplers  */ &sampler,
+            /* _pStaticSamplers  */ graph_utils::static_sampler::linearBorder(0),
             /* flags             */ rootSigFlags
         );
         ComPtr<ID3DBlob> rootSigBlob;
