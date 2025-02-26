@@ -110,8 +110,6 @@ extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = _D14_AGILIT
 #include <d3d11.h>
 #include <d3d11on12.h>
 #include <dcomp.h>
-#include <DirectXColors.h>
-#include <DirectXMath.h>
 #include <dwmapi.h>
 #include <dwrite_3.h>
 #include <dxgi1_6.h>
@@ -120,6 +118,9 @@ extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = _D14_AGILIT
 #include <Windows.h>
 #include <windowsx.h>
 #include <wrl.h>
+
+#include <DirectXColors.h>
+#include <DirectXMath.h>
 
 #ifdef _DEBUG
 #include <dxgidebug.h>
