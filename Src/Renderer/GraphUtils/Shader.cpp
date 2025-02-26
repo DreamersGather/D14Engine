@@ -10,9 +10,9 @@ namespace d14engine::renderer::graph_utils
 {
     namespace shader
     {
-        ComPtr<IDxcUtils> g_utils;
-        ComPtr<IDxcCompiler3> g_compiler;
-        ComPtr<IDxcIncludeHandler> g_defaultIncludeHandler;
+        ComPtr<IDxcUtils> g_utils = {};
+        ComPtr<IDxcCompiler3> g_compiler = {};
+        ComPtr<IDxcIncludeHandler> g_defaultIncludeHandler = {};
 
         void initialize()
         {
@@ -23,7 +23,7 @@ namespace d14engine::renderer::graph_utils
 
         ComPtr<IDxcBlob> load(WstrParam fileName)
         {
-            ComPtr<IDxcBlobEncoding> cso;
+            ComPtr<IDxcBlobEncoding> cso = {};
             THROW_IF_FAILED(g_utils->LoadFile(fileName.c_str(), nullptr, &cso));
             return cso; // no encoding for binary data
         }
@@ -32,40 +32,48 @@ namespace d14engine::renderer::graph_utils
         {
             auto hFile = CreateFile
             (
-                /* lpFileName            */ fileName.c_str(),
-                /* dwDesiredAccess       */ GENERIC_WRITE,
-                /* dwShareMode           */ 0,
-                /* lpSecurityAttributes  */ nullptr,
-                /* dwCreationDisposition */ CREATE_ALWAYS,
-                /* dwFlagsAndAttributes  */ FILE_ATTRIBUTE_NORMAL,
-                /* hTemplateFile         */ nullptr
+            /* lpFileName            */ fileName.c_str(),
+            /* dwDesiredAccess       */ GENERIC_WRITE,
+            /* dwShareMode           */ 0,
+            /* lpSecurityAttributes  */ nullptr,
+            /* dwCreationDisposition */ CREATE_ALWAYS,
+            /* dwFlagsAndAttributes  */ FILE_ATTRIBUTE_NORMAL,
+            /* hTemplateFile         */ nullptr
             );
             THROW_IF_TRUE(hFile == INVALID_HANDLE_VALUE);
 
             auto result = WriteFile
             (
-                /* hFile                  */ hFile,
-                /* lpBuffer               */ blob->GetBufferPointer(),
-                /* nNumberOfBytesToWrite  */ (DWORD)blob->GetBufferSize(),
-                /* lpNumberOfBytesWritten */ nullptr,
-                /* lpOverlapped           */ nullptr
+            /* hFile                  */ hFile,
+            /* lpBuffer               */ blob->GetBufferPointer(),
+            /* nNumberOfBytesToWrite  */ (DWORD)blob->GetBufferSize(),
+            /* lpNumberOfBytesWritten */ nullptr,
+            /* lpOverlapped           */ nullptr
             );
             THROW_IF_FALSE(result);
 
             THROW_IF_FALSE(CloseHandle(hFile));
         }
 
-        ComPtr<IDxcBlob> compile(
-            WstrParam hlslFileName,
-            const CompileOption& option)
+        ComPtr<IDxcBlob> compile(WstrParam hlslFileName, const CompileOption& option)
         {
-            ComPtr<IDxcBlobEncoding> hlsl;
+            /////////////////
+            // Load Source //
+            /////////////////
+
+            ComPtr<IDxcBlobEncoding> hlsl = {};
             THROW_IF_FAILED(g_utils->LoadFile(hlslFileName.c_str(), nullptr, &hlsl));
 
-            DxcBuffer source = {};
-            source.Ptr = hlsl->GetBufferPointer();
-            source.Size = hlsl->GetBufferSize();
-            source.Encoding = DXC_CP_ACP;
+            DxcBuffer source =
+            {
+                .Ptr      = hlsl->GetBufferPointer(),
+                .Size     = hlsl->GetBufferSize(),
+                .Encoding = DXC_CP_ACP
+            };
+
+            ///////////////////
+            // Parse Options //
+            ///////////////////
 
             std::vector<LPCWSTR> arguments =
             {
@@ -73,7 +81,7 @@ namespace d14engine::renderer::graph_utils
                 L"-E", option.entryPoint.c_str(),
                 L"-T", option.targetProfile.c_str(),
 
-                // DirectX API (e.g. DirectXMath) typically uses row-major matrix.
+                // DirectX APIs (e.g. DirectXMath) typically use row-major matrix.
                 // HLSL, however, rebelliously uses column-major matrix by default.
                 // It is always better to specify the major-type explicitly anyway.
                 DXC_ARG_PACK_MATRIX_ROW_MAJOR
@@ -104,16 +112,25 @@ namespace d14engine::renderer::graph_utils
                     pdbArguments.begin(),
                     pdbArguments.end());
             }
-            ComPtr<IDxcResult> result;
+
+            ////////////////////
+            // Compile Shader //
+            ////////////////////
+
+            ComPtr<IDxcResult> result = {};
             THROW_IF_FAILED(g_compiler->Compile
             (
-                /* pSource         */ &source,
-                /* pArguments      */ arguments.data(),
-                /* argCount        */ (UINT32)arguments.size(),
-                /* pIncludeHandler */ g_defaultIncludeHandler.Get(),
-                /* riid            */
-                /* ppResult        */ IID_PPV_ARGS(&result)
+            /* pSource         */ &source,
+            /* pArguments      */ arguments.data(),
+            /* argCount        */ (UINT32)arguments.size(),
+            /* pIncludeHandler */ g_defaultIncludeHandler.Get(),
+            /* riid            */
+            /* ppResult        */ IID_PPV_ARGS(&result)
             ));
+
+            ////////////////////
+            // Process Output //
+            ////////////////////
 
 #pragma warning(push)
 // This warning will be raised if an annotated function parameter is passed
@@ -123,7 +140,7 @@ namespace d14engine::renderer::graph_utils
 #pragma warning(disable : 6387)
 
 #ifdef _DEBUG
-            ComPtr<IDxcBlobUtf8> error;
+            ComPtr<IDxcBlobUtf8> error = {};
             THROW_IF_FAILED(result->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&error), nullptr));
 
             if (error && error->GetStringLength() != 0)
@@ -131,17 +148,17 @@ namespace d14engine::renderer::graph_utils
                 OutputDebugStringA((char*)error->GetStringPointer());
             }
 #endif
-            HRESULT hrStatus;
+            HRESULT hrStatus = {};
             THROW_IF_FAILED(result->GetStatus(&hrStatus));
             THROW_IF_FAILED(hrStatus);
 
             if (option.pdb)
             {
-                ComPtr<IDxcBlob> pdb;
+                ComPtr<IDxcBlob> pdb = {};
                 THROW_IF_FAILED(result->GetOutput(DXC_OUT_PDB, IID_PPV_ARGS(&pdb), nullptr));
                 save(option.pdbOutPath, pdb.Get());
             }
-            ComPtr<IDxcBlob> shader;
+            ComPtr<IDxcBlob> shader = {};
             THROW_IF_FAILED(result->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shader), nullptr));
 
 #pragma warning(pop)
