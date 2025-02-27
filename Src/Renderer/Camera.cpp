@@ -15,6 +15,8 @@ namespace d14engine::renderer
         }
     }
 
+    Camera::~Camera() = default;
+
     Camera::Viewport Camera::viewport() const
     {
         return m_viewport;
@@ -86,11 +88,7 @@ namespace d14engine::renderer
 
     void Camera::updateViewMatrix()
     {
-        auto eyePosition = XMLoadFloat3(&eyePos);
-        auto eyeDirection = XMLoadFloat3(&eyeDir);
-        auto upDirection = XMLoadFloat3(&up);
-
-        XMStoreFloat4x4(&m_data.viewMatrix, XMMatrixLookToLH(eyePosition, eyeDirection, upDirection));
+        XMStoreFloat4x4(&m_data.viewMatrix, XMMatrixLookToLH(XMLoadFloat3(&eyePos), XMLoadFloat3(&eyeDir), XMLoadFloat3(&up)));
     }
 
     void Camera::updateProjMatrix()
