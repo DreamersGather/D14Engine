@@ -136,9 +136,9 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             ui_fpsLabel->f_onRendererUpdateObject2DAfter = [](Panel* p, Renderer* rndr)
             {
                 static UINT fps = 0;
-                if (rndr->timer()->fps() != fps)
+                if (rndr->timer()->fpsNum() != fps)
                 {
-                    fps = rndr->timer()->fps();
+                    fps = rndr->timer()->fpsNum();
                     ((Label*)p)->setText(L"FPS: " + std::to_wstring(fps));
                 }
             };
