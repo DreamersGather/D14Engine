@@ -22,6 +22,10 @@ namespace d14engine::renderer
             // Resources (such as shaders) are loaded from this path.
             Wstring binaryPath = L"Bin/";
 
+            Wstring shaderPath() const
+            {
+                return binaryPath + L"Shaders/";
+            }
             Optional<float> dpi = std::nullopt;
 
             bool fullscreen = false;
@@ -492,6 +496,8 @@ namespace d14engine::renderer
 #pragma region Render Pass Implementation
 
     public:
+        void resetCmdList(ID3D12CommandAllocator* alloc);
+
         void resetCmdList();
         void submitCmdList();
         void flushCmdQueue();

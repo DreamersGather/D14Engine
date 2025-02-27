@@ -1488,10 +1488,15 @@ namespace d14engine::renderer
         m_renderTarget.Reset();
     }
 
+    void Renderer::resetCmdList(ID3D12CommandAllocator* alloc)
+    {
+        THROW_IF_FAILED(alloc->Reset());
+        THROW_IF_FAILED(m_cmdList->Reset(alloc, nullptr));
+    }
+
     void Renderer::resetCmdList()
     {
-        THROW_IF_FAILED(m_cmdAlloc->Reset());
-        THROW_IF_FAILED(m_cmdList->Reset(m_cmdAlloc.Get(), nullptr));
+        resetCmdList(m_cmdAlloc.Get());
     }
 
     void Renderer::submitCmdList()
