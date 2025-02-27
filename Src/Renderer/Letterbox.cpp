@@ -41,9 +41,9 @@ namespace d14engine::renderer
 
     void Letterbox::setEnabled(bool value)
     {
-        if (value != m_enabled)
+        if (m_enabled != value)
         {
-            if (value = m_enabled)
+            if (m_enabled = value)
             {
                 createRootSignature();
                 createPipelineState();
