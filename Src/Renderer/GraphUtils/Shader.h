@@ -62,7 +62,7 @@ namespace d14engine::renderer::graph_utils
         };
         using Package = std::unordered_map<Wstring, Object>;
 
-        // from Renderer::CreateInfo::binaryPath
+        // path = Renderer::CreateInfo::binaryPath
         void loadDefaultObject(
             WstrParam path, WstrParam name,
             StreamOption option, Package& shaders);
