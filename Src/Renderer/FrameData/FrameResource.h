@@ -17,7 +17,7 @@ namespace d14engine::renderer
 #define SET_REQUIRE(Name, Expression) \
 static_assert(Expression, #Name " requires that " #Expression);
 
-        SET_REQUIRE(flip model,  g_bufferCount >= 2)
+        SET_REQUIRE(flip model, g_bufferCount >= 2)
         SET_REQUIRE(swap chain, g_bufferCount <= DXGI_MAX_SWAP_CHAIN_BUFFERS)
 
 #undef SET_REQUIRE
