@@ -25,7 +25,7 @@ namespace d14engine::renderer
 
         Scissors scissors() const override;
 
-        void onViewResize(UINT viewWidth, UINT viewHeight) override;
+        void onViewResize(UINT width, UINT height) override;
 
     protected:
         void onRendererUpdateObjectHelper(Renderer* rndr) override;
