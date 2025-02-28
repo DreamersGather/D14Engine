@@ -4,10 +4,5 @@
 
 namespace d14engine::uikit::animation_utils
 {
-    float accelUniformDecelMotion(
-        float currDisplacement,
-        float lastFrameDeltaSecs,
-        float totalDistance,
-        float uniformMotionSecs,
-        float variableMotionSecs);
+    float accelUniformDecelMotion(float dx, float dt, float s, float t1, float t2);
 }
