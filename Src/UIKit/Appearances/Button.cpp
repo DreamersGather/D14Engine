@@ -21,7 +21,7 @@ namespace d14engine::uikit::appearance
             dark.foreground.color = D2D1::ColorF{ 0xe5e5e5 };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(Button);
+    _D14_SET_THEME_DATA_MAP_IMPL(Button)
 
     void Button::Appearance::changeTheme(WstrParam themeName)
     {
