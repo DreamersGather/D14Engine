@@ -18,12 +18,15 @@ namespace d14engine::uikit::appearance
         {
             static void initialize();
 
+            constexpr static auto g_stateCount =
+                cpp_lang_utils::enumCount<State>;
+
             struct Main
             {
                 SolidStyle background = {};
                 StrokeStyle stroke = {};
             }
-            main[cpp_lang_utils::enumCount<State>] = {};
+            main[g_stateCount] = {};
 
             struct BottomLine
             {
@@ -31,7 +34,7 @@ namespace d14engine::uikit::appearance
 
                 struct Background
                 {
-                    SolidStyle Static[cpp_lang_utils::enumCount<State>] = {};
+                    SolidStyle Static[g_stateCount] = {};
                     SolidStyle Dynamic = {};
                 }
                 background = {};
@@ -55,20 +58,20 @@ namespace d14engine::uikit::appearance
 
             struct ThemeData
             {
-                Main main[cpp_lang_utils::enumCount<State>] = {};
+                Main main[g_stateCount] = {};
 
                 struct BottomLine
                 {
                     struct Background
                     {
-                        SolidStyle Static[cpp_lang_utils::enumCount<State>] = {};
+                        SolidStyle Static[g_stateCount] = {};
                         SolidStyle Dynamic = {};
                     }
                     background = {};
                 }
                 bottomLine = {};
             };
-            _D14_SET_THEME_DATA_MAP_DECL;
+            _D14_SET_THEME_DATA_MAP_DECL
 
             void changeTheme(WstrParam themeName) override;
         }

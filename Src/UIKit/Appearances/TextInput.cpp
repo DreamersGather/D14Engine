@@ -165,7 +165,7 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(TextInput);
+    _D14_SET_THEME_DATA_MAP_IMPL(TextInput)
 
     void TextInput::Appearance::changeTheme(WstrParam themeName)
     {
