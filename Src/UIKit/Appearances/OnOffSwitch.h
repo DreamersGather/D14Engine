@@ -48,12 +48,15 @@ namespace d14engine::uikit::appearance
             Appearance();
             static void initialize();
 
+            constexpr static auto g_stateCount =
+                cpp_lang_utils::enumCount<OnOffSwitchState::Flag>;
+
             struct Main
             {
                 SolidStyle background = {};
                 StrokeStyle stroke = {};
             }
-            main[cpp_lang_utils::enumCount<OnOffSwitchState::Flag>] = {};
+            main[g_stateCount] = {};
 
             struct Handle
             {
@@ -71,16 +74,16 @@ namespace d14engine::uikit::appearance
                         {
                             return leftOffset.value();
                         }
-                        else if (rightOffset.has_value())
+                        if (rightOffset.has_value())
                         {
                             return parentWidth - rightOffset.value() - size.width;
                         }
-                        else return 0.0f; // return leftmost by default
+                        return 0.0f; // leftmost by default
                     }
                 }
-                geometry[cpp_lang_utils::enumCount<OnOffSwitchState::Flag>] = {};
+                geometry[g_stateCount] = {};
 
-                SolidStyle background[cpp_lang_utils::enumCount<OnOffSwitchState::Flag>] = {};
+                SolidStyle background[g_stateCount] = {};
 
                 struct Animation
                 {
@@ -99,15 +102,15 @@ namespace d14engine::uikit::appearance
 
             struct ThemeData
             {
-                Main main[cpp_lang_utils::enumCount<OnOffSwitchState::Flag>] = {};
+                Main main[g_stateCount] = {};
 
                 struct Handle
                 {
-                    SolidStyle background[cpp_lang_utils::enumCount<OnOffSwitchState::Flag>] = {};
+                    SolidStyle background[g_stateCount] = {};
                 }
                 handle = {};
             };
-            _D14_SET_THEME_DATA_MAP_DECL;
+            _D14_SET_THEME_DATA_MAP_DECL
 
             void changeTheme(WstrParam themeName) override;
         }

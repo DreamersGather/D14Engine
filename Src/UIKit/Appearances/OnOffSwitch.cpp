@@ -271,7 +271,7 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(OnOffSwitch);
+    _D14_SET_THEME_DATA_MAP_IMPL(OnOffSwitch)
 
     void OnOffSwitch::Appearance::changeTheme(WstrParam themeName)
     {
