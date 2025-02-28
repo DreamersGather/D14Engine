@@ -65,7 +65,7 @@ namespace d14engine::uikit
             resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
 
             auto rigthTop = math_utils::rightTop(m_absoluteRect);
-            auto arrowOrg = math_utils::offset(rigthTop, { setting.geometry.rightOffset, 0.0f });
+            auto arrowOrg = math_utils::offset(rigthTop, { -setting.geometry.rightOffset, 0.0f });
 
             rndr->d2d1DeviceContext()->DrawLine(
                 math_utils::offset(arrowOrg, setting.geometry.line0.point0),

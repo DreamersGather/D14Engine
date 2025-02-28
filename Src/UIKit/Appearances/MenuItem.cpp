@@ -111,7 +111,7 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(MenuItem);
+    _D14_SET_THEME_DATA_MAP_IMPL(MenuItem)
 
     void MenuItem::Appearance::changeTheme(Master& m, WstrParam themeName)
     {
