@@ -25,7 +25,7 @@ namespace d14engine::uikit::appearance
             dark.shadow.color = D2D1::ColorF{ 0x000000 };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(PopupMenu);
+    _D14_SET_THEME_DATA_MAP_IMPL(PopupMenu)
 
     void PopupMenu::Appearance::changeTheme(WstrParam themeName)
     {
