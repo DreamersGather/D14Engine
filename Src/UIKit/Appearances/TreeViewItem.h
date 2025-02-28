@@ -45,6 +45,9 @@ namespace d14engine::uikit::appearance
         {
             static void initialize();
 
+            constexpr static auto g_stateCount =
+                cpp_lang_utils::enumCount<TreeViewItemState::Flag>;
+
             struct Arrow
             {
                 struct Geometry
@@ -55,7 +58,7 @@ namespace d14engine::uikit::appearance
                     }
                     line0 = {}, line1 = {};
                 }
-                geometry[cpp_lang_utils::enumCount<TreeViewItemState::Flag>] =
+                geometry[g_stateCount] =
                 {
                     // Foled
                     {
@@ -90,7 +93,7 @@ namespace d14engine::uikit::appearance
                 }
                 arrow = {};
             };
-            _D14_SET_THEME_DATA_MAP_DECL;
+            _D14_SET_THEME_DATA_MAP_DECL
 
             void changeTheme(WstrParam themeName) override;
         }
