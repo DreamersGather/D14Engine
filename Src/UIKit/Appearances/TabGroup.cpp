@@ -120,7 +120,7 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(TabGroup);
+    _D14_SET_THEME_DATA_MAP_IMPL(TabGroup)
 
     void TabGroup::Appearance::changeTheme(WstrParam themeName)
     {
@@ -134,7 +134,7 @@ namespace d14engine::uikit::appearance
         _D14_UPDATE_THEME_DATA_1(background.color);
         _D14_UPDATE_THEME_DATA_1(stroke.color);
 
-        for (size_t i = 0; i < cpp_lang_utils::enumCount<CardState>; ++i)
+        for (size_t i = 0; i < g_CardstateCount; ++i)
         {
             _D14_UPDATE_THEME_DATA_1(tabBar.card.main[i].background);
             _D14_UPDATE_THEME_DATA_1(tabBar.card.activeShadowColor);

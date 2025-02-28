@@ -21,6 +21,12 @@ namespace d14engine::uikit::appearance
             Appearance();
             static void initialize();
 
+            constexpr static auto g_CardstateCount =
+                cpp_lang_utils::enumCount<CardState>;
+
+            constexpr static auto g_ButtonstateCount =
+                cpp_lang_utils::enumCount<ButtonState>;
+
             SolidStyle background = {};
             StrokeStyle stroke = {};
 
@@ -50,7 +56,7 @@ namespace d14engine::uikit::appearance
 
                         SolidStyle background = {};
                     }
-                    main[cpp_lang_utils::enumCount<CardState>] = {};
+                    main[g_CardstateCount] = {};
 
                     D2D1_COLOR_F activeShadowColor = {};
                 }
@@ -94,7 +100,7 @@ namespace d14engine::uikit::appearance
                             }
                             geometry = {};
 
-                            SolidStyle background[cpp_lang_utils::enumCount<ButtonState>] = {};
+                            SolidStyle background[g_ButtonstateCount] = {};
                         }
                         icon = {};
 
@@ -109,7 +115,7 @@ namespace d14engine::uikit::appearance
                             }
                             geometry = {};
 
-                            SolidStyle background[cpp_lang_utils::enumCount<ButtonState>] = {};
+                            SolidStyle background[g_ButtonstateCount] = {};
                         }
                         button = {};
                     }
@@ -173,13 +179,13 @@ namespace d14engine::uikit::appearance
                         {
                             struct Icon
                             {
-                                SolidStyle background[cpp_lang_utils::enumCount<ButtonState>] = {};
+                                SolidStyle background[g_ButtonstateCount] = {};
                             }
                             icon = {};
 
                             struct Button
                             {
-                                SolidStyle background[cpp_lang_utils::enumCount<ButtonState>] = {};
+                                SolidStyle background[g_ButtonstateCount] = {};
                             }
                             button = {};
                         }
@@ -191,7 +197,7 @@ namespace d14engine::uikit::appearance
 
                 SolidStyle maskWhenBelowDragWindow = {};
             };
-            _D14_SET_THEME_DATA_MAP_DECL;
+            _D14_SET_THEME_DATA_MAP_DECL
 
             void changeTheme(WstrParam themeName) override;
         }
