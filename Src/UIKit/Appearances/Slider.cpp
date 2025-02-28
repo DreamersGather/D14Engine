@@ -77,7 +77,7 @@ namespace d14engine::uikit::appearance
             dark.valueLabel.shadow.color = D2D1::ColorF{ 0xa6a6a6 };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(Slider);
+    _D14_SET_THEME_DATA_MAP_IMPL(Slider)
 
     void Slider::Appearance::changeTheme(WstrParam themeName)
     {
