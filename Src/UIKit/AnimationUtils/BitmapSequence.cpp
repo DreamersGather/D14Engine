@@ -18,10 +18,13 @@ namespace d14engine::uikit::animation_utils
                 auto& f = fanim.frames[index.value()];
                 if (f.data)
                 {
-                    rndr->d2d1DeviceContext()->DrawBitmap(
-                        // round to fit pixel size
-                        f.data.Get(), math_utils::roundf(rect),
-                        f.opacity, f.getInterpolationMode());
+                    rndr->d2d1DeviceContext()->DrawBitmap
+                    (
+                    /* bitmap               */ f.data.Get(),
+                    /* destinationRectangle */ rect,
+                    /* opacity              */ f.opacity,
+                    /* interpolationMode    */ f.getInterpolationMode()
+                    );
                 }
             }
         }
