@@ -51,7 +51,7 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(OutlinedButton);
+    _D14_SET_THEME_DATA_MAP_IMPL(OutlinedButton)
 
     void OutlinedButton::Appearance::changeTheme(Master& m, WstrParam themeName)
     {
