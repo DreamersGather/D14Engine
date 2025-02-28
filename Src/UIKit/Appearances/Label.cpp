@@ -23,7 +23,7 @@ namespace d14engine::uikit::appearance
             dark.secondaryForeground.color = D2D1::ColorF{ 0x777777 };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(Label);
+    _D14_SET_THEME_DATA_MAP_IMPL(Label)
 
     void Label::Appearance::changeTheme(WstrParam themeName)
     {
