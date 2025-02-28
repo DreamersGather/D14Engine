@@ -249,7 +249,15 @@ namespace d14engine::uikit
         {
             m_content->onRendererDrawD2d1Layer(rndr);
 
-            // Set opaque background to support rendering ClearType text.
+            //--------------------------------------------------------------
+            // 1. Grayscale text anti-aliasing:
+            // The rendering result is independent of the target background,
+            // so opacity can be set as needed (any value from 0 ~ 1 is OK).
+            //--------------------------------------------------------------
+            // 2. ClearType text anti-aliasing:
+            // The rendering result depends on the target background color,
+            // so you must set an opaque background (better a value >= 0.5).
+            //--------------------------------------------------------------
             contentMask.color = getAppearance().background.color;
             contentMask.color.a = getAppearance().background.opacity;
 

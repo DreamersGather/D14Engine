@@ -19,6 +19,9 @@ namespace d14engine::uikit::appearance
             Appearance();
             static void initialize();
 
+            constexpr static auto g_stateCount =
+                cpp_lang_utils::enumCount<ScrollBarState>;
+
             SolidStyle background = {};
             StrokeStyle stroke = {};
 
@@ -34,7 +37,7 @@ namespace d14engine::uikit::appearance
 
                 SolidStyle background = {};
             }
-            scrollBar[cpp_lang_utils::enumCount<ScrollBarState>] = {};
+            scrollBar[g_stateCount] = {};
 
             struct ThemeData
             {
@@ -54,9 +57,9 @@ namespace d14engine::uikit::appearance
                 {
                     SolidStyle background = {};
                 }
-                scrollBar[cpp_lang_utils::enumCount<ScrollBarState>] = {};
+                scrollBar[g_stateCount] = {};
             };
-            _D14_SET_THEME_DATA_MAP_DECL;
+            _D14_SET_THEME_DATA_MAP_DECL
 
             void changeTheme(WstrParam themeName) override;
         }

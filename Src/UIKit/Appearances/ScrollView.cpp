@@ -6,7 +6,15 @@ namespace d14engine::uikit::appearance
 {
     ScrollView::Appearance::Appearance()
     {
-        // Set opaque background to support rendering ClearType text.
+        //--------------------------------------------------------------
+        // 1. Grayscale text anti-aliasing:
+        // The rendering result is independent of the target background,
+        // so opacity can be set as needed (any value from 0 ~ 1 is OK).
+        //--------------------------------------------------------------
+        // 2. ClearType text anti-aliasing:
+        // The rendering result depends on the target background color,
+        // so you must set an opaque background (better a value >= 0.5).
+        //--------------------------------------------------------------
         background.opacity = 0.0f;
         stroke.opacity = 0.0f;
 
@@ -62,7 +70,7 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(ScrollView);
+    _D14_SET_THEME_DATA_MAP_IMPL(ScrollView)
 
     void ScrollView::Appearance::changeTheme(WstrParam themeName)
     {
@@ -71,7 +79,7 @@ namespace d14engine::uikit::appearance
         _D14_UPDATE_THEME_DATA_1(background.color);
         _D14_UPDATE_THEME_DATA_1(stroke.color);
 
-        for (size_t i = 0; i < cpp_lang_utils::enumCount<ScrollBarState>; ++i)
+        for (size_t i = 0; i < g_stateCount; ++i)
         {
             scrollBar[i].background = _ref.scrollBar[i].background;
         }
