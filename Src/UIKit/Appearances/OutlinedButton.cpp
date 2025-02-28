@@ -53,7 +53,7 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(OutlinedButton);
 
-    void OutlinedButton::Appearance::changeTheme(FlatButton::Appearance& appearance, WstrParam themeName)
+    void OutlinedButton::Appearance::changeTheme(Master& m, WstrParam themeName)
     {
         _D14_FIND_THEME_DATA(themeName);
 

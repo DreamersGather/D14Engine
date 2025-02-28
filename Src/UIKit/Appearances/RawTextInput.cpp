@@ -31,7 +31,7 @@ namespace d14engine::uikit::appearance
     }
     _D14_SET_THEME_DATA_MAP_IMPL(RawTextInput);
 
-    void RawTextInput::Appearance::changeTheme(Label::Appearance& appearance, WstrParam themeName)
+    void RawTextInput::Appearance::changeTheme(Master& m, WstrParam themeName)
     {
         _D14_FIND_THEME_DATA(themeName);
 

@@ -70,10 +70,12 @@ namespace d14engine::uikit::appearance
     template<typename T>
     struct AppearanceProxy
     {
-        static_assert(std::is_base_of_v<Appearance, T>,
-            "T must inherit d14engine::uikit::appearance::Appearance");
+        using Master = T;
 
-        virtual void changeTheme(T& appearance, WstrParam themeName) = 0;
+        static_assert(std::is_base_of_v<Appearance, Master>,
+            "AppearanceProxy::Master must inherit from Appearance");
+
+        virtual void changeTheme(Master& m, WstrParam themeName) = 0;
     };
 
 #pragma endregion
@@ -101,13 +103,13 @@ namespace d14engine::uikit::appearance
     Data_Name = _ref.Data_Name
 
 #define _D14_UPDATE_THEME_DATA_2(Data_Name) \
-    appearance.Data_Name = _ref.Data_Name
+    m.Data_Name = _ref.Data_Name
 
 #define _D14_UPDATE_THEME_DATA_ARRAY_1(Data_Name) \
     memcpy(Data_Name, _ref.Data_Name, sizeof(_ref.Data_Name))
 
 #define _D14_UPDATE_THEME_DATA_ARRAY_2(Data_Name) \
-    memcpy(appearance.Data_Name, _ref.Data_Name, sizeof(_ref.Data_Name))
+    memcpy(m.Data_Name, _ref.Data_Name, sizeof(_ref.Data_Name))
 
 #pragma endregion
 
