@@ -183,7 +183,7 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(Window);
+    _D14_SET_THEME_DATA_MAP_IMPL(Window)
 
     void Window::Appearance::changeTheme(WstrParam themeName)
     {

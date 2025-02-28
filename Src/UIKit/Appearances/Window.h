@@ -19,6 +19,9 @@ namespace d14engine::uikit::appearance
         {
             static void initialize();
 
+            constexpr static auto g_stateCount =
+                cpp_lang_utils::enumCount<ThreeBrosState>;
+
             SolidStyle background = {};
 
             struct Shadow
@@ -51,7 +54,7 @@ namespace d14engine::uikit::appearance
                 SolidStyle foreground = {};
                 SolidStyle background = {};
             }
-            threeBrothers[cpp_lang_utils::enumCount<ThreeBrosState>] = {};
+            threeBrothers[g_stateCount] = {};
 
             float maskOpacityWhenDragAboveTabGroup = 0.5f;
 
@@ -94,9 +97,9 @@ namespace d14engine::uikit::appearance
                     SolidStyle foreground = {};
                     SolidStyle background = {};
                 }
-                threeBrothers[cpp_lang_utils::enumCount<ThreeBrosState>] = {};
+                threeBrothers[g_stateCount] = {};
             };
-            _D14_SET_THEME_DATA_MAP_DECL;
+            _D14_SET_THEME_DATA_MAP_DECL
 
             void changeTheme(WstrParam themeName) override;
         }
