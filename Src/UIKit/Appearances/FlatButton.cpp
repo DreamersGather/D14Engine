@@ -165,7 +165,7 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(FlatButton);
+    _D14_SET_THEME_DATA_MAP_IMPL(FlatButton)
 
     void FlatButton::Appearance::changeTheme(WstrParam themeName)
     {
