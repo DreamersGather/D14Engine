@@ -16,7 +16,7 @@ namespace d14engine::uikit::appearance
             {
                 struct Geometry
                 {
-                    float rightOffset = 30.0f;
+                    float rightOffset = -30.0f;
 
                     struct Line
                     {
