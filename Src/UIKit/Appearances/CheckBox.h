@@ -16,16 +16,17 @@ namespace d14engine::uikit
         enum class ActiveFlag { Unchecked, Intermediate, Checked } activeFlag = {};
         enum class ButtonFlag { Idle, Hover, Down, Disabled } buttonFlag = {};
 
-        size_t index() const
-        {
-            return (size_t)buttonFlag + (size_t)activeFlag * cpp_lang_utils::enumCount<ButtonFlag>;
-        }
         enum class Flag
         {
             UncheckedIdle, UncheckedHover, UncheckedDown, UncheckedDisabled,
             IntermediateIdle, IntermediateHover, IntermediateDown, IntermediateDisabled,
             CheckedIdle, CheckedHover, CheckedDown, CheckedDisabled
         };
+        size_t index() const
+        {
+            return (size_t)buttonFlag + (size_t)activeFlag * cpp_lang_utils::enumCount<ButtonFlag>;
+        }
+        constexpr static auto g_flagCount = cpp_lang_utils::enumCount<CheckBoxState::Flag>;
     };
 
     struct CheckBoxStateChangeEvent : uikit::Event
@@ -73,7 +74,7 @@ namespace d14engine::uikit::appearance
                 }
                 geometry = {};
 
-                SolidStyle background[cpp_lang_utils::enumCount<CheckBoxState::Flag>] = {};
+                SolidStyle background[CheckBoxState::g_flagCount] = {};
             }
             icon = {};
 
@@ -82,13 +83,13 @@ namespace d14engine::uikit::appearance
                 SolidStyle background = {};
                 StrokeStyle stroke = {};
             }
-            button[cpp_lang_utils::enumCount<CheckBoxState::Flag>] = {};
+            button[CheckBoxState::g_flagCount] = {};
 
             struct ThemeData
             {
                 struct Icon
                 {
-                    SolidStyle background[cpp_lang_utils::enumCount<CheckBoxState::Flag>] = {};
+                    SolidStyle background[CheckBoxState::g_flagCount] = {};
                 }
                 icon = {};
 
@@ -97,9 +98,9 @@ namespace d14engine::uikit::appearance
                     SolidStyle background = {};
                     StrokeStyle stroke = {};
                 }
-                button[cpp_lang_utils::enumCount<CheckBoxState::Flag>] = {};
+                button[CheckBoxState::g_flagCount] = {};
             };
-            _D14_SET_THEME_DATA_MAP_DECL;
+            _D14_SET_THEME_DATA_MAP_DECL
 
             void changeTheme(WstrParam themeName) override;
         }
