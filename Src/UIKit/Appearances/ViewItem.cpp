@@ -153,7 +153,7 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(ViewItem);
+    _D14_SET_THEME_DATA_MAP_IMPL(ViewItem)
 
     void ViewItem::Appearance::changeTheme(WstrParam themeName)
     {
