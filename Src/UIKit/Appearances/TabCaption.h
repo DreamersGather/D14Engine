@@ -17,6 +17,9 @@ namespace d14engine::uikit::appearance
         {
             static void initialize();
 
+            constexpr static auto g_stateCount =
+                cpp_lang_utils::enumCount<ButtonState>;
+
             struct Title
             {
                 float leftPadding = 12.0f;
@@ -35,7 +38,7 @@ namespace d14engine::uikit::appearance
                     }
                     geometry = {};
 
-                    SolidStyle background[cpp_lang_utils::enumCount<ButtonState>] = {};
+                    SolidStyle background[g_stateCount] = {};
 
                     float strokeWidth = 1.0f;
                 }
@@ -52,7 +55,7 @@ namespace d14engine::uikit::appearance
                     }
                     geometry = {};
 
-                    SolidStyle background[cpp_lang_utils::enumCount<ButtonState>] = {};
+                    SolidStyle background[g_stateCount] = {};
                 }
                 button = {};
             }
@@ -64,19 +67,19 @@ namespace d14engine::uikit::appearance
                 {
                     struct Icon
                     {
-                        SolidStyle background[cpp_lang_utils::enumCount<ButtonState>] = {};
+                        SolidStyle background[g_stateCount] = {};
                     }
                     icon = {};
 
                     struct Button
                     {
-                        SolidStyle background[cpp_lang_utils::enumCount<ButtonState>] = {};
+                        SolidStyle background[g_stateCount] = {};
                     }
                     button = {};
                 }
                 closeX = {};
             };
-            _D14_SET_THEME_DATA_MAP_DECL;
+            _D14_SET_THEME_DATA_MAP_DECL
 
             void changeTheme(WstrParam themeName) override;
         }
