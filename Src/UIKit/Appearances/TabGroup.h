@@ -21,10 +21,10 @@ namespace d14engine::uikit::appearance
             Appearance();
             static void initialize();
 
-            constexpr static auto g_CardstateCount =
+            constexpr static auto g_cardStateCount =
                 cpp_lang_utils::enumCount<CardState>;
 
-            constexpr static auto g_ButtonstateCount =
+            constexpr static auto g_buttonStateCount =
                 cpp_lang_utils::enumCount<ButtonState>;
 
             SolidStyle background = {};
@@ -56,7 +56,7 @@ namespace d14engine::uikit::appearance
 
                         SolidStyle background = {};
                     }
-                    main[g_CardstateCount] = {};
+                    main[g_cardStateCount] = {};
 
                     D2D1_COLOR_F activeShadowColor = {};
                 }
@@ -100,7 +100,7 @@ namespace d14engine::uikit::appearance
                             }
                             geometry = {};
 
-                            SolidStyle background[g_ButtonstateCount] = {};
+                            SolidStyle background[g_buttonStateCount] = {};
                         }
                         icon = {};
 
@@ -115,7 +115,7 @@ namespace d14engine::uikit::appearance
                             }
                             geometry = {};
 
-                            SolidStyle background[g_ButtonstateCount] = {};
+                            SolidStyle background[g_buttonStateCount] = {};
                         }
                         button = {};
                     }
@@ -179,13 +179,13 @@ namespace d14engine::uikit::appearance
                         {
                             struct Icon
                             {
-                                SolidStyle background[g_ButtonstateCount] = {};
+                                SolidStyle background[g_buttonStateCount] = {};
                             }
                             icon = {};
 
                             struct Button
                             {
-                                SolidStyle background[g_ButtonstateCount] = {};
+                                SolidStyle background[g_buttonStateCount] = {};
                             }
                             button = {};
                         }

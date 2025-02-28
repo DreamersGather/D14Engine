@@ -134,7 +134,7 @@ namespace d14engine::uikit::appearance
         _D14_UPDATE_THEME_DATA_1(background.color);
         _D14_UPDATE_THEME_DATA_1(stroke.color);
 
-        for (size_t i = 0; i < g_CardstateCount; ++i)
+        for (size_t i = 0; i < g_cardStateCount; ++i)
         {
             _D14_UPDATE_THEME_DATA_1(tabBar.card.main[i].background);
             _D14_UPDATE_THEME_DATA_1(tabBar.card.activeShadowColor);
