@@ -78,7 +78,7 @@ namespace d14engine::uikit::appearance
         auto hsb = (iHSB)style.color;
         iHSB primary = hsb, secondary = hsb, tertiary = hsb;
 
-        // Transform HSB color according to the selected color mode.
+        // Transform HSB color according to the selected theme name.
         // Also see D14Engine/Src/UIKit/Appearances/ColorScheme.txt.
         if (style.name == L"Light")
         {

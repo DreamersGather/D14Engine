@@ -38,7 +38,7 @@ namespace d14engine::uikit::appearance
 
 #define _D14_SET_THEME_DATA_MAP_DECL \
     using ThemeDataMap = std::unordered_map<Wstring, ThemeData>; \
-    static ThemeDataMap g_themeData
+    static ThemeDataMap g_themeData;
 
 #define _D14_REF_THEME_DATA_MAP_DECL(Type_Name) \
     using ThemeData = Type_Name::Appearance::ThemeData; \
@@ -46,7 +46,7 @@ namespace d14engine::uikit::appearance
     static ThemeDataMap g_themeData;
 
 #define _D14_SET_THEME_DATA_MAP_IMPL(Type_Name) \
-    Type_Name::Appearance::ThemeDataMap Type_Name::Appearance::g_themeData = {}
+    Type_Name::Appearance::ThemeDataMap Type_Name::Appearance::g_themeData = {};
 
     // Consider the following scenario:
     //
@@ -60,11 +60,17 @@ namespace d14engine::uikit::appearance
     //     student <--- student_appear ---> (pass reference) ----->
     //        |                                                   |
     // fashion_student <--- fashion_student_appear <--- student_appear_proxy
+    //
+    // The reason for not using multiple virtual inheritance here is that
+    // it has already been used in the construction of the UI object tree,
+    // and UI objects also need to inherit their related Appearance objects.
+    // If multiple virtual inheritance were used for Appearance as well,
+    // it would make the entire OOP framework much more complex and tricky.
 
     template<typename T>
     struct AppearanceProxy
     {
-        static_assert(std::is_base_of<Appearance, T>::value,
+        static_assert(std::is_base_of_v<Appearance, T>,
             "T must inherit d14engine::uikit::appearance::Appearance");
 
         virtual void changeTheme(T& appearance, WstrParam themeName) = 0;
@@ -72,28 +78,24 @@ namespace d14engine::uikit::appearance
 
 #pragma endregion
 
-#pragma region Reg Variables
+#pragma region Design Spaces
 
-    struct ColorGroup // idle, hover, down...
+    struct ColorGroup // Generated from the passed theme style dynamically.
     {
         D2D1_COLOR_F primary = {}, secondary = {}, tertiary = {};
 
         void generateTonedColors(const Appearance::ThemeStyle& style);
     };
-    // Generated from the selected theme style dynamically.
-    extern ColorGroup g_colorGroup;
+    extern ColorGroup g_colorGroup; // Generated from current theme style.
 
 #pragma endregion
 
 #pragma region Macro Helpers
 
-#define _D14_FIND_THEME_DATA(Mode_Name) \
-    auto _itor = g_themeData.find(Mode_Name); \
-    if (_itor == g_themeData.end()) \
-    { \
-        _itor = g_themeData.find(L"Light"); \
-    } \
-    auto& _ref = _itor->second /* fall through */
+#define _D14_FIND_THEME_DATA(Theme_Name) \
+    auto _itor = g_themeData.find(Theme_Name); \
+    if (_itor == g_themeData.end()) return; \
+    auto& _ref = _itor->second
 
 #define _D14_UPDATE_THEME_DATA_1(Data_Name) \
     Data_Name = _ref.Data_Name
