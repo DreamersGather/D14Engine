@@ -29,7 +29,7 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(RawTextInput);
+    _D14_SET_THEME_DATA_MAP_IMPL(RawTextInput)
 
     void RawTextInput::Appearance::changeTheme(Master& m, WstrParam themeName)
     {
