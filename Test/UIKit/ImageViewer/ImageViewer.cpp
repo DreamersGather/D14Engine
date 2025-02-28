@@ -411,13 +411,13 @@ D14_SET_APP_ENTRY(mainImageViewer)
                         index->caption->title()->label()->text() : L"");
                 }
                 // We should use setCheckedState instead of setChecked here:
-                // 
+                //
                 // 1. setChecked:
-                // 
+                //
                 //    Change state && trigger related callback.
-                // 
+                //
                 // 2. setCheckedState:
-                // 
+                //
                 //    Only change state, no callback triggered.
 
                 if (!wk_checkBox1.expired())

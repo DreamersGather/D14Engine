@@ -385,7 +385,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         (*objectGeometry)[1] = { 0.0f, 0.0f, 0.0f }; // rotation
         (*objectGeometry)[2] = { 1.0f, 1.0f, 1.0f }; // scaling
         // It is worth noting that there is only one instance of [worldMatrix] in CPU side,
-        // which will be bound as a 32bit-constant of the related graphics root-signature, 
+        // which will be bound as a 32bit-constant of the related graphics root-signature,
         // and thus we must wait all GPU commands finished before updating it in each frame.
         auto worldMatrix = std::make_shared<XMFLOAT4X4>(math_utils::identityFloat4x4());
 

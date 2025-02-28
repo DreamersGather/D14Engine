@@ -131,7 +131,7 @@ namespace d14engine::renderer
         THROW_IF_FAILED(rndr->d3d12Device()->CreateRootSignature
         (
         /* nodeMask               */ 0,
-        /* pBlobWithRootSignature */ 
+        /* pBlobWithRootSignature */
         /* blobLengthInBytes      */ BLB_PSZ_ARGS(rootSigBlob),
         /* riid                   */
         /* ppvRootSignature       */ IID_PPV_ARGS(&m_rootSigature)
@@ -142,7 +142,7 @@ namespace d14engine::renderer
     {
         graph_utils::shader::Package shaders =
         {
-            { L"VS", {{ L"VS", L"vs_6_0" }} }, 
+            { L"VS", {{ L"VS", L"vs_6_0" }} },
             { L"PS", {{ L"PS", L"ps_6_0" }} }
         };
         graph_utils::shader::loadDefaultObject
@@ -315,7 +315,7 @@ namespace d14engine::renderer
         /* StartInstanceLocation  */ 0
         );
         graph_utils::revertBarrier(NUM_ARR_ARGS(barriers));
-        rndr->cmdList()->ResourceBarrier(NUM_ARR_ARGS(barriers)); 
+        rndr->cmdList()->ResourceBarrier(NUM_ARR_ARGS(barriers));
     }
 #pragma warning(pop)
 }

@@ -50,16 +50,16 @@ int wmain(int argc, wchar_t* argv[])
         //--------------------------- Usage ---------------------------
         //-------------------------------------------------------------
         // The window is in free scaling mode by default:
-        // 
+        //
         // 1. Press [Space] to switch between different display modes,
         //    in which cases the letterbox will be used for stretching.
-        // 
+        //
         // 2. Press [Backspace] to turn on/off free scaling mode.
         //-------------------------------------------------------------
         // The window is rendered with the letterbox by default:
         //
         // 1. Press [Enter] to enable/disable the composition layer:
-        // 
+        //
         //    (composition=true) The letterbox will be released,
         //    and the window is rendered with the composition layer,
         //    in which case the background color can be transparent.
@@ -107,7 +107,7 @@ int wmain(int argc, wchar_t* argv[])
     catch (d14engine::RuntimeError& e)
     {
         MessageBoxW(nullptr, e.message().c_str(), L"d14engine::RuntimeError", MB_OK | MB_ICONERROR);
-    } 
+    }
     catch (...) // fallthrough
     {
         MessageBoxW(nullptr, L"Unknown exception encountered.", L"Unknown Error", MB_OK | MB_ICONERROR);

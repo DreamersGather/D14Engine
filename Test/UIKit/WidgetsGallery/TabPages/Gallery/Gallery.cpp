@@ -169,7 +169,7 @@ void createGalleryTabPage(ConstraintLayout* page)
 
         geoInfo.keepWidth = false;
         geoInfo.Left.ToLeft = 0.0f;
-        geoInfo.Right.ToRight = -1.0f;   
+        geoInfo.Right.ToRight = -1.0f;
 
         geoInfo.keepHeight = false;
         geoInfo.Top.ToTop = 64.0f;
