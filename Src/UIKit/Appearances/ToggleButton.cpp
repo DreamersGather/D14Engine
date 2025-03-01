@@ -165,7 +165,6 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(ToggleButton)
 
     void ToggleButton::Appearance::changeTheme(WstrParam themeName)
     {
@@ -183,4 +182,5 @@ namespace d14engine::uikit::appearance
 #undef UPDATE_COLOR
         _D14_UPDATE_THEME_DATA_ARRAY_1(main);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(ToggleButton)
 }

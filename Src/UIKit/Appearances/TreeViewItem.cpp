@@ -17,7 +17,6 @@ namespace d14engine::uikit::appearance
             dark.arrow.secondaryBackground.color = D2D1::ColorF{ 0x777777 };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(TreeViewItem)
 
     void TreeViewItem::Appearance::changeTheme(WstrParam themeName)
     {
@@ -26,4 +25,5 @@ namespace d14engine::uikit::appearance
         _D14_UPDATE_THEME_DATA_1(arrow.background.color);
         _D14_UPDATE_THEME_DATA_1(arrow.secondaryBackground.color);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(TreeViewItem)
 }

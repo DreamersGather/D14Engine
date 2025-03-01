@@ -13,6 +13,8 @@ namespace d14engine::uikit::appearance
         {
             static void initialize();
 
+            void changeTheme(WstrParam themeName);
+
             struct SizingFrame
             {
                 D2D1_RECT_F extension = { 6.0f, 6.0f, 6.0f, 6.0f };
@@ -33,8 +35,6 @@ namespace d14engine::uikit::appearance
                 StaticSizingGuideFrame staticSizingGuideFrame = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
-            
-            void changeTheme(WstrParam themeName);
         }
         appearance = {};
     };

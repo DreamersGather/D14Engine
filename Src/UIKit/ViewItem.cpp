@@ -63,59 +63,59 @@ namespace d14engine::uikit
         }
     }
 
-#define VIT_STATE ViewItem::State
+#define TARGET_STATE(Name) ViewItem::State::Name
 
     const ViewItem::StateTransitionMap
     ViewItem::ENTER_STATE_TRANS_MAP =
     {
-        /* Idle                */ VIT_STATE::Hover,
-        /* Hover               */ VIT_STATE::Hover,
-        /* ActiveSelected      */ VIT_STATE::ActiveSelectedHover,
-        /* InactiveSelected    */ VIT_STATE::InactiveSelected,
-        /* ActiveSelectedHover */ VIT_STATE::ActiveSelectedHover
+    /* Idle               */ TARGET_STATE(Hover),
+    /* Hover              */ TARGET_STATE(Hover),
+    /* Selected           */ TARGET_STATE(Selected),
+    /* FocusSelected      */ TARGET_STATE(FocusSelectedHover),
+    /* FocusSelectedHover */ TARGET_STATE(FocusSelectedHover)
     },
     ViewItem::LEAVE_STATE_TRANS_MAP =
     {
-        /* Idle                */ VIT_STATE::Idle,
-        /* Hover               */ VIT_STATE::Idle,
-        /* ActiveSelected      */ VIT_STATE::ActiveSelected,
-        /* InactiveSelected    */ VIT_STATE::InactiveSelected,
-        /* ActiveSelectedHover */ VIT_STATE::ActiveSelected
+    /* Idle               */ TARGET_STATE(Idle),
+    /* Hover              */ TARGET_STATE(Idle),
+    /* Selected           */ TARGET_STATE(Selected),
+    /* FocusSelected      */ TARGET_STATE(FocusSelected),
+    /* FocusSelectedHover */ TARGET_STATE(FocusSelected)
     },
     ViewItem::CHECK_STATE_TRANS_MAP =
     {
-        /* Idle                */ VIT_STATE::ActiveSelectedHover,
-        /* Hover               */ VIT_STATE::ActiveSelectedHover,
-        /* ActiveSelected      */ VIT_STATE::ActiveSelectedHover,
-        /* InactiveSelected    */ VIT_STATE::ActiveSelectedHover,
-        /* ActiveSelectedHover */ VIT_STATE::ActiveSelectedHover
+    /* Idle               */ TARGET_STATE(FocusSelectedHover),
+    /* Hover              */ TARGET_STATE(FocusSelectedHover),
+    /* Selected           */ TARGET_STATE(FocusSelectedHover),
+    /* FocusSelected      */ TARGET_STATE(FocusSelectedHover),
+    /* FocusSelectedHover */ TARGET_STATE(FocusSelectedHover)
     },
     ViewItem::UNCHK_STATE_TRANS_MAP =
     {
-        /* Idle                */ VIT_STATE::Idle,
-        /* Hover               */ VIT_STATE::Idle,
-        /* ActiveSelected      */ VIT_STATE::Idle,
-        /* InactiveSelected    */ VIT_STATE::Idle,
-        /* ActiveSelectedHover */ VIT_STATE::Idle
+    /* Idle               */ TARGET_STATE(Idle),
+    /* Hover              */ TARGET_STATE(Idle),
+    /* Selected           */ TARGET_STATE(Idle),
+    /* FocusSelected      */ TARGET_STATE(Idle),
+    /* FocusSelectedHover */ TARGET_STATE(Idle)
     },
     ViewItem::GETFC_STATE_TRANS_MAP =
     {
-        /* Idle                */ VIT_STATE::Idle,
-        /* Hover               */ VIT_STATE::Hover,
-        /* ActiveSelected      */ VIT_STATE::ActiveSelected,
-        /* InactiveSelected    */ VIT_STATE::ActiveSelected,
-        /* ActiveSelectedHover */ VIT_STATE::ActiveSelectedHover
+    /* Idle               */ TARGET_STATE(Idle),
+    /* Hover              */ TARGET_STATE(Hover),
+    /* Selected           */ TARGET_STATE(FocusSelected),
+    /* FocusSelected      */ TARGET_STATE(FocusSelected),
+    /* FocusSelectedHover */ TARGET_STATE(FocusSelectedHover)
     },
     ViewItem::LOSFC_STATE_TRANS_MAP =
     {
-        /* Idle                */ VIT_STATE::Idle,
-        /* Hover               */ VIT_STATE::Hover,
-        /* ActiveSelected      */ VIT_STATE::InactiveSelected,
-        /* InactiveSelected    */ VIT_STATE::InactiveSelected,
-        /* ActiveSelectedHover */ VIT_STATE::InactiveSelected
+    /* Idle               */ TARGET_STATE(Idle),
+    /* Hover              */ TARGET_STATE(Hover),
+    /* Selected           */ TARGET_STATE(Selected),
+    /* FocusSelected      */ TARGET_STATE(Selected),
+    /* FocusSelectedHover */ TARGET_STATE(Selected)
     };
 
-#undef VIT_STATE
+#undef TARGET_STATE
 
     void ViewItem::triggerEnterStateTrans()
     {

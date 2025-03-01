@@ -8,7 +8,6 @@ namespace d14engine::uikit::appearance
     {
         g_themeData = { { L"Light", {} }, { L"Dark", {} } };
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(ResizablePanel)
 
     void ResizablePanel::Appearance::changeTheme(WstrParam themeName)
     {
@@ -21,4 +20,5 @@ namespace d14engine::uikit::appearance
         };
         _D14_UPDATE_THEME_DATA_1(staticSizingGuideFrame.background);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(ResizablePanel)
 }

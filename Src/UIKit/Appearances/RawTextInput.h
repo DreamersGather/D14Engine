@@ -12,6 +12,8 @@ namespace d14engine::uikit::appearance
         {
             static void initialize();
 
+            void changeTheme(Master& m, WstrParam themeName) override;
+
             struct BottomLine
             {
                 float bottomOffset = -0.5f;
@@ -34,8 +36,6 @@ namespace d14engine::uikit::appearance
                 bottomLine = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
-
-            void changeTheme(Master& m, WstrParam themeName) override;
         }
         appearance = {};
     };

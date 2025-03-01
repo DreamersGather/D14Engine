@@ -23,7 +23,6 @@ namespace d14engine::uikit::appearance
             dark.stroke.color = D2D1::ColorF{ 0x1d1d1d };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(Layout)
 
     void Layout::Appearance::changeTheme(WstrParam themeName)
     {
@@ -32,4 +31,5 @@ namespace d14engine::uikit::appearance
         _D14_UPDATE_THEME_DATA_1(background.color);
         _D14_UPDATE_THEME_DATA_1(stroke.color);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(Layout)
 }

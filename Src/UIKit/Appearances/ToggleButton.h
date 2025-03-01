@@ -12,9 +12,9 @@ namespace d14engine::uikit::appearance
         {
             static void initialize();
 
-            static ThemeDataMap g_themeData;
-
             void changeTheme(WstrParam themeName) override;
+
+            static ThemeDataMap g_themeData;
         }
         appearance = {};
     };

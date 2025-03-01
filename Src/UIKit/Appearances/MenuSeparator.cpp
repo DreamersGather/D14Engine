@@ -23,7 +23,6 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(MenuSeparator)
 
     void MenuSeparator::Appearance::changeTheme(Master& m, WstrParam themeName)
     {
@@ -31,4 +30,5 @@ namespace d14engine::uikit::appearance
 
         _D14_UPDATE_THEME_DATA_1(background);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(MenuSeparator)
 }

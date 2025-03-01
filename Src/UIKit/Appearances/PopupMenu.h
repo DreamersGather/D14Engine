@@ -13,6 +13,8 @@ namespace d14engine::uikit::appearance
         {
             static void initialize();
 
+            void changeTheme(WstrParam themeName) override;
+
             struct Geometry
             {
                 // Call loadShadowBitmap after changing this field.
@@ -46,8 +48,6 @@ namespace d14engine::uikit::appearance
                 shadow = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
-
-            void changeTheme(WstrParam themeName) override;
         }
         appearance = {};
     };

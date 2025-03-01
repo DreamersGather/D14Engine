@@ -203,7 +203,6 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(CheckBox)
 
     void CheckBox::Appearance::changeTheme(WstrParam themeName)
     {
@@ -257,4 +256,5 @@ namespace d14engine::uikit::appearance
         _D14_UPDATE_THEME_DATA_ARRAY_1(icon.background);
         _D14_UPDATE_THEME_DATA_ARRAY_1(button);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(CheckBox)
 }

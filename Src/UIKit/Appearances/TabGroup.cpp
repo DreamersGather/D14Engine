@@ -120,7 +120,6 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(TabGroup)
 
     void TabGroup::Appearance::changeTheme(WstrParam themeName)
     {
@@ -145,4 +144,5 @@ namespace d14engine::uikit::appearance
             _D14_UPDATE_THEME_DATA_1(maskWhenBelowDragWindow);
         }
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(TabGroup)
 }

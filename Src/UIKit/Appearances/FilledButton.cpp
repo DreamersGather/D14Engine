@@ -165,7 +165,6 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(FilledButton)
 
     void FilledButton::Appearance::changeTheme(Master& m, WstrParam themeName)
     {
@@ -173,4 +172,5 @@ namespace d14engine::uikit::appearance
 
         _D14_UPDATE_THEME_DATA_ARRAY_2(main);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(FilledButton)
 }

@@ -73,7 +73,6 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(TabCaption)
 
     void TabCaption::Appearance::changeTheme(WstrParam themeName)
     {
@@ -82,4 +81,5 @@ namespace d14engine::uikit::appearance
         _D14_UPDATE_THEME_DATA_ARRAY_1(closeX.icon.background);
         _D14_UPDATE_THEME_DATA_ARRAY_1(closeX.button.background);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(TabCaption)
 }

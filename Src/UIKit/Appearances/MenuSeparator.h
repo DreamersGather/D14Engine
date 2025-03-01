@@ -12,6 +12,8 @@ namespace d14engine::uikit::appearance
         {
             static void initialize();
 
+            void changeTheme(Master& m, WstrParam themeName) override;
+
             SolidStyle background = {};
 
             float strokeWidth = 1.0f;
@@ -21,8 +23,6 @@ namespace d14engine::uikit::appearance
                 SolidStyle background = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
-
-            void changeTheme(Master& m, WstrParam themeName) override;
         }
         appearance = {};
     };

@@ -14,6 +14,8 @@ namespace d14engine::uikit::appearance
             Appearance();
             static void initialize();
 
+            void changeTheme(WstrParam themeName) override;
+
             float thumbAreaExtension = 8.0f;
 
             struct Bar
@@ -154,8 +156,6 @@ namespace d14engine::uikit::appearance
                 valueLabel = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
-
-            void changeTheme(WstrParam themeName) override;
         }
         appearance = {};
     };

@@ -21,6 +21,8 @@ namespace d14engine::uikit::appearance
             Appearance();
             static void initialize();
 
+            void changeTheme(WstrParam themeName) override;
+
             constexpr static auto g_cardStateCount =
                 cpp_lang_utils::enumCount<CardState>;
 
@@ -198,8 +200,6 @@ namespace d14engine::uikit::appearance
                 SolidStyle maskWhenBelowDragWindow = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
-
-            void changeTheme(WstrParam themeName) override;
         }
         appearance = {};
     };

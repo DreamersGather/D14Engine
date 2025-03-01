@@ -36,9 +36,9 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            light.main[(size_t)ViewItem::State::ActiveSelected] =
-            light.main[(size_t)ViewItem::State::InactiveSelected] =
-            light.main[(size_t)ViewItem::State::ActiveSelectedHover] =
+            light.main[(size_t)ViewItem::State::FocusSelected] =
+            light.main[(size_t)ViewItem::State::Selected] =
+            light.main[(size_t)ViewItem::State::FocusSelectedHover] =
             {
                 // background
                 {
@@ -88,9 +88,9 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            dark.main[(size_t)ViewItem::State::ActiveSelected] =
-            dark.main[(size_t)ViewItem::State::InactiveSelected] =
-            dark.main[(size_t)ViewItem::State::ActiveSelectedHover] =
+            dark.main[(size_t)ViewItem::State::FocusSelected] =
+            dark.main[(size_t)ViewItem::State::Selected] =
+            dark.main[(size_t)ViewItem::State::FocusSelectedHover] =
             {
                 // background
                 {
@@ -111,7 +111,6 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(MenuItem)
 
     void MenuItem::Appearance::changeTheme(Master& m, WstrParam themeName)
     {
@@ -120,4 +119,5 @@ namespace d14engine::uikit::appearance
         _D14_UPDATE_THEME_DATA_ARRAY_2(main);
         _D14_UPDATE_THEME_DATA_1(arrow.background);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(MenuItem)
 }

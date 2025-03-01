@@ -36,21 +36,7 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            light.main[(size_t)State::ActiveSelected] =
-            {
-                // background
-                {
-                    D2D1::ColorF{ 0xe1e1e1 }, // color
-                    1.0f // opacity
-                },
-                // stroke
-                {
-                    0.0f, // width
-                    D2D1::ColorF{ 0x000000 }, // color
-                    0.0f // opacity
-                }
-            };
-            light.main[(size_t)State::InactiveSelected] =
+            light.main[(size_t)State::Selected] =
             {
                 // background
                 {
@@ -64,7 +50,21 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            light.main[(size_t)State::ActiveSelectedHover] =
+            light.main[(size_t)State::FocusSelected] =
+            {
+                // background
+                {
+                    D2D1::ColorF{ 0xe1e1e1 }, // color
+                    1.0f // opacity
+                },
+                // stroke
+                {
+                    0.0f, // width
+                    D2D1::ColorF{ 0x000000 }, // color
+                    0.0f // opacity
+                }
+            };
+            light.main[(size_t)State::FocusSelectedHover] =
             {
                 // background
                 {
@@ -109,21 +109,7 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            dark.main[(size_t)State::ActiveSelected] =
-            {
-                // background
-                {
-                    D2D1::ColorF{ 0x323232 }, // color
-                    1.0f // opacity
-                },
-                // stroke
-                {
-                    0.0f, // width
-                    D2D1::ColorF{ 0x000000 }, // color
-                    0.0f // opacity
-                }
-            };
-            dark.main[(size_t)State::InactiveSelected] =
+            dark.main[(size_t)State::Selected] =
             {
                 // background
                 {
@@ -137,7 +123,21 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            dark.main[(size_t)State::ActiveSelectedHover] =
+            dark.main[(size_t)State::FocusSelected] =
+            {
+                // background
+                {
+                    D2D1::ColorF{ 0x323232 }, // color
+                    1.0f // opacity
+                },
+                // stroke
+                {
+                    0.0f, // width
+                    D2D1::ColorF{ 0x000000 }, // color
+                    0.0f // opacity
+                }
+            };
+            dark.main[(size_t)State::FocusSelectedHover] =
             {
                 // background
                 {
@@ -153,7 +153,6 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(ViewItem)
 
     void ViewItem::Appearance::changeTheme(WstrParam themeName)
     {
@@ -161,4 +160,5 @@ namespace d14engine::uikit::appearance
 
         _D14_UPDATE_THEME_DATA_ARRAY_1(main);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(ViewItem)
 }

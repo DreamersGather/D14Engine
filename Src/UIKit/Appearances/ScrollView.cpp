@@ -70,7 +70,6 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(ScrollView)
 
     void ScrollView::Appearance::changeTheme(WstrParam themeName)
     {
@@ -84,4 +83,5 @@ namespace d14engine::uikit::appearance
             scrollBar[i].background = _ref.scrollBar[i].background;
         }
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(ScrollView)
 }

@@ -29,7 +29,6 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(RawTextInput)
 
     void RawTextInput::Appearance::changeTheme(Master& m, WstrParam themeName)
     {
@@ -39,4 +38,5 @@ namespace d14engine::uikit::appearance
         _D14_UPDATE_THEME_DATA_2(stroke);
         _D14_UPDATE_THEME_DATA_1(bottomLine.background);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(RawTextInput)
 }

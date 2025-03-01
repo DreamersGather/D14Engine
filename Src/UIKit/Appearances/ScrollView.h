@@ -19,6 +19,8 @@ namespace d14engine::uikit::appearance
             Appearance();
             static void initialize();
 
+            void changeTheme(WstrParam themeName) override;
+
             constexpr static auto g_stateCount =
                 cpp_lang_utils::enumCount<ScrollBarState>;
 
@@ -60,8 +62,6 @@ namespace d14engine::uikit::appearance
                 scrollBar[g_stateCount] = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
-
-            void changeTheme(WstrParam themeName) override;
         }
         appearance = {};
     };

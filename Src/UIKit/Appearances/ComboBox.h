@@ -12,6 +12,8 @@ namespace d14engine::uikit::appearance
         {
             static void initialize();
 
+            void changeTheme(Master& m, WstrParam themeName) override;
+
             struct Arrow
             {
                 struct Geometry
@@ -33,7 +35,7 @@ namespace d14engine::uikit::appearance
             }
             arrow = {};
 
-            struct ThemeData : FlatButton::Appearance::ThemeData
+            struct ThemeData : Master::ThemeData
             {
                 struct Arrow
                 {
@@ -47,8 +49,6 @@ namespace d14engine::uikit::appearance
                 arrow = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
-
-            void changeTheme(Master& m, WstrParam themeName) override;
         }
         appearance = {};
     };

@@ -15,6 +15,8 @@ namespace d14engine::uikit::appearance
             Appearance();
             static void initialize();
 
+            void changeTheme(WstrParam themeName) override;
+
             SolidStyle foreground = {};
             SolidStyle background = {};
             StrokeStyle stroke = {};
@@ -28,8 +30,6 @@ namespace d14engine::uikit::appearance
                 foreground = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
-
-            void changeTheme(WstrParam themeName) override;
         }
         appearance = {};
     };

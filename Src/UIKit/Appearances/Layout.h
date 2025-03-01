@@ -15,6 +15,8 @@ namespace d14engine::uikit::appearance
             Appearance();
             static void initialize();
 
+            void changeTheme(WstrParam themeName) override;
+
             SolidStyle background = {};
             StrokeStyle stroke = {};
 
@@ -33,8 +35,6 @@ namespace d14engine::uikit::appearance
                 stroke = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
-
-            void changeTheme(WstrParam themeName) override;
         }
         appearance = {};
     };

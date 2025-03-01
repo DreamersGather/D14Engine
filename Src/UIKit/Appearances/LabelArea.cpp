@@ -22,7 +22,6 @@ namespace d14engine::uikit::appearance
             dark.indicator.background.color = D2D1::ColorF{ 0xffffff };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(LabelArea)
 
     void LabelArea::Appearance::changeTheme(WstrParam themeName)
     {
@@ -31,4 +30,5 @@ namespace d14engine::uikit::appearance
         _D14_UPDATE_THEME_DATA_1(hiliteRange.background.color);
         _D14_UPDATE_THEME_DATA_1(indicator.background.color);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(LabelArea)
 }

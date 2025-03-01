@@ -15,6 +15,8 @@ namespace d14engine::uikit::appearance
             Appearance();
             static void initialize();
 
+            void changeTheme(WstrParam themeName) override;
+
             struct HiliteRange
             {
                 SolidStyle background = {};
@@ -63,8 +65,6 @@ namespace d14engine::uikit::appearance
                 indicator = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
-
-            void changeTheme(WstrParam themeName) override;
         }
         appearance = {};
     };

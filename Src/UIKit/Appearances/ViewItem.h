@@ -14,30 +14,26 @@ namespace d14engine::uikit::appearance
     {
         enum class State
         {
-            Idle, Hover, ActiveSelected,
-            InactiveSelected, ActiveSelectedHover
+            Idle, Hover, Selected, FocusSelected, FocusSelectedHover
         };
         struct Appearance : appearance::Appearance
         {
             static void initialize();
+
+            void changeTheme(WstrParam themeName) override;
 
             constexpr static auto g_stateCount =
                 cpp_lang_utils::enumCount<State>;
 
             struct Main
             {
-                SolidStyle background = {};
-                StrokeStyle stroke = {};
+                SolidStyle background = {}; StrokeStyle stroke = {};
             }
             main[g_stateCount] = {};
 
-            struct ThemeData
-            {
-                Main main[g_stateCount] = {};
-            };
-            _D14_SET_THEME_DATA_MAP_DECL;
+            struct ThemeData { Main main[g_stateCount] = {}; };
 
-            void changeTheme(WstrParam themeName) override;
+            _D14_SET_THEME_DATA_MAP_DECL
         }
         appearance = {};
     };

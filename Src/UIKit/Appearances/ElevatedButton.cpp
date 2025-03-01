@@ -41,7 +41,6 @@ namespace d14engine::uikit::appearance
             };
         }
     }
-    _D14_SET_THEME_DATA_MAP_IMPL(ElevatedButton)
 
     void ElevatedButton::Appearance::changeTheme(WstrParam themeName)
     {
@@ -49,4 +48,5 @@ namespace d14engine::uikit::appearance
 
         _D14_UPDATE_THEME_DATA_ARRAY_1(shadow.color);
     }
+    _D14_SET_THEME_DATA_MAP_IMPL(ElevatedButton)
 }
