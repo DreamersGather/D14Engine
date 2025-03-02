@@ -9,9 +9,11 @@
 
 namespace d14engine::uikit
 {
+    struct Application;
+
     struct Cursor : Panel
     {
-        friend struct Application;
+        friend Application;
 
         enum class StaticIconIndex
         {

@@ -1,6 +1,6 @@
 ﻿#include "Common/Precompile.h"
 
-#include "Common/RuntimeError.h"
+#include "Common/DirectXError.h"
 
 #include "UIKit/Application.h"
 #include "UIKit/ColorUtils.h"
@@ -39,7 +39,7 @@ namespace d14engine::uikit::appearance
     {
         THROW_IF_NULL(Application::g_app);
 
-        g_colorGroup.generateTonedColors(Application::g_app->themeStyle());
+        generateTonedColors(Application::g_app->themeStyle());
 
 #define INIT_THEME_DATA(Class_Name) \
         Class_Name::Appearance::initialize()
@@ -73,35 +73,80 @@ namespace d14engine::uikit::appearance
 #undef INIT_THEME_DATA
     }
 
-    void ColorGroup::generateTonedColors(const Appearance::ThemeStyle& style)
-    {
-        auto hsb = (iHSB)style.color;
-        iHSB primary = hsb, secondary = hsb, tertiary = hsb;
+    // Refer to https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/color#accent-color-palette
 
-        // Transform HSB color according to the selected theme name.
-        // Also see D14Engine/Src/UIKit/Appearances/ColorScheme.txt.
+    D2D1_COLOR_F g_color1 = {};
+    D2D1_COLOR_F g_color2 = {};
+    D2D1_COLOR_F g_color3 = {};
+
+    const D2D1_COLOR_F& color1()
+    {
+        return g_color1;
+    }
+    const D2D1_COLOR_F& color2()
+    {
+        return g_color2;
+    }
+    const D2D1_COLOR_F& color3()
+    {
+        return g_color3;
+    }
+
+    void generateTonedColors(const Appearance::ThemeStyle& style)
+    {
+        // TODO: Implement dynamic toned color generation algorithm.
+
+        std::vector<BYTE> data = {}; DWORD dataSize = {};
+        
+        THROW_IF_FAILED(RegGetValue
+        (
+        /* hkey     */ HKEY_CURRENT_USER,
+        /* lpSubKey */ L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Accent",
+        /* lpValue  */ L"AccentPalette",
+        /* dwFlags  */ RRF_RT_REG_BINARY,
+        /* pdwType  */ nullptr,
+        /* pvData   */ nullptr,
+        /* pcbData  */ &dataSize
+        ));
+        THROW_IF_FALSE(dataSize == 32);
+        data.resize(dataSize);
+
+        THROW_IF_FAILED(RegGetValue
+        (
+        /* hkey     */ HKEY_CURRENT_USER,
+        /* lpSubKey */ L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Accent",
+        /* lpValue  */ L"AccentPalette",
+        /* dwFlags  */ RRF_RT_REG_BINARY,
+        /* pdwType  */ nullptr,
+        /* pvData   */ data.data(),
+        /* pcbData  */ &dataSize
+        ));
+        auto extractColor = [&](size_t index)
+        {
+            return D2D1::ColorF
+            {
+                (UINT32)
+                (
+                /* r */ data[4 * index + 0] << 16 |
+                /* g */ data[4 * index + 1] << 8  |
+                /* b */ data[4 * index + 2] << 0
+                )
+            };
+        };
+        // data[32] (8 RGBA colors):
+        // AccentLight3 AccentLight2 AccentLight1 AccentNormal AccentDark1 AccentDark2 AccentDark3 Unknown
+        // It is currently unclear what getAbgrFromRbga(7) [Unknown] represents.
         if (style.name == L"Light")
         {
-            primary.s = 100;
-            secondary.s = 85;
-            tertiary.s = 70;
-            primary.b = 70;
-            secondary.b = 75;
-            tertiary.b = 80;
+            g_color1 = extractColor(4);
+            g_color2 = extractColor(3);
+            g_color3 = extractColor(2);
         }
         else if (style.name == L"Dark")
         {
-            primary.s = 50;
-            secondary.s = 50;
-            tertiary.s = 50;
-            primary.b = 90;
-            secondary.b = 85;
-            tertiary.b = 80;
+            g_color1 = extractColor(1);
+            g_color2 = extractColor(2);
+            g_color3 = extractColor(3);
         }
-        g_colorGroup.primary = (D2D1_COLOR_F)primary;
-        g_colorGroup.secondary = (D2D1_COLOR_F)secondary;
-        g_colorGroup.tertiary = (D2D1_COLOR_F)tertiary;
     }
-
-    ColorGroup g_colorGroup = {};
 }

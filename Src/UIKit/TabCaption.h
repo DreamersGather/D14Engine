@@ -8,10 +8,11 @@
 namespace d14engine::uikit
 {
     struct IconLabel;
+    struct TabGroup;
 
     struct TabCaption : appearance::TabCaption, Panel
     {
-        friend struct TabGroup;
+        friend TabGroup;
 
         // Intentionally declared as implicit to be compatible with IconLabel.
         TabCaption(ShrdPtrParam<IconLabel> title);

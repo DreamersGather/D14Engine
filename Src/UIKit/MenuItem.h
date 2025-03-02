@@ -7,9 +7,11 @@
 
 namespace d14engine::uikit
 {
+    struct PopupMenu;
+
     struct MenuItem : appearance::MenuItem, ViewItem
     {
-        friend struct PopupMenu;
+        friend PopupMenu;
 
         using ViewItem::ViewItem;
 

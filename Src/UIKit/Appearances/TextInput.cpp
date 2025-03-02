@@ -172,7 +172,7 @@ namespace d14engine::uikit::appearance
 
         _ref.bottomLine.background.Dynamic =
         {
-            g_colorGroup.primary, // color
+            color1(), // color
             1.0f // opacity
         };
         _D14_UPDATE_THEME_DATA_ARRAY_1(main);

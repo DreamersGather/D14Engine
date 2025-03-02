@@ -60,7 +60,7 @@ namespace d14engine::uikit::appearance
         {
             // foreground
             {
-                g_colorGroup.primary, // color
+                color1(), // color
                 1.0f // opacity
             },
             // background
@@ -71,7 +71,7 @@ namespace d14engine::uikit::appearance
             // stroke
             {
                 1.0f, // width
-                g_colorGroup.primary, // color
+                color1(), // color
                 1.0f // opacity
             }
         };
@@ -79,18 +79,18 @@ namespace d14engine::uikit::appearance
         {
             // foreground
             {
-                g_colorGroup.secondary, // color
+                color2(), // color
                 1.0f // opacity
             },
             // background
             {
-                g_colorGroup.secondary, // color
+                color2(), // color
                 0.05f // opacity
             },
             // stroke
             {
                 1.0f, // width
-                g_colorGroup.secondary, // color
+                color2(), // color
                 1.0f // opacity
             }
         };
@@ -98,18 +98,18 @@ namespace d14engine::uikit::appearance
         {
             // foreground
             {
-                g_colorGroup.tertiary, // color
+                color3(), // color
                 0.65f // opacity
             },
             // background
             {
-                g_colorGroup.tertiary, // color
+                color3(), // color
                 0.12f // opacity
             },
             // stroke
             {
                 1.0f, // width
-                g_colorGroup.tertiary, // color
+                color3(), // color
                 1.0f // opacity
             }
         };

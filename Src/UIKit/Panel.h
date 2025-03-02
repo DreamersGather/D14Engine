@@ -10,15 +10,28 @@
 
 namespace d14engine::uikit
 {
+    struct Application;
+    struct ComboBox;
+    struct PopupMenu;
+    struct Slider;
+    struct TabGroup;
+    struct TreeView;
+
+    template<typename Item_T>
+    struct WaterfallView;
+
     struct Panel : cpp_lang_utils::NonCopyable, renderer::IDrawObject2D,
                    std::enable_shared_from_this<Panel>, ISortable<Panel>
     {
-        friend struct Application;
-        friend struct ComboBox;
-        friend struct PopupMenu;
-        friend struct Slider;
-        friend struct TabGroup;
-        friend struct TreeView;
+        friend Application;
+        friend ComboBox;
+        friend PopupMenu;
+        friend Slider;
+        friend TabGroup;
+        friend TreeView;
+
+        // Due to the syntax issue of friend template,
+        // the keyword (struct) here cannot be omitted.
         template<typename Item_T>
         friend struct WaterfallView;
 

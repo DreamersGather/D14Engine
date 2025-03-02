@@ -2,95 +2,60 @@
 
 #include "Common/Precompile.h"
 
+#include "Common/MathUtils/Basic.h"
+
 namespace d14engine::uikit::color_utils
 {
-    struct HEX;
-    struct iRGB;
-    struct fRGB;
-    struct iHSB;
-    struct fHSB;
+    //////////
+    // ABGR //
+    //////////
 
-    // #aabbggrr
-    struct HEX
+    struct ABGR
     {
-        UINT32 abgr = {};
+        UINT32 data = {};
 
-        constexpr HEX(COLORREF c) : abgr(c) {}
+        //---------------------------------------
+        // Constructor
+        //---------------------------------------
 
-        HEX() = default;
-        HEX(const iRGB& rgb);
+        ABGR() = default;
 
-        operator iRGB() const;
-        explicit operator D2D1_COLOR_F() const;
+        explicit constexpr ABGR(const D2D1_COLOR_F& cf)
+            :
+            data
+            (
+                std::clamp(math_utils::round(cf.a * 255.0f), 0, 255) << 24 |
+                std::clamp(math_utils::round(cf.b * 255.0f), 0, 255) << 16 |
+                std::clamp(math_utils::round(cf.g * 255.0f), 0, 255) << 8  |
+                std::clamp(math_utils::round(cf.r * 255.0f), 0, 255) << 0
+            )
+        {
+            // Here left blank intentionally.
+        }
+        constexpr ABGR(UINT32 abgr) : data(abgr) {}
 
-        constexpr auto operator<=>(HEX rhs) const { return abgr <=> rhs.abgr; }
-        constexpr bool operator==(HEX rhs) const { return abgr == rhs.abgr; }
+        //---------------------------------------
+        // Conversion
+        //---------------------------------------
+
+        explicit constexpr operator D2D1_COLOR_F() const
+        {
+            return
+            {
+                std::clamp((float)((data & 0x00'00'00'ff) >>  0) / 255.0f, 0.0f, 1.0f),
+                std::clamp((float)((data & 0x00'00'ff'00) >>  8) / 255.0f, 0.0f, 1.0f),
+                std::clamp((float)((data & 0x00'ff'00'00) >> 16) / 255.0f, 0.0f, 1.0f),
+                std::clamp((float)((data & 0xff'00'00'00) >> 24) / 255.0f, 0.0f, 1.0f)
+            };
+        }
+
+        //---------------------------------------
+        // Comparison
+        //---------------------------------------
+
+        constexpr bool operator==(const ABGR& other) const
+        {
+            return data == other.data;
+        }
     };
-
-    // R: 0 ~ 255
-    // G: 0 ~ 255
-    // B: 0 ~ 255
-    struct iRGB
-    {
-        int r = {}, g = {}, b = {};
-
-        iRGB() = default;
-        iRGB(int r, int g, int b);
-        explicit iRGB(const D2D1_COLOR_F& c);
-
-        operator fRGB() const;
-        explicit operator iHSB() const;
-        explicit operator fHSB() const;
-
-        explicit operator D2D1_COLOR_F() const;
-    };
-    struct fRGB
-    {
-        float r = {}, g = {}, b = {};
-
-        fRGB() = default;
-        fRGB(float r, float g, float b);
-        explicit fRGB(const D2D1_COLOR_F& c);
-
-        operator iRGB() const;
-        explicit operator iHSB() const;
-        explicit operator fHSB() const;
-
-        explicit operator D2D1_COLOR_F() const;
-    };
-
-    // H: 0 ~ 360
-    // S: 0 ~ 100
-    // B: 0 ~ 100
-    struct iHSB
-    {
-        int h = {}, s = {}, b = {};
-
-        iHSB() = default;
-        iHSB(int h, int s, int b);
-        explicit iHSB(const D2D1_COLOR_F& c);
-
-        operator fHSB() const;
-        explicit operator iRGB() const;
-        explicit operator fRGB() const;
-
-        explicit operator D2D1_COLOR_F() const;
-    };
-    struct fHSB
-    {
-        float h = {}, s = {}, b = {};
-
-        fHSB() = default;
-        fHSB(float h, float s, float b);
-        explicit fHSB(const D2D1_COLOR_F& c);
-
-        operator iHSB() const;
-        explicit operator iRGB() const;
-        explicit operator fRGB() const;
-
-        explicit operator D2D1_COLOR_F() const;
-    };
-
-    iHSB rgb2hsb(const iRGB& rgb);
-    iRGB hsb2rgb(const iHSB& hsb);
 }

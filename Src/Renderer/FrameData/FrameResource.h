@@ -4,9 +4,11 @@
 
 namespace d14engine::renderer
 {
+    struct Renderer;
+
     struct FrameResource
     {
-        friend struct Renderer;
+        friend Renderer;
 
         explicit FrameResource(ID3D12Device* device);
 

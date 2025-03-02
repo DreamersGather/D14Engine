@@ -190,9 +190,9 @@ namespace d14engine::uikit::appearance
 
         _ref.decorativeBar.gradientColor =
         {
-            g_colorGroup.tertiary,// _0_0
-            g_colorGroup.primary, // _0_5
-            g_colorGroup.tertiary // _1_0
+            color1(), // _0_0
+            color2(), // _0_5
+            color3()  // _1_0
         };
         _D14_UPDATE_THEME_DATA_1(background.color);
         _D14_UPDATE_THEME_DATA_1(shadow.color);

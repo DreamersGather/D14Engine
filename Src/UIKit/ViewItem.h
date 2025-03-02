@@ -10,8 +10,13 @@
 
 namespace d14engine::uikit
 {
+    template<typename>
+    struct WaterfallView;
+
     struct ViewItem : appearance::ViewItem, Panel
     {
+        // Due to the syntax issue of friend template,
+        // the keyword (struct) here cannot be omitted.
         template<typename>
         friend struct WaterfallView;
 

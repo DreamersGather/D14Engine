@@ -163,13 +163,15 @@ namespace d14engine::uikit
 
     bool MainWindow::setAccentBorder(bool value)
     {
+        THROW_IF_NULL(Application::g_app);
+
         bool ret = false;
         if (m_borderColor != NoneColor)
         {
             if (value)
             {
-                auto& color = appearance::g_colorGroup.primary;
-                ret = setBorderColorAttr((color_utils::iRGB)color);
+                auto& color = Application::g_app->themeStyle().color;
+                ret = setBorderColorAttr((BorderColor)color);
             }
             else ret = setBorderColorAttr(m_borderColor);
         }
@@ -207,8 +209,7 @@ namespace d14engine::uikit
 
         if (m_accentBorder && m_borderColor != NoneColor)
         {
-            auto& color = appearance::g_colorGroup.primary;
-            setBorderColorAttr((color_utils::iRGB)color);
+            setBorderColorAttr((BorderColor)style.color);
         }
     }
 

@@ -9,11 +9,12 @@
 namespace d14engine::uikit
 {
     struct Cursor;
+    struct Panel;
     struct TextInputObject;
 
     struct Application : cpp_lang_utils::NonCopyable
     {
-        friend struct Panel;
+        friend Panel;
 
         struct CreateInfo
         {
@@ -218,7 +219,7 @@ namespace d14engine::uikit
         using ThemeStyle = appearance::Appearance::ThemeStyle;
 
     private:
-        static Wstring querySystemThemeMode();
+        static Wstring querySystemThemeName();
         static D2D1_COLOR_F querySystemThemeColor();
 
     public:

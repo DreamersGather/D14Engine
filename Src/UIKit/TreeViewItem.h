@@ -9,13 +9,14 @@
 namespace d14engine::uikit
 {
     struct ConstraintLayout;
+    struct TreeView;
 
     struct TreeViewItem
         :
         appearance::TreeViewItem, ViewItem,
         StatefulObject<TreeViewItemState, TreeViewItemStateChangeEvent>
     {
-        friend struct TreeView;
+        friend TreeView;
 
         TreeViewItem(ShrdPtrParam<Panel> content, const D2D1_RECT_F& rect = {});
 
@@ -72,7 +73,7 @@ namespace d14engine::uikit
 
         struct ChildItemImpl
         {
-            friend struct TreeViewItem;
+            friend TreeViewItem;
 
             ChildItemImpl(ShrdPtrParam<TreeViewItem> rhs)
                 : ptr(rhs), m_unfoldedHeight(rhs->height()) { }

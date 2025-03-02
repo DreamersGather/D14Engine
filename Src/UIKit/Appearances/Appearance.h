@@ -80,15 +80,16 @@ namespace d14engine::uikit::appearance
 
 #pragma endregion
 
-#pragma region Design Spaces
+#pragma region Color Palette
 
-    struct ColorGroup // Generated from the passed theme style dynamically.
-    {
-        D2D1_COLOR_F primary = {}, secondary = {}, tertiary = {};
+    // Refer to https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/color#accent-color-palette
 
-        void generateTonedColors(const Appearance::ThemeStyle& style);
-    };
-    extern ColorGroup g_colorGroup; // Generated from current theme style.
+    const D2D1_COLOR_F& color1();
+    const D2D1_COLOR_F& color2();
+    const D2D1_COLOR_F& color3();
+
+    // Call Appearance::changeTheme after generated new colors.
+    void generateTonedColors(const Appearance::ThemeStyle& style);
 
 #pragma endregion
 

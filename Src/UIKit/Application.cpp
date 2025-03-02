@@ -1150,31 +1150,45 @@ namespace d14engine::uikit
         return m_lastCursorPoint;
     }
 
-    Wstring Application::querySystemThemeMode()
+    Wstring Application::querySystemThemeName()
     {
-        DWORD value = TRUE, valueSize = sizeof(value);
+        DWORD data = TRUE;
+        DWORD dataSize = sizeof(data);
 
-        RegGetValue(HKEY_CURRENT_USER,
-            L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
-            L"AppsUseLightTheme", RRF_RT_REG_DWORD, nullptr, &value, &valueSize);
-
-        return value ? L"Light" : L"Dark";
+        THROW_IF_FAILED(RegGetValue
+        (
+        /* hkey     */ HKEY_CURRENT_USER,
+        /* lpSubKey */ L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+        /* lpValue  */ L"AppsUseLightTheme",
+        /* dwFlags  */ RRF_RT_REG_DWORD,
+        /* pdwType  */ nullptr,
+        /* pvData   */ &data,
+        /* pcbData  */ &dataSize
+        ));
+        return data ? L"Light" : L"Dark";
     }
 
     D2D1_COLOR_F Application::querySystemThemeColor()
     {
-        DWORD value = 0x00'00'00'00, valueSize = sizeof(value);
+        DWORD data = 0x00'00'00'00;
+        DWORD dataSize = sizeof(data);
 
-        RegGetValue(HKEY_CURRENT_USER,
-            L"Software\\Microsoft\\Windows\\DWM", L"AccentColor",
-            RRF_RT_REG_DWORD, nullptr, &value, &valueSize);
-
-        return (D2D1_COLOR_F)color_utils::HEX(value);
+        THROW_IF_FAILED(RegGetValue
+        (
+        /* hkey     */ HKEY_CURRENT_USER,
+        /* lpSubKey */ L"Software\\Microsoft\\Windows\\DWM",
+        /* lpValue  */ L"AccentColor",
+        /* dwFlags  */ RRF_RT_REG_DWORD,
+        /* pdwType  */ nullptr,
+        /* pvData   */ &data,
+        /* pcbData  */ &dataSize
+        ));
+        return (D2D1_COLOR_F)color_utils::ABGR(data);
     }
 
     Application::ThemeStyle Application::querySystemThemeStyle()
     {
-        return { querySystemThemeMode(), querySystemThemeColor() };
+        return { querySystemThemeName(), querySystemThemeColor() };
     }
 
     const Application::ThemeStyle& Application::themeStyle() const
@@ -1184,7 +1198,7 @@ namespace d14engine::uikit
 
     void Application::setThemeStyle(const ThemeStyle& style)
     {
-        appearance::g_colorGroup.generateTonedColors(style);
+        appearance::generateTonedColors(style);
 
         if (style.name == L"Light")
         {

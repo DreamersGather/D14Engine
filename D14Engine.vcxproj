@@ -2805,12 +2805,6 @@
   <ItemGroup>
     <Text Include="Bin\Images\Cursors\MacOS\README.txt" />
     <Text Include="Bin\Shaders\PDB\README.txt" />
-    <Text Include="Src\UIKit\Appearances\ColorScheme.txt">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|Win32'">true</ExcludedFromBuild>
-    </Text>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Bin\Shaders\HLSL\Sprite.hlsl">

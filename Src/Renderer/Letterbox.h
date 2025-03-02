@@ -14,7 +14,7 @@ namespace d14engine::renderer
 
     struct Letterbox : PasskeyIdiom<Renderer>
     {
-        friend struct Renderer;
+        friend Renderer;
 
         Letterbox(Renderer* rndr, Token);
 

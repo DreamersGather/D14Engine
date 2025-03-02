@@ -211,7 +211,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
                 if (!wk_label1.expired() && *useDynamicCursor)
                 {
                     auto sh_label1 = wk_label1.lock();
-                    sh_label1->setText(L"FPS: " + std::to_wstring(rndr->timer()->fps()));
+                    sh_label1->setText(L"FPS: " + std::to_wstring(rndr->timer()->fpsNum()));
                 }
             };
         }

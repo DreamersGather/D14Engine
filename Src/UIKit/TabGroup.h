@@ -49,7 +49,7 @@ namespace d14engine::uikit
     protected:
         struct TabImpl : Tab
         {
-            friend struct TabGroup;
+            friend TabGroup;
 
             TabImpl(const Tab& tab) : Tab(tab) { }
 

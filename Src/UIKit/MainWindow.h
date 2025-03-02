@@ -73,7 +73,7 @@ namespace d14engine::uikit
         //----------------------------------------------------------------
 
     public:
-        using BorderColor = color_utils::HEX;
+        using BorderColor = color_utils::ABGR;
 
         constexpr static BorderColor NoneColor = DWMWA_COLOR_NONE;
         constexpr static BorderColor DefaultColor = DWMWA_COLOR_DEFAULT;

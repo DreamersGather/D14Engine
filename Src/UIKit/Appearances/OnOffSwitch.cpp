@@ -280,7 +280,7 @@ namespace d14engine::uikit::appearance
         {
             // background
             {
-                g_colorGroup.primary, // color
+                color1(), // color
                 1.0f // opacity
             },
             // stroke
@@ -294,7 +294,7 @@ namespace d14engine::uikit::appearance
         {
             // background
             {
-                g_colorGroup.secondary, // color
+                color2(), // color
                 1.0f // opacity
             },
             // stroke
@@ -308,7 +308,7 @@ namespace d14engine::uikit::appearance
         {
             // background
             {
-                g_colorGroup.tertiary, // color
+                color3(), // color
                 1.0f // opacity
             },
             // stroke

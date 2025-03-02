@@ -42,16 +42,10 @@ struct Vertex
 
 D14_SET_APP_ENTRY(mainColorfulCube)
 {
-    Application::CreateInfo info = {};
-    if (argc >= 2 && lstrcmp(argv[1], L"HighDPI") == 0)
+    Application::CreateInfo info =
     {
-        info.dpi = 192.0f;
-    }
-    else info.dpi = 96.0f;
-    info.windowSize = { 1000, 600 };
-
-    BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC;
-    
+        .windowSize = { 1000, 600 }
+    };
     return Application(info).run([&](Application* app)
     {
         app->increaseAnimationCount(); // enable renderer updating

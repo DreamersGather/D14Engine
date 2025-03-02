@@ -6,11 +6,13 @@
 
 namespace d14engine::uikit
 {
+    struct ListView;
+
     struct ListViewItem : ViewItem
     {
         using ViewItem::ViewItem;
 
-        friend struct ListView;
+        friend ListView;
 
         const WeakPtr<ListView>& parentView() const
         {

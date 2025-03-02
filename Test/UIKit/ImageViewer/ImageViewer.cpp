@@ -36,16 +36,11 @@ D14_SET_APP_ENTRY(mainImageViewer)
 {
     srand((unsigned int)time(0));
 
-    Application::CreateInfo info = {};
-    if (argc >= 2 && lstrcmp(argv[1], L"HighDPI") == 0)
+    Application::CreateInfo info =
     {
-        info.dpi = 192.0f;
-    }
-    else info.dpi = 96.0f;
-    info.windowSize = { 800, 600 };
-
-    BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC;
-
+        .dpi = 170.0f,
+        .windowSize = { 800, 600 }
+    };
     return Application(info).run([](Application* app)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);

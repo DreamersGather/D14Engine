@@ -84,17 +84,17 @@ namespace d14engine::uikit::appearance
 
         _ref.bar.filled.background =
         {
-            g_colorGroup.primary, // color
+            color1(), // color
             1.0f // opacity
         };
         _ref.bar.complete.background =
         {
-            g_colorGroup.primary, // color
+            color1(), // color
             0.38f // opacity
         };
         _ref.handle.background =
         {
-            g_colorGroup.primary, // color
+            color1(), // color
             1.0f // opacity
         };
         _D14_UPDATE_THEME_DATA_1(bar.filled.background);

@@ -15,7 +15,7 @@ namespace d14engine::uikit::appearance
 
         _ref.staticSizingGuideFrame.background =
         {
-            g_colorGroup.primary, // color
+            color1(), // color
             0.5f // opacity
         };
         _D14_UPDATE_THEME_DATA_1(staticSizingGuideFrame.background);

@@ -173,11 +173,11 @@ namespace d14engine::uikit::appearance
 #define UPDATE_BUTTON_COLOR(Btn_State, Btn_Color) do \
 { \
     constexpr auto index = (size_t)uikit::Button::State::Btn_State; \
-    _ref.main[index].background.color = g_colorGroup.Btn_Color; \
+    _ref.main[index].background.color = Btn_Color(); \
 } while (0)
-        UPDATE_BUTTON_COLOR(Idle, primary);
-        UPDATE_BUTTON_COLOR(Hover, secondary);
-        UPDATE_BUTTON_COLOR(Down, tertiary);
+        UPDATE_BUTTON_COLOR(Idle, color1);
+        UPDATE_BUTTON_COLOR(Hover, color2);
+        UPDATE_BUTTON_COLOR(Down, color3);
 
 #undef UPDATE_COLOR
         _D14_UPDATE_THEME_DATA_ARRAY_1(main);
