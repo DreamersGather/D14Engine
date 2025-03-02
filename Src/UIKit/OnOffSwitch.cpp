@@ -100,7 +100,7 @@ namespace d14engine::uikit
 
             float totalDistance = std::abs(onDownLeftOffset - offDownLeftOffset);
 
-            m_currHandleDisplacement = animation_utils::accelUniformDecelMotion
+            m_currHandleDisplacement = animation_utils::motionAccelUniformDecel
             (
                 /* currDisplacement   */ m_currHandleDisplacement,
                 /* lastFrameDeltaSecs */ deltaSecs,

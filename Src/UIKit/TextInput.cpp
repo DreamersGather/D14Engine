@@ -45,7 +45,7 @@ namespace d14engine::uikit
 
         if (isFocused() && animSetting.enabled && totalDistance > 0.0f)
         {
-            m_currDynamicBottomLineLength = animation_utils::accelUniformDecelMotion
+            m_currDynamicBottomLineLength = animation_utils::motionAccelUniformDecel
             (
                 /* currDisplacement   */ m_currDynamicBottomLineLength,
                 /* lastFrameDeltaSecs */ deltaSecs,

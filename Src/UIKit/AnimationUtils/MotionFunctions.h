@@ -4,5 +4,5 @@
 
 namespace d14engine::uikit::animation_utils
 {
-    float accelUniformDecelMotion(float dx, float dt, float s, float t1, float t2);
+    float motionAccelUniformDecel(float dx, float dt, float s, float t1, float t2);
 }
