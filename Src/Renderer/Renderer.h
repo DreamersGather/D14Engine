@@ -30,6 +30,12 @@ namespace d14engine::renderer
 
             bool fullscreen = false;
 
+            // When being captured by Win32 APIs, this can be:
+            // (WDA_NONE) The window is displayed normally.
+            // (WDA_MONITOR) The content of the window is empty (completely black).
+            // (WDA_EXCLUDEFROMCAPTURE) The window does not appear at all (transparent).
+            DWORD displayAffinity = WDA_NONE;
+
             // Select GPU device. Set to 0 to use the default one.
             UINT adapterIndex = 0;
 
@@ -40,6 +46,19 @@ namespace d14engine::renderer
 
             // Allowing tearing is required for VRR displays.
             bool allowTearing = false;
+
+            // Whether to enable the DXGI duplication components.
+            bool duplication = false;
+
+//---------------------------------------------------------------------------------------------
+// Use [duplication] and [displayAffinity] in combination:
+//---------------------------------------------------------------------------------------------
+// For example, to achieve UI controls with special material appearances (such as Acrylic),
+// first set [duplication] to True, and then set [displayAffinity] to WDA_EXCLUDEFROMCAPTURE,
+// where the target area will be the backdrop below the window, rather than the window itself.
+// Another use for WDA_EXCLUDEFROMCAPTURE is for windows that show video recording controls,
+// so that the UI controls are not included in the capture.
+//---------------------------------------------------------------------------------------------
 
             // The scene will be resized to:
             // (True) fit the resolution of current display mode.
@@ -120,6 +139,9 @@ namespace d14engine::renderer
 
             bool fullscreen() const;
             void setFullscreen(bool value) const;
+
+            DWORD displayAffinity() const;
+            void setDisplayAffinity(DWORD value) const;
         }
         m_window{ this };
 
@@ -131,7 +153,7 @@ namespace d14engine::renderer
 
 #pragma endregion
 
-#pragma region D3D12 Components
+#pragma region DXGI Components
 
     private:
         ComPtr<IDXGIFactory6> m_dxgiFactory = {};
@@ -222,9 +244,48 @@ namespace d14engine::renderer
         void populateDxgiFactorySettings();
 
     private:
+        bool m_duplication = {};
+
+        // Refer to https://github.com/microsoft/D3D11On12/issues/45
+        // 
+        // DXGIOutputDuplication created through D3D11On12Device does not work properly
+        // when calling AcquireNextFrame, and it always returns (DXGI_ERROR_ACCESS_LOST).
+        // 
+        // A temporary solution is to create an extra D3D11Device
+        // and share the output with the D3D11On12Device used for rendering.
+        // 
+        // FIXME: When microsoft/D3D11On12 fixes the related issues,
+        // consider rewriting the code to avoid additional sharing overhead.
+
+        ComPtr<ID3D11Device> m_duplDevice = {};
+
+        ComPtr<ID3D11DeviceContext> m_duplDeviceContext = {};
+
+        ComPtr<IDXGIOutputDuplication> m_outputDupl = {};
+
+    public:
+        bool duplication() const;
+        void setDuplication(bool value);
+
+        Optional<ID3D11Device*> duplDevice() const;
+
+        Optional<ID3D11DeviceContext*> duplDeviceContext() const;
+
+        Optional<IDXGIOutputDuplication*> outputDupl() const;
+
+    private:
+        void createDuplDevice();
+
+        void createOutputDupl();
+
+#pragma endregion
+
+#pragma region D3D12 Components
+
+    private:
         ComPtr<ID3D12Device> m_d3d12Device = {};
 
-        using OutputArray = std::vector<ComPtr<IDXGIOutput>>;
+        using OutputArray = std::vector<ComPtr<IDXGIOutput5>>;
 
         using DisplayModeArray = std::vector<DXGI_MODE_DESC>;
 
@@ -286,7 +347,7 @@ namespace d14engine::renderer
             public:
                 UINT outputIndex() const;
 
-                IDXGIOutput* output() const;
+                IDXGIOutput5* output() const;
                 void setOutput(UINT index) const;
 
                 bool scaling() const;
@@ -379,11 +440,15 @@ namespace d14engine::renderer
 #pragma region D3D11On12 & D2D1 Components
 
     private:
+        ComPtr<ID3D11Device1> m_d3d11Device = {};
+
         ComPtr<ID3D11On12Device> m_d3d11On12Device = {};
 
         ComPtr<ID3D11DeviceContext> m_d3d11DeviceContext = {};
 
     public:
+        ID3D11Device1* d3d11Device() const;
+
         ID3D11On12Device* d3d11On12Device() const;
 
         ID3D11DeviceContext* d3d11DeviceContext() const;
@@ -442,14 +507,31 @@ namespace d14engine::renderer
 
 #pragma region Graphics Resources
 
-        // Among the following property methods for graphics resources,
-        // some getters return optional values because when composition
-        // takes different values (i.e. whether to use the composition swap chain),
-        // the creation situation of certain resources can be different.
-
     public:
         constexpr static DXGI_FORMAT g_renderTargetFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
         constexpr static DXGI_FORMAT g_depthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+    private:
+        ComPtr<ID3D11Texture2D> m_duplTexture = {};
+
+        ComPtr<ID2D1Bitmap1> m_duplBitmap = {};
+
+    public:
+        Optional<ID3D11Texture2D*> duplTexture() const;
+
+        // It is worth noting that Renderer does not acquire a new duplication in each render pass,
+        // so you may need to call tryUpdateDuplFrame to ensure the latest duplication is obtained.
+        Optional<ID2D1Bitmap1*> duplBitmap() const;
+
+    private:
+        void createDuplTexture();
+
+        void createDuplBitmap();
+
+    public:
+        // Call this to acquire the latest desktop duplication. If [duplication] is not enabled,
+        // this will return directly, and the corresponding duplTexture/Bitmap will also be empty.
+        void tryUpdateDuplFrame();
 
     private:
         ComPtr<IDXGISwapChain3> m_swapChain = {};
@@ -504,8 +586,8 @@ namespace d14engine::renderer
         Optional<ID3D11Resource*> wrappedBuffer() const;
 
         // The render target will be:
-        // (composition=true) the first back buffer of the composition swap chain.
-        // (composition=false) the current back buffer of the d3d12CmdQueue swap chain.
+        // (composition=True) the first back buffer of the composition swap chain.
+        // (composition=False) the current back buffer of the d3d12CmdQueue swap chain.
         ID2D1Bitmap1* renderTarget() const;
 
     private:

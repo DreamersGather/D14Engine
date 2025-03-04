@@ -40,6 +40,13 @@ namespace d14engine::uikit
 
             SIZE windowSize = { 800, 600 };
 
+            bool fullscreen = false;
+
+            bool excludeFromCapture = false;
+
+            // Whether to enable the DXGI duplication.
+            bool duplication = false;
+
             // Whether to enable the DWM composition.
             bool composition = false;
         };
@@ -114,9 +121,9 @@ namespace d14engine::uikit
 
         LRESULT defWin32NCHITTESTMessageHandler(const POINT& pt);
 
-    ///////////////////////////
-    // Renderer & UI Objects //
-    ///////////////////////////
+    ///////////////////////////////
+    // Renderer & UI Object Tree //
+    ///////////////////////////////
 
     private:
         UniquePtr<renderer::Renderer> m_renderer = {};
@@ -124,7 +131,11 @@ namespace d14engine::uikit
     public:
         renderer::Renderer* dx12Renderer() const;
 
-        ComPtr<ID2D1Bitmap1> screenshot() const;
+    public:
+        // This is valid only when the DXGI duplication is enabled.
+        Optional<ComPtr<ID2D1Bitmap1>> screenshot() const;
+
+        ComPtr<ID2D1Bitmap1> windowshot() const;
 
     private:
         // Indicates how many UI objects are playing animations.

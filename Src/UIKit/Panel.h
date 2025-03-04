@@ -345,8 +345,8 @@ namespace d14engine::uikit
         bool m_enabled = true;
 
         // Consider a situation where the internal implementation requires
-        // the panel to be invisible, in which case we can set m_privateVisible=false
-        // to make the panel keep invisible even if the user sets m_visible=true.
+        // the panel to be invisible, in which case we can set m_privateVisible=False
+        // to make the panel keep invisible even if the user sets m_visible=True.
         // For example, to hide a menu item after it moves outside of its parent menu,
         // we can make it private-invisible without messing up the user settings.
         bool m_privateVisible = true;

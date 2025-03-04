@@ -112,12 +112,16 @@ namespace d14engine::uikit
     void Application::initDirectX12Renderer()
     {
         auto dpi = platform_utils::dpi();
+        DWORD displayAffinity = createInfo.excludeFromCapture ? WDA_EXCLUDEFROMCAPTURE : WDA_NONE;
 
         Renderer::CreateInfo info =
         {
-            .binaryPath = createInfo.binaryPath,
-            .dpi = dpi,
-            .composition = createInfo.composition
+            .binaryPath      = createInfo.binaryPath,
+            .dpi             = dpi,
+            .fullscreen      = createInfo.fullscreen,
+            .displayAffinity = displayAffinity,
+            .duplication     = createInfo.duplication,
+            .composition     = createInfo.composition
         };
         m_renderer = std::make_unique<Renderer>(m_win32Window, info);
 
@@ -956,10 +960,12 @@ namespace d14engine::uikit
         return m_renderer.get();
     }
 
-    ComPtr<ID2D1Bitmap1> Application::screenshot() const
+    ComPtr<ID2D1Bitmap1> Application::windowshot() const
     {
         if (m_renderer->composition())
         {
+            m_renderer->waitGpuCommand();
+
             auto src = m_renderer->renderTarget();
             auto pixSize = src->GetPixelSize();
 
@@ -975,7 +981,7 @@ namespace d14engine::uikit
         {
 #pragma warning(push)
 #pragma warning(disable : 26815)
-            // sceneBuffer is guaranteed to be valid when composition=false
+            // sceneBuffer is guaranteed to be valid when composition=False
             auto texture = m_renderer->sceneBuffer().value();
 #pragma warning(pop)
             m_renderer->beginGpuCommand();
@@ -984,14 +990,19 @@ namespace d14engine::uikit
 
             m_renderer->endGpuCommand();
 
-            auto unmap = cpp_lang_utils::finally([&]() { staging->Unmap(0, nullptr); });
-
             BYTE* mapped = nullptr;
             THROW_IF_FAILED(staging->Map(0, nullptr, (void**)&mapped));
+            auto unmap = cpp_lang_utils::finally([&]() { staging->Unmap(0, nullptr); });
 
             auto pixSize = m_renderer->renderTarget()->GetPixelSize();
             return bitmap_utils::loadBitmap(pixSize.width, pixSize.height, mapped);
         }
+    }
+
+    Optional<ComPtr<ID2D1Bitmap1>> Application::screenshot() const
+    {
+        m_renderer->tryUpdateDuplFrame();
+        return m_renderer->duplBitmap();
     }
 
     int Application::animationCount() const

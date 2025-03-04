@@ -107,7 +107,7 @@ extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = _D14_AGILIT
 #include <d2d1.h>
 #include <d2d1_1.h>
 #include <d2d1effects_2.h>
-#include <d3d11.h>
+#include <d3d11_1.h>
 #include <d3d11on12.h>
 #include <dcomp.h>
 #include <dwmapi.h>
@@ -154,17 +154,9 @@ namespace d14engine
 // Miscellaneous //
 ///////////////////
 
-#if __cplusplus <= 202002L // "uz" was introduced in C++23
-#pragma warning(push)
-// warning C4455: literal suffix identifiers that
-// do not start with an underscore are reserved
-#pragma warning(disable : 4455)
-constexpr size_t operator""uz(unsigned long long num)
+constexpr size_t operator""_uz(unsigned long long num)
 {
     return (size_t)num;
 }
-#pragma warning(pop) // simply falls to std::uz when >= C++23
-#endif
-
 // Allows virtual inheritance to solve diamond problem.
 #pragma warning(disable : 4250)

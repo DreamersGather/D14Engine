@@ -60,11 +60,11 @@ int wmain(int argc, wchar_t* argv[])
         //
         // 1. Press [Enter] to enable/disable the composition layer:
         //
-        //    (composition=true) The letterbox will be released,
+        //    (composition=True) The letterbox will be released,
         //    and the window is rendered with the composition layer,
         //    in which case the background color can be transparent.
         //
-        //    (composition=false) The letterbox will be created,
+        //    (composition=False) The letterbox will be created,
         //    and the window is rendered with the letterbox scene,
         //    in which case the background color is not transparent.
         //-------------------------------------------------------------

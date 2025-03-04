@@ -32,6 +32,10 @@ namespace d14engine::renderer
         populateDxgiFactorySettings();
         populateD3d12DeviceSettings();
 
+        m_window.setFullscreen(createInfo.fullscreen);
+        m_window.setDisplayAffinity(createInfo.displayAffinity);
+
+        m_duplication = createInfo.duplication;
         m_composition = createInfo.composition;
 
         m_sceneColor = createInfo.sceneColor;
@@ -43,8 +47,6 @@ namespace d14engine::renderer
 
         auto& setting = m_dxgiFactoryInfo.setting;
         setting.setAdapter(createInfo.adapterIndex);
-
-        m_window.setFullscreen(createInfo.fullscreen);
 
         m_timer = std::make_unique<TickTimer>();
     }
@@ -189,6 +191,18 @@ namespace d14engine::renderer
         }
     }
 
+    DWORD Renderer::Window::displayAffinity() const
+    {
+        DWORD value = {};
+        GetWindowDisplayAffinity(ptr, &value);
+        return value;
+    }
+
+    void Renderer::Window::setDisplayAffinity(DWORD value) const
+    {
+        SetWindowDisplayAffinity(ptr, value);
+    }
+
     const Renderer::Window& Renderer::window() const
     {
         return m_window;
@@ -305,7 +319,7 @@ namespace d14engine::renderer
         };
         cpp_lang_utils::restoreFromException(target, operation);
 
-        // The command queue has not be created at this point
+        // The command queue would have not be created at this point
         // for the case that setAdapter is called in Renderer's ctor.
         if (rndr->m_cmdQueue)
         {
@@ -322,6 +336,13 @@ namespace d14engine::renderer
         rndr->createD3d11On12Objects();
         rndr->createD2d1Objects();
 
+        // Pay attention to the timing of calling this method,
+        // as duplication depends on D3D11On12 and D2D1 components.
+        rndr->setDuplication(rndr->m_duplication);
+
+        // The composition affects the creation of the swap chain,
+        // so it is recommended to placed it at last to ensure that
+        // all dependent components must have been initialized.
         rndr->setComposition(rndr->m_composition);
     }
 
@@ -486,6 +507,101 @@ namespace d14engine::renderer
         setting.m_allowTearing = createInfo.allowTearing;
     }
 
+    bool Renderer::duplication() const
+    {
+        return m_duplication;
+    }
+
+    void Renderer::setDuplication(bool value)
+    {
+        if (m_duplication = value)
+        {
+            createDuplDevice();
+            createOutputDupl();
+            tryUpdateDuplFrame();
+        }
+        else // without duplication
+        {
+            m_outputDupl.Reset();
+            m_duplTexture.Reset();
+            m_duplBitmap.Reset();
+        }
+    }
+
+    Optional<ID3D11Device*> Renderer::duplDevice() const
+    {
+        if (m_duplication)
+        {
+            return m_duplDevice.Get();
+        }
+        return std::nullopt;
+    }
+
+    Optional<ID3D11DeviceContext*> Renderer::duplDeviceContext() const
+    {
+        if (m_duplication)
+        {
+            return m_duplDeviceContext.Get();
+        }
+        return std::nullopt;
+    }
+
+    Optional<IDXGIOutputDuplication*> Renderer::outputDupl() const
+    {
+        if (m_duplication)
+        {
+            return m_outputDupl.Get();
+        }
+        return std::nullopt;
+    }
+
+    void Renderer::createDuplDevice()
+    {
+        auto adapter = m_dxgiFactoryInfo.setting.adapter();
+
+        // Required for Direct2D interoperability with Direct3D resources.
+        UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+#ifdef _DEBUG
+        flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+        // When creating a device from an existing adapter,
+        // DriverType must be D3D_DRIVER_TYPE_UNKNOWN.
+        THROW_IF_FAILED(D3D11CreateDevice
+        (
+        /* pAdapter           */ adapter,
+        /* DriverType         */ D3D_DRIVER_TYPE_UNKNOWN,
+        /* Software           */ nullptr,
+        /* Flags              */ flags,
+        /* pFeatureLevels     */ nullptr,
+        /* FeatureLevels      */ 0,
+        /* SDKVersion         */ D3D11_SDK_VERSION,
+        /* ppDevice           */ &m_duplDevice,
+        /* pFeatureLevel      */ nullptr,
+        /* ppImmediateContext */ nullptr
+        ));
+        m_duplDevice->GetImmediateContext(&m_duplDeviceContext);
+    }
+
+    void Renderer::createOutputDupl()
+    {
+        auto output = m_d3d12DeviceInfo.setting.output();
+
+        constexpr DXGI_FORMAT formats[] =
+        {
+            Renderer::g_renderTargetFormat,
+            DXGI_FORMAT_B8G8R8A8_UNORM
+        };
+        THROW_IF_FAILED(output->DuplicateOutput1
+        (
+        /* pDevice               */ m_duplDevice.Get(),
+        /* Flags                 */ 0,
+        /* SupportedFormatsCount */ _countof(formats),
+        /* pSupportedFormats     */ formats,
+        /* ppOutputDuplication   */ &m_outputDupl
+        ));
+        createDuplTexture(); // size may be changed
+    }
+
     Optional<UINT> Renderer::D3D12DeviceInfo::Feature::queryMsaaQualityLevel(UINT sampleCount) const
     {
         D3D12DeviceInfo* info = m_master;
@@ -548,7 +664,7 @@ namespace d14engine::renderer
         return m_outputIndex;
     }
 
-    IDXGIOutput* Renderer::D3D12DeviceInfo::Setting::output() const
+    IDXGIOutput5* Renderer::D3D12DeviceInfo::Setting::output() const
     {
         D3D12DeviceInfo* info = m_master;
         THROW_IF_NULL(info);
@@ -689,7 +805,9 @@ namespace d14engine::renderer
         ComPtr<IDXGIOutput> output = {};
         while (adapter->EnumOutputs(outputIndex++, &output) != DXGI_ERROR_NOT_FOUND)
         {
-            m_d3d12DeviceInfo.property.availableOutputs.push_back(output);
+            ComPtr<IDXGIOutput5> output5 = {};
+            THROW_IF_FAILED(output.As(&output5));
+            m_d3d12DeviceInfo.property.availableOutputs.push_back(output5);
         }
     }
 
@@ -890,6 +1008,11 @@ namespace d14engine::renderer
         }
     }
 
+    ID3D11Device1* Renderer::d3d11Device() const
+    {
+        return m_d3d11Device.Get();
+    }
+
     ID3D11On12Device* Renderer::d3d11On12Device() const
     {
         return m_d3d11On12Device.Get();
@@ -907,7 +1030,7 @@ namespace d14engine::renderer
 #ifdef _DEBUG
         flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-        ComPtr<ID3D11Device> d3d11Device = {};
+        ComPtr<ID3D11Device> device = {};
         THROW_IF_FAILED(D3D11On12CreateDevice
         (
         /* pDevice             */ m_d3d12Device.Get(),
@@ -917,11 +1040,12 @@ namespace d14engine::renderer
         /* ppCommandQueues     */ (IUnknown**)m_cmdQueue.GetAddressOf(),
         /* NumQueues           */ 1,
         /* NodeMask            */ 0,
-        /* ppDevice            */ &d3d11Device,
+        /* ppDevice            */ &device,
         /* ppImmediateContext  */ &m_d3d11DeviceContext,
         /* pChosenFeatureLevel */ nullptr
         ));
-        THROW_IF_FAILED(d3d11Device.As(&m_d3d11On12Device));
+        THROW_IF_FAILED(device.As(&m_d3d11Device));
+        THROW_IF_FAILED(device.As(&m_d3d11On12Device));
     }
 
     ID2D1Factory1* Renderer::d2d1Factory() const
@@ -990,10 +1114,10 @@ namespace d14engine::renderer
         // the back buffer will be obtained from different swap chains,
         // so the objects that need to be set (initialized) also differ:
         //
-        // 1. When composition=true, the back buffer is obtained from
+        // 1. When composition=True, the back buffer is obtained from
         // the composition swap chain, and dcompObjects need to be created.
         //
-        // 2. When composition=false, the back buffer is obtained from
+        // 2. When composition=False, the back buffer is obtained from
         // the d3d12CmdQueue swap chain, where letterBox needs to be set;
         // rtvHeap, srvHeap, sceneBuffer, wrappedBuffer need to be created.
 
@@ -1079,6 +1203,174 @@ namespace d14engine::renderer
         /* target  */ &m_dcompTarget)
         );
         THROW_IF_FAILED(m_dcompDevice->CreateVisual(&m_dcompVisual));
+    }
+
+    Optional<ID3D11Texture2D*> Renderer::duplTexture() const
+    {
+        if (m_duplication)
+        {
+            return m_duplTexture.Get();
+        }
+        return std::nullopt;
+    }
+
+    Optional<ID2D1Bitmap1*> Renderer::duplBitmap() const
+    {
+        if (m_duplication)
+        {
+            return m_duplBitmap.Get();
+        }
+        return std::nullopt;
+    }
+
+    void Renderer::createDuplTexture()
+    {
+        DXGI_OUTDUPL_DESC outDesc = {};
+        m_outputDupl->GetDesc(&outDesc);
+
+        D3D11_TEXTURE2D_DESC texDesc =
+        {
+            .Width     = outDesc.ModeDesc.Width,
+            .Height    = outDesc.ModeDesc.Height,
+            .MipLevels = 1,
+            .ArraySize = 1,
+            .Format    = outDesc.ModeDesc.Format,
+            .Usage     = D3D11_USAGE_DEFAULT,
+            .BindFlags = D3D11_BIND_SHADER_RESOURCE,
+            .MiscFlags = D3D11_RESOURCE_MISC_SHARED | D3D11_RESOURCE_MISC_SHARED_NTHANDLE,
+        };
+        texDesc.SampleDesc.Count = 1;
+
+        THROW_IF_FAILED(m_duplDevice->CreateTexture2D
+        (
+        /* pDesc        */ &texDesc,
+        /* pInitialData */ nullptr,
+        /* ppTexture2D  */ &m_duplTexture
+        ));
+    }
+
+    void Renderer::createDuplBitmap()
+    {
+        ComPtr<IDXGIResource1> src = {};
+        THROW_IF_FAILED(m_duplTexture.As(&src));
+
+        HANDLE hShare = {};
+        THROW_IF_FAILED(src->CreateSharedHandle
+        (
+        /* pAttributes */ nullptr,
+        /* dwAccess    */ DXGI_SHARED_RESOURCE_READ,
+        /* lpName      */ nullptr,
+        /* pHandle     */ &hShare
+        ));
+        ComPtr<IDXGIResource> dst = {};
+        THROW_IF_FAILED(m_d3d11Device->OpenSharedResource1
+        (
+        /* hResource          */ hShare,
+        /* returnedInterface  */
+        /* ppResource         */ IID_PPV_ARGS(&dst)
+        ));
+        CloseHandle(hShare);
+
+        ComPtr<IDXGISurface> surface = {};
+        THROW_IF_FAILED(dst.As(&surface));
+
+        DXGI_SURFACE_DESC desc = {};
+        THROW_IF_FAILED(surface->GetDesc(&desc));
+
+        FLOAT dpi = 96.0f;
+        if (createInfo.dpi.has_value())
+        {
+            dpi = createInfo.dpi.value();
+        }
+        else dpi = (FLOAT)GetDpiForWindow(m_window.ptr);
+
+        auto props = D2D1::BitmapProperties1
+        (
+        /* bitmapOptions */ D2D1_BITMAP_OPTIONS_NONE,
+        /* pixelFormat   */ D2D1::PixelFormat(desc.Format, D2D1_ALPHA_MODE_PREMULTIPLIED),
+        /* dpiX          */ dpi,
+        /* dpiY          */ dpi
+        );
+        THROW_IF_FAILED(m_d2d1DeviceContext->CreateBitmapFromDxgiSurface
+        (
+        /* surface          */ surface.Get(),
+        /* bitmapProperties */ &props,
+        /* bitmap           */ &m_duplBitmap
+        ));
+    }
+
+    void Renderer::tryUpdateDuplFrame()
+    {
+        static DXGI_OUTDUPL_FRAME_INFO lastFrameInfo = {};
+
+        if (m_duplication)
+        {
+            ComPtr<IDXGIResource> resource = {};
+            DXGI_OUTDUPL_FRAME_INFO frameInfo = {};
+
+            auto acquireNextFrame = [&](UINT timeout)
+            {
+                return m_outputDupl->AcquireNextFrame(timeout, &frameInfo, &resource);
+            };
+            auto hr = acquireNextFrame(0);
+check_result:
+            // The desktop duplication interface may be invalid,
+            // and we need to recreate it for the new content.
+            while (hr == DXGI_ERROR_ACCESS_LOST)
+            {
+                createOutputDupl();
+                hr = acquireNextFrame(0);
+                goto check_result;
+            }
+            // The desktop duplication has not changed in the past period,
+            // and the existed duplication frame is already up to date.
+            if (hr == DXGI_ERROR_WAIT_TIMEOUT)
+            {
+                // There is no need to throw if ReleaseFrame is failed,
+                // because we will always check AcquireNextFrame.
+                m_outputDupl->ReleaseFrame();
+                return;
+            } 
+            THROW_IF_FAILED(hr);
+
+            // If LastPresentTime is 0,
+            // DirectX may not have had time to initialize the interface,
+            // so we should wait for a while (e.g. 50ms) and try again.
+            if (frameInfo.LastPresentTime.QuadPart == 0)
+            {
+                auto hr2 = m_outputDupl->ReleaseFrame();
+                if (hr2 == DXGI_ERROR_ACCESS_LOST)
+                {
+                    createOutputDupl();
+                }
+                else THROW_IF_FAILED(hr2);
+
+                hr = acquireNextFrame(50);
+                goto check_result;
+            }
+            // The desktop duplication has not changed in the past period,
+            // and the existed duplication frame is already up to date.
+            if (frameInfo.LastPresentTime.QuadPart ==
+                lastFrameInfo.LastPresentTime.QuadPart)
+            {
+                // There is no need to throw if ReleaseFrame is failed,
+                // because we will always check AcquireNextFrame.
+                m_outputDupl->ReleaseFrame();
+                return;
+            }
+            lastFrameInfo = std::move(frameInfo);
+
+            ComPtr<ID3D11Texture2D> texture = {};
+            THROW_IF_FAILED(resource.As(&texture));
+
+            m_duplDeviceContext->CopyResource(m_duplTexture.Get(), texture.Get());
+
+            createDuplBitmap();
+
+            // There is no need to throw if ReleaseFrame is failed,
+            // because we will always check AcquireNextFrame.
+            m_outputDupl->ReleaseFrame();
+        }
     }
 
     IDXGISwapChain3* Renderer::swapChain() const
@@ -1436,7 +1728,7 @@ namespace d14engine::renderer
         /* riidResource         */
         /* ppvResource          */ IID_PPV_ARGS(&m_sceneBuffer)
         ));
-        // sceneRtvHandle is guaranteed to be valid when composition=false
+        // sceneRtvHandle is guaranteed to be valid when composition=False
         m_d3d12Device->CreateRenderTargetView
         (
         /* pResource      */ m_sceneBuffer.Get(),
@@ -1445,7 +1737,7 @@ namespace d14engine::renderer
         );
         if (m_d3d12DeviceInfo.setting.m_scaling)
         {
-            // sceneSrvhandle is guaranteed to be valid when composition=false
+            // sceneSrvhandle is guaranteed to be valid when composition=False
             m_d3d12Device->CreateShaderResourceView
             (
             /* pResource      */ m_sceneBuffer.Get(),
@@ -1670,7 +1962,7 @@ namespace d14engine::renderer
         );
         m_cmdList->ResourceBarrier(1, &barrier);
 
-        // sceneRtvHandle is guaranteed to be valid when composition=false
+        // sceneRtvHandle is guaranteed to be valid when composition=False
         D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = sceneRtvHandle().value();
 
         m_cmdList->OMSetRenderTargets(1, &rtvHandle, TRUE, nullptr);

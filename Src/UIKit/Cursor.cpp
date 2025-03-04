@@ -128,7 +128,7 @@ namespace d14engine::uikit
         for (auto& f : frames)
         {
             auto index = (size_t)(std::stoi(f.first) - 1);
-            if (index >= 0uz && index < fanim.frames.size())
+            if (index >= 0_uz && index < fanim.frames.size())
             {
                 fanim.frames[index] = f.second;
             }
