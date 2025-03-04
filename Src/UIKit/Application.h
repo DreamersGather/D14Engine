@@ -18,12 +18,6 @@ namespace d14engine::uikit
 
         struct CreateInfo
         {
-            // Win32 window class name & Win32 window caption text
-            Wstring name = L"D14Engine";
-
-            // Resources (such as cursors) are loaded from this path.
-            Wstring binaryPath = L"Bin/";
-
             using LibraryPathArray = std::vector<Wstring>;
 #ifdef _WIN64
             LibraryPathArray libraryPaths =
@@ -36,8 +30,19 @@ namespace d14engine::uikit
                 L"Lib/DirectXShaderCompiler/x86"
             };
 #endif
+            // Win32 window's class name & window name (i.e. caption text)
+            Wstring name = L"D14Engine";
+
+            // Resources (such as cursors) are loaded from this path.
+            Wstring binaryPath = L"Bin/";
+
+            Wstring cursorPath() const
+            {
+                return binaryPath + L"Cursors/";
+            }
             Optional<float> dpi = {};
 
+            // In Device-Independent-Pixel
             SIZE windowSize = { 800, 600 };
 
             bool fullscreen = false;
@@ -47,7 +52,7 @@ namespace d14engine::uikit
             // Whether to enable the DXGI duplication.
             bool duplication = false;
 
-            // Whether to enable the DWM composition.
+            // Whether to enable the WDDM composition.
             bool composition = false;
         };
 
@@ -58,7 +63,7 @@ namespace d14engine::uikit
         // After exiting the program, the application is destroyed at first,
         // and other objects are destroyed subsequently, in which situation
         // the program will crash if their dtors use the global application
-        // pointer (i.e. "g_app) to release the created resources.
+        // pointer (i.e. g_app) to clear the maintained resources.
         //
         // Set g_app to nullptr after the application destroyed to help the
         // objects decide whether there's need to do the clearing.
@@ -80,9 +85,9 @@ namespace d14engine::uikit
 
         void exit(); // The exit code is returned by calling run.
 
-    /////////////////////////////////
-    // Win32 Window & Message Loop //
-    /////////////////////////////////
+        /////////////////////////////////
+        // Win32 Window & Message Loop //
+        /////////////////////////////////
 
     private:
         static LRESULT CALLBACK fnWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -121,9 +126,9 @@ namespace d14engine::uikit
 
         LRESULT defWin32NCHITTESTMessageHandler(const POINT& pt);
 
-    ///////////////////////////////
-    // Renderer & UI Object Tree //
-    ///////////////////////////////
+        ///////////////////////////////
+        // Renderer & UI Object Tree //
+        ///////////////////////////////
 
     private:
         UniquePtr<renderer::Renderer> m_renderer = {};
@@ -170,7 +175,7 @@ namespace d14engine::uikit
         using UIObjectTempSet = ISortable<Panel>::WeakPrioritySet;
 
         UIObjectTempSet m_hitUIObjects = {};
-        
+
         // The pinned UI objects keep receiving UI events while not hitting.
         //
         // Introduce the diff-pinned UI objects to avoid the hit UI objects
@@ -194,17 +199,19 @@ namespace d14engine::uikit
         void clearAddedUIObjects();
         void clearPinnedUIObjects();
 
+        // Affects the maximum number of mouse-enter/leave events.
+        // In each event handling of message loop, the window process:
+        // (True) only checks the highest-priority UI object.
+        // (False) traverses and checks all candidate UI objects.
         bool forceSingleMouseEnterLeaveEvent = true;
 
     private:
         void updateDiffPinnedUIObjects();
 
-        // Updating the diff-pinned UI objects while handling UI events may
-        // cause undefined behavior.
-        //
-        // To solve this problem, we can mark a flag and perform the actual
-        // updating after handling UI events finished.
-
+        // Updating the diff-pinned UI objects while handling UI events may cause
+        // undefined behavior (e.g. modifying a std container while iterating it).
+        // To solve this problem, we are determined to send a custom Win32 message
+        // that notifies the actual updating during next Win32 message delivering.
         void updateDiffPinnedUIObjectsLater();
 
     private:
@@ -224,6 +231,11 @@ namespace d14engine::uikit
 
         const D2D1_POINT_2F& lastCursorPoint() const;
 
+        // Note the access level is public, so any object can modify this.
+        // Therefore, this is merely a flag indicating that a dragging might occur.
+        // If this is set, the window process may skip updating cursor's position,
+        // as the cursor should be fixed relative to the window during a dragging.
+        // Generally, only DraggablePanel and its inheritors may modify this flag.
         bool isTriggerDraggingWin32Window = false;
 
     public:
@@ -259,6 +271,9 @@ namespace d14engine::uikit
 
     public:
         bool skipHandleNextFocusChangeEvent = false;
+
+        // Set this to True to notify the window process to
+        // post a new message of immediate mouse-move event.
         bool sendNextImmediateMouseMoveEvent = false;
 
     private:
@@ -267,12 +282,12 @@ namespace d14engine::uikit
         //
         // Under normal circumstances, the callbacks are invoked according to
         // the receiving order of the Win32 messages, in which case there is
-        // no conflict between each callback.  If a callback, however, sends
+        // no conflict between each callback. If a callback, however, sends
         // an immediate Win32 message while being handled, the Win32 wnd-proc
         // will retrieve the std::set stores the UI objects again and try to
         // modify it to respond to the new UI event, and this may cause some
         // undefined results because we are trying to insert/erase a std::set
-        // while traversing it with the corresponding iterator.
+        // while traversing it with the corresponding volatie iterator.
         // (PS: That operation is invalid for all STL associated containers).
         //
         // To solve the problem, we are determined to introduce a flag about
@@ -281,11 +296,14 @@ namespace d14engine::uikit
 
         bool m_isHandlingSensitiveUIEvent = false;
 
+        // If sendNextImmediateMouseMoveEvent is set in the previous update,
+        // this helps post a new message of immediate mouse-move event,
+        // which is useful for keeping the related UI objects up to date.
         void handleImmediateMouseMoveEventCallback();
 
-    //////////////////////////////
-    // Additional Functionality //
-    //////////////////////////////
+        //////////////////////////////
+        // Additional Functionality //
+        //////////////////////////////
 
     public:
         enum class CustomWin32Message
@@ -312,11 +330,14 @@ namespace d14engine::uikit
             WPARAM wParam = 0,
             LPARAM lParam = 0);
 
-    // Update Diff-Pinned UI Objects
-    private:
-        // Similar to updateDiffPinnedUIObjectsLater, non-root UI objects may
-        // need to change their diff-pinned children while handling UI events.
+        //---------------------------------------------------------
+        // Diff-Pinned UI Objects
+        //---------------------------------------------------------
+        // Similar to updateDiffPinnedUIObjectsLater,
+        // we also need an "indirection" for non-root UI objects.
+        //---------------------------------------------------------
 
+    private:
         using DiffPinnedUpdateCandidateSet =
             std::set<WeakPtr<Panel>, std::owner_less<WeakPtr<Panel>>>;
 
@@ -325,7 +346,31 @@ namespace d14engine::uikit
     public:
         void pushDiffPinnedUpdateCandidate(ShrdPtrParam<Panel> uiobj);
 
-    // Handle Thread Event
+        //---------------------------------------------------------
+        // Multi-threading
+        //---------------------------------------------------------
+        // Calling triggerThreadEvent in a child thread will
+        // trigger the callback set by registerThreadCallback
+        // in the main UI thread (associated via the ThreadEventID).
+        //---------------------------------------------------------
+        // auto app = Application::g_app;
+        // Application::ThreadID id = 14;
+        //
+        // button->f_onMouseButton = [=](auto p, auto e)
+        // {
+        //     std::thread([=]
+        //     {
+        //         int sum = 1 + 1;
+        //         app->triggerThreadEvent(id, sum);
+        //     })
+        //     .detach();
+        // };
+        // app->registerThreadCallback(id, [=](auto data)
+        // {
+        //     assert(data == 2);
+        // }
+        //---------------------------------------------------------
+
     public:
 #ifdef _WIN64
         using ThreadEventID = UINT64; // matches WPARAM
