@@ -5,7 +5,9 @@
 namespace d14engine
 {
     // Usage: Declare a struct inherited from PasskeyIdiom, and append a
-    // parameter of Token at the end of the ctor you want to privatize:
+    // parameter of Token at the end of the ctor you want to privatize.
+    //
+    //============================== Example ==============================
     //
     // struct A, B, C;
     //
@@ -29,6 +31,8 @@ namespace d14engine
     // {
     //     void func1() { A a(A::Token); } --> Error
     // };
+    //
+    //============================== Example ==============================
     //
     // This allows the ctor behaves as private while declaring its access
     // level as public, and it is helpful when using some external utils.

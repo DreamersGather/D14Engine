@@ -10,13 +10,17 @@ namespace d14engine::cpp_lang_utils
     //
     // Usage: Simply create a FinalAction object at the top of current scope,
     // and the finally-code will be called automatically when it goes out of
-    // the scope:
+    // the scope.
+    //
+    //============================== Example ==============================
     //
     // void func()
     // {
     //     auto pNum = new int(1);
     //     auto clear = finally([&] { delete pNum; });
     // }
+    //
+    //============================== Example ==============================
     //
     // The definition order is significant since the dtors will be called in
     // the reverse order of creation, so the FinalAction object should be

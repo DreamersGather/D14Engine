@@ -7,7 +7,9 @@ namespace d14engine::math_utils
 #pragma region Type
 
     // Usage: Use this structure as a parameter to receive any float2 type value
-    // (constexpr can minimize runtime conversion overhead as much as possible):
+    // (constexpr can minimize runtime conversion overhead as much as possible).
+    //
+    //============================== Example ==============================
     //
     // std::pair<float, float> pair = {};
     // D2D1_SIZE_F size = {};
@@ -24,6 +26,8 @@ namespace d14engine::math_utils
     // func2(pair); --> OK
     // func2(size); --> OK
     // func2(point); --> OK
+    //
+    //============================== Example ==============================
 
     struct Float2Adapter : std::pair<float, float>
     {
