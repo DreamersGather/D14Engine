@@ -2792,7 +2792,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Bin\Images\Cursors\MacOS\README.txt" />
+    <Text Include="Bin\Cursors\README.txt" />
     <Text Include="Bin\Shaders\PDB\README.txt" />
   </ItemGroup>
   <ItemGroup>
