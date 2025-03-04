@@ -5,102 +5,82 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DEditor|Win32'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DPipe|Win32'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DRndr|Win32'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DUIKit|Win32'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='REditor|Win32'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RPipe|Win32'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RRndr|Win32'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RUIKit|Win32'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DEditor|x64'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DPipe|x64'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DUIKit|x64'">
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='REditor|x64'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RPipe|x64'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">
     <LocalDebuggerCommand>$(ProjectDir)$(TargetName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>HighDPI</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
