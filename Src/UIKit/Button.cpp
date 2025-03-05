@@ -79,7 +79,10 @@ namespace d14engine::uikit
 
     void Button::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        // Background
+        ////////////////
+        // Background //
+        ////////////////
+
         auto& bkgn = getAppearance().background;
 
         resource_utils::g_solidColorBrush->SetColor(bkgn.color);
@@ -87,7 +90,10 @@ namespace d14engine::uikit
 
         ClickablePanel::drawBackground(rndr);
 
-        // Content
+        /////////////
+        // Content //
+        /////////////
+
         auto& foreground = getAppearance().foreground;
 
         m_content->icon.bitmap.opacity = foreground.opacity;
@@ -97,7 +103,11 @@ namespace d14engine::uikit
         {
             m_content->onRendererDrawD2d1Object(rndr);
         }
-        // Outline
+
+        /////////////
+        // Outline //
+        /////////////
+
         auto& stroke = getAppearance().stroke;
 
         resource_utils::g_solidColorBrush->SetColor(stroke.color);
@@ -106,8 +116,12 @@ namespace d14engine::uikit
         auto frame = math_utils::inner(m_absoluteRect, stroke.width);
         D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
 
-        rndr->d2d1DeviceContext()->DrawRoundedRectangle(
-            outlineRect, resource_utils::g_solidColorBrush.Get(), stroke.width);
+        rndr->d2d1DeviceContext()->DrawRoundedRectangle
+        (
+        /* roundedRect */ outlineRect,
+        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* strokeWidth */ stroke.width
+        );
     }
 
     bool Button::isHitHelper(const Event::Point& p) const
@@ -117,8 +131,10 @@ namespace d14engine::uikit
 
     bool Button::releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj)
     {
-        if (cpp_lang_utils::isMostDerivedEqual(m_content, uiobj)) return false;
-
+        if (cpp_lang_utils::isMostDerivedEqual(m_content, uiobj))
+        {
+            return false;
+        }
         return Panel::releaseUIObjectHelper(uiobj);
     }
 
