@@ -170,7 +170,6 @@ namespace d14engine::uikit
             /* strokeWidth */ geoSetting.strokeWidth,
             /* strokeStyle */ checkedIcon.strokeStyle.Get()
             );
-
             rndr->d2d1DeviceContext()->DrawLine
             (
             /* point0      */ math_utils::offset(iconLeftTop, geoSetting.tickLine1.point0),
