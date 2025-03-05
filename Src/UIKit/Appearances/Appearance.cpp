@@ -73,7 +73,7 @@ namespace d14engine::uikit::appearance
 #undef INIT_THEME_DATA
     }
 
-    // Refer to https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/color#accent-color-palette
+// Refer to https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/color#accent-color-palette
 
     D2D1_COLOR_F g_color1 = {};
     D2D1_COLOR_F g_color2 = {};

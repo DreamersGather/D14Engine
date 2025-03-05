@@ -82,7 +82,7 @@ namespace d14engine::uikit::appearance
 
 #pragma region Color Palette
 
-    // Refer to https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/color#accent-color-palette
+// Refer to https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/color#accent-color-palette
 
     const D2D1_COLOR_F& color1();
     const D2D1_COLOR_F& color2();
