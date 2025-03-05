@@ -38,7 +38,7 @@ namespace d14engine::uikit
         constexpr static auto CHECKED = State::ActiveFlag::Checked;
 
         void setChecked(State::ActiveFlag flag);
-        // Skips comparison and directly set the state.
+        // Skip comparison and directly set the state.
         void setCheckedState(State::ActiveFlag flag);
 
     protected:

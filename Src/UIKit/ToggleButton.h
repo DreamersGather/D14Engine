@@ -58,7 +58,7 @@ namespace d14engine::uikit
         constexpr static auto DEACTIVATED = StatefulObject::State::ActiveFlag::Deactivated;
 
         void setActivated(StatefulObject::State::ActiveFlag flag);
-        // Skips comparison and directly set the state.
+        // Skip comparison and directly set the state.
         void setActivatedState(StatefulObject::State::ActiveFlag flag);
 
     protected:
