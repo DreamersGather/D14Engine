@@ -28,9 +28,17 @@ namespace d14engine::uikit
     {
         g_app = this;
 
+        ///////////////////
+        // DPI Awareness //
+        ///////////////////
+
         // Place this setting at the very beginning to ensure that the MessageBox
         // with relevant information for initialization errors also supports HiDPI.
         SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
+        //////////////////
+        // Library Path //
+        //////////////////
 
         Wstring exePath(MAX_PATH, 0);
         GetModuleFileName(nullptr, exePath.data(), MAX_PATH);
@@ -47,6 +55,11 @@ namespace d14engine::uikit
             // Special note: AddDllDirectory only accepts absolute paths!
             THROW_IF_NULL(AddDllDirectory((exePath + libPath).c_str()));
         }
+
+        ////////////////////
+        // Initialization //
+        ////////////////////
+
         initWin32Window();
 
         initDirectX12Renderer();
@@ -56,21 +69,26 @@ namespace d14engine::uikit
 
     void Application::initWin32Window()
     {
-        HINSTANCE hInstance = GetModuleHandle(nullptr);
+        auto hInstance = GetModuleHandle(nullptr);
 
-        THROW_IF_NULL(hInstance);
-        
-        WNDCLASSEX wndclass = {};
-        wndclass.cbSize = sizeof(wndclass);
-        wndclass.style = CS_DBLCLKS; // CS_DROPSHADOW has bugs on Windows 11.
-        wndclass.lpfnWndProc = fnWndProc;
-        // We will populate GWLP_USERDATA with the application instance pointer.
-        wndclass.cbWndExtra = sizeof(this);
-        wndclass.hInstance = hInstance;
-        wndclass.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
-        wndclass.lpszClassName = createInfo.name.c_str();
+        //////////////////
+        // Window Class //
+        //////////////////
 
+        WNDCLASSEX wndclass =
+        {
+            .cbSize        = sizeof(wndclass),
+            .style         = CS_DBLCLKS,
+            .lpfnWndProc   = fnWndProc,
+            .cbWndExtra    = sizeof(this), // g_app
+            .hInstance     = hInstance,
+            .lpszClassName = createInfo.name.c_str()
+        };
         RegisterClassEx(&wndclass);
+
+        /////////////////////
+        // Size & Position //
+        /////////////////////
 
         RECT workAreaRect = {};
         SystemParametersInfo(SPI_GETWORKAREA, 0, &workAreaRect, 0);
@@ -78,33 +96,42 @@ namespace d14engine::uikit
         auto workAreaWidth = math_utils::width(workAreaRect);
         auto workAreaHeight = math_utils::height(workAreaRect);
 
-        RECT wndrect = math_utils::centered(
-            { 0, 0, workAreaWidth, workAreaHeight },
-            platform_utils::scaledByDpi(createInfo.windowSize));
-
+        auto wndrect = math_utils::centered
+        (
+        /* dst */ { 0, 0, workAreaWidth, workAreaHeight },
+        /* src */ platform_utils::scaledByDpi(createInfo.windowSize)
+        );
         DWORD dwStyle = WS_POPUP;
         // Prevent DWM from drawing the window again.
-        DWORD dwExStyle =  WS_EX_NOREDIRECTIONBITMAP;
+        DWORD dwExStyle = WS_EX_NOREDIRECTIONBITMAP;
 
         auto dpi = (UINT)platform_utils::dpi();
         AdjustWindowRectExForDpi(&wndrect, dwStyle, FALSE, dwExStyle, dpi);
 
+        //////////////////
+        // Win32 Window //
+        //////////////////
+
         m_win32Window = CreateWindowEx
         (
-            /* dwExStyle    */ dwExStyle,
-            /* lpClassName  */ createInfo.name.c_str(),
-            /* lpWindowName */ createInfo.name.c_str(),
-            /* dwStyle      */ dwStyle,
-            /* X            */ wndrect.left,
-            /* Y            */ wndrect.top,
-            /* nWidth       */ math_utils::width(wndrect),
-            /* nHeight      */ math_utils::height(wndrect),
-            /* hWndParent   */ nullptr,
-            /* hMenu        */ nullptr,
-            /* hInstance    */ hInstance,
-            /* lpParam      */ nullptr
+        /* dwExStyle    */ dwExStyle,
+        /* lpClassName  */ createInfo.name.c_str(),
+        /* lpWindowName */ createInfo.name.c_str(),
+        /* dwStyle      */ dwStyle,
+        /* X            */ wndrect.left,
+        /* Y            */ wndrect.top,
+        /* nWidth       */ math_utils::width(wndrect),
+        /* nHeight      */ math_utils::height(wndrect),
+        /* hWndParent   */ nullptr,
+        /* hMenu        */ nullptr,
+        /* hInstance    */ hInstance,
+        /* lpParam      */ nullptr
         );
         THROW_IF_NULL(m_win32Window);
+
+        ///////////////
+        // User Data //
+        ///////////////
 
         SetWindowLongPtr(m_win32Window, GWLP_USERDATA, (LONG_PTR)this);
     }
@@ -112,8 +139,16 @@ namespace d14engine::uikit
     void Application::initDirectX12Renderer()
     {
         auto dpi = platform_utils::dpi();
-        DWORD displayAffinity = createInfo.excludeFromCapture ? WDA_EXCLUDEFROMCAPTURE : WDA_NONE;
 
+        ///////////////////
+        // Main Renderer //
+        ///////////////////
+
+        DWORD displayAffinity = WDA_NONE;
+        if (createInfo.excludeFromCapture)
+        {
+            displayAffinity = WDA_EXCLUDEFROMCAPTURE;
+        }
         Renderer::CreateInfo info =
         {
             .binaryPath      = createInfo.binaryPath,
@@ -125,20 +160,36 @@ namespace d14engine::uikit
         };
         m_renderer = std::make_unique<Renderer>(m_win32Window, info);
 
+        /////////////////////
+        // Direct2D Config //
+        /////////////////////
+
+        auto context = m_renderer->d2d1DeviceContext();
+
+        context->SetDpi(dpi, dpi);
+        context->SetUnitMode(D2D1_UNIT_MODE_DIPS);
+
+        /////////////////////
+        // Resource Config //
+        /////////////////////
+
         m_renderer->skipUpdating = true;
         m_renderer->timer()->pause();
-        // We will resume the timer when playing animation.
 
-        m_renderer->d2d1DeviceContext()->SetDpi(dpi, dpi);
-        m_renderer->d2d1DeviceContext()->SetUnitMode(D2D1_UNIT_MODE_DIPS);
+        ////////////////////
+        // UI Render Pass //
+        ////////////////////
+
+        using UICmdLayer = Renderer::CommandLayer;
+        using UITarget = UICmdLayer::D2D1Target;
 
         auto device = m_renderer->d3d12Device();
-        m_uiCmdLayer = std::make_shared<Renderer::CommandLayer>(device);
-
-        m_uiCmdLayer->setPriority(g_uiCmdLayerPriority);
+        m_uiCmdLayer = std::make_shared<UICmdLayer>(device);
+        {
+            m_uiCmdLayer->setPriority(g_uiCmdLayerPriority);
+            m_uiCmdLayer->drawTarget.emplace<UITarget>();
+        }
         m_renderer->cmdLayers.insert(m_uiCmdLayer);
-
-        m_uiCmdLayer->drawTarget.emplace<Renderer::CommandLayer::D2D1Target>();
     }
 
     void Application::initMiscComponents()
@@ -159,9 +210,9 @@ namespace d14engine::uikit
 
         m_cursor = makeUIObject<Cursor>();
 
-        m_cursor->setPrivateVisible(false);
-        m_cursor->registerDrawObjects();
         // The built-in cursor does not need to receive any UI events.
+        m_cursor->registerDrawObjects();
+        m_cursor->setPrivateVisible(false);
     }
 
     int Application::run(FuncParam<void(Application* app)> onLaunch)
@@ -173,12 +224,12 @@ namespace d14engine::uikit
         ShowWindow(m_win32Window, SW_SHOW);
         UpdateWindow(m_win32Window);
 
-        MSG msg;
+        MSG msg = {};
         while (true)
         {
             if (m_animationCount == 0)
             {
-                BOOL ret = GetMessage(&msg, nullptr, 0, 0);
+                auto ret = GetMessage(&msg, nullptr, 0, 0);
 
                 // (WM_QUIT  || An Error )
                 if (ret == 0 || ret == -1)
@@ -199,7 +250,7 @@ namespace d14engine::uikit
                     TranslateMessage(&msg);
                     DispatchMessage(&msg);
                 }
-                // use "else" for clearing the message queue
+                // use "else" here to clear the message queue
                 else m_renderer->renderNextFrame();
             }
         }
@@ -215,10 +266,12 @@ namespace d14engine::uikit
     {
         if (RuntimeError::g_flag)
         {
+            // A RuntimeError has already been thrown (RuntimeError::g_flag=True),
+            // so there is no need to process the remaining messages in the queue.
             return DefWindowProc(hwnd, message, wParam, lParam);
         }
         auto app = (Application*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-        
+
         switch (message)
         {
         case WM_SIZE:
@@ -299,12 +352,15 @@ namespace d14engine::uikit
                 }
                 else SetCursor(nullptr); // Take over cursor drawing from GDI.
 
+                // reset this for next candidate WM_SETCURSOR message
                 app->m_cursor->m_systemIconUpdateFlag = false;
 
                 // If an application processes this message,
                 // it should return TRUE to halt further processing.
                 return TRUE;
             }
+            // The non-client area hit is handed over to the system for processing.
+            // (used to resize the Win32 Window, so display the system cursors)
             return DefWindowProc(hwnd, message, wParam, lParam);
         }
         case WM_GETMINMAXINFO:
@@ -368,6 +424,7 @@ namespace d14engine::uikit
             app->m_cursor->setIcon(Cursor::Arrow);
 
             MouseMoveEvent e = {};
+
             e.cursorPoint = cursorPoint;
 
             e.buttonState.leftPressed = wParam & MK_LBUTTON;
@@ -382,7 +439,7 @@ namespace d14engine::uikit
             app->m_lastCursorPoint = e.cursorPoint;
 
             if (!app->m_currFocusedUIObject.expired() &&
-                 app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)
+                app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)
             {
                 app->m_currFocusedUIObject.lock()->onMouseMove(e);
 
@@ -486,17 +543,18 @@ namespace d14engine::uikit
                     return uiobj->appEventTransparency.mouse.move;
                 });
             }
-            // Register mouse-leave event for the Win32 window.
-            TRACKMOUSEEVENT tme = {};
-            tme.cbSize = sizeof(tme);
-            tme.dwFlags = TME_LEAVE;
-            tme.hwndTrack = hwnd;
-
+            TRACKMOUSEEVENT tme =
+            {
+                .cbSize    = sizeof(tme),
+                .dwFlags   = TME_LEAVE,
+                .hwndTrack = hwnd
+            };
             TrackMouseEvent(&tme);
 
             // The cursor will be hidden if moves out of the Win32 window,
             // so we need to show it explicitly in every mouse-move event.
             app->m_cursor->setPrivateVisible(true);
+
             if (app->m_cursor->m_iconSource == Cursor::System)
             {
                 app->m_cursor->setSystemIcon();
@@ -515,23 +573,23 @@ namespace d14engine::uikit
             }
             app->m_isHandlingSensitiveUIEvent = true;
 
-            POINT screenCursorPoint = {};
-            GetCursorPos(&screenCursorPoint);
-            ScreenToClient(hwnd, &screenCursorPoint);
+            POINT cursorPoint = {};
+            GetCursorPos(&cursorPoint);
+            ScreenToClient(hwnd, &cursorPoint);
 
-            screenCursorPoint = platform_utils::restoredByDpi(screenCursorPoint);
+            cursorPoint = platform_utils::restoredByDpi(cursorPoint);
 
             MouseMoveEvent e = {};
             e.cursorPoint =
             {
-                (float)screenCursorPoint.x,
-                (float)screenCursorPoint.y
+                (float)cursorPoint.x,
+                (float)cursorPoint.y
             };
             e.lastCursorPoint = app->m_lastCursorPoint;
             app->m_lastCursorPoint = e.cursorPoint;
 
             if (!app->m_currFocusedUIObject.expired() &&
-                 app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)
+                app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)
             {
                 app->m_currFocusedUIObject.lock()->onMouseLeave(e);
             }
@@ -579,18 +637,22 @@ namespace d14engine::uikit
             }
             else ReleaseCapture();
 
-            auto rawCursorPoint =
+            auto cursorPoint =
             platform_utils::restoredByDpi(POINT
             {
                 GET_X_LPARAM(lParam),
                 GET_Y_LPARAM(lParam)
             });
             MouseButtonEvent e = {};
-            e.cursorPoint = { (float)rawCursorPoint.x, (float)rawCursorPoint.y };
+            e.cursorPoint =
+            {
+                (float)cursorPoint.x,
+                (float)cursorPoint.y
+            };
             e.state.flag = MouseButtonEvent::State::FLAG_MAP.at(message);
 
             if (!app->m_currFocusedUIObject.expired() &&
-                 app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)
+                app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)
             {
                 app->m_currFocusedUIObject.lock()->onMouseButton(e);
 
@@ -610,7 +672,7 @@ namespace d14engine::uikit
                     if (uiobj->appEventReactability.mouse.button)
                     {
                         if (uiobj->appEventReactability.focus.get &&
-                           (e.state.leftDown() || e.state.leftDblclk()))
+                            (e.state.leftDown() || e.state.leftDblclk()))
                         {
                             e.focused = uiobj;
                         }
@@ -650,20 +712,21 @@ namespace d14engine::uikit
             }
             app->m_isHandlingSensitiveUIEvent = true;
 
-            POINT screenCursorPoint =
+            POINT cursorPoint =
             {
                 GET_X_LPARAM(lParam),
                 GET_Y_LPARAM(lParam)
             };
-            ScreenToClient(hwnd, &screenCursorPoint);
+            ScreenToClient(hwnd, &cursorPoint);
 
-            screenCursorPoint = platform_utils::restoredByDpi(screenCursorPoint);
+            cursorPoint = platform_utils::restoredByDpi(cursorPoint);
 
             MouseWheelEvent e = {};
+
             e.cursorPoint =
             {
-                (float)screenCursorPoint.x,
-                (float)screenCursorPoint.y
+                (float)cursorPoint.x,
+                (float)cursorPoint.y
             };
             auto lowParam = LOWORD(wParam);
 
@@ -674,11 +737,10 @@ namespace d14engine::uikit
             e.keyState.CTRL = lowParam & MK_CONTROL;
             e.keyState.SHIFT = lowParam & MK_SHIFT;
 
-            // The wheel distance can be negative.
             e.deltaCount = GET_Y_LPARAM(wParam) / WHEEL_DELTA;
 
             if (!app->m_currFocusedUIObject.expired() &&
-                 app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)
+                app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)
             {
                 app->m_currFocusedUIObject.lock()->onMouseWheel(e);
 
@@ -729,6 +791,7 @@ namespace d14engine::uikit
             app->m_isHandlingSensitiveUIEvent = true;
 
             KeyboardEvent e = {};
+
             e.vkey = wParam;
 
             if (message == WM_KEYDOWN || message == WM_SYSKEYDOWN)
@@ -788,11 +851,11 @@ namespace d14engine::uikit
         {
             if (app && !app->m_focusedTextInputObject.expired())
             {
-                HIMC himc = ImmGetContext(hwnd);
+                auto himc = ImmGetContext(hwnd);
                 if (himc)
                 {
                     auto tobj = app->m_focusedTextInputObject.lock();
-                    
+
                     auto font = tobj->getCompositionFont();
                     if (font.has_value())
                     {
@@ -812,7 +875,7 @@ namespace d14engine::uikit
         {
             if (lParam & GCS_RESULTSTR)
             {
-                HIMC himc = ImmGetContext(hwnd);
+                auto himc = ImmGetContext(hwnd);
                 if (himc)
                 {
                     auto nSize = ImmGetCompositionString(himc, GCS_RESULTSTR, nullptr, 0);
@@ -840,11 +903,11 @@ namespace d14engine::uikit
             }
             return DefWindowProc(hwnd, message, wParam, lParam);
         }
-        case (UINT)CustomWin32Message::AwakeGetMessage:
+        case (UINT)CustomMessage::AwakeGetMessage:
         {
             return 0;
         }
-        case (UINT)CustomWin32Message::UpdateRootDiffPinnedUIObjects:
+        case (UINT)CustomMessage::UpdateRootDiffPinnedUIObjects:
         {
             if (app != nullptr)
             {
@@ -852,7 +915,7 @@ namespace d14engine::uikit
             }
             return 0;
         }
-        case (UINT)CustomWin32Message::UpdateMiscDiffPinnedUIObjects:
+        case (UINT)CustomMessage::UpdateMiscDiffPinnedUIObjects:
         {
             if (app != nullptr)
             {
@@ -867,7 +930,7 @@ namespace d14engine::uikit
             }
             return 0;
         }
-        case (UINT)CustomWin32Message::HandleThreadEvent:
+        case (UINT)CustomMessage::HandleThreadEvent:
         {
             if (app != nullptr)
             {
@@ -912,43 +975,59 @@ namespace d14engine::uikit
     {
         if (win32WindowSettings.sizingFrame.frameWidth.has_value())
         {
-            auto frmWidth = win32WindowSettings.sizingFrame.frameWidth.value();
+            auto frameWidth = win32WindowSettings.sizingFrame.frameWidth.value();
 
             RECT clntRect = {};
             GetClientRect(m_win32Window, &clntRect);
-            auto rawClntSize = math_utils::size(clntRect);
-            auto clntSize = platform_utils::restoredByDpi(rawClntSize);
 
-            if (pt.x <= frmWidth && pt.y <= frmWidth)
+            auto clntSize = platform_utils::restoredByDpi(math_utils::size(clntRect));
+
+            if (pt.x <= frameWidth)
             {
-                return HTTOPLEFT;
-            }
-            if (pt.x <= frmWidth && pt.y >= clntSize.cy - frmWidth)
-            {
-                return HTBOTTOMLEFT;
-            }
-            if (pt.x >= clntSize.cx - frmWidth && pt.y <= frmWidth)
-            {
-                return HTTOPRIGHT;
-            }
-            if (pt.x >= clntSize.cx - frmWidth && pt.y >= clntSize.cy - frmWidth)
-            {
-                return HTBOTTOMRIGHT;
-            }
-            if (pt.x <= frmWidth)
-            {
+                if (pt.y <= frameWidth)
+                {
+                    return HTTOPLEFT;
+                }
+                if (pt.y >= clntSize.cy - frameWidth)
+                {
+                    return HTBOTTOMLEFT;
+                }
                 return HTLEFT;
             }
-            if (pt.x >= clntSize.cx - frmWidth)
+            if (pt.x >= clntSize.cx - frameWidth)
             {
+                if (pt.y <= frameWidth)
+                {
+                    return HTTOPRIGHT;
+                }
+                if (pt.y >= clntSize.cy - frameWidth)
+                {
+                    return HTBOTTOMRIGHT;
+                }
                 return HTRIGHT;
             }
-            if (pt.y <= frmWidth)
+            if (pt.y <= frameWidth)
             {
+                if (pt.x <= frameWidth)
+                {
+                    return HTTOPLEFT;
+                }
+                if (pt.x >= clntSize.cx - frameWidth)
+                {
+                    return HTTOPRIGHT;
+                }
                 return HTTOP;
             }
-            if (pt.y >= clntSize.cy - frmWidth)
+            if (pt.y >= clntSize.cy - frameWidth)
             {
+                if (pt.x <= frameWidth)
+                {
+                    return HTBOTTOMLEFT;
+                }
+                if (pt.x >= clntSize.cx - frameWidth)
+                {
+                    return HTBOTTOMRIGHT;
+                }
                 return HTBOTTOM;
             }
         }
@@ -960,77 +1039,86 @@ namespace d14engine::uikit
         return m_renderer.get();
     }
 
+#pragma warning(push)
+// wrappedBuffer is guaranteed to be valid when composition=False
+#pragma warning(disable : 26815)
+
     ComPtr<ID2D1Bitmap1> Application::windowshot() const
     {
-        if (m_renderer->composition())
+        //-------------------------------------------------------------------------
+        // (composition=True)
+        // renderTarget is the first back buffer of composition swapChain,
+        // which internally performs synchronization, so direct copying is fine.
+        //-------------------------------------------------------------------------
+        // (composition=False)
+        // renderTarget is a D2D1Bitmap created from wrappedBuffer (D3D11Resource),
+        // which is created from sceneBuffer (D3D12Resource) through D3D11On12Device,
+        // so it is necessary to synchronize them between D3D12 and D3D11.
+        //-------------------------------------------------------------------------
+        // Acquire Wrapped Resource
+        //-------------------------------------------------------------------------
+        if (!m_renderer->composition())
         {
-            m_renderer->waitGpuCommand();
-
-            auto src = m_renderer->renderTarget();
-            auto pixSize = src->GetPixelSize();
-
-            auto dst = bitmap_utils::loadBitmap(pixSize.width, pixSize.height);
-
-            D2D1_POINT_2U dstPoint = { 0, 0 };
-            D2D1_RECT_U srcRect = { 0, 0, pixSize.width, pixSize.height };
-            THROW_IF_FAILED(dst->CopyFromBitmap(&dstPoint, src, &srcRect));
-
-            return dst;
+            auto wrapped = m_renderer->wrappedBuffer().value();
+            m_renderer->d3d11On12Device()->AcquireWrappedResources(&wrapped, 1);
         }
-        else // self-maintained back buffers
+        //-------------------------------------------------------------------------
+        // Create/Copy Windowshot
+        //-------------------------------------------------------------------------
+        auto src = m_renderer->renderTarget();
+        auto pixSize = src->GetPixelSize();
+
+        auto dst = bitmap_utils::loadBitmap(pixSize.width, pixSize.height);
+
+        D2D1_POINT_2U dstPoint = { 0, 0 };
+        D2D1_RECT_U srcRect = { 0, 0, pixSize.width, pixSize.height };
+        THROW_IF_FAILED(dst->CopyFromBitmap(&dstPoint, src, &srcRect));
+
+        //-------------------------------------------------------------------------
+        // Release Wrapped Resource
+        //-------------------------------------------------------------------------
+        if (!m_renderer->composition())
         {
-#pragma warning(push)
-#pragma warning(disable : 26815)
-            // sceneBuffer is guaranteed to be valid when composition=False
-            auto texture = m_renderer->sceneBuffer().value();
-#pragma warning(pop)
-            m_renderer->beginGpuCommand();
-
-            auto staging = graph_utils::capture(texture, m_renderer->cmdList());
-
-            m_renderer->endGpuCommand();
-
-            BYTE* mapped = nullptr;
-            THROW_IF_FAILED(staging->Map(0, nullptr, (void**)&mapped));
-            auto unmap = cpp_lang_utils::finally([&]() { staging->Unmap(0, nullptr); });
-
-            auto pixSize = m_renderer->renderTarget()->GetPixelSize();
-            return bitmap_utils::loadBitmap(pixSize.width, pixSize.height, mapped);
+            auto wrapped = m_renderer->wrappedBuffer().value();
+            m_renderer->d3d11On12Device()->ReleaseWrappedResources(&wrapped, 1);
         }
+        return dst;
     }
+#pragma warning(pop)
 
     Optional<ComPtr<ID2D1Bitmap1>> Application::screenshot() const
     {
         m_renderer->tryUpdateDuplFrame();
+
         return m_renderer->duplBitmap();
     }
 
-    int Application::animationCount() const
+    UINT Application::animationCount() const
     {
         return m_animationCount;
     }
 
     void Application::increaseAnimationCount()
     {
-        ++m_animationCount;
-
-        m_renderer->skipUpdating = false;
-        m_renderer->timer()->resume();
-
-        // When the animation count changes from 0 to 1,
-        // we must send a message to awake the message loop
-        // since the GetMessage function might be blocking.
+        if (m_animationCount < UINT_MAX)
+        {
+            ++m_animationCount;
+        }
         if (m_animationCount == 1)
         {
-            postCustomWin32Message(
-                CustomWin32Message::AwakeGetMessage);
+            m_renderer->skipUpdating = false;
+            m_renderer->timer()->resume();
+
+            postCustomMessage(CustomMessage::AwakeGetMessage);
         }
     }
 
     void Application::decreaseAnimationCount()
     {
-        m_animationCount = std::max(--m_animationCount, 0);
-
+        if (m_animationCount > 0)
+        {
+            --m_animationCount;
+        }
         if (m_animationCount == 0)
         {
             m_renderer->skipUpdating = true;
@@ -1062,7 +1150,7 @@ namespace d14engine::uikit
 
     void Application::addUIObject(ShrdPtrParam<Panel> uiobj)
     {
-        if (!uiobj) return;
+        if (uiobj == nullptr) return;
         m_uiObjects.insert(uiobj);
 
         m_topmostPriority.uiObject = std::min
@@ -1108,16 +1196,32 @@ namespace d14engine::uikit
     {
         m_diffPinnedUIObjects.clear();
 
-        std::set_difference(
-            m_pinnedUIObjects.begin(), m_pinnedUIObjects.end(),
-            m_hitUIObjects.begin(), m_hitUIObjects.end(),
-            std::inserter(m_diffPinnedUIObjects, m_diffPinnedUIObjects.begin()),
-            ISortable<Panel>::WeakAscending()); // Can not deduce automatically.
+        auto& _Cont1 = m_pinnedUIObjects;
+        auto& _Cont2 = m_hitUIObjects;
+        auto& _Cont3 = m_diffPinnedUIObjects;
+
+        auto _Dest = std::inserter
+        (
+        /* _Cont  */ _Cont3,
+        /* _Where */ _Cont3.begin()
+        );
+        auto _Pred = ISortable<Panel>::WeakAscending();
+
+        std::set_difference
+        (
+        /* _First1 */ _Cont1.begin(),
+        /* _Last1  */ _Cont1.end(),
+        /* _First2 */ _Cont2.begin(),
+        /* _Last2  */ _Cont2.end(),
+        /* _Dest   */ _Dest,
+        /* _Pred   */ _Pred
+        );
+        // can not deduce _Pred automatically
     }
 
     void Application::updateDiffPinnedUIObjectsLater()
     {
-        postCustomWin32Message(CustomWin32Message::UpdateRootDiffPinnedUIObjects);
+        postCustomMessage(CustomMessage::UpdateRootDiffPinnedUIObjects);
     }
 
     WeakPtr<Panel> Application::currFocusedUIObject() const
@@ -1219,7 +1323,6 @@ namespace d14engine::uikit
         {
             m_renderer->setSceneColor(Colors::Black);
         }
-
         for (auto& uiobj : m_uiObjects)
         {
             uiobj->onChangeThemeStyle(style);
@@ -1255,17 +1358,15 @@ namespace d14engine::uikit
         {
             sendNextImmediateMouseMoveEvent = false;
 
-            POINT screenCursorPoint = {};
-            GetCursorPos(&screenCursorPoint);
-            ScreenToClient(m_win32Window, &screenCursorPoint);
+            POINT cursorPoint = {};
+            GetCursorPos(&cursorPoint);
+            ScreenToClient(m_win32Window, &cursorPoint);
 
-            PostMessage(m_win32Window, WM_MOUSEMOVE, 0,
-                MAKELPARAM(screenCursorPoint.x, screenCursorPoint.y));
+            PostMessage(m_win32Window, WM_MOUSEMOVE, 0, MAKELPARAM(cursorPoint.x, cursorPoint.y));
         }
     }
 
-    void Application::postCustomWin32Message
-    (CustomWin32Message message, WPARAM wParam, LPARAM lParam)
+    void Application::postCustomMessage(CustomMessage message, WPARAM wParam, LPARAM lParam)
     {
         PostMessage(m_win32Window, (UINT)message, wParam, lParam);
     }
@@ -1287,6 +1388,6 @@ namespace d14engine::uikit
 
     void Application::triggerThreadEvent(ThreadEventID id, ThreadEventData data)
     {
-        postCustomWin32Message(CustomWin32Message::HandleThreadEvent, id, data);
+        postCustomMessage(CustomMessage::HandleThreadEvent, id, data);
     }
 }

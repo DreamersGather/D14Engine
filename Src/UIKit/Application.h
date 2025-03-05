@@ -144,10 +144,10 @@ namespace d14engine::uikit
 
     private:
         // Indicates how many UI objects are playing animations.
-        int m_animationCount = 0;
+        UINT m_animationCount = 0;
 
     public:
-        int animationCount() const;
+        UINT animationCount() const;
 
         void increaseAnimationCount();
         void decreaseAnimationCount();
@@ -306,7 +306,7 @@ namespace d14engine::uikit
         //////////////////////////////
 
     public:
-        enum class CustomWin32Message
+        enum class CustomMessage
         {
             // Messages below WM_USER are reserved.
             _UserDefinedStart_ = WM_USER,
@@ -325,10 +325,7 @@ namespace d14engine::uikit
             // for events triggered within other threads.
             HandleThreadEvent
         };
-        void postCustomWin32Message(
-            CustomWin32Message message,
-            WPARAM wParam = 0,
-            LPARAM lParam = 0);
+        void postCustomMessage(CustomMessage message, WPARAM wParam = 0, LPARAM lParam = 0);
 
         //---------------------------------------------------------
         // Diff-Pinned UI Objects

@@ -92,17 +92,12 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
             ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
 
-            app->dx12Renderer()->setDuplication(true);
-            app->dx12Renderer()->window().setDisplayAffinity(WDA_EXCLUDEFROMCAPTURE);
             ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = app->screenshot();
-                if (image.has_value())
-                {
-                    CreateDirectory(L"Screenshots", nullptr);
-                    bitmap_utils::saveBitmap(image.value().Get(), D14_SCREENSHOT_PATH);
-                }
+                auto image = app->windowshot();
+                CreateDirectory(L"Screenshots", nullptr);
+                bitmap_utils::saveBitmap(image.Get(), D14_SCREENSHOT_PATH);
             };
         }
         auto ui_clientArea = makeUIObject<Panel>();

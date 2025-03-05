@@ -1208,9 +1208,9 @@ namespace d14engine::uikit
         THROW_IF_NULL(Application::g_app);
 
         auto& app = Application::g_app;
-        using CustomMsg = Application::CustomWin32Message;
+        using CustomMsg = Application::CustomMessage;
 
         app->pushDiffPinnedUpdateCandidate(shared_from_this());
-        app->postCustomWin32Message(CustomMsg::UpdateMiscDiffPinnedUIObjects);
+        app->postCustomMessage(CustomMsg::UpdateMiscDiffPinnedUIObjects);
     }
 }
