@@ -12,7 +12,7 @@ namespace d14engine::uikit
 
         struct HorzDistance
         {
-            Optional<float> ToLeft = std::nullopt, ToRight = std::nullopt;
+            Optional<float> ToLeft = {}, ToRight = {};
         }
         Left = {}, Right = {};
 
@@ -20,7 +20,7 @@ namespace d14engine::uikit
 
         struct VertDistance
         {
-            Optional<float> ToTop = std::nullopt, ToBottom = std::nullopt;
+            Optional<float> ToTop = {}, ToBottom = {};
         }
         Top = {}, Bottom = {};
     };

@@ -193,7 +193,7 @@ namespace d14engine::uikit::resource_utils
 
     Optional<Wstring> getClipboardText(HWND hWndNewOwner)
     {
-        Optional<Wstring> content = std::nullopt;
+        Optional<Wstring> content = {};
 
         if (IsClipboardFormatAvailable(CF_UNICODETEXT) && OpenClipboard(hWndNewOwner))
         {

@@ -26,7 +26,7 @@ namespace d14engine::renderer
             {
                 return binaryPath + L"Shaders/";
             }
-            Optional<float> dpi = std::nullopt;
+            Optional<float> dpi = {};
 
             bool fullscreen = false;
 
@@ -607,7 +607,7 @@ namespace d14engine::renderer
 #pragma region Render Pass Implementation
 
     public:
-        void resetCmdList(OptParam<ID3D12CommandAllocator*> alloc = std::nullopt);
+        void resetCmdList(OptParam<ID3D12CommandAllocator*> alloc = {});
         void submitCmdList();
         void flushCmdQueue();
 

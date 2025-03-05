@@ -39,7 +39,7 @@ namespace d14engine::uikit
 
         // Uses the max supported MSAA quality level when quality is empty.
         // Returns whether the target MSAA setting is enabled successfully.
-        bool setMultiSample(UINT count, OptParam<UINT> quality = std::nullopt);
+        bool setMultiSample(UINT count, OptParam<UINT> quality = {});
 
         bool msaaEnabled() const;
 
@@ -78,7 +78,7 @@ namespace d14engine::uikit
         struct SharedBitmapProperty
         {
             float opacity = 1.0f;
-            Optional<D2D1_INTERPOLATION_MODE> interpolationMode = std::nullopt;
+            Optional<D2D1_INTERPOLATION_MODE> interpolationMode = {};
         }
         sharedBitmapProperty = {};
 

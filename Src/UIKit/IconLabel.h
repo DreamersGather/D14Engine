@@ -26,7 +26,7 @@ namespace d14engine::uikit
             D2D1_RECT_F rect = {};
             BitmapObject bitmap = {};
 
-            Optional<D2D1_SIZE_F> customSize = std::nullopt;
+            Optional<D2D1_SIZE_F> customSize = {};
         }
         icon = {};
 
