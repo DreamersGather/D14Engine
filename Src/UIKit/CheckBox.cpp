@@ -43,18 +43,21 @@ namespace d14engine::uikit
 
         auto factory = Application::g_app->dx12Renderer()->d2d1Factory();
 
-        auto properties = D2D1::StrokeStyleProperties
+        auto prop = D2D1::StrokeStyleProperties
         (
-            D2D1_CAP_STYLE_ROUND,
-            D2D1_CAP_STYLE_ROUND,
-            D2D1_CAP_STYLE_ROUND,
-            D2D1_LINE_JOIN_MITER,
-            10.0f, // miterLimit
-            D2D1_DASH_STYLE_SOLID,
-            0.0f   // dashOffset
+        /* startCap */ D2D1_CAP_STYLE_ROUND,
+        /* endCap   */ D2D1_CAP_STYLE_ROUND,
+        /* dashCap  */ D2D1_CAP_STYLE_ROUND
         );
-        THROW_IF_FAILED(factory->CreateStrokeStyle(
-            properties, nullptr, 0, &checkedIcon.strokeStyle));
+        auto& style = checkedIcon.strokeStyle;
+
+        THROW_IF_FAILED(factory->CreateStrokeStyle
+        (
+        /* strokeStyleProperties */ prop,
+        /* dashes                */ nullptr,
+        /* dashesCount           */ 0,
+        /* strokeStyle           */ &style
+        ));
     }
 
     void CheckBox::setEnabled(bool value)
@@ -100,18 +103,18 @@ namespace d14engine::uikit
         {
             m_stateTransitionMap =
             {
-                /* Unchecked    */ State::ActiveFlag::Intermediate,
-                /* Intermediate */ State::ActiveFlag::Checked,
-                /* Checked      */ State::ActiveFlag::Unchecked
+            /* Unchecked    */ State::ActiveFlag::Intermediate,
+            /* Intermediate */ State::ActiveFlag::Checked,
+            /* Checked      */ State::ActiveFlag::Unchecked
             };
         }
         else // Use double-state mode.
         {
             m_stateTransitionMap =
             {
-                /* Unchecked    */ State::ActiveFlag::Checked,
-                /* Intermediate */ State::ActiveFlag::Unchecked,
-                /* Checked      */ State::ActiveFlag::Unchecked
+            /* Unchecked    */ State::ActiveFlag::Checked,
+            /* Intermediate */ State::ActiveFlag::Unchecked,
+            /* Checked      */ State::ActiveFlag::Unchecked
             };
         }
     }
@@ -120,13 +123,19 @@ namespace d14engine::uikit
     {
         auto& setting = getAppearance().button[m_state.index()];
 
-        // Background
+        ////////////////
+        // Background //
+        ////////////////
+
         resource_utils::g_solidColorBrush->SetColor(setting.background.color);
         resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
 
         ClickablePanel::drawBackground(rndr);
 
-        // Icon
+        //////////
+        // Icon //
+        //////////
+
         if (m_state.activeFlag == INTERMEDIATE)
         {
             auto& geoSetting = getAppearance().icon.geometry.intermediate;
@@ -137,7 +146,11 @@ namespace d14engine::uikit
 
             auto iconRect = math_utils::centered(m_absoluteRect, geoSetting.size);
 
-            rndr->d2d1DeviceContext()->FillRectangle(iconRect, resource_utils::g_solidColorBrush.Get());
+            rndr->d2d1DeviceContext()->FillRectangle
+            (
+            /* rect  */ iconRect,
+            /* brush */ resource_utils::g_solidColorBrush.Get()
+            );
         }
         else if (m_state.activeFlag == CHECKED)
         {
@@ -149,27 +162,41 @@ namespace d14engine::uikit
 
             auto iconLeftTop = absolutePosition();
 
-            rndr->d2d1DeviceContext()->DrawLine(
-                math_utils::offset(iconLeftTop, geoSetting.tickLine0.point0),
-                math_utils::offset(iconLeftTop, geoSetting.tickLine0.point1),
-                resource_utils::g_solidColorBrush.Get(),
-                geoSetting.strokeWidth, checkedIcon.strokeStyle.Get());
+            rndr->d2d1DeviceContext()->DrawLine
+            (
+            /* point0      */ math_utils::offset(iconLeftTop, geoSetting.tickLine0.point0),
+            /* point1      */ math_utils::offset(iconLeftTop, geoSetting.tickLine0.point1),
+            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* strokeWidth */ geoSetting.strokeWidth,
+            /* strokeStyle */ checkedIcon.strokeStyle.Get()
+            );
 
-            rndr->d2d1DeviceContext()->DrawLine(
-                math_utils::offset(iconLeftTop, geoSetting.tickLine1.point0),
-                math_utils::offset(iconLeftTop, geoSetting.tickLine1.point1),
-                resource_utils::g_solidColorBrush.Get(),
-                geoSetting.strokeWidth, checkedIcon.strokeStyle.Get());
+            rndr->d2d1DeviceContext()->DrawLine
+            (
+            /* point0      */ math_utils::offset(iconLeftTop, geoSetting.tickLine1.point0),
+            /* point1      */ math_utils::offset(iconLeftTop, geoSetting.tickLine1.point1),
+            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* strokeWidth */ geoSetting.strokeWidth,
+            /* strokeStyle */ checkedIcon.strokeStyle.Get()
+            );
         }
-        // Outline
+
+        /////////////
+        // Outline //
+        /////////////
+
         resource_utils::g_solidColorBrush->SetColor(setting.stroke.color);
         resource_utils::g_solidColorBrush->SetOpacity(setting.stroke.opacity);
 
         auto frame = math_utils::inner(m_absoluteRect, setting.stroke.width);
         D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
 
-        rndr->d2d1DeviceContext()->DrawRoundedRectangle(
-            outlineRect, resource_utils::g_solidColorBrush.Get(), setting.stroke.width);
+        rndr->d2d1DeviceContext()->DrawRoundedRectangle
+        (
+        /* roundedRect */ outlineRect,
+        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* strokeWidth */ setting.stroke.width
+        );
     }
 
     void CheckBox::onChangeThemeStyleHelper(const ThemeStyle& style)
