@@ -16,6 +16,8 @@ namespace d14engine::uikit
         else return true;
     }
 
+    D2D1_INTERPOLATION_MODE BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_LINEAR;
+
     D2D1_INTERPOLATION_MODE BitmapObject::getInterpolationMode() const
     {
         D2D1_INTERPOLATION_MODE mode = {};
@@ -25,16 +27,11 @@ namespace d14engine::uikit
         }
         else mode = g_interpolationMode;
 
-        // This mode uses a variable-size high-quality cubic kernel
-        // to perform a pre-downscale if the target draw-rect is samller
-        // than the source bitmap, which is invalid for empty bitmap
-        // in high DPI mode (Since that requests a invalid kernel size).
+        // This mode requires a non-empty bitmap.
         if (mode == D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC && empty())
         {
-            return D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR;
+            return D2D1_INTERPOLATION_MODE_LINEAR;
         }
         else return mode;
     }
-    D2D1_INTERPOLATION_MODE
-    BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_LINEAR;
 }
