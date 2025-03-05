@@ -26,7 +26,7 @@ namespace d14engine::uikit
         m_dropDownMenu->f_onTriggerMenuItem = [this]
         (PopupMenu* menu, PopupMenu::ItemIndexParam itemIndex)
         {
-            setCurrSelected(itemIndex.index);
+            setSelected(itemIndex.index);
         };
         m_dropDownMenu->setBackgroundTriggerPanel(true);
 
@@ -53,18 +53,21 @@ namespace d14engine::uikit
 
         auto factory = Application::g_app->dx12Renderer()->d2d1Factory();
 
-        auto properties = D2D1::StrokeStyleProperties
+        auto prop = D2D1::StrokeStyleProperties
         (
-            D2D1_CAP_STYLE_ROUND,
-            D2D1_CAP_STYLE_ROUND,
-            D2D1_CAP_STYLE_ROUND,
-            D2D1_LINE_JOIN_MITER,
-            10.0f, // miterLimit
-            D2D1_DASH_STYLE_SOLID,
-            0.0f   // dashOffset
+        /* startCap */ D2D1_CAP_STYLE_ROUND,
+        /* endCap   */ D2D1_CAP_STYLE_ROUND,
+        /* dashCap  */ D2D1_CAP_STYLE_ROUND
         );
-        THROW_IF_FAILED(factory->CreateStrokeStyle(
-            properties, nullptr, 0, &arrowIcon.strokeStyle));
+        auto& style = arrowIcon.strokeStyle;
+
+        THROW_IF_FAILED(factory->CreateStrokeStyle
+        (
+        /* strokeStyleProperties */ prop,
+        /* dashes                */ nullptr,
+        /* dashesCount           */ 0,
+        /* strokeStyle           */ &style
+        ));
     }
 
     void ComboBox::onSelectedChange(IconLabel* content)
@@ -79,14 +82,14 @@ namespace d14engine::uikit
         // This method intentionally left blank.
     }
 
-    const WeakPtr<MenuItem>& ComboBox::currSelected() const
+    const WeakPtr<MenuItem>& ComboBox::selected() const
     {
-        return m_currSelected;
+        return m_selected;
     }
 
-    void ComboBox::setCurrSelected(size_t indexInDropDownMenu)
+    void ComboBox::setSelected(size_t indexInDropDownMenu)
     {
-        WeakPtr<MenuItem> originalSelected = m_currSelected;
+        WeakPtr<MenuItem> originalSelected = m_selected;
 
         auto& items = m_dropDownMenu->childrenItems();
         if (indexInDropDownMenu >= 0 && indexInDropDownMenu < items.size())
@@ -94,11 +97,13 @@ namespace d14engine::uikit
             auto itor = std::next(items.begin(), indexInDropDownMenu);
             auto newContent = (*itor)->getContent<IconLabel>().lock();
 
-            m_currSelected = (*itor);
+            m_selected = (*itor);
             if (newContent != nullptr)
             {
                 m_content->icon = newContent->icon;
-                m_content->label()->copyTextStyle(newContent->label().get(), newContent->label()->text());
+
+                auto newLabel = newContent->label().get();
+                m_content->label()->copyTextStyle(newLabel, newLabel->text());
 
                 m_content->updateLayout();
                 m_content->setPrivateVisible(true);
@@ -106,10 +111,10 @@ namespace d14engine::uikit
         }
         else // Typically, pass SIZE_MAX to clear current selected item.
         {
-            m_currSelected.reset();
+            m_selected.reset();
             m_content->setPrivateVisible(false);
         }
-        if (!cpp_lang_utils::isMostDerivedEqual(originalSelected.lock(), m_currSelected.lock()))
+        if (!cpp_lang_utils::isMostDerivedEqual(originalSelected.lock(), m_selected.lock()))
         {
             onSelectedChange(m_content.get());
         }
@@ -124,7 +129,7 @@ namespace d14engine::uikit
     {
         if (menu && !cpp_lang_utils::isMostDerivedEqual(menu, m_dropDownMenu))
         {
-            setCurrSelected(SIZE_MAX);
+            setSelected(SIZE_MAX);
 
             m_dropDownMenu->release();
             m_dropDownMenu = menu;
@@ -135,7 +140,10 @@ namespace d14engine::uikit
     {
         FlatButton::onRendererDrawD2d1ObjectHelper(rndr);
 
-        // Drop-down Arrow
+        /////////////////////
+        // Drop-down Arrow //
+        /////////////////////
+
         auto& arrowSetting = getAppearance().arrow;
         auto& arrowGeometry = arrowSetting.geometry;
         auto& arrowBackground = m_enabled ? arrowSetting.background : arrowSetting.secondaryBackground;
@@ -145,17 +153,22 @@ namespace d14engine::uikit
 
         auto arrowOrigin = math_utils::rightTop(m_absoluteRect);
 
-        rndr->d2d1DeviceContext()->DrawLine(
-            math_utils::offset(arrowOrigin, arrowGeometry.line0.point0),
-            math_utils::offset(arrowOrigin, arrowGeometry.line0.point1),
-            resource_utils::g_solidColorBrush.Get(),
-            arrowSetting.strokeWidth, arrowIcon.strokeStyle.Get());
-
-        rndr->d2d1DeviceContext()->DrawLine(
-            math_utils::offset(arrowOrigin, arrowGeometry.line1.point0),
-            math_utils::offset(arrowOrigin, arrowGeometry.line1.point1),
-            resource_utils::g_solidColorBrush.Get(),
-            arrowSetting.strokeWidth, arrowIcon.strokeStyle.Get());
+        rndr->d2d1DeviceContext()->DrawLine
+        (
+        /* point0      */ math_utils::offset(arrowOrigin, arrowGeometry.line0.point0),
+        /* point1      */ math_utils::offset(arrowOrigin, arrowGeometry.line0.point1),
+        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* strokeWidth */ arrowSetting.strokeWidth,
+        /* strokeStyle */ arrowIcon.strokeStyle.Get()
+        );
+        rndr->d2d1DeviceContext()->DrawLine
+        (
+        /* point0      */ math_utils::offset(arrowOrigin, arrowGeometry.line1.point0),
+        /* point1      */ math_utils::offset(arrowOrigin, arrowGeometry.line1.point1),
+        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* strokeWidth */ arrowSetting.strokeWidth,
+        /* strokeStyle */ arrowIcon.strokeStyle.Get()
+        );
     }
 
     void ComboBox::onSizeHelper(SizeEvent& e)
@@ -178,15 +191,12 @@ namespace d14engine::uikit
 
         if (e.left())
         {
-            if (!customMenuRelativePosition.has_value())
+            if (!menuOffset.has_value())
             {
-                m_dropDownMenu->move(math_utils::offset(absolutePosition(),
-                {
-                    0.0f ,  m_currSelected.expired() ?
-                    0.0f : -m_currSelected.lock()->position().y
-                }));
+                auto offsetY = m_selected.expired() ? 0.0f : -m_selected.lock()->position().y;
+                m_dropDownMenu->move(math_utils::offset(absolutePosition(), { 0.0f, offsetY }));
             }
-            else m_dropDownMenu->move(selfCoordToAbsolute(customMenuRelativePosition.value()));
+            else m_dropDownMenu->move(selfCoordToAbsolute(menuOffset.value()));
 
             m_dropDownMenu->setActivated(true);
         }

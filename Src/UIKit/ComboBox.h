@@ -37,19 +37,19 @@ namespace d14engine::uikit
         void onSelectedChangeHelper(IconLabel* content);
 
     protected:
-        WeakPtr<MenuItem> m_currSelected = {};
+        WeakPtr<MenuItem> m_selected = {};
 
         SharedPtr<PopupMenu> m_dropDownMenu = {};
 
     public:
-        const WeakPtr<MenuItem>& currSelected() const;
-        void setCurrSelected(size_t indexInDropDownMenu);
+        const WeakPtr<MenuItem>& selected() const;
+        void setSelected(size_t indexInDropDownMenu);
 
         const SharedPtr<PopupMenu>& dropDownMenu() const;
         void setDropDownMenu(ShrdPtrParam<PopupMenu> menu);
 
     public:
-        Optional<D2D1_POINT_2F> customMenuRelativePosition = std::nullopt;
+        Optional<D2D1_POINT_2F> menuOffset = {};
 
     protected:
         // IDrawObject2D
