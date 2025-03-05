@@ -69,7 +69,7 @@ namespace d14engine::uikit
 
         Cursor(
             const BasicIconThemeMap& icons = loadBasicIcons(),
-            const D2D1_RECT_F& rect = { 0.0f, 0.0f, 48.0f, 48.0f });
+            const D2D1_RECT_F& rect = { 0.0f, 0.0f, 32.0f, 32.0f });
 
         void registerDrawObjects() override;
 
@@ -124,7 +124,7 @@ namespace d14engine::uikit
         // To show a basic icon, you only need to specify the index,
         // and its category will be decided by current theme automatically.
         //
-        // For a custom icon, its ico-name is the unique identifier,
+        // For a custom icon, its icon-name is the unique identifier,
         // and you may need to manually adapt it in the onChangeThemeStyle.
 
         void setIcon(StaticIconIndex index);
