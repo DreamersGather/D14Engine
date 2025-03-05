@@ -52,7 +52,7 @@ SharedPtr<TreeViewItem> createGuidancePage
 
         THROW_IF_FAILED(ui_synopsisLabel->textLayout()->SetUnderline(true, { 0, 17 }));
         THROW_IF_FAILED(ui_synopsisLabel->textLayout()->SetFontSize(18.0f * 96.0f / 72.0f, { 0, 17 }));
-        
+
         ConstraintLayout::GeometryInfo geoInfo = {};
 
         ui_synopsisLabel->getAppearance().background = { D2D1::ColorF{ 0xff0000 }, 1.0f };

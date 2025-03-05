@@ -78,7 +78,7 @@ int wmain(int argc, wchar_t* argv[])
 
         Renderer::CreateInfo info = {};
         info.sceneColor = Colors::SteelBlue;
-        
+
         auto rndr = initApp(800, 600, info);
 
         ShowWindow(rndr->window().ptr, SW_SHOW);

@@ -247,13 +247,13 @@ namespace d14engine::renderer
         bool m_duplication = {};
 
         // Refer to https://github.com/microsoft/D3D11On12/issues/45
-        // 
+        //
         // DXGIOutputDuplication created through D3D11On12Device does not work properly
         // when calling AcquireNextFrame, and it always returns (DXGI_ERROR_ACCESS_LOST).
-        // 
+        //
         // A temporary solution is to create an extra D3D11Device
         // and share the output with the D3D11On12Device used for rendering.
-        // 
+        //
         // FIXME: When microsoft/D3D11On12 fixes the related issues,
         // consider rewriting the code to avoid additional sharing overhead.
 

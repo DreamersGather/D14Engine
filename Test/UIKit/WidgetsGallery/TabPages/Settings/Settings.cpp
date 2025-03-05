@@ -100,7 +100,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     {
         ui_engineIcon->bitmap = bitmap_utils::loadBitmap(
             L"Test/UIKit/WidgetsGallery/Images/AboutPanel/D14Engine.png");
-        
+
         ConstraintLayout::GeometryInfo geoInfo = {};
         geoInfo.Left.ToLeft = 40.0f;
         geoInfo.Top.ToTop = 220.0f;
@@ -389,7 +389,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         geoInfo1.Left.ToLeft = 130.0f;
         geoInfo1.Top.ToTop = 294.0f;
         ui_settingsLayout->addElement(ui_textAntialiasModeSelector, geoInfo1);
-        
+
         PopupMenu::ItemList strModeItems = {};
         for (auto& strMode : textAntialiasModePairs)
         {

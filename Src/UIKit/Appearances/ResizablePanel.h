@@ -21,7 +21,7 @@ namespace d14engine::uikit::appearance
                 D2D1_RECT_F cornerOffset = { 12.0f, 12.0f, 12.0f, 12.0f };
             }
             sizingFrame = {};
-            
+
             struct StaticSizingGuideFrame
             {
                 SolidStyle background = {};

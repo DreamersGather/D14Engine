@@ -31,7 +31,7 @@ PSInput VS(VSInput input)
         worldMatrix),
         viewMatrix),
         projMatrix);
-    
+
     output.color = input.color;
 
     return output;

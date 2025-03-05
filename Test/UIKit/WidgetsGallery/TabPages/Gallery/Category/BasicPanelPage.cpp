@@ -47,7 +47,7 @@ SharedPtr<TreeViewItem> createBasicPanelPage
         ui_synopsisLabel->setTextFormat(D14_FONT(L"Default/Normal/14"));
         ui_synopsisLabel->hardAlignment.vert = Label::VertAlignment::Top;
         THROW_IF_FAILED(ui_synopsisLabel->textLayout()->SetWordWrapping(DWRITE_WORD_WRAPPING_WRAP));
-        
+
         ConstraintLayout::GeometryInfo geoInfo = {};
 
         ui_synopsisLabel->getAppearance().background = { D2D1::ColorF{ 0xff0000 }, 1.0f };

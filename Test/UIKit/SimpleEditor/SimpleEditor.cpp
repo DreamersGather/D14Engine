@@ -154,7 +154,7 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
         auto ui_mainBodyInput = makeManagedUIObject<TextEditor>(ui_mainBodyView, 5.0f);
         {
             ui_mainBodyView->transform(25.0f, 94.0f, 767.0f, 462.0f);
-            
+
             ui_mainBodyView->customSizeGetter.self =
             [
                 wk_mainBodyInput = (WeakPtr<TextEditor>)ui_mainBodyInput

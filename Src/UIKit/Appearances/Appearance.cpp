@@ -97,7 +97,7 @@ namespace d14engine::uikit::appearance
         // TODO: Implement dynamic toned color generation algorithm.
 
         std::vector<BYTE> data = {}; DWORD dataSize = {};
-        
+
         THROW_IF_FAILED(RegGetValue
         (
         /* hkey     */ HKEY_CURRENT_USER,
