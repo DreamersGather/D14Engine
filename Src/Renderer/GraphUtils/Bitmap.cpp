@@ -22,8 +22,8 @@ namespace d14engine::renderer::graph_utils
             /* rclsid       */ CLSID_WICImagingFactory,
             /* pUnkOuter    */ nullptr,
             /* dwClsContext */ CLSCTX_INPROC_SERVER,
-            /* riid         */
-            /* ppv          */ IID_PPV_ARGS(&g_factory)
+            /* _            */
+            /* _            */ IID_PPV_ARGS(&g_factory)
             ));
         }
 
@@ -32,10 +32,7 @@ namespace d14engine::renderer::graph_utils
             return g_factory.Get();
         }
 
-        ComPtr<IWICBitmapLock> map(
-            IWICBitmapSource* source,
-            DWORD flgas,
-            Optional<WICRect> rect)
+        ComPtr<IWICBitmapLock> map(IWICBitmapSource* source, DWORD flgas, Optional<WICRect> rect)
         {
             ComPtr<IWICBitmap> bitmap = {};
             THROW_IF_FAILED(factory()->CreateBitmapFromSource
@@ -60,9 +57,7 @@ namespace d14engine::renderer::graph_utils
             return lock;
         }
 
-        ComPtr<IWICBitmapSource> load(
-            WstrParam imagePath,
-            REFWICPixelFormatGUID format)
+        ComPtr<IWICBitmapSource> load(WstrParam imagePath, REFWICPixelFormatGUID format)
         {
             ComPtr<IWICBitmapDecoder> decoder = {};
             THROW_IF_FAILED(g_factory->CreateDecoderFromFilename
@@ -91,9 +86,7 @@ namespace d14engine::renderer::graph_utils
             return formatConverter;
         }
 
-        ComPtr<IWICBitmapSource> load(
-            IStream* imageStream,
-            REFWICPixelFormatGUID format)
+        ComPtr<IWICBitmapSource> load(IStream* imageStream, REFWICPixelFormatGUID format)
         {
             ComPtr<IWICBitmapDecoder> decoder = {};
             THROW_IF_FAILED(g_factory->CreateDecoderFromStream

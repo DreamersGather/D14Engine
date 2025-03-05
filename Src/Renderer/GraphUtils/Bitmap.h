@@ -14,17 +14,10 @@ namespace d14engine::renderer::graph_utils
 
         IWICImagingFactory2* factory();
 
-        ComPtr<IWICBitmapLock> map(
-            IWICBitmapSource* source,
-            DWORD flgas = WICBitmapLockRead,
-            Optional<WICRect> rect = {});
+        ComPtr<IWICBitmapLock> map(IWICBitmapSource* source, DWORD flgas = WICBitmapLockRead, Optional<WICRect> rect = {});
 
-        ComPtr<IWICBitmapSource> load(
-            WstrParam imagePath,
-            REFWICPixelFormatGUID format = GUID_WICPixelFormat32bppPRGBA);
+        ComPtr<IWICBitmapSource> load(WstrParam imagePath, REFWICPixelFormatGUID format = GUID_WICPixelFormat32bppPRGBA);
 
-        ComPtr<IWICBitmapSource> load(
-            IStream* imageStream,
-            REFWICPixelFormatGUID format = GUID_WICPixelFormat32bppPRGBA);
+        ComPtr<IWICBitmapSource> load(IStream* imageStream, REFWICPixelFormatGUID format = GUID_WICPixelFormat32bppPRGBA);
     }
 }
