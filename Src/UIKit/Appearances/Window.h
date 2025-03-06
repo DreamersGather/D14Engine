@@ -6,6 +6,7 @@
 
 #include "UIKit/Appearances/Appearance.h"
 #include "UIKit/SolidStyle.h"
+#include "UIKit/StrokeStyle.h"
 
 namespace d14engine::uikit::appearance
 {
@@ -17,6 +18,7 @@ namespace d14engine::uikit::appearance
         };
         struct Appearance : appearance::Appearance
         {
+            Appearance();
             static void initialize();
 
             void changeTheme(WstrParam themeName) override;
@@ -25,6 +27,7 @@ namespace d14engine::uikit::appearance
                 cpp_lang_utils::enumCount<ThreeBrosState>;
 
             SolidStyle background = {};
+            StrokeStyle stroke = {};
 
             struct Shadow
             {
@@ -83,16 +86,6 @@ namespace d14engine::uikit::appearance
                     background = {};
                 }
                 captionPanel = {};
-
-                struct DecorativeBar
-                {
-                    struct GradientColor
-                    {
-                        D2D1_COLOR_F _0_0 = {}, _0_5 = {}, _1_0 = {};
-                    }
-                    gradientColor = {};
-                }
-                decorativeBar = {};
 
                 struct ThreeBrothers
                 {

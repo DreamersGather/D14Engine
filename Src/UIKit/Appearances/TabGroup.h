@@ -196,8 +196,6 @@ namespace d14engine::uikit::appearance
                     moreCards = {};
                 }
                 tabBar = {};
-
-                SolidStyle maskWhenBelowDragWindow = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
         }

@@ -112,7 +112,6 @@ namespace d14engine::uikit::appearance
                 {
                     struct Type
                     {
-                        SolidStyle background = {};
                         SolidStyle secondaryBackground = {};
                     }
                     filled = {}, complete = {};
@@ -121,7 +120,6 @@ namespace d14engine::uikit::appearance
 
                 struct Handle
                 {
-                    SolidStyle background = {};
                     SolidStyle secondaryBackground = {};
 
                     struct Shadow

@@ -4,11 +4,17 @@
 
 namespace d14engine::uikit::appearance
 {
+    Window::Appearance::Appearance()
+    {
+        stroke.opacity = 0.0f;
+    }
+
     void Window::Appearance::initialize()
     {
         auto& light = (g_themeData[L"Light"] = {});
         {
             light.background.color = D2D1::ColorF{ 0xf9f9f9 };
+
             light.shadow.color = D2D1::ColorF{ 0x808080 };
 
             light.captionPanel.background =
@@ -97,6 +103,7 @@ namespace d14engine::uikit::appearance
         auto& dark = (g_themeData[L"Dark"] = {});
         {
             dark.background.color = D2D1::ColorF{ 0x272727 };
+
             dark.shadow.color = D2D1::ColorF{ 0x000000 };
 
             dark.captionPanel.background =
@@ -186,22 +193,20 @@ namespace d14engine::uikit::appearance
 
     void Window::Appearance::changeTheme(WstrParam themeName)
     {
+        stroke.color = color::normal();
+
+        decorativeBar.gradientColor =
+        {
+            ._0_0 = color1(),
+            ._0_5 = color2(),
+            ._1_0 = color3()
+        };
         _D14_FIND_THEME_DATA(themeName);
 
-        _ref.decorativeBar.gradientColor =
-        {
-            color1(), // _0_0
-            color2(), // _0_5
-            color3()  // _1_0
-        };
         _D14_UPDATE_THEME_DATA_1(background.color);
         _D14_UPDATE_THEME_DATA_1(shadow.color);
 
         _D14_UPDATE_THEME_DATA_1(captionPanel.background.color);
-
-        _D14_UPDATE_THEME_DATA_1(decorativeBar.gradientColor._0_0);
-        _D14_UPDATE_THEME_DATA_1(decorativeBar.gradientColor._0_5);
-        _D14_UPDATE_THEME_DATA_1(decorativeBar.gradientColor._1_0);
 
         _D14_UPDATE_THEME_DATA_ARRAY_1(threeBrothers);
     }

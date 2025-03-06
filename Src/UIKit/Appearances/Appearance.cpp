@@ -89,6 +89,50 @@ namespace d14engine::uikit::appearance
         return g_color3;
     }
 
+    namespace color
+    {
+        D2D1_COLOR_F g_normal = {};
+
+        const D2D1_COLOR_F& normal()
+        {
+            return g_normal;
+        }
+
+        D2D1_COLOR_F g_light1 = {};
+        D2D1_COLOR_F g_light2 = {};
+        D2D1_COLOR_F g_light3 = {};
+
+        const D2D1_COLOR_F& light1()
+        {
+            return g_light1;
+        }
+        const D2D1_COLOR_F& light2()
+        {
+            return g_light2;
+        }
+        const D2D1_COLOR_F& light3()
+        {
+            return g_light3;
+        }
+
+        D2D1_COLOR_F g_dark1 = {};
+        D2D1_COLOR_F g_dark2 = {};
+        D2D1_COLOR_F g_dark3 = {};
+
+        const D2D1_COLOR_F& dark1()
+        {
+            return g_dark1;
+        }
+        const D2D1_COLOR_F& dark2()
+        {
+            return g_dark2;
+        }
+        const D2D1_COLOR_F& dark3()
+        {
+            return g_dark3;
+        }
+    }
+
     void generateTonedColors(const Appearance::ThemeStyle& style)
     {
         // TODO: Implement dynamic toned color generation algorithm.
@@ -133,6 +177,7 @@ namespace d14engine::uikit::appearance
         // data[32] (8 RGBA colors):
         // AccentLight3 AccentLight2 AccentLight1 AccentNormal AccentDark1 AccentDark2 AccentDark3 Unknown
         // It is currently unclear what getAbgrFromRbga(7) [Unknown] represents.
+
         if (style.name == L"Light")
         {
             g_color1 = extractColor(4);
@@ -145,5 +190,14 @@ namespace d14engine::uikit::appearance
             g_color2 = extractColor(2);
             g_color3 = extractColor(3);
         }
+        color::g_normal = extractColor(3);
+
+        color::g_light1 = extractColor(2);
+        color::g_light2 = extractColor(1);
+        color::g_light3 = extractColor(2);
+
+        color::g_dark1 = extractColor(4);
+        color::g_dark2 = extractColor(5);
+        color::g_dark3 = extractColor(6);
     }
 }

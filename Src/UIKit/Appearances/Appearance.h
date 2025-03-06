@@ -88,6 +88,18 @@ namespace d14engine::uikit::appearance
     const D2D1_COLOR_F& color2();
     const D2D1_COLOR_F& color3();
 
+    namespace color
+    {
+        const D2D1_COLOR_F& normal();
+
+        const D2D1_COLOR_F& light1();
+        const D2D1_COLOR_F& light2();
+        const D2D1_COLOR_F& light3();
+
+        const D2D1_COLOR_F& dark1();
+        const D2D1_COLOR_F& dark2();
+        const D2D1_COLOR_F& dark3();
+    }
     // Call Appearance::changeTheme after generated new colors.
     void generateTonedColors(const Appearance::ThemeStyle& style);
 

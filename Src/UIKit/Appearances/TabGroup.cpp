@@ -123,13 +123,13 @@ namespace d14engine::uikit::appearance
 
     void TabGroup::Appearance::changeTheme(WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(themeName);
-
-        _ref.maskWhenBelowDragWindow =
+        maskWhenBelowDragWindow =
         {
             color1(), // color
             0.5f // opacity
         };
+        _D14_FIND_THEME_DATA(themeName);
+
         _D14_UPDATE_THEME_DATA_1(background.color);
         _D14_UPDATE_THEME_DATA_1(stroke.color);
 
@@ -140,8 +140,6 @@ namespace d14engine::uikit::appearance
 
             _D14_UPDATE_THEME_DATA_ARRAY_1(tabBar.moreCards.control.button.background);
             _D14_UPDATE_THEME_DATA_ARRAY_1(tabBar.moreCards.control.icon.background);
-
-            _D14_UPDATE_THEME_DATA_1(maskWhenBelowDragWindow);
         }
     }
     _D14_SET_THEME_DATA_MAP_IMPL(TabGroup)

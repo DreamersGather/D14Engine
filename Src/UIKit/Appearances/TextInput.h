@@ -67,7 +67,6 @@ namespace d14engine::uikit::appearance
                     struct Background
                     {
                         SolidStyle Static[g_stateCount] = {};
-                        SolidStyle Dynamic = {};
                     }
                     background = {};
                 }

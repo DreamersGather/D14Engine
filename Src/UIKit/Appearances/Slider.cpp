@@ -80,29 +80,26 @@ namespace d14engine::uikit::appearance
 
     void Slider::Appearance::changeTheme(WstrParam themeName)
     {
-        _D14_FIND_THEME_DATA(themeName);
-
-        _ref.bar.filled.background =
+        bar.filled.background =
         {
             color1(), // color
             1.0f // opacity
         };
-        _ref.bar.complete.background =
+        bar.complete.background =
         {
             color1(), // color
             0.38f // opacity
         };
-        _ref.handle.background =
+        handle.background =
         {
             color1(), // color
             1.0f // opacity
         };
-        _D14_UPDATE_THEME_DATA_1(bar.filled.background);
+        _D14_FIND_THEME_DATA(themeName);
+        
         _D14_UPDATE_THEME_DATA_1(bar.filled.secondaryBackground);
-        _D14_UPDATE_THEME_DATA_1(bar.complete.background);
         _D14_UPDATE_THEME_DATA_1(bar.complete.secondaryBackground);
 
-        _D14_UPDATE_THEME_DATA_1(handle.background);
         _D14_UPDATE_THEME_DATA_1(handle.secondaryBackground);
         _D14_UPDATE_THEME_DATA_1(handle.shadow.color);
         _D14_UPDATE_THEME_DATA_1(handle.shadow.secondaryColor);
