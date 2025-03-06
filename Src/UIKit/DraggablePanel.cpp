@@ -107,11 +107,11 @@ namespace d14engine::uikit
                 auto hwnd = Application::g_app->win32Window();
                 auto& draggingPoint = m_draggingPoint.globalWin32Window;
 
-                POINT screenCursorPoint = {};
-                GetCursorPos(&screenCursorPoint);
+                POINT cursorPoint = {};
+                GetCursorPos(&cursorPoint);
 
-                int X = screenCursorPoint.x - draggingPoint.x;
-                int Y = screenCursorPoint.y - draggingPoint.y;
+                int X = cursorPoint.x - draggingPoint.x;
+                int Y = cursorPoint.y - draggingPoint.y;
 
                 SetWindowPos(hwnd, HWND_TOP, X, Y, 0, 0, SWP_NOSIZE);
                 break;
@@ -141,11 +141,11 @@ namespace d14engine::uikit
             {
                 m_draggingPoint.localSelfWindow = absoluteToSelfCoord(p);
 
-                POINT screenCursorPoint = {};
-                GetCursorPos(&screenCursorPoint);
-                ScreenToClient(Application::g_app->win32Window(), &screenCursorPoint);
+                POINT cursorPoint = {};
+                GetCursorPos(&cursorPoint);
+                ScreenToClient(Application::g_app->win32Window(), &cursorPoint);
 
-                m_draggingPoint.globalWin32Window = screenCursorPoint;
+                m_draggingPoint.globalWin32Window = cursorPoint;
 
                 onStartDragging();
             }
