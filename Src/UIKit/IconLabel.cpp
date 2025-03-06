@@ -296,19 +296,28 @@ namespace d14engine::uikit
 
     void IconLabel::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        // Label Text
+        ////////////////
+        // Label Text //
+        ////////////////
+
         if (m_label->isD2d1ObjectVisible())
         {
             m_label->onRendererDrawD2d1Object(rndr);
         }
-        // Icon Bitmap
+
+        /////////////////
+        // Icon Bitmap //
+        /////////////////
+
         if (icon.bitmap.data)
         {
-            auto rect = math_utils::roundf(selfCoordToAbsolute(icon.rect));
-
-            rndr->d2d1DeviceContext()->DrawBitmap(
-                icon.bitmap.data.Get(), rect, icon.bitmap.opacity,
-                icon.bitmap.getInterpolationMode());
+            rndr->d2d1DeviceContext()->DrawBitmap
+            (
+            /* bitmap               */ icon.bitmap.data.Get(),
+            /* destinationRectangle */ selfCoordToAbsolute(icon.rect),
+            /* opacity              */ icon.bitmap.opacity,
+            /* interpolationMode    */ icon.bitmap.getInterpolationMode()
+            );
         }
     }
 }
