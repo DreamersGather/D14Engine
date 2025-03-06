@@ -197,9 +197,9 @@ namespace d14engine::uikit::appearance
 
         decorativeBar.gradientColor =
         {
-            ._0_0 = color1(),
+            ._0_0 = color3(),
             ._0_5 = color2(),
-            ._1_0 = color3()
+            ._1_0 = color1()
         };
         _D14_FIND_THEME_DATA(themeName);
 
