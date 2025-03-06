@@ -19,14 +19,14 @@ namespace d14engine::uikit
     {
         TextLayoutParams layoutParams =
         {
-            /* text               */ std::nullopt,
-            /* textFormat         */ resource_utils::g_textFormats.at(defaultTextFormatName).Get(),
-            /* maxWidth           */ std::nullopt,
-            /* maxHeight          */ std::nullopt,
-            /* incrementalTabStop */ 4.0f * 96.0f / 72.0f,
-            /* textAlignment      */ DWRITE_TEXT_ALIGNMENT_LEADING,
-            /* paragraphAlignment */ DWRITE_PARAGRAPH_ALIGNMENT_CENTER,
-            /* wordWrapping       */ DWRITE_WORD_WRAPPING_NO_WRAP
+            .text               = std::nullopt,
+            .textFormat         = resource_utils::g_textFormats.at(defaultTextFormatName).Get(),
+            .maxWidth           = std::nullopt,
+            .maxHeight          = std::nullopt,
+            .incrementalTabStop = 4.0f * 96.0f / 72.0f,
+            .textAlignment      = DWRITE_TEXT_ALIGNMENT_LEADING,
+            .paragraphAlignment = DWRITE_PARAGRAPH_ALIGNMENT_CENTER,
+            .wordWrapping       = DWRITE_WORD_WRAPPING_NO_WRAP
         };
         m_textLayout = getTextLayout(layoutParams);
         updateTextOverhangMetrics();
@@ -91,8 +91,8 @@ namespace d14engine::uikit
 
     void Label::eraseTextFragment(const CharacterRange& range)
     {
-        size_t validOffset = std::clamp<size_t>(range.offset, 0, m_text.size());
-        size_t validCount = std::clamp<size_t>(range.count, 0, m_text.size() - validOffset);
+        auto validOffset = std::clamp<size_t>(range.offset, 0, m_text.size());
+        auto validCount = std::clamp<size_t>(range.count, 0, m_text.size() - validOffset);
 
         m_text.erase(validOffset, validCount);
 
@@ -102,61 +102,63 @@ namespace d14engine::uikit
 
     void Label::copyTextStyle(Label* source, OptParam<WstringView> text)
     {
-        if (source == nullptr) return;
-
-        getAppearance() = source->getAppearance();
-
-        ComPtr<IDWriteTextFormat> textFormat;
-        source->m_textLayout.As(&textFormat);
-
-        if (text.has_value())
+        if (source)
         {
-            m_text = text.value();
-        }
-        TextLayoutParams layoutParams =
-        {
-            /* text               */ text,
-            /* textFormat         */ textFormat.Get(),
-            /* maxWidth           */ std::nullopt,
-            /* maxHeight          */ std::nullopt,
-            /* incrementalTabStop */ source->m_textLayout->GetIncrementalTabStop(),
-            /* textAlignment      */ source->m_textLayout->GetTextAlignment(),
-            /* paragraphAlignment */ source->m_textLayout->GetParagraphAlignment(),
-            /* wordWrapping       */ source->m_textLayout->GetWordWrapping()
-        };
-        m_textLayout = getTextLayout(layoutParams);
+            getAppearance() = source->getAppearance();
+
+            ComPtr<IDWriteTextFormat> textFormat = {};
+            source->m_textLayout.As(&textFormat);
+
+            if (text.has_value())
+            {
+                m_text = text.value();
+            }
+            TextLayoutParams layoutParams =
+            {
+                .text               = text,
+                .textFormat         = textFormat.Get(),
+                .maxWidth           = std::nullopt,
+                .maxHeight          = std::nullopt,
+                .incrementalTabStop = source->m_textLayout->GetIncrementalTabStop(),
+                .textAlignment      = source->m_textLayout->GetTextAlignment(),
+                .paragraphAlignment = source->m_textLayout->GetParagraphAlignment(),
+                .wordWrapping       = source->m_textLayout->GetWordWrapping()
+            };
+            m_textLayout = getTextLayout(layoutParams);
 
 #define COPY_TEXT_LAYOUT_FONT_ATTR(Property_Name) \
 do { \
-        auto& src = source->m_textLayout; \
-        decltype(src->GetFont##Property_Name()) value; \
-        if (FAILED(src->GetFont##Property_Name(0, &value))) \
-        { \
-            value = src->GetFont##Property_Name(); \
-        } \
-        m_textLayout->SetFont##Property_Name( \
-            value, { 0, (UINT32)m_text.size() }); \
+    auto& src = source->m_textLayout; \
+    decltype(src->GetFont##Property_Name()) value = {}; \
+    if (FAILED(src->GetFont##Property_Name(0, &value))) \
+    { \
+        value = src->GetFont##Property_Name(); \
+    } \
+    m_textLayout->SetFont##Property_Name(value, { 0, (UINT32)m_text.size() }); \
 } while (0)
+            // Copy the format of the 1st character by default.
 
-        // Copy the format of the 1st character by default.
-
-        COPY_TEXT_LAYOUT_FONT_ATTR(Size);
-        COPY_TEXT_LAYOUT_FONT_ATTR(Weight);
-        COPY_TEXT_LAYOUT_FONT_ATTR(Style);
-        COPY_TEXT_LAYOUT_FONT_ATTR(Stretch);
+            COPY_TEXT_LAYOUT_FONT_ATTR(Size);
+            COPY_TEXT_LAYOUT_FONT_ATTR(Weight);
+            COPY_TEXT_LAYOUT_FONT_ATTR(Style);
+            COPY_TEXT_LAYOUT_FONT_ATTR(Stretch);
 
 #undef COPY_TEXT_LAYOUT_FONT_ATTR
 
-        updateTextOverhangMetrics();
+            updateTextOverhangMetrics();
 
-        drawTextOptions = source->drawTextOptions;
+            drawTextOptions = source->drawTextOptions;
+        }
     }
 
-    IDWriteTextLayout* Label::textLayout() const { return m_textLayout.Get(); }
+    IDWriteTextLayout* Label::textLayout() const
+    {
+        return m_textLayout.Get();
+    }
 
     DWRITE_TEXT_METRICS Label::textMetrics() const
     {
-        DWRITE_TEXT_METRICS metrics;
+        DWRITE_TEXT_METRICS metrics = {};
         THROW_IF_FAILED(m_textLayout->GetMetrics(&metrics));
         return metrics;
     }
@@ -203,15 +205,16 @@ do { \
         FLOAT maxHeight = params.maxHeight.has_value() ? params.maxHeight.value() :
             ((m_textLayout != nullptr) ? m_textLayout->GetMaxHeight() : height());
 
-        ComPtr<IDWriteTextLayout> textLayout;
-        THROW_IF_FAILED(Application::g_app->dx12Renderer()->dwriteFactory()->CreateTextLayout(
-            string,
-            stringLength,
-            textFormat.Get(),
-            maxWidth,
-            maxHeight,
-            &textLayout));
-
+        ComPtr<IDWriteTextLayout> textLayout = {};
+        THROW_IF_FAILED(Application::g_app->dx12Renderer()->dwriteFactory()->CreateTextLayout
+        (
+        /* string       */ string,
+        /* stringLength */ stringLength,
+        /* textFormat   */ textFormat.Get(),
+        /* maxWidth     */ maxWidth,
+        /* maxHeight    */ maxHeight,
+        /* textLayout   */ &textLayout)
+        );
         THROW_IF_FAILED(textLayout->SetIncrementalTabStop(
             params.incrementalTabStop.has_value() ?
             params.incrementalTabStop.value() :
@@ -237,7 +240,7 @@ do { \
 
     DWRITE_TEXT_METRICS Label::getTextMetrics(const TextMetricsParams& params) const
     {
-        DWRITE_TEXT_METRICS metrics;
+        DWRITE_TEXT_METRICS metrics = {};
         THROW_IF_FAILED(getTextLayout(params)->GetMetrics(&metrics));
         return metrics;
     }
@@ -247,11 +250,11 @@ do { \
         PointHitTestResult result = {};
         THROW_IF_FAILED(m_textLayout->HitTestPoint
         (
-            /* pointX         */ pointX,
-            /* pointY         */ pointY,
-            /* isTrailingHit  */ &result.isTrailingHit,
-            /* isInside       */ &result.isInside,
-            /* hitTestMetrics */ &result.metrics
+        /* pointX         */ pointX,
+        /* pointY         */ pointY,
+        /* isTrailingHit  */ &result.isTrailingHit,
+        /* isInside       */ &result.isInside,
+        /* hitTestMetrics */ &result.metrics
         ));
         return result;
     }
@@ -261,11 +264,11 @@ do { \
         TextPosHitTestResult result = {};
         THROW_IF_FAILED(m_textLayout->HitTestTextPosition
         (
-            /* textPosition   */ textPosition,
-            /* isTrailingHit  */ isTrailingHit,
-            /* pointX         */ &result.pointX,
-            /* pointY         */ &result.pointY,
-            /* hitTestMetrics */ &result.metrics
+        /* textPosition   */ textPosition,
+        /* isTrailingHit  */ isTrailingHit,
+        /* pointX         */ &result.pointX,
+        /* pointY         */ &result.pointY,
+        /* hitTestMetrics */ &result.metrics
         ));
         return result;
     }
@@ -273,17 +276,17 @@ do { \
     Label::TextRangeHitTestResult
     Label::hitTestTextRange(UINT32 textPosition, UINT32 textLength, FLOAT originX, FLOAT originY)
     {
-        UINT32 count;
-        HRESULT hr;
+        UINT32 count = {};
+        HRESULT hr = {};
         hr = m_textLayout->HitTestTextRange
         (
-            /* _                         */ textPosition,
-            /* _                         */ textLength,
-            /* _                         */ originX,
-            /* _                         */ originY,
-            /* hitTestMetrics            */ nullptr,
-            /* maxHitTestMetricsCount    */ 0,
-            /* actualHitTestMetricsCount */ &count
+        /* _                         */ textPosition,
+        /* _                         */ textLength,
+        /* _                         */ originX,
+        /* _                         */ originY,
+        /* hitTestMetrics            */ nullptr,
+        /* maxHitTestMetricsCount    */ 0,
+        /* actualHitTestMetricsCount */ &count
         );
         if (hr != E_NOT_SUFFICIENT_BUFFER)
         {
@@ -292,13 +295,13 @@ do { \
         TextRangeHitTestResult result = { count };
         THROW_IF_FAILED(m_textLayout->HitTestTextRange
         (
-            /* _                         */ textPosition,
-            /* _                         */ textLength,
-            /* _                         */ originX,
-            /* _                         */ originY,
-            /* hitTestMetrics            */ result.metrics.data(),
-            /* maxHitTestMetricsCount    */ (UINT32)result.metrics.size(),
-            /* actualHitTestMetricsCount */ &count
+        /* _                         */ textPosition,
+        /* _                         */ textLength,
+        /* _                         */ originX,
+        /* _                         */ originY,
+        /* hitTestMetrics            */ result.metrics.data(),
+        /* maxHitTestMetricsCount    */ (UINT32)result.metrics.size(),
+        /* actualHitTestMetricsCount */ &count
         ));
         return result;
     }
@@ -357,25 +360,31 @@ do { \
         }
         default: /* VertAlignment::None */ break;
         }
-        rndr->d2d1DeviceContext()->DrawTextLayout(
-            origin,
-            m_textLayout.Get(),
-            resource_utils::g_solidColorBrush.Get(),
-            drawTextOptions);
+        rndr->d2d1DeviceContext()->DrawTextLayout
+        (
+        /* origin           */ origin,
+        /* textLayout       */ m_textLayout.Get(),
+        /* defaultFillBrush */ resource_utils::g_solidColorBrush.Get(),
+        /* options          */ drawTextOptions
+        );
     }
 
     void Label::drawOutline(renderer::Renderer* rndr)
     {
-        resource_utils::g_solidColorBrush->SetColor(getAppearance().stroke.color);
-        resource_utils::g_solidColorBrush->SetOpacity(getAppearance().stroke.opacity);
+        auto& stroke = getAppearance().stroke;
 
-        float strokeWidth = getAppearance().stroke.width;
+        resource_utils::g_solidColorBrush->SetColor(stroke.color);
+        resource_utils::g_solidColorBrush->SetOpacity(stroke.opacity);
 
-        auto frame = math_utils::inner(m_absoluteRect, strokeWidth);
+        auto frame = math_utils::inner(m_absoluteRect, stroke.width);
         D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
 
-        rndr->d2d1DeviceContext()->DrawRoundedRectangle(
-            outlineRect, resource_utils::g_solidColorBrush.Get(), strokeWidth);
+        rndr->d2d1DeviceContext()->DrawRoundedRectangle
+        (
+        /* roundedRect */ outlineRect,
+        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* strokeWidth */ stroke.width
+        );
     }
 
     void Label::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
