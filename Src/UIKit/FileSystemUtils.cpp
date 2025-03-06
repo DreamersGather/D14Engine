@@ -6,7 +6,7 @@ namespace d14engine::file_system_utils
 {
     Wstring extractFileName(WstrParam path)
     {
-        size_t slashPos = path.find_last_of(L'/');
+        auto slashPos = path.find_last_of(L'/');
         if (slashPos != Wstring::npos)
         {
             return path.substr(slashPos + 1);
@@ -24,7 +24,7 @@ namespace d14engine::file_system_utils
 
     Wstring extractFilePrefix(WstrParam fileName, WCHAR token)
     {
-        size_t tokenPos = fileName.find_last_of(token);
+        auto tokenPos = fileName.find_last_of(token);
         if (tokenPos != Wstring::npos)
         {
             return fileName.substr(0, tokenPos);
@@ -34,7 +34,7 @@ namespace d14engine::file_system_utils
 
     Wstring extractFileSuffix(WstrParam fileName, WCHAR token)
     {
-        size_t tokenPos = fileName.find_last_of(token);
+        auto tokenPos = fileName.find_last_of(token);
         if (tokenPos != Wstring::npos)
         {
             return fileName.substr(tokenPos + 1);
