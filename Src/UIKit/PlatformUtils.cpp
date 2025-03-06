@@ -16,7 +16,7 @@ namespace d14engine::uikit::platform_utils
         {
             return app->createInfo.dpi.value();
         }
-        else return (float)GetSystemDpiForProcess(GetCurrentProcess());
+        return (float)GetSystemDpiForProcess(GetCurrentProcess());
     }
 
     LONG scaledByDpi(LONG a)
