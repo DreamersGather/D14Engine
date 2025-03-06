@@ -24,9 +24,13 @@ namespace d14engine::uikit
 
         auto& bkgnRect = m_absoluteRect;
 
-        rndr->d2d1DeviceContext()->DrawLine(
-            math_utils::leftCenter(bkgnRect), math_utils::rightCenter(bkgnRect),
-            resource_utils::g_solidColorBrush.Get(), getAppearance().strokeWidth);
+        rndr->d2d1DeviceContext()->DrawLine
+        (
+        /* point0      */ math_utils::leftCenter(bkgnRect),
+        /* point1      */ math_utils::rightCenter(bkgnRect),
+        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* strokeWidth */ getAppearance().strokeWidth
+        );
     }
 
     void MenuSeparator::onChangeThemeStyleHelper(const ThemeStyle& style)
