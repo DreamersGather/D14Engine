@@ -47,28 +47,38 @@ namespace d14engine::uikit
                 math_utils::moveVertex(selfCoordRect(), shadowSetting.offset),
                 roundRadiusX, roundRadiusY
             };
-            rndr->d2d1DeviceContext()->FillRoundedRectangle(
-                roundedRect, resource_utils::g_solidColorBrush.Get());
+            rndr->d2d1DeviceContext()->FillRoundedRectangle
+            (
+            /* roundedRect */ roundedRect,
+            /* brush       */ resource_utils::g_solidColorBrush.Get()
+            );
         }
         shadow.endDraw(rndr->d2d1DeviceContext());
     }
 
     void ElevatedButton::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        // Shadow
+        ////////////
+        // Shadow //
+        ////////////
+
         auto& shadowSetting = getAppearance().shadow;
 
         shadow.color = shadowSetting.color[(size_t)m_currState];
         shadow.standardDeviation = shadowSetting.standardDeviation;
 
-        shadow.configEffectInput(
-            resource_utils::g_shadowEffect.Get());
+        shadow.configEffectInput(resource_utils::g_shadowEffect.Get());
 
-        rndr->d2d1DeviceContext()->DrawImage(
-            resource_utils::g_shadowEffect.Get(),
-            math_utils::roundf(absolutePosition()));
+        rndr->d2d1DeviceContext()->DrawImage
+        (
+        /* effect       */ resource_utils::g_shadowEffect.Get(),
+        /* targetOffset */ absolutePosition()
+        );
 
-        // Entity
+        ////////////
+        // Entity //
+        ////////////
+
         FilledButton::onRendererDrawD2d1ObjectHelper(rndr);
     }
 
