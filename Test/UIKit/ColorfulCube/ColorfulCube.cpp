@@ -71,9 +71,9 @@ D14_SET_APP_ENTRY(mainColorfulCube)
 
             if (app->themeStyle().name == L"Light")
             {
-                ui_darkModeSwitch->setOnOffState(OnOffSwitch::OFF);
+                ui_darkModeSwitch->setOnOffState(OnOffSwitch::Off);
             }
-            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::ON);
+            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::On);
 
             app->f_onSystemThemeStyleChange = [app]
             (const Application::ThemeStyle& style)

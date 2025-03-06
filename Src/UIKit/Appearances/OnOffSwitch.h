@@ -70,7 +70,7 @@ namespace d14engine::uikit::appearance
                     Optional<float> leftOffset = {};
                     Optional<float> rightOffset = {};
 
-                    float getLeftOffset(float parentWidth)
+                    float getLeftOffset(float parentWidth) const
                     {
                         if (leftOffset.has_value())
                         {

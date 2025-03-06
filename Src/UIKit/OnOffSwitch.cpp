@@ -2,6 +2,7 @@
 
 #include "UIKit/OnOffSwitch.h"
 
+#include "Common/CppLangUtils/FinalAction.h"
 #include "Common/MathUtils/2D.h"
 
 #include "Renderer/TickTimer.h"
@@ -20,8 +21,8 @@ namespace d14engine::uikit
     {
         roundRadiusX = roundRadiusY = roundRadius;
 
-        m_state = { OFF, State::ButtonFlag::Idle };
-        m_currState.flag = OFF;
+        m_state = { Off, State::ButtonFlag::Idle };
+        m_currState.flag = Off;
     }
 
     void OnOffSwitch::setEnabled(bool value)
@@ -85,6 +86,22 @@ namespace d14engine::uikit
         }
     }
 
+    D2D1_RECT_F OnOffSwitch::handleAbsoluteRect() const
+    {
+        auto& geoSetting = getAppearance().handle.geometry[m_state.index()];
+
+        float leftOffset =
+            m_animationTargetState != State::ActiveFlag::Finished ?
+            m_currHandleLeftOffset : geoSetting.getLeftOffset(width());
+
+        auto handleRect = math_utils::centered(
+            math_utils::leftBorderRect(m_absoluteRect), geoSetting.size);
+
+        float handleLeftOffset = geoSetting.size.width * 0.5f + leftOffset;
+
+        return math_utils::offset(handleRect, { handleLeftOffset, 0.0f });
+    }
+
     void OnOffSwitch::onRendererUpdateObject2DHelper(Renderer* rndr)
     {
         auto deltaSecs = (float)rndr->timer()->deltaSecs();
@@ -92,44 +109,45 @@ namespace d14engine::uikit
 
         if (animSetting.enabled && m_animationTargetState != State::ActiveFlag::Finished)
         {
-            auto& onDownGeoSetting = getAppearance().handle.geometry[(size_t)State::Flag::OnDown];
-            auto& offDownGeoSetting = getAppearance().handle.geometry[(size_t)State::Flag::OffDown];
+            auto& geoSettingOn = getAppearance().handle.geometry[(size_t)State::Flag::OnDown];
+            auto& geoSettingOff = getAppearance().handle.geometry[(size_t)State::Flag::OffDown];
 
-            float onDownLeftOffset = onDownGeoSetting.getLeftOffset(width());
-            float offDownLeftOffset = offDownGeoSetting.getLeftOffset(width());
+            float leftOffsetOn = geoSettingOn.getLeftOffset(width());
+            float leftOffsetOff = geoSettingOff.getLeftOffset(width());
 
-            float totalDistance = std::abs(onDownLeftOffset - offDownLeftOffset);
+            float totalDistance = std::abs(leftOffsetOn - leftOffsetOff);
 
-            m_currHandleDisplacement = animation_utils::motionAccelUniformDecel
-            (
-                /* currDisplacement   */ m_currHandleDisplacement,
-                /* lastFrameDeltaSecs */ deltaSecs,
-                /* totalDistance      */ totalDistance,
-                /* uniformMotionSecs  */ animSetting.durationInSecs.uniform,
-                /* variableMotionSecs */ animSetting.durationInSecs.variable
-            );
+            m_currHandleDisplacement =
+                animation_utils::motionAccelUniformDecel(
+                    m_currHandleDisplacement,
+                    deltaSecs, totalDistance,
+                    animSetting.durationInSecs.uniform,
+                    animSetting.durationInSecs.variable);
 
-            if (m_animationTargetState == ON)
+            auto updateState = cpp_lang_utils::finally([&]
             {
-                if (onDownLeftOffset >= offDownLeftOffset)
+                if (m_currHandleDisplacement >= totalDistance)
                 {
-                    m_currHandleLeftOffset = offDownLeftOffset + m_currHandleDisplacement;
-                }
-                else m_currHandleLeftOffset = offDownLeftOffset - m_currHandleDisplacement;
-            }
-            else if (m_animationTargetState == OFF)
-            {
-                if (offDownLeftOffset >= onDownLeftOffset)
-                {
-                    m_currHandleLeftOffset = onDownLeftOffset + m_currHandleDisplacement;
-                }
-                else m_currHandleLeftOffset = onDownLeftOffset - m_currHandleDisplacement;
-            }
-            if (m_currHandleDisplacement >= totalDistance)
-            {
-                m_animationTargetState = State::ActiveFlag::Finished;
+                    m_animationTargetState = State::ActiveFlag::Finished;
 
-                decreaseAnimationCount();
+                    decreaseAnimationCount();
+                }
+            });
+            if (m_animationTargetState == On)
+            {
+                if (leftOffsetOn >= leftOffsetOff)
+                {
+                    m_currHandleLeftOffset = leftOffsetOff + m_currHandleDisplacement;
+                }
+                else m_currHandleLeftOffset = leftOffsetOff - m_currHandleDisplacement;
+            }
+            else if (m_animationTargetState == Off)
+            {
+                if (leftOffsetOff >= leftOffsetOn)
+                {
+                    m_currHandleLeftOffset = leftOffsetOn + m_currHandleDisplacement;
+                }
+                else m_currHandleLeftOffset = leftOffsetOn - m_currHandleDisplacement;
             }
         }
     }
@@ -138,44 +156,52 @@ namespace d14engine::uikit
     {
         auto& setting = getAppearance().main[m_state.index()];
 
-        // Background
+        ////////////////
+        // Background //
+        ////////////////
+
         resource_utils::g_solidColorBrush->SetColor(setting.background.color);
         resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
 
         Panel::drawBackground(rndr);
 
-        // Handle
+        ////////////
+        // Handle //
+        ////////////
+
         auto& geoSetting = getAppearance().handle.geometry[m_state.index()];
         auto& bkgnSetting = getAppearance().handle.background[m_state.index()];
 
         resource_utils::g_solidColorBrush->SetColor(bkgnSetting.color);
         resource_utils::g_solidColorBrush->SetOpacity(bkgnSetting.opacity);
 
-        float handleLeftOffset =
-            m_animationTargetState != State::ActiveFlag::Finished ?
-            m_currHandleLeftOffset : geoSetting.getLeftOffset(width());
-
         D2D1_ROUNDED_RECT handleRoundedRect =
         {
-            math_utils::offset(math_utils::centered
-            (
-                math_utils::leftBorderRect(m_absoluteRect), geoSetting.size),
-                {  geoSetting.size.width * 0.5f + handleLeftOffset,  0.0f  }
-            ),
+            handleAbsoluteRect(),
             geoSetting.roundRadius, geoSetting.roundRadius
         };
-        rndr->d2d1DeviceContext()->FillRoundedRectangle(
-            handleRoundedRect, resource_utils::g_solidColorBrush.Get());
+        rndr->d2d1DeviceContext()->FillRoundedRectangle
+        (
+        /* roundedRect */ handleRoundedRect,
+        /* brush       */ resource_utils::g_solidColorBrush.Get()
+        );
 
-        // Outline
+        /////////////
+        // Outline //
+        /////////////
+
         resource_utils::g_solidColorBrush->SetColor(setting.stroke.color);
         resource_utils::g_solidColorBrush->SetOpacity(setting.stroke.opacity);
 
         auto frame = math_utils::inner(m_absoluteRect, setting.stroke.width);
         D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
 
-        rndr->d2d1DeviceContext()->DrawRoundedRectangle(
-            outlineRect, resource_utils::g_solidColorBrush.Get(), setting.stroke.width);
+        rndr->d2d1DeviceContext()->DrawRoundedRectangle
+        (
+        /* roundedRect */ outlineRect,
+        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* strokeWidth */ setting.stroke.width
+        );
     }
 
     void OnOffSwitch::onChangeThemeStyleHelper(const ThemeStyle& style)
@@ -214,7 +240,8 @@ namespace d14engine::uikit
         {
             m_state.buttonFlag = State::ButtonFlag::Hover;
 
-            auto targetState = m_currState.on() ? OFF : ON;
+            auto targetState = m_currState.on() ? Off : On;
+
             getAppearance().handle.animation.enabled ?
                 setOnOffWithAnim(targetState) : setOnOff(targetState);
         }

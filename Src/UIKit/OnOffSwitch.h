@@ -22,8 +22,8 @@ namespace d14engine::uikit
         void setEnabled(bool value) override;
 
     public:
-        constexpr static auto ON = State::ActiveFlag::On;
-        constexpr static auto OFF = State::ActiveFlag::Off;
+        constexpr static auto On = State::ActiveFlag::On;
+        constexpr static auto Off = State::ActiveFlag::Off;
 
         void setOnOff(State::ActiveFlag flag);
         // Skip comparison and directly set the state.
@@ -37,6 +37,9 @@ namespace d14engine::uikit
 
         float m_currHandleLeftOffset = 0.0f;
         float m_currHandleDisplacement = 0.0f;
+
+    protected:
+        D2D1_RECT_F handleAbsoluteRect() const;
 
     protected:
         // IDrawObject2D
