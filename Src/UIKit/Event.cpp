@@ -66,22 +66,22 @@ namespace d14engine::uikit
         return isKeyToggled(VK_CAPITAL);
     }
 
-#define MBE_STATE MouseButtonEvent::State
+#define DEF_FLAG_ITEM(Key, Value) { WM_##Key, MouseButtonEvent::State::Flag::Value }
 
-    const MBE_STATE::FlagMap MBE_STATE::FLAG_MAP =
+    const MouseButtonEvent::State::FlagMap MouseButtonEvent::State::g_flagMap =
     {
-        { WM_LBUTTONDOWN,   MBE_STATE::Flag::LeftDown },
-        { WM_LBUTTONUP,     MBE_STATE::Flag::LeftUp },
-        { WM_LBUTTONDBLCLK, MBE_STATE::Flag::LeftDblclk },
-        { WM_RBUTTONDOWN,   MBE_STATE::Flag::RightDown },
-        { WM_RBUTTONUP,     MBE_STATE::Flag::RightUp },
-        { WM_RBUTTONDBLCLK, MBE_STATE::Flag::RightDblclk },
-        { WM_MBUTTONDOWN,   MBE_STATE::Flag::MiddleDown },
-        { WM_MBUTTONUP,     MBE_STATE::Flag::MiddleUp },
-        { WM_MBUTTONDBLCLK, MBE_STATE::Flag::MiddleDblclk }
+        DEF_FLAG_ITEM(LBUTTONDOWN,   LeftDown),
+        DEF_FLAG_ITEM(LBUTTONUP,     LeftUp),
+        DEF_FLAG_ITEM(LBUTTONDBLCLK, LeftDblclk),
+        DEF_FLAG_ITEM(RBUTTONDOWN,   RightDown),
+        DEF_FLAG_ITEM(RBUTTONUP,     RightUp),
+        DEF_FLAG_ITEM(RBUTTONDBLCLK, RightDblclk),
+        DEF_FLAG_ITEM(MBUTTONDOWN,   MiddleDown),
+        DEF_FLAG_ITEM(MBUTTONUP,     MiddleUp),
+        DEF_FLAG_ITEM(MBUTTONDBLCLK, MiddleDblclk)
     };
 
-#undef MBE_STATE
+#undef DEF_FLAG_ITEM
 
     bool MouseButtonEvent::State::leftDown() const
     {

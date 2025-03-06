@@ -647,7 +647,7 @@ namespace d14engine::uikit
                 (float)cursorPoint.x,
                 (float)cursorPoint.y
             };
-            e.state.flag = MouseButtonEvent::State::FLAG_MAP.at(message);
+            e.state.flag = MouseButtonEvent::State::g_flagMap.at(message);
 
             if (!app->m_currFocusedUIObject.expired() &&
                 app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)

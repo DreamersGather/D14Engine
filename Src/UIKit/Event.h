@@ -16,7 +16,9 @@ namespace d14engine::uikit
         static bool isKeyDown(int vkey);
         static bool isKeyToggled(int vkey);
 
-        // Return whether the key is down.
+        /////////////////////////////////////
+        // Return whether the key is down. //
+        /////////////////////////////////////
 
         static bool LALT();
         static bool RALT();
@@ -30,7 +32,9 @@ namespace d14engine::uikit
         static bool RSHIFT();
         static bool SHIFT();
 
-        // Return whether the key is toggled.
+        ////////////////////////////////////////
+        // Return whether the key is toggled. //
+        ////////////////////////////////////////
 
         static bool CAPSLOCK();
     };
@@ -94,7 +98,7 @@ namespace d14engine::uikit
 
             using FlagMap = std::unordered_map<Win32Message, Flag>;
 
-            const static FlagMap FLAG_MAP;
+            const static FlagMap g_flagMap;
 
             bool leftDown() const;
             bool leftUp() const;
