@@ -33,9 +33,9 @@ namespace d14engine::uikit
         void setEnabled(bool value) override;
 
     public:
-        constexpr static auto UNCHECKED = State::ActiveFlag::Unchecked;
-        constexpr static auto INTERMEDIATE = State::ActiveFlag::Intermediate;
-        constexpr static auto CHECKED = State::ActiveFlag::Checked;
+        constexpr static auto Unchecked = State::ActiveFlag::Unchecked;
+        constexpr static auto Intermediate = State::ActiveFlag::Intermediate;
+        constexpr static auto Checked = State::ActiveFlag::Checked;
 
         void setChecked(State::ActiveFlag flag);
         // Skip comparison and directly set the state.

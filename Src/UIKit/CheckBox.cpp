@@ -24,8 +24,8 @@ namespace d14engine::uikit
     {
         roundRadiusX = roundRadiusY = roundRadius;
 
-        m_state = { UNCHECKED, State::ButtonFlag::Idle };
-        m_currState.flag = UNCHECKED;
+        m_state = { Unchecked, State::ButtonFlag::Idle };
+        m_currState.flag = Unchecked;
 
         enableTripleState(isTripleState);
     }
@@ -96,7 +96,7 @@ namespace d14engine::uikit
 
     void CheckBox::enableTripleState(bool value)
     {
-        setChecked(UNCHECKED);
+        setChecked(Unchecked);
 
         m_isTripleState = value;
         if (m_isTripleState)
@@ -136,7 +136,7 @@ namespace d14engine::uikit
         // Icon //
         //////////
 
-        if (m_state.activeFlag == INTERMEDIATE)
+        if (m_state.activeFlag == Intermediate)
         {
             auto& geoSetting = getAppearance().icon.geometry.intermediate;
             auto& iconBackground = getAppearance().icon.background[m_state.index()];
@@ -152,7 +152,7 @@ namespace d14engine::uikit
             /* brush */ resource_utils::g_solidColorBrush.Get()
             );
         }
-        else if (m_state.activeFlag == CHECKED)
+        else if (m_state.activeFlag == Checked)
         {
             auto& geoSetting = getAppearance().icon.geometry.checked;
             auto& iconBackground = getAppearance().icon.background[m_state.index()];
