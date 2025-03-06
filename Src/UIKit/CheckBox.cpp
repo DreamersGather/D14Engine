@@ -144,11 +144,9 @@ namespace d14engine::uikit
             resource_utils::g_solidColorBrush->SetColor(iconBackground.color);
             resource_utils::g_solidColorBrush->SetOpacity(iconBackground.opacity);
 
-            auto iconRect = math_utils::centered(m_absoluteRect, geoSetting.size);
-
             rndr->d2d1DeviceContext()->FillRectangle
             (
-            /* rect  */ iconRect,
+            /* rect  */ math_utils::centered(m_absoluteRect, geoSetting.size),
             /* brush */ resource_utils::g_solidColorBrush.Get()
             );
         }
