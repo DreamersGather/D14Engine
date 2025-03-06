@@ -69,7 +69,10 @@ namespace d14engine::uikit
 
         void updateAllElements()
         {
-            for (auto& kv : m_elemGeoInfos) updateElement(kv.first, kv.second);
+            for (auto& kv : m_elemGeoInfos)
+            {
+                updateElement(kv.first, kv.second);
+            }
         }
 
         Optional<typename ElementGeometryInfoMap::iterator> findElement(ShrdPtrParam<Panel> elem)
@@ -83,7 +86,10 @@ namespace d14engine::uikit
         // IDrawObject2D
         void onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr) override
         {
-            // Background
+            ////////////////
+            // Background //
+            ////////////////
+
             resource_utils::g_solidColorBrush->SetColor(getAppearance().background.color);
             resource_utils::g_solidColorBrush->SetOpacity(getAppearance().background.opacity);
 
@@ -94,7 +100,10 @@ namespace d14engine::uikit
         {
             Panel::drawD2d1ObjectPosterior(rndr);
 
-            // Outline
+            /////////////
+            // Outline //
+            /////////////
+
             resource_utils::g_solidColorBrush->SetColor(getAppearance().stroke.color);
             resource_utils::g_solidColorBrush->SetOpacity(getAppearance().stroke.opacity);
 
@@ -103,8 +112,12 @@ namespace d14engine::uikit
             auto frame = math_utils::inner(m_absoluteRect, strokeWidth);
             D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
 
-            rndr->d2d1DeviceContext()->DrawRoundedRectangle(
-                outlineRect, resource_utils::g_solidColorBrush.Get(), strokeWidth);
+            rndr->d2d1DeviceContext()->DrawRoundedRectangle
+            (
+            /* roundedRect */ outlineRect,
+            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* strokeWidth */ strokeWidth
+            );
         }
 
         // Panel
