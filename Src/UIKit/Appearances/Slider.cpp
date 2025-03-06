@@ -96,7 +96,7 @@ namespace d14engine::uikit::appearance
             1.0f // opacity
         };
         _D14_FIND_THEME_DATA(themeName);
-        
+
         _D14_UPDATE_THEME_DATA_1(bar.filled.secondaryBackground);
         _D14_UPDATE_THEME_DATA_1(bar.complete.secondaryBackground);
 

@@ -174,7 +174,7 @@ namespace d14engine::uikit::appearance
             1.0f // opacity
         };
         _D14_FIND_THEME_DATA(themeName);
-        
+
         _D14_UPDATE_THEME_DATA_ARRAY_1(main);
 
         _D14_UPDATE_THEME_DATA_ARRAY_1(bottomLine.background.Static);
