@@ -24,7 +24,7 @@ namespace d14engine::uikit
 
     void GridLayout::updateCellDeltaInfo()
     {
-        m_horzCellDelta = (width()  - 2.0f * m_horzMargin) / m_horzCellCount;
+        m_horzCellDelta = (width() - 2.0f * m_horzMargin) / m_horzCellCount;
         m_vertCellDelta = (height() - 2.0f * m_vertMargin) / m_vertCellCount;
     }
 
@@ -98,41 +98,40 @@ namespace d14engine::uikit
     {
         if (geoInfo.isFixedSize)
         {
-            float occupiedWidth  = geoInfo.axis.x.count * m_horzCellDelta;
-            float occupiedHeight = geoInfo.axis.y.count * m_vertCellDelta;
+            float width = geoInfo.axis.x.count * m_horzCellDelta;
+            float height = geoInfo.axis.y.count * m_vertCellDelta;
 
-            float leftOffset = m_horzMargin + (occupiedWidth  - elem->width())  * 0.5f;
-            float topOffset  = m_vertMargin + (occupiedHeight - elem->height()) * 0.5f;
+            float offsetX = m_horzMargin + (width - elem->width()) * 0.5f;
+            float offsetY = m_vertMargin + (height - elem->height()) * 0.5f;
 
             elem->move
             (
-                std::round(geoInfo.axis.x.offset * m_horzCellDelta + leftOffset),
-                std::round(geoInfo.axis.y.offset * m_vertCellDelta + topOffset )
+                std::round(geoInfo.axis.x.offset * m_horzCellDelta + offsetX),
+                std::round(geoInfo.axis.y.offset * m_vertCellDelta + offsetY)
             );
         }
         else // variable size
         {
-            float leftOffset = m_horzMargin + m_horzSpacing + geoInfo.spacing.left;
-            float topOffset  = m_vertMargin + m_vertSpacing + geoInfo.spacing.top ;
+            float offsetX = m_horzMargin + m_horzSpacing + geoInfo.spacing.left;
+            float offsetY = m_vertMargin + m_vertSpacing + geoInfo.spacing.top;
 
             float horzSpacing = 2.0f * m_horzSpacing + geoInfo.spacing.left + geoInfo.spacing.right;
             float vertSpacing = 2.0f * m_vertSpacing + geoInfo.spacing.top + geoInfo.spacing.bottom;
 
             elem->transform
             (
-                std::round(geoInfo.axis.x.offset * m_horzCellDelta + leftOffset ),
-                std::round(geoInfo.axis.y.offset * m_vertCellDelta + topOffset  ),
-                std::round(geoInfo.axis.x.count  * m_horzCellDelta - horzSpacing),
-                std::round(geoInfo.axis.y.count  * m_vertCellDelta - vertSpacing)
+                std::round(geoInfo.axis.x.offset * m_horzCellDelta + offsetX),
+                std::round(geoInfo.axis.y.offset * m_vertCellDelta + offsetY),
+                std::round(geoInfo.axis.x.count * m_horzCellDelta - horzSpacing),
+                std::round(geoInfo.axis.y.count * m_vertCellDelta - vertSpacing)
             );
         }
     }
 
     void GridLayout::onSizeHelper(SizeEvent& e)
     {
-        // We must call this method before
-        // Layout::onSizeHelper since updateAllElements
-        // depends on the updated geometry information.
+        // We must call updateCellDeltaInfo before Layout::onSizeHelper
+        // as updateAllElements depends on the updated geometry information.
         updateCellDeltaInfo();
 
         Layout::onSizeHelper(e);
