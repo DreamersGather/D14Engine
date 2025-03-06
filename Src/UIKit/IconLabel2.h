@@ -35,10 +35,7 @@ namespace d14engine::uikit
             const D2D1_RECT_F& rect = {});
 
     protected:
-        // IDrawObject2D
-        void onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr) override;
-
-        // Panel
         bool releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj) override;
+        void onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr) override;
     };
 }

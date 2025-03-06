@@ -103,22 +103,28 @@ namespace d14engine::uikit
         return iconLabel;
     }
 
-    void IconLabel2::onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr)
-    {
-        // Label & Icon
-        IconLabel::onRendererDrawD2d1ObjectHelper(rndr);
-
-        // Label-2 Text
-        if (m_label2->isD2d1ObjectVisible())
-        {
-            m_label2->onRendererDrawD2d1Object(rndr);
-        }
-    }
-
     bool IconLabel2::releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj)
     {
         if (cpp_lang_utils::isMostDerivedEqual(uiobj, m_label2)) return false;
 
         return IconLabel::releaseUIObjectHelper(uiobj);
+    }
+
+    void IconLabel2::onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr)
+    {
+        //////////////////
+        // Label & Icon //
+        //////////////////
+
+        IconLabel::onRendererDrawD2d1ObjectHelper(rndr);
+
+        //////////////////
+        // Label-2 Text //
+        //////////////////
+
+        if (m_label2->isD2d1ObjectVisible())
+        {
+            m_label2->onRendererDrawD2d1Object(rndr);
+        }
     }
 }
