@@ -44,7 +44,7 @@ D14_SET_APP_ENTRY(mainTestWindow)
 
         auto ui_scenePanel = makeUIObject<ScenePanel>();
         {
-            ui_mainWindow->setCenterUIObject(ui_scenePanel);
+            ui_mainWindow->setContent(ui_scenePanel);
 
             ui_scenePanel->f_onChangeTheme = [](Panel* p, WstrParam themeName)
             {

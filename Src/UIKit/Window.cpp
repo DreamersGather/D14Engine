@@ -172,16 +172,16 @@ namespace d14engine::uikit
         }
     }
 
-    void Window::setCenterUIObject(ShrdPtrParam<Panel> uiobj)
+    void Window::setContent(ShrdPtrParam<Panel> uiobj)
     {
-        if (!cpp_lang_utils::isMostDerivedEqual(uiobj, m_centerUIObject))
+        if (!cpp_lang_utils::isMostDerivedEqual(uiobj, m_content))
         {
-            removeUIObject(m_centerUIObject);
+            removeUIObject(m_content);
 
-            m_centerUIObject = uiobj;
-            addUIObject(m_centerUIObject);
+            m_content = uiobj;
+            addUIObject(m_content);
 
-            if (m_centerUIObject) m_centerUIObject->transform(clientAreaSelfcoordRect());
+            if (m_content) m_content->transform(clientAreaSelfcoordRect());
         }
     }
 
@@ -286,7 +286,7 @@ namespace d14engine::uikit
         m_captionPanelHeight = value;
 
         m_caption->transform(captionIconLabelSelfcoordRect());
-        if (m_centerUIObject) m_centerUIObject->transform(clientAreaSelfcoordRect());
+        if (m_content) m_content->transform(clientAreaSelfcoordRect());
     }
 
     float Window::decorativeBarHeight() const
@@ -299,7 +299,7 @@ namespace d14engine::uikit
         m_decorativeBarHeight = value;
 
         m_caption->transform(captionIconLabelSelfcoordRect());
-        if (m_centerUIObject) m_centerUIObject->transform(clientAreaSelfcoordRect());
+        if (m_content) m_content->transform(clientAreaSelfcoordRect());
     }
 
     float Window::clientAreaHeight() const
@@ -418,7 +418,7 @@ namespace d14engine::uikit
     {
         if (e.state.leftUp())
         {
-            if (m_centerUIObject && !associatedTabGroup.expired())
+            if (m_content && !associatedTabGroup.expired())
             {
                 auto tabGroup = associatedTabGroup.lock();
 
@@ -431,7 +431,7 @@ namespace d14engine::uikit
                     auto caption = makeUIObject<TabCaption>(m_caption);
                     caption->promotable = true;
 
-                    tabGroup->insertTab({ caption, m_centerUIObject });
+                    tabGroup->insertTab({ caption, m_content });
                     tabGroup->selectTab(0);
 
                     if (f_onTriggerTabDemoting) f_onTriggerTabDemoting(this, tabGroup.get());
@@ -450,86 +450,120 @@ namespace d14engine::uikit
         );
         contentMask.beginDraw(rndr->d2d1DeviceContext(), maskDrawTrans);
         {
-            // Background
+            ////////////////
+            // Background //
+            ////////////////
             {
                 resource_utils::g_solidColorBrush->SetColor(getAppearance().background.color);
                 resource_utils::g_solidColorBrush->SetOpacity(getAppearance().background.opacity);
 
                 ResizablePanel::drawBackground(rndr);
             }
-            // Non-client Area
+            /////////////////////
+            // Non-client Area //
+            /////////////////////
             {
+                //---------------------------------------------
                 // Caption Panel
-                auto& bkgn = getAppearance().captionPanel.background;
+                //---------------------------------------------
+                {
+                    auto& bkgn = getAppearance().captionPanel.background;
 
-                resource_utils::g_solidColorBrush->SetColor(bkgn.color);
-                resource_utils::g_solidColorBrush->SetOpacity(bkgn.opacity);
+                    resource_utils::g_solidColorBrush->SetColor(bkgn.color);
+                    resource_utils::g_solidColorBrush->SetOpacity(bkgn.opacity);
 
-                auto cpr = captionPanelAbsoluteRect();
-
-                rndr->d2d1DeviceContext()->FillRectangle(cpr, resource_utils::g_solidColorBrush.Get());
-
+                    rndr->d2d1DeviceContext()->FillRectangle
+                    (
+                    /* rect  */ captionPanelAbsoluteRect(),
+                    /* brush */ resource_utils::g_solidColorBrush.Get()
+                    );
+                }
+                //---------------------------------------------
                 // The caption icon-label is drawn as a child.
+                //---------------------------------------------
 
+                //---------------------------------------------
                 // Decorative Bar
-                auto dbr = decorativeBarAbsoluteRect();
+                //---------------------------------------------
+                {
+                    auto dbr = decorativeBarAbsoluteRect();
 
-                decorativeBarBrush->SetStartPoint({ dbr.left, dbr.top });
-                decorativeBarBrush->SetEndPoint({ dbr.right, dbr.top });
+                    decorativeBarBrush->SetStartPoint({ dbr.left, dbr.top });
+                    decorativeBarBrush->SetEndPoint({ dbr.right, dbr.top });
 
-                rndr->d2d1DeviceContext()->FillRectangle(dbr, decorativeBarBrush.Get());
+                    rndr->d2d1DeviceContext()->FillRectangle
+                    (
+                    /* rect  */ dbr,
+                    /* brush */ decorativeBarBrush.Get()
+                    );
+                }
             }
-            // 3 Brothers
+            ////////////////
+            // 3 Brothers //
+            ////////////////
             {
+                //---------------------------------------------
                 // Minimize Button
+                //---------------------------------------------
                 if (isMinimizeEnabled)
                 {
                     auto state = getMinMaxBroState(m_isMinimizeHover, m_isMinimizeDown);
 
                     set3BrothersButtonBrushState(state);
 
-                    rndr->d2d1DeviceContext()->FillRectangle(
-                        minimizeButtonAbsoluteRect(),
-                        resource_utils::g_solidColorBrush.Get());
-
+                    // Background
+                    rndr->d2d1DeviceContext()->FillRectangle
+                    (
+                    /* rect  */ minimizeButtonAbsoluteRect(),
+                    /* brush */ resource_utils::g_solidColorBrush.Get()
+                    );
                     set3BrothersIconBrushState(state);
 
-                    rndr->d2d1DeviceContext()->FillRectangle(
-                        minimizeIconAbsoluteRect(),
-                        resource_utils::g_solidColorBrush.Get());
+                    // Center Dash
+                    rndr->d2d1DeviceContext()->FillRectangle
+                    (
+                    /* rect  */ minimizeIconAbsoluteRect(),
+                    /* brush */ resource_utils::g_solidColorBrush.Get()
+                    );
                 }
+                //---------------------------------------------
                 // Maximize/Restore Button
+                //---------------------------------------------
                 if (isMaximizeEnabled)
                 {
                     auto state = getMinMaxBroState(m_isMaximizeHover, m_isMaximizeDown);
 
                     set3BrothersButtonBrushState(state);
 
-                    rndr->d2d1DeviceContext()->FillRectangle(
-                        maximizeButtonAbsoluteRect(),
-                        resource_utils::g_solidColorBrush.Get());
-
+                    // Background
+                    rndr->d2d1DeviceContext()->FillRectangle
+                    (
+                    /* rect  */ maximizeButtonAbsoluteRect(),
+                    /* brush */ resource_utils::g_solidColorBrush.Get()
+                    );
                     set3BrothersIconBrushState(state);
 
                     // Maximize Button
                     if (m_displayState == Normal)
                     {
-                        rndr->d2d1DeviceContext()->DrawRectangle(
-                            maximizeIconAbsoluteRect(),
-                            resource_utils::g_solidColorBrush.Get(),
-                            maximizeIconStrokeWidth());
+                        rndr->d2d1DeviceContext()->DrawRectangle
+                        (
+                        /* rect        */ maximizeIconAbsoluteRect(),
+                        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                        /* strokeWidth */ maximizeIconStrokeWidth()
+                        );
                     }
                     else // Restore Button
                     {
-                        // Body
                         auto rect = restoreIconAbsoluteRect();
 
-                        rndr->d2d1DeviceContext()->DrawRectangle(
-                            rect,
-                            resource_utils::g_solidColorBrush.Get(),
-                            restoreIconStrokeWidth());
-
-                        // Ornament
+                        // Square
+                        rndr->d2d1DeviceContext()->DrawRectangle
+                        (
+                        /* rect        */ rect,
+                        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                        /* strokeWidth */ restoreIconStrokeWidth()
+                        );
                         D2D1_POINT_2F point00 =
                         {
                             rect.left,
@@ -546,60 +580,95 @@ namespace d14engine::uikit
                             crossPoint, -restoreIconStrokeWidth() * 0.5f);
 
                         // Top Dash
-                        rndr->d2d1DeviceContext()->DrawLine(
-                            point00, point01,
-                            resource_utils::g_solidColorBrush.Get(),
-                            restoreIconStrokeWidth());
+                        rndr->d2d1DeviceContext()->DrawLine
+                        (
+                        /* point0      */ point00,
+                        /* point1      */ point01,
+                        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                        /* strokeWidth */ restoreIconStrokeWidth()
+                        );
 
                         auto point11 = math_utils::increaseY(
                             crossPoint, -restoreIconStrokeWidth() * 0.5f);
 
                         // Right Dash
-                        rndr->d2d1DeviceContext()->DrawLine(
-                            point10, point11,
-                            resource_utils::g_solidColorBrush.Get(),
-                            restoreIconStrokeWidth());
+                        rndr->d2d1DeviceContext()->DrawLine
+                        (
+                        /* point0      */ point10,
+                        /* point1      */ point11,
+                        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                        /* strokeWidth */ restoreIconStrokeWidth()
+                        );
                     }
                 }
+                //---------------------------------------------
                 // Close Button
+                //---------------------------------------------
                 if (isCloseEnabled)
                 {
                     auto state = getCloseXBroState(m_isCloseHover, m_isCloseDown);
 
                     set3BrothersButtonBrushState(state);
 
-                    rndr->d2d1DeviceContext()->FillRectangle(
-                        closeButtonAbsoluteRect(),
-                        resource_utils::g_solidColorBrush.Get());
-
+                    // Background
+                    rndr->d2d1DeviceContext()->FillRectangle
+                    (
+                    /* rect  */ closeButtonAbsoluteRect(),
+                    /* brush */ resource_utils::g_solidColorBrush.Get()
+                    );
                     set3BrothersIconBrushState(state);
 
                     auto iconRect = closeIconAbsoluteRect();
 
                     // Main Diagonal
-                    rndr->d2d1DeviceContext()->DrawLine(
-                        { iconRect.left, iconRect.top },
-                        { iconRect.right, iconRect.bottom },
-                        resource_utils::g_solidColorBrush.Get(),
-                        closeIconStrokeWidth());
-
+                    rndr->d2d1DeviceContext()->DrawLine
+                    (
+                    /* point0      */ { iconRect.left, iconRect.top },
+                    /* point1      */ { iconRect.right, iconRect.bottom },
+                    /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                    /* strokeWidth */ closeIconStrokeWidth()
+                    );
                     // Back Diagonal
-                    rndr->d2d1DeviceContext()->DrawLine(
-                        { iconRect.right, iconRect.top },
-                        { iconRect.left, iconRect.bottom },
-                        resource_utils::g_solidColorBrush.Get(),
-                        closeIconStrokeWidth());
+                    rndr->d2d1DeviceContext()->DrawLine
+                    (
+                    /* point0      */ { iconRect.right, iconRect.top },
+                    /* point1      */ { iconRect.left, iconRect.bottom },
+                    /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                    /* strokeWidth */ closeIconStrokeWidth()
+                    );
                 }
             }
-            // Children
-            Panel::drawChildrenObjects(rndr);
+            //////////////
+            // Children //
+            //////////////
+            {
+                Panel::drawChildrenObjects(rndr);
+            }
+            /////////////
+            // Outline //
+            /////////////
+            {
+                auto& stroke = getAppearance().stroke;
+
+                resource_utils::g_solidColorBrush->SetColor(stroke.color);
+                resource_utils::g_solidColorBrush->SetOpacity(stroke.opacity);
+
+                rndr->d2d1DeviceContext()->DrawRectangle
+                (
+                /* rect        */ math_utils::inner(m_absoluteRect, stroke.width),
+                /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                /* strokeWidth */ stroke.width
+                );
+            }
         }
         contentMask.endDraw(rndr->d2d1DeviceContext());
     }
 
     void Window::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        // Shadow
+        ////////////
+        // Shadow //
+        ////////////
         if (associatedTabGroup.expired())
         {
             auto& shadowSetting = getAppearance().shadow;
@@ -609,18 +678,26 @@ namespace d14engine::uikit
 
             contentMask.configEffectInput(resource_utils::g_shadowEffect.Get());
 
-            rndr->d2d1DeviceContext()->DrawImage(
-                resource_utils::g_shadowEffect.Get(),
-                math_utils::roundf(absolutePosition()));
+            rndr->d2d1DeviceContext()->DrawImage
+            (
+            /* effect       */ resource_utils::g_shadowEffect.Get(),
+            /* targetOffset */ math_utils::roundf(absolutePosition())
+            );
         }
-        // Content
+        /////////////
+        // Content //
+        /////////////
         {
             float maskOpacity = associatedTabGroup.expired() ?
                 contentMask.opacity : getAppearance().maskOpacityWhenDragAboveTabGroup;
 
-            rndr->d2d1DeviceContext()->DrawBitmap(
-                contentMask.data.Get(), math_utils::roundf(m_absoluteRect),
-                maskOpacity, contentMask.getInterpolationMode());
+            rndr->d2d1DeviceContext()->DrawBitmap
+            (
+            /* bitmap               */ contentMask.data.Get(),
+            /* destinationRectangle */ math_utils::roundf(m_absoluteRect),
+            /* opacity              */ maskOpacity,
+            /* interpolationMode    */ contentMask.getInterpolationMode()
+            );
         }
     }
 
@@ -640,7 +717,7 @@ namespace d14engine::uikit
         contentMask.loadBitmap(bitmapSize);
 
         m_caption->transform(captionIconLabelSelfcoordRect());
-        if (m_centerUIObject) m_centerUIObject->transform(clientAreaSelfcoordRect());
+        if (m_content) m_content->transform(clientAreaSelfcoordRect());
     }
 
     void Window::onChangeThemeStyleHelper(const ThemeStyle& style)

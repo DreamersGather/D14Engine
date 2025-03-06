@@ -40,7 +40,7 @@ D14_SET_APP_ENTRY(mainEditor)
         }
         auto ui_centerLayout = makeUIObject<ConstraintLayout>();
         {
-            ui_mainWindow->setCenterUIObject(ui_centerLayout);
+            ui_mainWindow->setContent(ui_centerLayout);
         }
         auto ui_tabGroup = makeUIObject<TabGroup>();
         {

@@ -7,7 +7,6 @@
 #include "Renderer/GraphUtils/ParamHelper.h"
 #include "Renderer/GraphUtils/PSO.h"
 #include "Renderer/GraphUtils/Shader.h"
-#include "Renderer/Interfaces/DrawLayer.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/TickTimer.h"
 
@@ -102,7 +101,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         }
         auto ui_clientArea = makeUIObject<Panel>();
         {
-            ui_mainWindow->setCenterUIObject(ui_clientArea);
+            ui_mainWindow->setContent(ui_clientArea);
         }
         auto ui_scenePanel = makeManagedUIObject<ScenePanel>(ui_clientArea);
         auto wk_scenePanel = (WeakPtr<ScenePanel>)ui_scenePanel;

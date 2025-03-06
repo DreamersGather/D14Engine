@@ -66,19 +66,19 @@ namespace d14engine::uikit
     protected:
         SharedPtr<IconLabel> m_caption = {};
 
-        SharedPtr<Panel> m_centerUIObject = {};
+        SharedPtr<Panel> m_content = {};
 
     public:
         const SharedPtr<IconLabel>& caption() const;
         void setCaption(ShrdPtrParam<IconLabel> caption);
 
         template<typename T = Panel>
-        WeakPtr<T> centerUIObject() const
+        WeakPtr<T> content() const
         {
-            if constexpr (std::is_same_v<T, Panel>) return m_centerUIObject;
-            else return std::dynamic_pointer_cast<T>(m_centerUIObject);
+            if constexpr (std::is_same_v<T, Panel>) return m_content;
+            else return std::dynamic_pointer_cast<T>(m_content);
         }
-        void setCenterUIObject(ShrdPtrParam<Panel> uiobj);
+        void setContent(ShrdPtrParam<Panel> uiobj);
 
     protected:
         float m_captionPanelHeight = {};

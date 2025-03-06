@@ -639,7 +639,7 @@ do { \
         tabIndex->content->skipDrawPosteriorObjects = false;
         tabIndex->content->setPrivateEnabled(true);
 
-        w->setCenterUIObject(tabIndex->content);
+        w->setContent(tabIndex->content);
 
         removeTab(tabIndex, 1);
 
