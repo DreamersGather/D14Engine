@@ -17,7 +17,7 @@ namespace d14engine::uikit
         valueLabelMask.loadBitmap(bitmapWidth, bitmapHeight);
     }
 
-    D2D1_RECT_F HorzSlider::thumbAreaExtendedRect(const D2D1_RECT_F& flatRect) const
+    D2D1_RECT_F HorzSlider::thumbAreaRect(const D2D1_RECT_F& flatRect) const
     {
         return math_utils::stretch(flatRect, { getAppearance().thumbAreaExtension, 0.0f });
     }

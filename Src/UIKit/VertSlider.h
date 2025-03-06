@@ -12,7 +12,7 @@ namespace d14engine::uikit
 
         void loadValueLabelMaskBitmap() override;
 
-        D2D1_RECT_F thumbAreaExtendedRect(const D2D1_RECT_F& flatRect) const override;
+        D2D1_RECT_F thumbAreaRect(const D2D1_RECT_F& flatRect) const override;
 
     protected:
         D2D1_POINT_2F valueToGeometryOffset(float value) const override;

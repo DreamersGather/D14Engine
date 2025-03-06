@@ -295,7 +295,7 @@ namespace d14engine::uikit
 
     bool Slider::isHitHelper(const Event::Point& p) const
     {
-        return math_utils::isOverlapped(p, thumbAreaExtendedRect(m_absoluteRect));
+        return math_utils::isOverlapped(p, thumbAreaRect(m_absoluteRect));
     }
 
     void Slider::onSizeHelper(SizeEvent& e)

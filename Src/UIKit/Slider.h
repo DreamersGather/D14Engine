@@ -33,7 +33,7 @@ namespace d14engine::uikit
 
         void loadSideTrianglePathGeo();
 
-        virtual D2D1_RECT_F thumbAreaExtendedRect(const D2D1_RECT_F& flatRect) const = 0;
+        virtual D2D1_RECT_F thumbAreaRect(const D2D1_RECT_F& flatRect) const = 0;
 
         _D14_SET_APPEARANCE_GETTER(Slider)
 
