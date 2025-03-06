@@ -114,8 +114,9 @@ extern "C" { __declspec(dllexport) extern const char* D3D12SDKPath = _D14_AGILIT
 #include <dwrite_3.h>
 #include <dxgi1_6.h>
 #include <imm.h>
+#include <shlwapi.h>
 #include <wincodec.h>
-#include <Windows.h>
+#include <windows.h>
 #include <windowsx.h>
 #include <wrl.h>
 
@@ -138,14 +139,15 @@ namespace d14engine
 }
 
 #pragma comment(lib, "d2d1.lib")
-#pragma comment(lib, "D3D11.lib")
-#pragma comment(lib, "D3D12.lib")
-#pragma comment(lib, "Dcomp.lib")
-#pragma comment(lib, "Dwmapi.lib")
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dcomp.lib")
+#pragma comment(lib, "dwmapi.lib")
 #pragma comment(lib, "dwrite.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "imm32.lib")
+#pragma comment(lib, "shlwapi.lib")
 #pragma comment(lib, "WindowsCodecs.lib")
 
 #pragma comment(lib, "dxcompiler.lib")

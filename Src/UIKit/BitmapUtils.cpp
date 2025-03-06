@@ -2,6 +2,7 @@
 
 #include "UIKit/BitmapUtils.h"
 
+#include "Common/CppLangUtils/FinalAction.h"
 #include "Common/DirectXError.h"
 #include "Common/ResourcePack.h"
 
@@ -149,28 +150,15 @@ namespace d14engine::uikit::bitmap_utils
         // Create stream from memory. //
         ////////////////////////////////
 
-        auto src = loadResource(resName, resType);
-
-        auto mem = GlobalAlloc(GMEM_MOVEABLE, src.size);
-        THROW_IF_NULL(mem);
-        auto dst = GlobalLock(mem);
-        THROW_IF_NULL(dst);
-
-        // TODO: Can we avoid a copy here?
-        // (create a stream object directly with the memory pointer)
-        memcpy(dst, src.data, src.size);
-
-        GlobalUnlock(mem);
-        GlobalFree(mem);
-
-        ComPtr<IStream> stream = {};
-        THROW_IF_FAILED(CreateStreamOnHGlobal(mem, FALSE, &stream));
+        auto res = loadResource(resName, resType);
+        auto stream = SHCreateMemStream((BYTE*)res.data, (UINT)res.size);
+        auto release = cpp_lang_utils::finally([&] { stream->Release(); });
 
         ////////////////////////////////
         // Create bitmap from stream. //
         ////////////////////////////////
 
-        auto source = graph_utils::bitmap::load(stream.Get());
+        auto source = graph_utils::bitmap::load(stream);
 
         auto dpi = platform_utils::dpi();
 

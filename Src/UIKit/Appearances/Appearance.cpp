@@ -3,9 +3,6 @@
 #include "Common/DirectXError.h"
 
 #include "UIKit/Application.h"
-#include "UIKit/ColorUtils.h"
-
-using namespace d14engine::uikit::color_utils;
 
 #include "UIKit/Appearances/Button.h"
 #include "UIKit/Appearances/CheckBox.h"

@@ -111,7 +111,7 @@ namespace d14engine::uikit
     Cursor::DynamicIcon Cursor::loadBasicIconFrames(WstrParam framesPath)
     {
         DynamicIcon icon = {};
-        
+
         /////////////////
         // Load Images //
         /////////////////

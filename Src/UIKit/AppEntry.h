@@ -2,6 +2,8 @@
 
 #include "Common/Precompile.h"
 
+// Do NOT remove this header for code tidy
+// as D14_SET_APP_ENTRY uses RuntimeError.
 #include "Common/RuntimeError.h"
 
 #pragma comment(linker, "/subsystem:windows")
