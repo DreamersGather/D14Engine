@@ -6,7 +6,6 @@
 #include "Common/MathUtils/Basic.h"
 
 #include "UIKit/Application.h"
-#include "UIKit/Cursor.h"
 #include "UIKit/PlatformUtils.h"
 #include "UIKit/ResourceUtils.h"
 
@@ -67,7 +66,7 @@ namespace d14engine::uikit
             return std::nullopt;
         }
         // Cut off at any line break to keep single line.
-        else return in.substr(0, lineBreakPos);
+        return in.substr(0, lineBreakPos);
     }
 
     void RawTextInput::setText(WstrParam text)
@@ -179,7 +178,11 @@ namespace d14engine::uikit
 
     void RawTextInput::performCommandCtrlX()
     {
-        auto hiliteStr = m_text.substr(m_hiliteRange.offset, m_hiliteRange.count);
+        auto hiliteStr = m_text.substr
+        (
+            m_hiliteRange.offset,
+            m_hiliteRange.count
+        );
         resource_utils::setClipboardText(hiliteStr);
 
         eraseTextFragment(m_hiliteRange);
@@ -238,10 +241,15 @@ namespace d14engine::uikit
 
     void RawTextInput::onRendererDrawD2d1LayerHelper(Renderer* rndr)
     {
-        // Rendering ClearType text requires an opaque background, while the
-        // other modes (e.g. Grayscale) do not.  The texts will be rendered
-        // to m_visibleTextMask at first, so their background must be opaque
-        // to be compatible with the potential ClearType text rendering mode.
+        //--------------------------------------------------------------
+        // 1. Grayscale text anti-aliasing:
+        // The rendering result is independent of the target background,
+        // so opacity can be set as needed (any value from 0 ~ 1 is OK).
+        //--------------------------------------------------------------
+        // 2. ClearType text anti-aliasing:
+        // The rendering result depends on the target background color,
+        // so you must set an opaque background (better a value >= 0.5).
+        //--------------------------------------------------------------
         m_visibleTextMask.color = Label::getAppearance().background.color;
         m_visibleTextMask.color.a = Label::getAppearance().background.opacity;
 
@@ -266,7 +274,7 @@ namespace d14engine::uikit
             );
             rndr->d2d1DeviceContext()->SetTransform(textContentTrans);
 
-            // The indicator is drawn above the visible text mask.
+            // The indicator will be drawn above the visible text mask.
             drawHiliteRange(rndr); drawText(rndr); /* drawIndicator(rndr); */
         }
         m_visibleTextMask.endDraw(rndr->d2d1DeviceContext());
@@ -274,16 +282,30 @@ namespace d14engine::uikit
 
     void RawTextInput::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
+        ////////////////
+        // Background //
+        ////////////////
+
         drawBackground(rndr);
 
-        // Visible Text
+        //////////////////
+        // Visible Text //
+        //////////////////
+
         auto dstRect = math_utils::roundf(selfCoordToAbsolute(m_visibleTextRect));
 
-        rndr->d2d1DeviceContext()->DrawBitmap(
-            m_visibleTextMask.data.Get(), dstRect,
-            m_visibleTextMask.opacity, m_visibleTextMask.getInterpolationMode());
+        rndr->d2d1DeviceContext()->DrawBitmap
+        (
+        /* bitmap               */ m_visibleTextMask.data.Get(),
+        /* destinationRectangle */ dstRect,
+        /* opacity              */ m_visibleTextMask.opacity,
+        /* interpolationMode    */ m_visibleTextMask.getInterpolationMode()
+        );
 
-        // Indicator(|)
+        //////////////////
+        // Indicator(|) //
+        //////////////////
+
         D2D1_MATRIX_3X2_F originalTrans = {};
         rndr->d2d1DeviceContext()->GetTransform(&originalTrans);
 
@@ -302,7 +324,15 @@ namespace d14engine::uikit
         }
         rndr->d2d1DeviceContext()->SetTransform(originalTrans);
 
-        drawOutline(rndr); // Outline & Bottom Line
+        /////////////
+        // Outline //
+        /////////////
+
+        drawOutline(rndr);
+
+        /////////////////
+        // Bottom Line //
+        /////////////////
 
         auto& bottomLineBkgn = getAppearance().bottomLine.background;
 
@@ -486,11 +516,11 @@ namespace d14engine::uikit
     Optional<LOGFONT> RawTextInput::getCompositionFont() const
     {
         LOGFONT font = {};
-        font.lfHeight = platform_utils::scaledByDpi(math_utils::round
+        font.lfHeight = platform_utils::scaledByDpi(
         (
             m_indicatorGeometry.second.y - m_indicatorGeometry.first.y
         ));
-        font.lfWidth = 0; // applies the font's default aspect ratio
+        font.lfWidth = 0; // keep the aspect ratio
         font.lfEscapement = font.lfOrientation = 0;
         font.lfWeight = m_textLayout->GetFontWeight();
         font.lfItalic = font.lfUnderline = font.lfStrikeOut = FALSE;
