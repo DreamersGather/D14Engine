@@ -2,7 +2,6 @@
 
 #include "UIKit/MainWindow.h"
 
-#include "Common/MathUtils/2D.h"
 #include "Common/MathUtils/GDI.h"
 #include "Common/RuntimeError.h"
 
@@ -26,9 +25,11 @@ namespace d14engine::uikit
         THROW_IF_NULL(Application::g_app);
 
         // Try to adapt the fluent design of Windows 11.
-        setCornerState(Round);
-        setBorderColor(DefaultColor);
-
+        if (!setCornerState(Round) || !setBorderColor(DefaultColor))
+        {
+            // Fall back to the accent border for Windows 10.
+            getAppearance().stroke.opacity = 1.0f;
+        }
         operationTarget = OperationTarget::GlobalWin32Window;
 
         auto& callback = Application::g_app->win32WindowSettings.callback;
@@ -42,7 +43,7 @@ namespace d14engine::uikit
         {
             m_displayState = m_originalDisplayState;
         };
-        respondSetForegroundEvent = false; // keep at the bottom-most
+        respondSetForegroundEvent = false; // bottom-most
     }
 
     MainWindow::MainWindow(
@@ -70,28 +71,6 @@ namespace d14engine::uikit
         resize((float)dipSize.cx, (float)dipSize.cy);
     }
 
-    bool MainWindow::immersiveDarkMode() const
-    {
-        return m_immersiveDarkMode;
-    }
-
-    bool MainWindow::setImmersiveDarkMode(bool value)
-    {
-        THROW_IF_NULL(Application::g_app);
-
-        auto window = Application::g_app->win32Window();
-
-        auto ret = SUCCEEDED(DwmSetWindowAttribute
-        (
-            /* hwnd        */ window,
-            /* dwAttribute */ DWMWA_USE_IMMERSIVE_DARK_MODE,
-            /* pvAttribute */ &value,
-            /* cbAttribute */ sizeof(value))
-        );
-        if (ret) m_immersiveDarkMode = value;
-        return ret;
-    }
-
     MainWindow::CornerState MainWindow::cornerState() const
     {
         return m_cornerState;
@@ -105,10 +84,10 @@ namespace d14engine::uikit
 
         auto ret = SUCCEEDED(DwmSetWindowAttribute
         (
-            /* hwnd        */ window,
-            /* dwAttribute */ DWMWA_WINDOW_CORNER_PREFERENCE,
-            /* pvAttribute */ &state,
-            /* cbAttribute */ sizeof(state))
+        /* hwnd        */ window,
+        /* dwAttribute */ DWMWA_WINDOW_CORNER_PREFERENCE,
+        /* pvAttribute */ &state,
+        /* cbAttribute */ sizeof(state))
         );
         if (ret)
         {
@@ -129,10 +108,10 @@ namespace d14engine::uikit
 
         auto ret = SUCCEEDED(DwmSetWindowAttribute
         (
-            /* hwnd        */ window,
-            /* dwAttribute */ DWMWA_BORDER_COLOR,
-            /* pvAttribute */ &color,
-            /* cbAttribute */ sizeof(color))
+        /* hwnd        */ window,
+        /* dwAttribute */ DWMWA_BORDER_COLOR,
+        /* pvAttribute */ &color,
+        /* cbAttribute */ sizeof(color))
         );
         if (ret) m_borderColor = color;
         return ret;
@@ -178,30 +157,6 @@ namespace d14engine::uikit
         if (ret) m_accentBorder = value;
         return ret;
     }
-
-#if _D14_MAINWINDOW_MATERIAL_TYPE
-    MainWindow::MaterialType MainWindow::materialType() const
-    {
-        return m_materialType;
-    }
-
-    bool MainWindow::setMaterialType(MaterialType type)
-    {
-        THROW_IF_NULL(Application::g_app);
-
-        auto window = Application::g_app->win32Window();
-
-        auto ret = SUCCEEDED(DwmSetWindowAttribute
-        (
-            /* hwnd        */ window,
-            /* dwAttribute */ DWMWA_SYSTEMBACKDROP_TYPE,
-            /* pvAttribute */ &type,
-            /* cbAttribute */ sizeof(type))
-        );
-        if (ret) m_materialType = type;
-        return ret;
-    }
-#endif
 
     void MainWindow::onChangeThemeStyleHelper(const ThemeStyle& style)
     {

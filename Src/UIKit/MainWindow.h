@@ -25,21 +25,6 @@ namespace d14engine::uikit
         // Helps set the correct state after restored from minimized.
         DisplayState m_originalDisplayState = {};
 
-        /////////////////////////
-        // Immersive Dark Mode //
-        /////////////////////////
-        //----------------------------------------------------------------
-        // This setting is supported starting with Windows 11 Build 22000!
-        //----------------------------------------------------------------
-
-    protected:
-        bool m_immersiveDarkMode = false;
-
-    public:
-        bool immersiveDarkMode() const;
-        // Returns whether the setting was successful.
-        bool setImmersiveDarkMode(bool value);
-
         //////////////////
         // Corner State //
         //////////////////
@@ -92,34 +77,6 @@ namespace d14engine::uikit
 
         bool accentBorder() const;
         bool setAccentBorder(bool value);
-
-        //////////////////////
-        // Special Material //
-        //////////////////////
-        //----------------------------------------------------------------
-        // This setting is supported starting with Windows 11 Build 22621!
-        //----------------------------------------------------------------
-
-#define _D14_MAINWINDOW_MATERIAL_TYPE false
-
-#if _D14_MAINWINDOW_MATERIAL_TYPE
-    public:
-        using MaterialType = DWM_SYSTEMBACKDROP_TYPE;
-
-        constexpr static MaterialType NoneType = DWMSBT_NONE;
-        constexpr static MaterialType AutoType = DWMSBT_AUTO;
-        constexpr static MaterialType Mica = DWMSBT_MAINWINDOW;
-        constexpr static MaterialType Acrylic = DWMSBT_TRANSIENTWINDOW;
-        constexpr static MaterialType MicaAlt = DWMSBT_TABBEDWINDOW;
-
-    protected:
-        MaterialType m_materialType = AutoType;
-
-    public:
-        MaterialType materialType() const;
-        // Returns whether the setting was successful.
-        bool setMaterialType(MaterialType type);
-#endif
 
     protected:
         // Panel
