@@ -82,7 +82,10 @@ namespace d14engine::uikit
         auto deltaSecs = (float)rndr->timer()->deltaSecs();
         float blinkPeriod = animSetting.periodInSecs.blink;
 
-        // Blink Indicator
+        /////////////////////
+        // Blink Indicator //
+        /////////////////////
+
         if (isFocused() && (m_indicatorBlinkElapsedSecs += deltaSecs) >= blinkPeriod)
         {
             m_showIndicator = !m_showIndicator;
@@ -99,14 +102,23 @@ namespace d14engine::uikit
             auto hiliteRangeRect = math_utils::roundf(selfCoordToAbsolute(
                 math_utils::rect(rect.left, rect.top, rect.width, rect.height)));
 
-            // Background
+            ////////////////
+            // Background //
+            ////////////////
+
             resource_utils::g_solidColorBrush->SetColor(setting.background.color);
             resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
 
-            rndr->d2d1DeviceContext()->FillRectangle(
-                hiliteRangeRect, resource_utils::g_solidColorBrush.Get());
+            rndr->d2d1DeviceContext()->FillRectangle
+            (
+            /* rect  */ hiliteRangeRect,
+            /* brush */ resource_utils::g_solidColorBrush.Get()
+            );
 
-            // Outline
+            /////////////
+            // Outline //
+            /////////////
+
             resource_utils::g_solidColorBrush->SetColor(setting.stroke.color);
             resource_utils::g_solidColorBrush->SetOpacity(setting.stroke.opacity);
 
@@ -115,8 +127,12 @@ namespace d14engine::uikit
             auto frame = math_utils::inner(hiliteRangeRect, strokeWidth);
             D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
 
-            rndr->d2d1DeviceContext()->DrawRoundedRectangle(
-                outlineRect, resource_utils::g_solidColorBrush.Get(), strokeWidth);
+            rndr->d2d1DeviceContext()->DrawRoundedRectangle
+            (
+            /* roundedRect */ outlineRect,
+            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* strokeWidth */ strokeWidth
+            );
         }
     }
 
@@ -143,8 +159,12 @@ namespace d14engine::uikit
                 result1.point = math_utils::offset(math_utils::roundf(
                     selfCoordToAbsolute(result1.point)), { 0.5f, 0.0f });
 
-                rndr->d2d1DeviceContext()->DrawLine(
-                    result0.point, result1.point, resource_utils::g_solidColorBrush.Get());
+                rndr->d2d1DeviceContext()->DrawLine
+                (
+                /* point0 */ result0.point,
+                /* point1 */ result1.point,
+                /* brush  */ resource_utils::g_solidColorBrush.Get()
+                );
             }
         }
     }
@@ -206,8 +226,7 @@ namespace d14engine::uikit
             m_showIndicator = true;
             m_indicatorBlinkElapsedSecs = 0.0f;
 
-            auto characterOffset = hitTestCharacterOffset(
-                absoluteToSelfCoord(e.cursorPoint));
+            auto characterOffset = hitTestCharacterOffset(absoluteToSelfCoord(e.cursorPoint));
 
             setHiliteRange(
             {
@@ -229,8 +248,7 @@ namespace d14engine::uikit
             m_showIndicator = true;
             m_indicatorBlinkElapsedSecs = 0.0f;
 
-            m_hiliteRangeOrigin = hitTestCharacterOffset(
-                absoluteToSelfCoord(e.cursorPoint));
+            m_hiliteRangeOrigin = hitTestCharacterOffset(absoluteToSelfCoord(e.cursorPoint));
 
             setHiliteRange({ 0, 0 });
 
