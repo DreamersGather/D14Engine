@@ -11,7 +11,6 @@
 #include "UIKit/PopupMenu.h"
 #include "UIKit/TextBox.h"
 #include "UIKit/TextEditor.h"
-#include "UIKit/VertSlider.h"
 
 using namespace d14engine;
 using namespace d14engine::uikit;
@@ -23,16 +22,10 @@ using namespace d14engine::uikit;
 
 D14_SET_APP_ENTRY(mainSimpleEditor)
 {
-    Application::CreateInfo info = {};
-    if (argc >= 2 && lstrcmp(argv[1], L"HighDPI") == 0)
+    Application::CreateInfo info =
     {
-        info.dpi = 192.0f;
-    }
-    else info.dpi = 96.0f;
-    info.windowSize = { 800, 600 };
-
-    BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC;
-
+        .windowSize = { 800, 600 }
+    };
     return Application(info).run([&](Application* app)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
@@ -53,9 +46,9 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
 
             if (app->themeStyle().name == L"Light")
             {
-                ui_darkModeSwitch->setOnOffState(OnOffSwitch::OFF);
+                ui_darkModeSwitch->setOnOffState(OnOffSwitch::Off);
             }
-            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::ON);
+            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::On);
 
             app->f_onSystemThemeStyleChange = [app]
             (const Application::ThemeStyle& style)
@@ -80,14 +73,14 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
             ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = app->screenshot();
+                auto image = app->windowshot();
                 CreateDirectory(L"Screenshots", nullptr);
                 bitmap_utils::saveBitmap(image.Get(), D14_SCREENSHOT_PATH);
             };
         }
         auto ui_clientArea = makeUIObject<Panel>();
         {
-            ui_mainWindow->setCenterUIObject(ui_clientArea);
+            ui_mainWindow->setContent(ui_clientArea);
         }
         auto ui_titleInput = makeManagedUIObject<TextBox>(ui_clientArea, 5.0f);
         {

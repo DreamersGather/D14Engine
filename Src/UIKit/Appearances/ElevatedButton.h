@@ -22,7 +22,6 @@ namespace d14engine::uikit::appearance
 
             struct Shadow
             {
-                // Call loadShadowBitmap after changing this field.
                 D2D1_RECT_F offset = { 2.0f, 3.0f, -2.0f, 0.0f };
 
                 D2D1_COLOR_F color[g_stateCount] = {};

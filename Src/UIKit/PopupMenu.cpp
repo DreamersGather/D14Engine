@@ -2,7 +2,6 @@
 
 #include "UIKit/PopupMenu.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
 #include "Common/RuntimeError.h"
 
 #include "UIKit/Application.h"
@@ -183,19 +182,24 @@ namespace d14engine::uikit
     {
         if (value)
         {
-            m_backgroundTriggerPanel = makeRootUIObject<Panel>(math_utils::infiniteRectFRef());
+            auto rect = math_utils::infiniteRectF();
+            m_backgroundTriggerPanel = makeRootUIObject<Panel>(rect);
 
             m_backgroundTriggerPanel->setPrivateVisible(false);
             m_backgroundTriggerPanel->setPrivateEnabled(false);
 
-            m_backgroundTriggerPanel->f_onMouseButton = [this](Panel* p, MouseButtonEvent& e)
+            m_backgroundTriggerPanel->f_onMouseButton = [this]
+            (Panel* p, MouseButtonEvent& e)
             {
                 setActivatedIncludingChildren(false);
             };
         }
-        else if (m_backgroundTriggerPanel && m_backgroundTriggerPanel->release())
+        else // release the background trigger panel
         {
-            m_backgroundTriggerPanel.reset();
+            if (m_backgroundTriggerPanel && m_backgroundTriggerPanel->release())
+            {
+                m_backgroundTriggerPanel.reset();
+            }
         }
     }
 
@@ -203,26 +207,40 @@ namespace d14engine::uikit
     {
         WaterfallView::onRendererDrawD2d1LayerHelper(rndr);
 
-        // Shape of Shadow
+        /////////////////////
+        // Shape of Shadow //
+        /////////////////////
+
         shadow.beginDraw(rndr->d2d1DeviceContext());
         {
+            auto& geoSetting = getAppearance().geometry;
+            auto& shadowSetting = getAppearance().shadow;
+
             resource_utils::g_solidColorBrush->SetOpacity(1.0f);
 
-            auto extendedRect = math_utils::rect({ 0.0f, 0.0f }, extendedSize(size()));
+            auto extRect = math_utils::rect(
+                { 0.0f, 0.0f }, extendedSize(size()));
 
-            rndr->d2d1DeviceContext()->FillRoundedRectangle(
+            D2D1_ROUNDED_RECT shadowRect =
             {
-                math_utils::moveVertex(extendedRect, getAppearance().shadow.offset),
-                getAppearance().geometry.roundRadius, getAppearance().geometry.roundRadius
-            },
-            resource_utils::g_solidColorBrush.Get());
+                math_utils::moveVertex(extRect, shadowSetting.offset),
+                geoSetting.roundRadius, geoSetting.roundRadius
+            };
+            rndr->d2d1DeviceContext()->FillRoundedRectangle
+            (
+            /* roundedRect */ shadowRect,
+            /* brush       */ resource_utils::g_solidColorBrush.Get()
+            );
         }
         shadow.endDraw(rndr->d2d1DeviceContext());
     }
 
     void PopupMenu::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        // Shadow
+        ////////////
+        // Shadow //
+        ////////////
+
         auto& geoSetting = getAppearance().geometry;
         auto& shadowSetting = getAppearance().shadow;
 
@@ -234,23 +252,36 @@ namespace d14engine::uikit
         auto leftTop = absolutePosition();
         auto shadowLeftTop = math_utils::increaseY(leftTop, -geoSetting.extension);
 
-        rndr->d2d1DeviceContext()->DrawImage(
-            resource_utils::g_shadowEffect.Get(), math_utils::roundf(shadowLeftTop));
+        rndr->d2d1DeviceContext()->DrawImage
+        (
+        /* effect       */ resource_utils::g_shadowEffect.Get(),
+        /* targetOffset */ shadowLeftTop
+        );
 
-        // Extension
+        ///////////////
+        // Extension //
+        ///////////////
+
         auto& extBkgn = getAppearance().background;
 
         resource_utils::g_solidColorBrush->SetColor(extBkgn.color);
         resource_utils::g_solidColorBrush->SetOpacity(extBkgn.opacity);
 
-        rndr->d2d1DeviceContext()->FillRoundedRectangle(
+        D2D1_ROUNDED_RECT extRect =
         {
             math_utils::stretch(m_absoluteRect, { 0.0f, geoSetting.extension }),
             geoSetting.roundRadius, geoSetting.roundRadius
-        },
-        resource_utils::g_solidColorBrush.Get());
+        };
+        rndr->d2d1DeviceContext()->FillRoundedRectangle
+        (
+        /* roundedRect */ extRect,
+        /* brush       */ resource_utils::g_solidColorBrush.Get()
+        );
 
-        // Body Content
+        //////////////////
+        // Body Content //
+        //////////////////
+
         WaterfallView::onRendererDrawD2d1ObjectHelper(rndr);
     }
 
@@ -272,6 +303,7 @@ namespace d14engine::uikit
     {
         ItemIndex lastHoverItemIndex = m_lastHoverItemIndex;
 
+        // Note this callback will update m_lastHoverItemIndex.
         WaterfallView::onMouseMoveHelper(e);
 
         ItemIndex& currHoverItemIndex = m_lastHoverItemIndex;
