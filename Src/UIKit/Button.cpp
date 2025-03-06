@@ -131,10 +131,8 @@ namespace d14engine::uikit
 
     bool Button::releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj)
     {
-        if (cpp_lang_utils::isMostDerivedEqual(m_content, uiobj))
-        {
-            return false;
-        }
+        if (cpp_lang_utils::isMostDerivedEqual(m_content, uiobj)) return false;
+
         return Panel::releaseUIObjectHelper(uiobj);
     }
 
