@@ -56,7 +56,10 @@ namespace d14engine::uikit
     {
         ViewItem::onRendererDrawD2d1ObjectHelper(rndr);
 
-        // Expand Arrow
+        //////////////////
+        // Expand Arrow //
+        //////////////////
+
         if (m_associatedMenu)
         {
             auto& setting = getAppearance().arrow;
@@ -67,15 +70,20 @@ namespace d14engine::uikit
             auto rigthTop = math_utils::rightTop(m_absoluteRect);
             auto arrowOrg = math_utils::offset(rigthTop, { setting.geometry.rightOffset, 0.0f });
 
-            rndr->d2d1DeviceContext()->DrawLine(
-                math_utils::offset(arrowOrg, setting.geometry.line0.point0),
-                math_utils::offset(arrowOrg, setting.geometry.line0.point1),
-                resource_utils::g_solidColorBrush.Get(), setting.strokeWidth);
-
-            rndr->d2d1DeviceContext()->DrawLine(
-                math_utils::offset(arrowOrg, setting.geometry.line1.point0),
-                math_utils::offset(arrowOrg, setting.geometry.line1.point1),
-                resource_utils::g_solidColorBrush.Get(), setting.strokeWidth);
+            rndr->d2d1DeviceContext()->DrawLine
+            (
+            /* point0      */ math_utils::offset(arrowOrg, setting.geometry.line0.point0),
+            /* point1      */ math_utils::offset(arrowOrg, setting.geometry.line0.point1),
+            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* strokeWidth */ setting.strokeWidth
+            );
+            rndr->d2d1DeviceContext()->DrawLine
+            (
+            /* point0      */ math_utils::offset(arrowOrg, setting.geometry.line1.point0),
+            /* point1      */ math_utils::offset(arrowOrg, setting.geometry.line1.point1),
+            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* strokeWidth */ setting.strokeWidth
+            );
         }
     }
 
