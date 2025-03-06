@@ -744,14 +744,14 @@ namespace d14engine::uikit
     {
         if (brush)
         {
-            rndr->d2d1DeviceContext()->FillRoundedRectangle(
-                { m_absoluteRect, roundRadiusX, roundRadiusY }, brush.Get());
+            rndr->d2d1DeviceContext()->FillRoundedRectangle
+            (
+            /* roundedRect */ { m_absoluteRect, roundRadiusX, roundRadiusY },
+            /* brush       */ brush.Get()
+            );
         }
         if (bitmap)
         {
-            // round to fit pixel size
-            auto rect = math_utils::roundf(m_absoluteRect);
-
             D2D1_INTERPOLATION_MODE mode = {};
             if (bitmapProperty.interpolationMode.has_value())
             {
@@ -759,8 +759,13 @@ namespace d14engine::uikit
             }
             else mode = BitmapObject::g_interpolationMode;
 
-            rndr->d2d1DeviceContext()->DrawBitmap(
-                bitmap.Get(), rect, bitmapProperty.opacity, mode);
+            rndr->d2d1DeviceContext()->DrawBitmap
+            (
+            /* bitmap               */ bitmap.Get(),
+            /* destinationRectangle */ m_absoluteRect,
+            /* opacity              */ bitmapProperty.opacity,
+            /* interpolationMode    */ mode
+            );
         }
     }
 
@@ -1196,11 +1201,27 @@ namespace d14engine::uikit
     {
         m_diffPinnedChildren.clear();
 
-        std::set_difference(
-            m_pinnedChildren.begin(), m_pinnedChildren.end(),
-            m_hitChildren.begin(), m_hitChildren.end(),
-            std::inserter(m_diffPinnedChildren, m_diffPinnedChildren.begin()),
-            ISortable<Panel>::WeakAscending()); // Can't deduce automatically.
+        auto& _Cont1 = m_pinnedChildren;
+        auto& _Cont2 = m_hitChildren;
+        auto& _Cont3 = m_diffPinnedChildren;
+
+        auto _Dest = std::inserter
+        (
+        /* _Cont  */ _Cont3,
+        /* _Where */ _Cont3.begin()
+        );
+        auto _Pred = ISortable<Panel>::WeakAscending();
+
+        std::set_difference
+        (
+        /* _First1 */ _Cont1.begin(),
+        /* _Last1  */ _Cont1.end(),
+        /* _First2 */ _Cont2.begin(),
+        /* _Last2  */ _Cont2.end(),
+        /* _Dest   */ _Dest,
+        /* _Pred   */ _Pred
+        );
+        // can not deduce _Pred automatically
     }
 
     void Panel::updateDiffPinnedUIObjectsLater()
@@ -1208,9 +1229,10 @@ namespace d14engine::uikit
         THROW_IF_NULL(Application::g_app);
 
         auto& app = Application::g_app;
-        using CustomMsg = Application::CustomMessage;
 
         app->pushDiffPinnedUpdateCandidate(shared_from_this());
-        app->postCustomMessage(CustomMsg::UpdateMiscDiffPinnedUIObjects);
+
+        app->postCustomMessage(Application::
+            CustomMessage::UpdateMiscDiffPinnedUIObjects);
     }
 }
