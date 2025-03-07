@@ -14,7 +14,7 @@ namespace d14engine::uikit
         :
         Panel(rect, resource_utils::solidColorBrush()),
         WaterfallView(rect),
-        shadow(math_utils::roundu(extendedSize(size())))
+        shadow(extendedSize(size()))
     {
         setPrivateVisible(false);
         setPrivateEnabled(false);
@@ -289,7 +289,7 @@ namespace d14engine::uikit
     {
         WaterfallView::onSizeHelper(e);
 
-        shadow.loadBitmap(math_utils::roundu(extendedSize(e.size)));
+        shadow.loadBitmap(extendedSize(e.size));
     }
 
     void PopupMenu::onChangeThemeStyleHelper(const ThemeStyle& style)

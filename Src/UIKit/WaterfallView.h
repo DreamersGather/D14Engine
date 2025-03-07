@@ -3,6 +3,9 @@
 #include "Common/Precompile.h"
 
 #include "Common/CppLangUtils/IndexIterator.h"
+
+// Do NOT remove this header for code tidy
+// as the template deduction relies on it.
 #include "Common/CppLangUtils/PointerEquality.h"
 
 #include "UIKit/ConstraintLayout.h"

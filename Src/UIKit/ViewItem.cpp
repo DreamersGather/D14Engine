@@ -19,7 +19,7 @@ namespace d14engine::uikit
         const D2D1_RECT_F& rect)
         :
         Panel(rect, resource_utils::solidColorBrush()),
-        contentMask(math_utils::roundu(size())),
+        contentMask(size()),
         m_content(content)
     {
         m_takeOverChildrenDrawing = true;
@@ -228,7 +228,7 @@ namespace d14engine::uikit
     {
         Panel::onSizeHelper(e);
 
-        contentMask.loadBitmap(math_utils::roundu(e.size));
+        contentMask.loadBitmap(e.size);
 
         if (m_content) m_content->transform(selfCoordRect());
     }

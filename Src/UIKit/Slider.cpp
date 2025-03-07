@@ -87,7 +87,7 @@ namespace d14engine::uikit
     {
         auto& geoSetting = getAppearance().handle.geometry;
 
-        handleShadow.loadBitmap(math_utils::roundu(geoSetting.size));
+        handleShadow.loadBitmap(geoSetting.size);
     }
 
     void Slider::loadSideTrianglePathGeo()

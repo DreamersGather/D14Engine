@@ -25,7 +25,7 @@ namespace d14engine::uikit
         Panel(rect, resource_utils::solidColorBrush()),
         DraggablePanel(rect, resource_utils::solidColorBrush()),
         ResizablePanel(rect, resource_utils::solidColorBrush()),
-        contentMask(math_utils::roundu(size())),
+        contentMask(size()),
         m_caption(caption),
         m_captionPanelHeight(captionPanelHeight),
         m_decorativeBarHeight(decorativeBarHeight)
@@ -712,9 +712,7 @@ namespace d14engine::uikit
     {
         ResizablePanel::onSizeHelper(e);
 
-        auto bitmapSize = math_utils::roundu(e.size);
-
-        contentMask.loadBitmap(bitmapSize);
+        contentMask.loadBitmap(e.size);
 
         m_caption->transform(captionIconLabelSelfcoordRect());
         if (m_content) m_content->transform(clientAreaSelfcoordRect());

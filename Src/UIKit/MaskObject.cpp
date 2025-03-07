@@ -3,6 +3,7 @@
 #include "UIKit/MaskObject.h"
 
 #include "Common/DirectXError.h"
+#include "Common/MathUtils/2D.h"
 
 #include "UIKit/Application.h"
 #include "UIKit/BitmapUtils.h"
@@ -10,31 +11,33 @@
 
 namespace d14engine::uikit
 {
-    MaskObject::MaskObject(UINT bitmapWidth, UINT bitmapHeight)
+    MaskObject::MaskObject(const D2D1_SIZE_F& size)
     {
-        loadBitmap(bitmapWidth, bitmapHeight);
+        loadBitmap(size);
     }
 
-    void MaskObject::loadBitmap(UINT width, UINT height)
+    MaskObject::MaskObject(float width, float height)
+    {
+        loadBitmap(width, height);
+    }
+
+    void MaskObject::loadBitmap(const D2D1_SIZE_F& size)
     {
         THROW_IF_NULL(Application::g_app);
 
         auto rndr = Application::g_app->dx12Renderer();
-        rndr->beginGpuCommand();
 
-        auto dipSize = SIZE{ (LONG)width, (LONG)height };
-        auto pixSize = platform_utils::scaledByDpi(dipSize);
+        auto pixSize = math_utils::roundu(
+            platform_utils::scaledByDpi(size));
 
         data = bitmap_utils::loadBitmap(
-            (UINT)pixSize.cx, (UINT)pixSize.cy,
+            pixSize.width, pixSize.height,
             nullptr, D2D1_BITMAP_OPTIONS_TARGET);
-
-        rndr->endGpuCommand();
     }
 
-    void MaskObject::loadBitmap(const D2D1_SIZE_U& size)
+    void MaskObject::loadBitmap(float width, float height)
     {
-        loadBitmap(size.width, size.height);
+        loadBitmap({ width, height });
     }
 
     void MaskObject::beginDraw(ID2D1DeviceContext* context, const D2D1_MATRIX_3X2_F& transform)

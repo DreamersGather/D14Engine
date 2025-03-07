@@ -38,7 +38,6 @@ D14_SET_APP_ENTRY(mainImageViewer)
 
     Application::CreateInfo info =
     {
-        .dpi = 170.0f,
         .windowSize = { 800, 600 }
     };
     return Application(info).run([](Application* app)
@@ -61,9 +60,9 @@ D14_SET_APP_ENTRY(mainImageViewer)
 
             if (app->themeStyle().name == L"Light")
             {
-                ui_darkModeSwitch->setOnOffState(OnOffSwitch::OFF);
+                ui_darkModeSwitch->setOnOffState(OnOffSwitch::Off);
             }
-            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::ON);
+            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::On);
 
             app->f_onSystemThemeStyleChange = [app]
             (const Application::ThemeStyle& style)
@@ -83,19 +82,19 @@ D14_SET_APP_ENTRY(mainImageViewer)
         {
             ui_screenshot->moveTopmost();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
-            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
             ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = app->screenshot();
+                auto image = app->windowshot();
                 CreateDirectory(L"Screenshots", nullptr);
                 bitmap_utils::saveBitmap(image.Get(), D14_SCREENSHOT_PATH);
             };
         }
         auto ui_clientArea = makeUIObject<Panel>();
         {
-            ui_mainWindow->setCenterUIObject(ui_clientArea);
+            ui_mainWindow->setContent(ui_clientArea);
         }
         auto ui_tabGroup = makeManagedUIObject<TabGroup>(ui_clientArea);
         WeakPtr<TabGroup> wk_tabGroup = ui_tabGroup; // captured by lambdas
@@ -106,7 +105,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
             ui_tabGroup->isRightResizable = true;
 
             auto caption = makeUIObject<TabCaption>(L"Home");
-            caption->title()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            caption->title()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
             auto content = makeUIObject<Label>(L"Try load a new image-tab...");
             THROW_IF_FAILED(content->textLayout()->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
@@ -124,7 +123,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         }
         auto ui_checkBox = makeUIObject<CheckBox>();
         {
-            ui_checkBox->setChecked(CheckBox::CHECKED);
+            ui_checkBox->setChecked(CheckBox::Checked);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -180,7 +179,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
                     int index = rand() % (int)images.size();
 
                     auto caption = makeUIObject<TabCaption>(images[index].first);
-                    caption->title()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+                    caption->title()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
                     auto imageRect = math_utils::sizeOnlyRect(images[index].second->GetSize());
                     auto content = makeUIObject<Panel>(imageRect, nullptr, images[index].second);
@@ -219,10 +218,10 @@ D14_SET_APP_ENTRY(mainImageViewer)
         auto ui_textBox1 = makeUIObject<RawTextBox>(5.0f, math_utils::sizeOnlyRect({ 80.0f, 40.0f }));
         auto ui_textBox2 = makeUIObject<RawTextBox>(5.0f, math_utils::sizeOnlyRect({ 80.0f, 40.0f }));
         {
-            ui_textBox1->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            ui_textBox1->setTextFormat(D14_FONT(L"Default/12"));
             ui_textBox1->setVisibleTextRect({ 5.0f, 8.0f, 75.0f, 32.0f });
             ui_textBox1->placeholder()->setText(L"first");
-            ui_textBox1->placeholder()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            ui_textBox1->placeholder()->setTextFormat(D14_FONT(L"Default/12"));
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -239,10 +238,10 @@ D14_SET_APP_ENTRY(mainImageViewer)
             geoInfo2.axis.y = { 2, 1 };
             ui_sideLayout->addElement(ui_label, geoInfo2);
 
-            ui_textBox2->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            ui_textBox2->setTextFormat(D14_FONT(L"Default/12"));
             ui_textBox2->setVisibleTextRect({ 5.0f, 8.0f, 75.0f, 32.0f });
             ui_textBox2->placeholder()->setText(L"last");
-            ui_textBox2->placeholder()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            ui_textBox2->placeholder()->setTextFormat(D14_FONT(L"Default/12"));
 
             GridLayout::GeometryInfo geoInfo3 = {};
             geoInfo3.isFixedSize = true;
@@ -306,7 +305,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         }
         auto ui_checkBox1 = makeUIObject<CheckBox>();
         {
-            ui_checkBox1->setCheckedState(CheckBox::CHECKED);
+            ui_checkBox1->setCheckedState(CheckBox::Checked);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -334,7 +333,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         }
         auto ui_checkBox2 = makeUIObject<CheckBox>();
         {
-            ui_checkBox2->setCheckedState(CheckBox::CHECKED);
+            ui_checkBox2->setCheckedState(CheckBox::Checked);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -362,7 +361,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         }
         auto ui_checkBox3 = makeUIObject<CheckBox>();
         {
-            ui_checkBox3->setCheckedState(CheckBox::UNCHECKED);
+            ui_checkBox3->setCheckedState(CheckBox::Unchecked);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -419,22 +418,22 @@ D14_SET_APP_ENTRY(mainImageViewer)
                 {
                     wk_checkBox1.lock()->setCheckedState(
                         index.valid() && index->caption->closable ?
-                        CheckBox::CHECKED :
-                        CheckBox::UNCHECKED);
+                        CheckBox::Checked :
+                        CheckBox::Unchecked);
                 }
                 if (!wk_checkBox2.expired())
                 {
                     wk_checkBox2.lock()->setCheckedState(
                         index.valid() && index->caption->draggable ?
-                        CheckBox::CHECKED :
-                        CheckBox::UNCHECKED);
+                        CheckBox::Checked :
+                        CheckBox::Unchecked);
                 }
                 if (!wk_checkBox3.expired())
                 {
                     wk_checkBox3.lock()->setCheckedState(
                         index.valid() && index->caption->promotable ?
-                        CheckBox::CHECKED :
-                        CheckBox::UNCHECKED);
+                        CheckBox::Checked :
+                        CheckBox::Unchecked);
                 }
             };
             ui_tabGroup->f_onTriggerTabPromoting = [](TabGroup* tg, Window* w)

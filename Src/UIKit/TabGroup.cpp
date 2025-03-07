@@ -52,8 +52,7 @@ namespace d14engine::uikit
         auto& setting = tg->getAppearance().
             tabBar.card.main[(size_t)CardState::Active];
 
-        mask.loadBitmap(
-            math_utils::roundu(setting.geometry.size));
+        mask.loadBitmap(setting.geometry.size);
     }
 
     void TabGroup::ActiveCard::loadPathGeo()

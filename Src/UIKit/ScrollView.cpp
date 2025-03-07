@@ -21,10 +21,10 @@ namespace d14engine::uikit
         :
         Panel(rect, resource_utils::solidColorBrush()),
         ResizablePanel(rect, resource_utils::solidColorBrush()),
-        contentMask(math_utils::roundu(size())),
+        contentMask(size()),
         m_content(content)
     {
-        m_takeOverChildrenDrawing = (m_content != nullptr);
+        m_takeOverChildrenDrawing = true;
 
         setResizable(false);
     }
@@ -35,7 +35,7 @@ namespace d14engine::uikit
 
         addUIObject(m_content);
 
-        if (m_content) m_content->move(0, 0);
+        if (m_content) m_content->move(0.0f, 0.0f);
     }
 
     void ScrollView::onStartThumbScrolling(const D2D1_POINT_2F& offset)
@@ -98,8 +98,6 @@ namespace d14engine::uikit
 
             if (m_content) m_content->move(0.0f, 0.0f);
 
-            m_takeOverChildrenDrawing = (m_content != nullptr);
-
             m_viewportOffset = { 0.0f, 0.0f };
         }
     }
@@ -121,7 +119,9 @@ namespace d14engine::uikit
         {
             out.y = std::clamp(in.y, 0.0f, contentSize.height - selfSize.height);
         }
-        else out.y = 0.0f; return out;
+        else out.y = 0.0f;
+
+        return out; // valid viewport offset
     }
 
     const D2D1_POINT_2F& ScrollView::viewportOffset() const
@@ -217,7 +217,7 @@ namespace d14engine::uikit
                 height() - geoSetting.offset
             };
         }
-        else return {};
+        else return math_utils::zeroRectF();
     }
 
     D2D1_RECT_F ScrollView::vertBarSelfcoordRect(ScrollBarState state) const
@@ -240,7 +240,7 @@ namespace d14engine::uikit
                 vertEnd * selfSize.height
             };
         }
-        else return {};
+        else return math_utils::zeroRectF();
     }
 
     void ScrollView::onRendererDrawD2d1LayerHelper(Renderer* rndr)
@@ -258,14 +258,16 @@ namespace d14engine::uikit
             // The rendering result depends on the target background color,
             // so you must set an opaque background (better a value >= 0.5).
             //--------------------------------------------------------------
-            contentMask.color = getAppearance().background.color;
-            contentMask.color.a = getAppearance().background.opacity;
+            auto& bkgn = getAppearance().background;
 
-            auto maskDrawTrans = D2D1::Matrix3x2F::Translation
+            contentMask.color = bkgn.color;
+            contentMask.color.a = bkgn.opacity;
+
+            auto maskTrans = D2D1::Matrix3x2F::Translation
             (
                 -m_absoluteRect.left, -m_absoluteRect.top
             );
-            contentMask.beginDraw(rndr->d2d1DeviceContext(), maskDrawTrans);
+            contentMask.beginDraw(rndr->d2d1DeviceContext(), maskTrans);
             {
                 m_content->onRendererDrawD2d1Object(rndr);
             }
@@ -275,67 +277,98 @@ namespace d14engine::uikit
 
     void ScrollView::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        // Background
-        resource_utils::solidColorBrush()->SetColor(getAppearance().background.color);
-        resource_utils::solidColorBrush()->SetOpacity(getAppearance().background.opacity);
+        ////////////////
+        // Background //
+        ////////////////
+
+        auto& bkgn = getAppearance().background;
+
+        resource_utils::solidColorBrush()->SetColor(bkgn.color);
+        resource_utils::solidColorBrush()->SetOpacity(bkgn.opacity);
 
         ResizablePanel::drawBackground(rndr);
 
-        // Content
+        /////////////
+        // Content //
+        /////////////
+
         if (m_content && m_content->isD2d1ObjectVisible())
         {
-            rndr->d2d1DeviceContext()->DrawBitmap(
-                contentMask.data.Get(), math_utils::roundf(m_absoluteRect),
-                contentMask.opacity, contentMask.getInterpolationMode());
+            rndr->d2d1DeviceContext()->DrawBitmap
+            (
+            /* bitmap               */ contentMask.data.Get(),
+            /* destinationRectangle */ m_absoluteRect,
+            /* opacity              */ contentMask.opacity,
+            /* interpolationMode    */ contentMask.getInterpolationMode()
+            );
         }
-        // Outline
-        resource_utils::solidColorBrush()->SetColor(getAppearance().stroke.color);
-        resource_utils::solidColorBrush()->SetOpacity(getAppearance().stroke.opacity);
+        /////////////
+        // Outline //
+        /////////////
 
-        float strokeWidth = getAppearance().stroke.width;
+        auto& stroke = getAppearance().stroke;
 
-        auto frame = math_utils::inner(m_absoluteRect, strokeWidth);
+        resource_utils::solidColorBrush()->SetColor(stroke.color);
+        resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
+
+        auto frame = math_utils::inner(m_absoluteRect, stroke.width);
         D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
 
-        rndr->d2d1DeviceContext()->DrawRoundedRectangle(
-            outlineRect, resource_utils::solidColorBrush(), strokeWidth);
+        rndr->d2d1DeviceContext()->DrawRoundedRectangle
+        (
+        /* roundedRect */ outlineRect,
+        /* brush       */ resource_utils::solidColorBrush(),
+        /* strokeWidth */ stroke.width
+        );
     }
 
     void ScrollView::drawD2d1ObjectPosterior(renderer::Renderer* rndr)
     {
-        // Horz Bar
+        //////////////
+        // Horz Bar //
+        //////////////
+
         if (isHorzBarEnabled)
         {
-            auto horzState = getHorzBarState(m_isHorzBarHover, m_isHorzBarDown);
-            auto& horzSetting = getAppearance().scrollBar[(size_t)horzState];
+            auto state = getHorzBarState(m_isHorzBarHover, m_isHorzBarDown);
+            auto& setting = getAppearance().scrollBar[(size_t)state];
 
-            resource_utils::solidColorBrush()->SetColor(horzSetting.background.color);
-            resource_utils::solidColorBrush()->SetOpacity(horzSetting.background.opacity);
+            resource_utils::solidColorBrush()->SetColor(setting.background.color);
+            resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
-            rndr->d2d1DeviceContext()->FillRoundedRectangle(
+            D2D1_ROUNDED_RECT roundedRect =
             {
-                selfCoordToAbsolute(horzBarSelfcoordRect(horzState)),
-                horzSetting.geometry.roundRadius,
-                horzSetting.geometry.roundRadius
-            },
-            resource_utils::solidColorBrush());
+                selfCoordToAbsolute(horzBarSelfcoordRect(state)),
+                setting.geometry.roundRadius, setting.geometry.roundRadius
+            };
+            rndr->d2d1DeviceContext()->FillRoundedRectangle
+            (
+            /* roundedRect */ roundedRect,
+            /* brush       */ resource_utils::solidColorBrush()
+            );
         }
-        // Vert Bar
+        //////////////
+        // Vert Bar //
+        //////////////
+
         if (isVertBarEnabled)
         {
-            auto vertState = getVertBarState(m_isVertBarHover, m_isVertBarDown);
-            auto& vertSetting = getAppearance().scrollBar[(size_t)vertState];
+            auto state = getVertBarState(m_isVertBarHover, m_isVertBarDown);
+            auto& setting = getAppearance().scrollBar[(size_t)state];
 
-            resource_utils::solidColorBrush()->SetColor(vertSetting.background.color);
-            resource_utils::solidColorBrush()->SetOpacity(vertSetting.background.opacity);
+            resource_utils::solidColorBrush()->SetColor(setting.background.color);
+            resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
-            rndr->d2d1DeviceContext()->FillRoundedRectangle(
+            D2D1_ROUNDED_RECT roundedRect =
             {
-                selfCoordToAbsolute(vertBarSelfcoordRect(vertState)),
-                vertSetting.geometry.roundRadius,
-                vertSetting.geometry.roundRadius
-            },
-            resource_utils::solidColorBrush());
+                selfCoordToAbsolute(vertBarSelfcoordRect(state)),
+                setting.geometry.roundRadius, setting.geometry.roundRadius
+            };
+            rndr->d2d1DeviceContext()->FillRoundedRectangle
+            (
+            /* roundedRect */ roundedRect,
+            /* brush       */ resource_utils::solidColorBrush()
+            );
         }
         ResizablePanel::drawD2d1ObjectPosterior(rndr);
     }
@@ -351,7 +384,7 @@ namespace d14engine::uikit
     {
         ResizablePanel::onSizeHelper(e);
 
-        contentMask.loadBitmap(math_utils::roundu(e.size));
+        contentMask.loadBitmap(e.size);
 
         // The viewport offset may be out of range after resizing.
         setViewportOffsetDirect(m_viewportOffset);
@@ -373,7 +406,10 @@ namespace d14engine::uikit
 
         auto selfSize = getSelfSize();
 
-        // Perform viewport motion.
+        //////////////////////////////
+        // Perform viewport motion. //
+        //////////////////////////////
+
         if (selfSize.width > 0.0f && selfSize.height > 0.0f)
         {
             auto contentSize = getContentSize();
@@ -396,20 +432,23 @@ namespace d14engine::uikit
                     { 0.0f, std::round((p.y - m_vertBarHoldOffset) * vertRatio) }));
             }
         }
-        // Update scroll bar state.
+        //////////////////////////////
+        // Update scroll bar state. //
+        //////////////////////////////
+
         if (isHorzBarEnabled)
         {
-            auto hstate = m_isHorzBarHover ? ScrollBarState::Hover : ScrollBarState::Idle;
-            auto hrect = math_utils::overrideBottom(horzBarSelfcoordRect(hstate), FLT_MAX);
+            auto state = m_isHorzBarHover ? ScrollBarState::Hover : ScrollBarState::Idle;
+            auto rect = math_utils::overrideBottom(horzBarSelfcoordRect(state), FLT_MAX);
 
-            m_isHorzBarHover = math_utils::isOverlapped(p, hrect);
+            m_isHorzBarHover = math_utils::isOverlapped(p, rect);
         }
         if (isVertBarEnabled)
         {
-            auto vstate = m_isVertBarHover ? ScrollBarState::Hover : ScrollBarState::Idle;
-            auto vrect = math_utils::overrideRight(vertBarSelfcoordRect(vstate), FLT_MAX);
+            auto state = m_isVertBarHover ? ScrollBarState::Hover : ScrollBarState::Idle;
+            auto rect = math_utils::overrideRight(vertBarSelfcoordRect(state), FLT_MAX);
 
-            m_isVertBarHover = math_utils::isOverlapped(p, vrect);
+            m_isVertBarHover = math_utils::isOverlapped(p, rect);
         }
         m_skipUpdateChildrenHitStateInMouseMoveEvent = isControllingScrollBars();
     }
@@ -472,9 +511,9 @@ namespace d14engine::uikit
 
         if (e.keyState.SHIFT)
         {
-            nextOffset.x -= e.deltaCount * deltaPixelsPerScroll.horz;
+            nextOffset.x -= e.deltaCount * deltaDipsPerScroll.horz;
         }
-        else nextOffset.y -= e.deltaCount * deltaPixelsPerScroll.vert;
+        else nextOffset.y -= e.deltaCount * deltaDipsPerScroll.vert;
 
         setViewportOffset(nextOffset);
 

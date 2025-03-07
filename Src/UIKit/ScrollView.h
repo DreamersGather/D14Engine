@@ -5,7 +5,6 @@
 #include "UIKit/Appearances/ScrollView.h"
 #include "UIKit/MaskObject.h"
 #include "UIKit/ResizablePanel.h"
-#include "UIKit/StrokeStyle.h"
 
 namespace d14engine::uikit
 {
@@ -48,12 +47,12 @@ namespace d14engine::uikit
         }
         customSizeGetter = {};
 
-        struct DeltaPixelPerScroll
+        struct DeltaDipsPerScroll
         {
             float horz = 30.0f;
             float vert = 30.0f;
         }
-        deltaPixelsPerScroll = {};
+        deltaDipsPerScroll = {};
 
     protected:
         D2D1_SIZE_F getSelfSize() const;

@@ -20,7 +20,7 @@ namespace d14engine::uikit
         :
         Panel(rect, resource_utils::solidColorBrush()),
         FilledButton(content, roundRadius, rect),
-        shadow(math_utils::roundu(size())) { }
+        shadow(size()) { }
 
     ElevatedButton::ElevatedButton(
         WstrParam text,
@@ -86,7 +86,7 @@ namespace d14engine::uikit
     {
         FilledButton::onSizeHelper(e);
 
-        shadow.loadBitmap(math_utils::roundu(e.size));
+        shadow.loadBitmap(e.size);
     }
 
     void ElevatedButton::onChangeThemeStyleHelper(const ThemeStyle& style)

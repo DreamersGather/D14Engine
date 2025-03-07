@@ -44,8 +44,7 @@ namespace d14engine::uikit::platform_utils
         auto factor = dpi() / 96.0f;
         return
         {
-            math_utils::round<float>(sz.width * factor),
-            math_utils::round<float>(sz.height * factor)
+            sz.width * factor, sz.height * factor
         };
     }
 
@@ -54,8 +53,7 @@ namespace d14engine::uikit::platform_utils
         auto factor = 96.0f / dpi();
         return
         {
-            math_utils::round<float>(sz.width * factor),
-            math_utils::round<float>(sz.height * factor)
+            sz.width * factor, sz.height * factor
         };
     }
 
@@ -84,8 +82,7 @@ namespace d14engine::uikit::platform_utils
         auto factor = dpi() / 96.0f;
         return
         {
-            math_utils::round<float>(pt.x * factor),
-            math_utils::round<float>(pt.y * factor)
+            pt.x * factor, pt.y * factor
         };
     }
 
@@ -94,8 +91,7 @@ namespace d14engine::uikit::platform_utils
         auto factor = 96.0f / dpi();
         return
         {
-            math_utils::round<float>(pt.x * factor),
-            math_utils::round<float>(pt.y * factor)
+            pt.x * factor, pt.y * factor
         };
     }
 
