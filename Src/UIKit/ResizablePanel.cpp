@@ -36,17 +36,21 @@ namespace d14engine::uikit
 
         auto factory = Application::g_app->dx12Renderer()->d2d1Factory();
 
-        auto properties = D2D1::StrokeStyleProperties
+        auto prop = D2D1::StrokeStyleProperties
         (
-            /* startCap   */ D2D1_CAP_STYLE_ROUND,
-            /* endCap     */ D2D1_CAP_STYLE_ROUND,
-            /* dashCap    */ D2D1_CAP_STYLE_ROUND,
-            /* lineJoin   */ D2D1_LINE_JOIN_MITER,
-            /* miterLimit */ 10.0f,
-            /* dashStyle  */ D2D1_DASH_STYLE_DASH,
-            /* dashOffset */ 0.0f
+        /* startCap */ D2D1_CAP_STYLE_ROUND,
+        /* endCap   */ D2D1_CAP_STYLE_ROUND,
+        /* dashCap  */ D2D1_CAP_STYLE_ROUND
         );
-        THROW_IF_FAILED(factory->CreateStrokeStyle(properties, nullptr, 0, &strokeStyle));
+        auto& style = strokeStyle;
+
+        THROW_IF_FAILED(factory->CreateStrokeStyle
+        (
+        /* strokeStyleProperties */ prop,
+        /* dashes                */ nullptr,
+        /* dashesCount           */ 0,
+        /* strokeStyle           */ &style
+        ));
     }
 
     D2D1_RECT_F ResizablePanel::sizingFrameExtendedRect(const D2D1_RECT_F& flatRect) const
@@ -165,7 +169,10 @@ namespace d14engine::uikit
 
     void ResizablePanel::drawD2d1ObjectPosterior(Renderer* rndr)
     {
-        // Static Sizing Frame
+        /////////////////////////
+        // Static Sizing Frame //
+        /////////////////////////
+
         if (!enableDynamicSizing && isSizing())
         {
             auto& frameSetting = getAppearance().staticSizingGuideFrame;
@@ -176,9 +183,13 @@ namespace d14engine::uikit
             auto frame = math_utils::inner(m_sizingRect, frameSetting.strokeWidth);
             D2D1_ROUNDED_RECT outlineRect = { relativeToAbsolute(frame), roundRadiusX, roundRadiusY };
 
-            rndr->d2d1DeviceContext()->DrawRoundedRectangle(
-                outlineRect, resource_utils::g_solidColorBrush.Get(),
-                frameSetting.strokeWidth, staticSizingGuideFrame.strokeStyle.Get());
+            rndr->d2d1DeviceContext()->DrawRoundedRectangle
+            (
+            /* roundedRect */ outlineRect,
+            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* strokeWidth */ frameSetting.strokeWidth,
+            /* strokeStyle */ staticSizingGuideFrame.strokeStyle.Get()
+            );
         }
     }
 
@@ -191,10 +202,10 @@ namespace d14engine::uikit
     {
         Panel::onChangeThemeStyleHelper(style);
 
-        onChangeThemeWrapper(style);
+        onChangeThemeStyleWrapper(style);
     }
 
-    void ResizablePanel::onChangeThemeWrapper(const ThemeStyle& style)
+    void ResizablePanel::onChangeThemeStyleWrapper(const ThemeStyle& style)
     {
         getAppearance().changeTheme(style.name);
     }
@@ -212,15 +223,17 @@ namespace d14engine::uikit
 
         auto& p = e.cursorPoint;
 
-        float minWidth = minimalWidth();
-        float minHeight = minimalHeight();
+        auto minWidth = minimalWidth();
+        auto minHeight = minimalHeight();
 
-        float maxWidth = maximalWidth();
-        float maxHeight = maximalHeight();
+        auto maxWidth = maximalWidth();
+        auto maxHeight = maximalHeight();
 
         auto relative = math_utils::offset(absoluteToRelative(p), math_utils::minus(m_sizingOffset));
 
-        // Left
+        //////////
+        // Left //
+        //////////
 
         if (isLeftResizable && isLeftSizingOnly())
         {
@@ -241,7 +254,9 @@ namespace d14engine::uikit
             Application::g_app->cursor()->setIcon(Cursor::HorzSize);
         }
 
-        // Right
+        ///////////
+        // Right //
+        ///////////
 
         else if (isRightResizable && isRightSizingOnly())
         {
@@ -260,7 +275,9 @@ namespace d14engine::uikit
             Application::g_app->cursor()->setIcon(Cursor::HorzSize);
         }
 
-        // Top
+        /////////
+        // Top //
+        /////////
 
         else if (isTopResizable && isTopSizingOnly())
         {
@@ -281,7 +298,9 @@ namespace d14engine::uikit
             Application::g_app->cursor()->setIcon(Cursor::VertSize);
         }
 
-        // Bottom
+        ////////////
+        // Bottom //
+        ////////////
 
         else if (isBottomResizable && isBottomSizingOnly())
         {
@@ -300,7 +319,9 @@ namespace d14engine::uikit
             Application::g_app->cursor()->setIcon(Cursor::VertSize);
         }
 
-        // Left Top
+        //////////////
+        // Left Top //
+        //////////////
 
         else if (isLeftResizable && isTopResizable && isLeftTopSizing())
         {
@@ -332,7 +353,9 @@ namespace d14engine::uikit
             Application::g_app->cursor()->setIcon(Cursor::MainDiag);
         }
 
-        // Left Bottom
+        /////////////////
+        // Left Bottom //
+        /////////////////
 
         else if (isLeftResizable && isBottomResizable && isLeftBottomSizing())
         {
@@ -362,7 +385,9 @@ namespace d14engine::uikit
             Application::g_app->cursor()->setIcon(Cursor::BackDiag);
         }
 
-        // Right Top
+        ///////////////
+        // Right Top //
+        ///////////////
 
         else if (isRightResizable && isTopResizable && isRightTopSizing())
         {
@@ -392,7 +417,9 @@ namespace d14engine::uikit
             Application::g_app->cursor()->setIcon(Cursor::BackDiag);
         }
 
-        // Right Bottom
+        //////////////////
+        // Right Bottom //
+        //////////////////
 
         else if (isRightResizable && isBottomResizable && isRightBottomSizing())
         {
@@ -420,7 +447,9 @@ namespace d14engine::uikit
             Application::g_app->cursor()->setIcon(Cursor::MainDiag);
         }
 
-        // No Sizing
+        ///////////////
+        // No Sizing //
+        ///////////////
 
         else // Update miscellaneous fields.
         {
@@ -493,8 +522,11 @@ namespace d14engine::uikit
     {
         if (!forceGlobalExclusiveFocusing)
         {
-            m_isLeftHover = m_isLeftSizing = m_isTopHover = m_isTopSizing =
-            m_isRightHover = m_isRightSizing = m_isBottomHover = m_isBottomSizing = false;
+            m_isLeftHover = m_isTopHover =
+            m_isRightHover = m_isBottomHover = false;
+
+            m_isLeftSizing = m_isTopSizing =
+            m_isRightSizing = m_isBottomSizing = false;
         }
     }
 
@@ -511,10 +543,19 @@ namespace d14engine::uikit
 
         if (e.state.leftDown() || e.state.leftDblclk())
         {
-            if (isLeftResizable)   m_isLeftSizing   = m_isLeftHover  ;
-            if (isTopResizable)    m_isTopSizing    = m_isTopHover   ;
-            if (isRightResizable)  m_isRightSizing  = m_isRightHover ;
-            if (isBottomResizable) m_isBottomSizing = m_isBottomHover;
+#define UPDATE_SIZING_STATE(Border) do \
+{ \
+    if (is##Border##Resizable) \
+    { \
+        m_is##Border##Sizing = m_is##Border##Hover; \
+    } \
+} while (0)
+            UPDATE_SIZING_STATE(Left);
+            UPDATE_SIZING_STATE(Top);
+            UPDATE_SIZING_STATE(Right);
+            UPDATE_SIZING_STATE(Bottom);
+
+#undef UPDATE_SIZING_STATE
 
             if (isSizing())
             {
@@ -536,7 +577,8 @@ namespace d14engine::uikit
                 {
                     transform(m_sizingRect);
                 }
-                m_isLeftSizing = m_isTopSizing = m_isRightSizing = m_isBottomSizing = false;
+                m_isLeftSizing = m_isTopSizing =
+                m_isRightSizing = m_isBottomSizing = false;
 
                 onEndResizing();
             }

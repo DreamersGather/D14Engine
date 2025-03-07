@@ -18,7 +18,9 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        struct StaticSizingGuideFrame : cpp_lang_utils::EnableMasterPtr<ResizablePanel>
+        using MasterPtr = cpp_lang_utils::EnableMasterPtr<ResizablePanel>;
+
+        struct StaticSizingGuideFrame : MasterPtr
         {
             using EnableMasterPtr::EnableMasterPtr;
 
@@ -81,8 +83,7 @@ namespace d14engine::uikit
         bool isRightBottomSizing() const;
 
     protected:
-        // These methods give the correct results only when the point
-        // hits (i.e. taking the sizing frame extension into account).
+        // These methods give the correct results only when the point hits.
 
         bool isHitLeftTopSizingCorner(const D2D1_POINT_2F& p) const;
         bool isHitLeftBottomSizingCorner(const D2D1_POINT_2F& p) const;
@@ -97,7 +98,7 @@ namespace d14engine::uikit
         bool isHitHelper(const Event::Point& p) const override;
 
         void onChangeThemeStyleHelper(const ThemeStyle& style) override;
-        void onChangeThemeWrapper(const ThemeStyle& style);
+        void onChangeThemeStyleWrapper(const ThemeStyle& style);
 
         void onMouseMoveHelper(MouseMoveEvent& e) override;
         void onMouseMoveWrapper(MouseMoveEvent& e);
