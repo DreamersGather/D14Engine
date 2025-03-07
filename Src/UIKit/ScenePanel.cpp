@@ -3,7 +3,6 @@
 #include "UIKit/ScenePanel.h"
 
 #include "Common/DirectXError.h"
-#include "Common/MathUtils/2D.h"
 #include "Common/MathUtils/Basic.h"
 
 #include "Renderer/GraphUtils/Barrier.h"
