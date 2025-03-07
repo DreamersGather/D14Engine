@@ -242,9 +242,14 @@ namespace d14engine::renderer
         )};
         rndr->cmdList()->ResourceBarrier(NUM_ARR_ARGS(barriers));
 
-        CD3DX12_TEXTURE_COPY_LOCATION dst(currBackBuffer);
         CD3DX12_TEXTURE_COPY_LOCATION src(sceneBuffer);
         CD3DX12_BOX srcBox(0, 0, rndr->getSceneWidth(), rndr->getSceneHeight());
+
+        CD3DX12_TEXTURE_COPY_LOCATION dst(currBackBuffer);
+
+        //////////////////
+        // Copy Texture //
+        //////////////////
 
         rndr->cmdList()->CopyTextureRegion(&dst, 0, 0, 0, &src, &srcBox);
 
