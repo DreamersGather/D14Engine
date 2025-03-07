@@ -150,7 +150,7 @@ namespace d14engine::uikit
             {
                 for (ItemIndex itemIndex = range.first; itemIndex <= range.last; ++itemIndex)
                 {
-                    auto value = (*itemIndex)->m_currState.ancestorUnfolded();
+                    auto value = (*itemIndex)->m_stateDetail.ancestorUnfolded();
 
                     // When folding a tree view item, we set its height to
                     // zero to hide the content, but its rect, however, is

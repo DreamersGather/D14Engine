@@ -25,7 +25,7 @@ namespace d14engine::uikit
         roundRadiusX = roundRadiusY = roundRadius;
 
         m_state = { Unchecked, State::ButtonFlag::Idle };
-        m_currState.flag = Unchecked;
+        m_stateDetail.flag = Unchecked;
 
         enableTripleState(isTripleState);
     }
@@ -76,17 +76,17 @@ namespace d14engine::uikit
         StatefulObject::Event soe = {};
         soe.flag = m_state.activeFlag;
 
-        if (m_currState != soe)
+        if (m_stateDetail != soe)
         {
-            m_currState = soe;
-            onStateChange(m_currState);
+            m_stateDetail = soe;
+            onStateChange(m_stateDetail);
         }
     }
 
     void CheckBox::setCheckedState(State::ActiveFlag flag)
     {
         m_state.activeFlag = flag;
-        m_currState.flag = m_state.activeFlag;
+        m_stateDetail.flag = m_state.activeFlag;
     }
 
     bool CheckBox::isTripleState() const

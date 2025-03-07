@@ -64,7 +64,7 @@ namespace d14engine::uikit
 
         auto& shadowSetting = getAppearance().shadow;
 
-        shadow.color = shadowSetting.color[(size_t)m_currState];
+        shadow.color = shadowSetting.color[(size_t)m_state];
         shadow.standardDeviation = shadowSetting.standardDeviation;
 
         shadow.configEffectInput(resource_utils::shadowEffect());

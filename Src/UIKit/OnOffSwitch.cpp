@@ -22,7 +22,7 @@ namespace d14engine::uikit
         roundRadiusX = roundRadiusY = roundRadius;
 
         m_state = { Off, State::ButtonFlag::Idle };
-        m_currState.flag = Off;
+        m_stateDetail.flag = Off;
     }
 
     void OnOffSwitch::setEnabled(bool value)
@@ -45,10 +45,10 @@ namespace d14engine::uikit
         StatefulObject::Event soe = {};
         soe.flag = m_state.activeFlag;
 
-        if (soe != m_currState)
+        if (soe != m_stateDetail)
         {
-            m_currState = soe;
-            onStateChange(m_currState);
+            m_stateDetail = soe;
+            onStateChange(m_stateDetail);
         }
         if (m_animationTargetState != State::ActiveFlag::Finished)
         {
@@ -60,7 +60,7 @@ namespace d14engine::uikit
     void OnOffSwitch::setOnOffState(State::ActiveFlag flag)
     {
         m_state.activeFlag = flag;
-        m_currState.flag = m_state.activeFlag;
+        m_stateDetail.flag = m_state.activeFlag;
 
         if (m_animationTargetState != State::ActiveFlag::Finished)
         {
@@ -74,9 +74,9 @@ namespace d14engine::uikit
         if (m_animationTargetState == State::ActiveFlag::Finished)
         {
             m_state.activeFlag = flag;
-            m_currState.flag = m_state.activeFlag;
+            m_stateDetail.flag = m_state.activeFlag;
 
-            onStateChange(m_currState);
+            onStateChange(m_stateDetail);
 
             m_currHandleLeftOffset = 0.0f;
             m_currHandleDisplacement = 0.0f;
@@ -240,7 +240,7 @@ namespace d14engine::uikit
         {
             m_state.buttonFlag = State::ButtonFlag::Hover;
 
-            auto targetState = m_currState.on() ? Off : On;
+            auto targetState = m_stateDetail.on() ? Off : On;
 
             getAppearance().handle.animation.enabled ?
                 setOnOffWithAnim(targetState) : setOnOff(targetState);

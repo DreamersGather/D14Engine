@@ -16,8 +16,8 @@ namespace d14engine::uikit
         Panel(rect, resource_utils::solidColorBrush()),
         FilledButton(content, roundRadius, rect)
     {
-        m_state = { DEACTIVATED, StatefulObject::State::ButtonFlag::Idle };
-        StatefulObject::m_currState.flag = DEACTIVATED;
+        StatefulObject::m_state = { DEACTIVATED, StatefulObject::State::ButtonFlag::Idle };
+        StatefulObject::m_stateDetail.flag = DEACTIVATED;
     }
 
     ToggleButton::ToggleButton(
@@ -32,30 +32,30 @@ namespace d14engine::uikit
 
     void ToggleButton::setActivated(StatefulObject::State::ActiveFlag flag)
     {
-        m_state.activeFlag = flag;
+        StatefulObject::m_state.activeFlag = flag;
 
         StatefulObject::Event soe = {};
-        soe.flag = m_state.activeFlag;
+        soe.flag = StatefulObject::m_state.activeFlag;
 
-        if (StatefulObject::m_currState != soe)
+        if (StatefulObject::m_stateDetail != soe)
         {
-            StatefulObject::m_currState = soe;
-            onStateChange(StatefulObject::m_currState);
+            StatefulObject::m_stateDetail = soe;
+            onStateChange(StatefulObject::m_stateDetail);
         }
     }
 
     void ToggleButton::setActivatedState(StatefulObject::State::ActiveFlag flag)
     {
-        m_state.activeFlag = flag;
-        StatefulObject::m_currState.flag = m_state.activeFlag;
+        StatefulObject::m_state.activeFlag = flag;
+        StatefulObject::m_stateDetail.flag = StatefulObject::m_state.activeFlag;
     }
 
     void ToggleButton::onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr)
     {
-        if (m_state.activeFlag == ACTIVATED)
+        if (StatefulObject::m_state.activeFlag == ACTIVATED)
         {
             auto& dstSetting = Button::getAppearance();
-            auto& srcSetting = getAppearance().main[(size_t)Button::m_currState];
+            auto& srcSetting = getAppearance().main[(size_t)Button::m_state];
 
             dstSetting.foreground = srcSetting.foreground;
             dstSetting.background = srcSetting.background;
@@ -77,6 +77,6 @@ namespace d14engine::uikit
     {
         FilledButton::onMouseButtonReleaseHelper(e);
 
-        if (e.left()) setActivated(StatefulObject::m_currState.activated() ? DEACTIVATED : ACTIVATED);
+        if (e.left()) setActivated(StatefulObject::m_stateDetail.activated() ? DEACTIVATED : ACTIVATED);
     }
 }

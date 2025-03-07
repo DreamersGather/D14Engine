@@ -16,9 +16,9 @@ namespace d14engine::uikit
         void setEnabled(bool value) override;
 
     protected:
-        State m_currState = State::Idle;
+        State m_state = State::Idle;
 
-        float m_currDynamicBottomLineLength = 0.0f;
+        float m_dynamicBottomLineLength = 0.0f;
 
     protected:
         // IDrawObject2D

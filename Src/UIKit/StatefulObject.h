@@ -6,35 +6,33 @@
 
 namespace d14engine::uikit
 {
-    template<typename State_T, typename StateChangeEvent_T>
+    template<typename State_T, typename StateDetail_T>
     struct StatefulObject
     {
-        static_assert(cpp_lang_utils::has_operator::equalTo<StateChangeEvent_T>,
-            "An equal-to operator must be implemented for StateChangeEvent_T");
+        static_assert(cpp_lang_utils::has_operator::equalTo<StateDetail_T>,
+            "An equal-to operator must be implemented for StateDetail_T");
 
         using State = State_T;
-        using Event = StateChangeEvent_T;
+        using Event = StateDetail_T;
 
     public:
-        void onStateChange(StateChangeEvent_T& e)
+        void onStateChange(StateDetail_T& e)
         {
             onStateChangeHelper(e);
 
             if (f_onStateChange) f_onStateChange(this, e);
         }
 
-        Function<void(StatefulObject*, StateChangeEvent_T&)> f_onStateChange = {};
+        Function<void(StatefulObject*, StateDetail_T&)> f_onStateChange = {};
 
     protected:
-        virtual void onStateChangeHelper(StateChangeEvent_T& e) { }
+        virtual void onStateChangeHelper(StateDetail_T& e) { }
 
     protected:
         State_T m_state = {};
-        StateChangeEvent_T m_currState = {};
+        StateDetail_T m_stateDetail = {};
 
     public:
-        const StateChangeEvent_T& currState() const { return m_currState; }
-
-        void forceUpdateCurrState() { onStateChange(m_currState); }
+        const StateDetail_T& stateDetail() const { return m_stateDetail; }
     };
 }

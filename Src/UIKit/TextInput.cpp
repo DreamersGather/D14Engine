@@ -22,7 +22,7 @@ namespace d14engine::uikit
 
         if (value)
         {
-            m_currState = State::Idle;
+            m_state = State::Idle;
         }
         else // lose focus when disabled
         {
@@ -30,7 +30,7 @@ namespace d14engine::uikit
             {
                 Application::g_app->focusUIObject(nullptr);
             }
-            m_currState = State::Disabled;
+            m_state = State::Disabled;
         }
     }
 
@@ -45,9 +45,9 @@ namespace d14engine::uikit
 
         if (isFocused() && animSetting.enabled && totalDistance > 0.0f)
         {
-            m_currDynamicBottomLineLength = animation_utils::motionAccelUniformDecel
+            m_dynamicBottomLineLength = animation_utils::motionAccelUniformDecel
             (
-                /* currDisplacement   */ m_currDynamicBottomLineLength,
+                /* currDisplacement   */ m_dynamicBottomLineLength,
                 /* lastFrameDeltaSecs */ deltaSecs,
                 /* totalDistance      */ totalDistance,
                 /* uniformMotionSecs  */ animSetting.durationInSecs.uniform,
@@ -58,7 +58,7 @@ namespace d14engine::uikit
 
     void TextInput::onRendererDrawD2d1LayerHelper(Renderer* rndr)
     {
-        auto& srcSetting = getAppearance().main[(size_t)m_currState];
+        auto& srcSetting = getAppearance().main[(size_t)m_state];
         auto& dstSetting = Label::getAppearance();
 
         dstSetting.background = srcSetting.background;
@@ -74,13 +74,13 @@ namespace d14engine::uikit
         auto& dstSetting = RawTextInput::getAppearance();
 
         dstSetting.bottomLine.bottomOffset = srcBtlnSetting.bottomOffset;
-        dstSetting.bottomLine.background = srcBtlnSetting.background.Static[(size_t)m_currState];
+        dstSetting.bottomLine.background = srcBtlnSetting.background.Static[(size_t)m_state];
         dstSetting.bottomLine.strokeWidth = srcBtlnSetting.strokeWidth;
 
         RawTextInput::onRendererDrawD2d1ObjectHelper(rndr);
 
         // Dynamic Bottom Line
-        if (m_currDynamicBottomLineLength > 0.0f)
+        if (m_dynamicBottomLineLength > 0.0f)
         {
             auto& dynamicBackground = srcBtlnSetting.background.Dynamic;
 
@@ -91,7 +91,7 @@ namespace d14engine::uikit
             {
                 roundRadiusX, srcBtlnSetting.bottomOffset
             });
-            auto point1 = math_utils::offset(point0, { m_currDynamicBottomLineLength, 0.0f });
+            auto point1 = math_utils::offset(point0, { m_dynamicBottomLineLength, 0.0f });
 
             auto solidColorBrush = resource_utils::solidColorBrush();
             float strokeWidth = srcBtlnSetting.strokeWidth;
@@ -113,11 +113,11 @@ namespace d14engine::uikit
 
         increaseAnimationCount();
 
-        m_currState = State::Active;
+        m_state = State::Active;
 
         if (!getAppearance().bottomLine.animation.enabled)
         {
-            m_currDynamicBottomLineLength = width() - 2.0f * roundRadiusX;
+            m_dynamicBottomLineLength = width() - 2.0f * roundRadiusX;
         }
     }
 
@@ -127,18 +127,18 @@ namespace d14engine::uikit
 
         decreaseAnimationCount();
 
-        m_currState = State::Idle;
+        m_state = State::Idle;
 
-        m_currDynamicBottomLineLength = 0.0f;
+        m_dynamicBottomLineLength = 0.0f;
     }
 
     void TextInput::onMouseEnterHelper(MouseMoveEvent& e)
     {
         RawTextInput::onMouseEnterHelper(e);
 
-        if (m_currState != State::Active)
+        if (m_state != State::Active)
         {
-            m_currState = State::Hover;
+            m_state = State::Hover;
         }
     }
 
@@ -146,9 +146,9 @@ namespace d14engine::uikit
     {
         RawTextInput::onMouseLeaveHelper(e);
 
-        if (m_currState != State::Active)
+        if (m_state != State::Active)
         {
-            m_currState = State::Idle;
+            m_state = State::Idle;
         }
     }
 }

@@ -24,8 +24,8 @@ namespace d14engine::uikit
         ViewItem(content, rect)
     {
         StatefulObject::m_state = { UNFOLDED };
-        StatefulObject::m_currState.flag = UNFOLDED;
-        StatefulObject::m_currState.ancestorFlag = UNFOLDED;
+        StatefulObject::m_stateDetail.flag = UNFOLDED;
+        StatefulObject::m_stateDetail.ancestorFlag = UNFOLDED;
 
         m_layout = makeUIObject<ConstraintLayout>();
     }
@@ -121,7 +121,7 @@ namespace d14engine::uikit
     {
         m_unfoldedHeight = value;
 
-        if (ptr->m_currState.ancestorUnfolded())
+        if (ptr->m_stateDetail.ancestorUnfolded())
         {
             ptr->resize(ptr->width(), m_unfoldedHeight);
         }
@@ -172,7 +172,7 @@ namespace d14engine::uikit
             auto itemItor = m_childrenItems.insert(childItor, item);
             item->m_itemImplPointer = &(*itemItor);
 
-            if (item->m_currState.ancestorFolded())
+            if (item->m_stateDetail.ancestorFolded())
             {
                 item->resize(item->width(), 0.0f);
                 item->notifyHideChildrenItems();
@@ -275,7 +275,7 @@ namespace d14engine::uikit
         for (auto& item : m_childrenItems)
         {
             item.ptr->resize(item.ptr->width(), 0.0f);
-            item.ptr->m_currState.ancestorFlag = FOLDED;
+            item.ptr->m_stateDetail.ancestorFlag = FOLDED;
 
             item.ptr->notifyHideChildrenItems();
         }
@@ -292,9 +292,9 @@ namespace d14engine::uikit
         for (auto& item : m_childrenItems)
         {
             item.ptr->resize(item.ptr->width(), item.m_unfoldedHeight);
-            item.ptr->m_currState.ancestorFlag = UNFOLDED;
+            item.ptr->m_stateDetail.ancestorFlag = UNFOLDED;
 
-            if (item.ptr->m_currState.folded())
+            if (item.ptr->m_stateDetail.folded())
             {
                 item.ptr->notifyHideChildrenItems();
             }
@@ -404,7 +404,7 @@ namespace d14engine::uikit
     {
         if (m_parentItem.expired())
         {
-            m_currState.ancestorFlag = UNFOLDED;
+            m_stateDetail.ancestorFlag = UNFOLDED;
 
             m_nodeLevel = 0;
             m_parentView.reset();
@@ -413,12 +413,12 @@ namespace d14engine::uikit
         {
             auto parentItemPtr = m_parentItem.lock();
 
-            if (parentItemPtr->m_currState.unfolded() &&
-                parentItemPtr->m_currState.ancestorUnfolded())
+            if (parentItemPtr->m_stateDetail.unfolded() &&
+                parentItemPtr->m_stateDetail.ancestorUnfolded())
             {
-                m_currState.ancestorFlag = UNFOLDED;
+                m_stateDetail.ancestorFlag = UNFOLDED;
             }
-            else m_currState.ancestorFlag = FOLDED;
+            else m_stateDetail.ancestorFlag = FOLDED;
 
             m_nodeLevel = parentItemPtr->m_nodeLevel + 1;
             m_parentView = parentItemPtr->m_parentView;
@@ -440,12 +440,12 @@ namespace d14engine::uikit
 
         StatefulObject::Event soe = {};
         soe.flag = StatefulObject::m_state.flag;
-        soe.ancestorFlag = m_currState.ancestorFlag;
+        soe.ancestorFlag = m_stateDetail.ancestorFlag;
 
-        if (soe != m_currState)
+        if (soe != m_stateDetail)
         {
-            m_currState = soe;
-            onStateChange(m_currState);
+            m_stateDetail = soe;
+            onStateChange(m_stateDetail);
         }
     }
 
@@ -515,17 +515,17 @@ namespace d14engine::uikit
             {
                 if (e.state.leftDown() || e.state.leftDblclk())
                 {
-                    setFolded(m_currState.folded() ? UNFOLDED : FOLDED);
+                    setFolded(m_stateDetail.folded() ? UNFOLDED : FOLDED);
                 }
             }
             else if (e.state.leftDblclk())
             {
-                setFolded(m_currState.folded() ? UNFOLDED : FOLDED);
+                setFolded(m_stateDetail.folded() ? UNFOLDED : FOLDED);
             }
         }
         else if (e.state.leftDblclk())
         {
-            setFolded(m_currState.folded() ? UNFOLDED : FOLDED);
+            setFolded(m_stateDetail.folded() ? UNFOLDED : FOLDED);
         }
     }
 

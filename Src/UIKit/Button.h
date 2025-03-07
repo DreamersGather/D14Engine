@@ -37,7 +37,7 @@ namespace d14engine::uikit
         void setContent(ShrdPtrParam<IconLabel> content);
 
     protected:
-        State m_currState = State::Idle;
+        State m_state = State::Idle;
 
     protected:
         // IDrawObject2D

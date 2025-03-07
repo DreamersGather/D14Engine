@@ -54,7 +54,7 @@ namespace d14engine::uikit
     {
         Panel::setEnabled(value);
 
-        m_currState = value ? State::Idle : State::Disabled;
+        m_state = value ? State::Idle : State::Disabled;
 
         m_content->setEnabled(value);
     }
@@ -154,27 +154,27 @@ namespace d14engine::uikit
     {
         ClickablePanel::onMouseEnterHelper(e);
 
-        m_currState = State::Hover;
+        m_state = State::Hover;
     }
 
     void Button::onMouseLeaveHelper(MouseMoveEvent& e)
     {
         ClickablePanel::onMouseLeaveHelper(e);
 
-        m_currState = State::Idle;
+        m_state = State::Idle;
     }
 
     void Button::onMouseButtonPressHelper(Event& e)
     {
         ClickablePanel::onMouseButtonPressHelper(e);
 
-        if (e.left()) m_currState = State::Down;
+        if (e.left()) m_state = State::Down;
     }
 
     void Button::onMouseButtonReleaseHelper(Event& e)
     {
         ClickablePanel::onMouseButtonReleaseHelper(e);
 
-        if (e.left()) m_currState = State::Hover;
+        if (e.left()) m_state = State::Hover;
     }
 }

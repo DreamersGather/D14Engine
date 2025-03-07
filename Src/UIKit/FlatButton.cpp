@@ -30,7 +30,7 @@ namespace d14engine::uikit
     void FlatButton::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
         auto& dstSetting = Button::getAppearance();
-        auto& srcSetting = getAppearance().main[(size_t)m_currState];
+        auto& srcSetting = getAppearance().main[(size_t)m_state];
 
         dstSetting.foreground = srcSetting.foreground;
         dstSetting.background = srcSetting.background;
