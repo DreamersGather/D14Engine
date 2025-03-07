@@ -19,7 +19,7 @@ namespace d14engine::uikit
         float minValue,
         float maxValue)
         :
-        Panel(rect, resource_utils::g_solidColorBrush)
+        Panel(rect, resource_utils::solidColorBrush())
     {
         appEventReactability.focus.get = true;
 
@@ -34,7 +34,7 @@ namespace d14engine::uikit
         m_valueLabel->setPrivateVisible(false);
         m_valueLabel->setPrivateEnabled(false);
 
-        m_valueLabel->setTextFormat(resource_utils::g_textFormats.at(L"Default/Normal/9").Get());
+        m_valueLabel->setTextFormat(D14_FONT(L"Default/9"));
         THROW_IF_FAILED(m_valueLabel->textLayout()->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER));
     }
 
@@ -162,7 +162,7 @@ namespace d14engine::uikit
         {
             auto& geoSetting = getAppearance().handle.geometry;
 
-            resource_utils::g_solidColorBrush->SetOpacity(1.0f);
+            resource_utils::solidColorBrush()->SetOpacity(1.0f);
 
             auto handleRect = math_utils::rect({ 0.0f, 0.0f }, geoSetting.size);
 
@@ -171,7 +171,7 @@ namespace d14engine::uikit
                 math_utils::moveVertex(handleRect, getAppearance().handle.shadow.offset),
                 geoSetting.roundRadius, geoSetting.roundRadius
             },
-            resource_utils::g_solidColorBrush.Get());
+            resource_utils::solidColorBrush());
         }
         handleShadow.endDraw(rndr->d2d1DeviceContext());
 
@@ -185,8 +185,8 @@ namespace d14engine::uikit
                 // Main rect
                 auto& rectBkgn = setting.mainRect.background;
 
-                resource_utils::g_solidColorBrush->SetColor(rectBkgn.color);
-                resource_utils::g_solidColorBrush->SetOpacity(rectBkgn.opacity);
+                resource_utils::solidColorBrush()->SetColor(rectBkgn.color);
+                resource_utils::solidColorBrush()->SetOpacity(rectBkgn.opacity);
 
                 rndr->d2d1DeviceContext()->FillRoundedRectangle(
                 {
@@ -194,17 +194,17 @@ namespace d14engine::uikit
                     setting.mainRect.geometry.roundRadius,
                     setting.mainRect.geometry.roundRadius
                 },
-                resource_utils::g_solidColorBrush.Get());
+                resource_utils::solidColorBrush());
 
                 // Side Triangle
                 auto& trngBkgn = setting.sideTriangle.background;
 
-                resource_utils::g_solidColorBrush->SetColor(trngBkgn.color);
-                resource_utils::g_solidColorBrush->SetOpacity(trngBkgn.opacity);
+                resource_utils::solidColorBrush()->SetColor(trngBkgn.color);
+                resource_utils::solidColorBrush()->SetOpacity(trngBkgn.opacity);
 
                 rndr->d2d1DeviceContext()->FillGeometry(
                     sideTrianglePathGeo.Get(),
-                    resource_utils::g_solidColorBrush.Get());
+                    resource_utils::solidColorBrush());
             }
             valueLabelMask.endDraw(rndr->d2d1DeviceContext());
         }
@@ -216,25 +216,25 @@ namespace d14engine::uikit
         auto& complete = getAppearance().bar.complete;
         auto& completeBkgn = m_enabled ? complete.background : complete.secondaryBackground;
 
-        resource_utils::g_solidColorBrush->SetColor(completeBkgn.color);
-        resource_utils::g_solidColorBrush->SetOpacity(completeBkgn.opacity);
+        resource_utils::solidColorBrush()->SetColor(completeBkgn.color);
+        resource_utils::solidColorBrush()->SetOpacity(completeBkgn.opacity);
 
         float radius = complete.geometry.roundRadius;
 
         rndr->d2d1DeviceContext()->FillRoundedRectangle(
-            { completeBarAbsoluteRect(), radius, radius }, resource_utils::g_solidColorBrush.Get());
+            { completeBarAbsoluteRect(), radius, radius }, resource_utils::solidColorBrush());
 
         // Filled Bar
         auto& filled = getAppearance().bar.filled;
         auto& filledBkgn = m_enabled ? filled.background : filled.secondaryBackground;
 
-        resource_utils::g_solidColorBrush->SetColor(filledBkgn.color);
-        resource_utils::g_solidColorBrush->SetOpacity(filledBkgn.opacity);
+        resource_utils::solidColorBrush()->SetColor(filledBkgn.color);
+        resource_utils::solidColorBrush()->SetOpacity(filledBkgn.opacity);
 
         float fradius = filled.geometry.roundRadius;
 
         rndr->d2d1DeviceContext()->FillRoundedRectangle(
-            { filledBarAbsoluteRect(), fradius, fradius }, resource_utils::g_solidColorBrush.Get());
+            { filledBarAbsoluteRect(), fradius, fradius }, resource_utils::solidColorBrush());
 
         // Handle
         {
@@ -242,22 +242,22 @@ namespace d14engine::uikit
             auto& shadow = getAppearance().handle.shadow;
             handleShadow.color = m_enabled ? shadow.color : shadow.secondaryColor;
 
-            handleShadow.configEffectInput(resource_utils::g_shadowEffect.Get());
+            handleShadow.configEffectInput(resource_utils::shadowEffect());
 
             rndr->d2d1DeviceContext()->DrawImage(
-                resource_utils::g_shadowEffect.Get(), math_utils::leftTop(handleAbsoluteRect()));
+                resource_utils::shadowEffect(), math_utils::leftTop(handleAbsoluteRect()));
 
             // Entity
             auto& handle = getAppearance().handle;
             auto& handleBkgn = m_enabled ? handle.background : handle.secondaryBackground;
 
-            resource_utils::g_solidColorBrush->SetColor(handleBkgn.color);
-            resource_utils::g_solidColorBrush->SetOpacity(handleBkgn.opacity);
+            resource_utils::solidColorBrush()->SetColor(handleBkgn.color);
+            resource_utils::solidColorBrush()->SetOpacity(handleBkgn.opacity);
 
             float hradius = getAppearance().handle.geometry.roundRadius;
 
             rndr->d2d1DeviceContext()->FillRoundedRectangle(
-                { handleAbsoluteRect(), hradius, hradius }, resource_utils::g_solidColorBrush.Get());
+                { handleAbsoluteRect(), hradius, hradius }, resource_utils::solidColorBrush());
         }
         // Value Label
         if (getAppearance().valueLabel.isResident)
@@ -275,11 +275,11 @@ namespace d14engine::uikit
             valueLabelMask.color = shadowSetting.color;
             valueLabelMask.standardDeviation = shadowSetting.standardDeviation;
 
-            valueLabelMask.configEffectInput(resource_utils::g_shadowEffect.Get());
+            valueLabelMask.configEffectInput(resource_utils::shadowEffect());
 
             auto targetOffset = math_utils::roundf(math_utils::leftTop(vlblRect));
 
-            rndr->d2d1DeviceContext()->DrawImage(resource_utils::g_shadowEffect.Get(), targetOffset);
+            rndr->d2d1DeviceContext()->DrawImage(resource_utils::shadowEffect(), targetOffset);
 
             // Entity
             auto destinationRect = math_utils::roundf(vlblRect);

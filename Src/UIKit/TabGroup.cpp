@@ -6,8 +6,6 @@
 #include "Common/DirectXError.h"
 
 #include "UIKit/Application.h"
-#include "UIKit/Cursor.h"
-#include "UIKit/IconLabel.h"
 #include "UIKit/PopupMenu.h"
 #include "UIKit/ResourceUtils.h"
 #include "UIKit/TabCaption.h"
@@ -19,8 +17,8 @@ namespace d14engine::uikit
 {
     TabGroup::TabGroup(const D2D1_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
-        ResizablePanel(rect, resource_utils::g_solidColorBrush)
+        Panel(rect, resource_utils::solidColorBrush()),
+        ResizablePanel(rect, resource_utils::solidColorBrush())
     {
         m_takeOverChildrenDrawing = true;
 
@@ -153,7 +151,7 @@ namespace d14engine::uikit
 
         if (m_currActiveCardTabIndex.valid())
         {
-            auto& rect = cardAbsoluteRect(m_currActiveCardTabIndex);
+            auto rect = cardAbsoluteRect(m_currActiveCardTabIndex);
             minWidth += absoluteToSelfCoord(rect).right;
         }
         return minWidth;
@@ -563,9 +561,9 @@ do { \
         };
     }
 
-    const D2D1_RECT_F& TabGroup::cardAbsoluteRect(TabIndexParam tabIndex) const
+    D2D1_RECT_F TabGroup::cardAbsoluteRect(TabIndexParam tabIndex) const
     {
-        return tabIndex.valid() ? tabIndex->m_cardAbsoluteRectCache : math_utils::zeroRectFRef();
+        return tabIndex.valid() ? tabIndex->m_cardAbsoluteRectCache : D2D1_RECT_F{};
     }
 
     D2D1_RECT_F TabGroup::cardCaptionAbsoluteRect(TabIndexParam tabIndex) const
@@ -711,11 +709,11 @@ do { \
                 {
                     auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Active];
 
-                    resource_utils::g_solidColorBrush->SetColor(setting.background.color);
-                    resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
+                    resource_utils::solidColorBrush()->SetColor(setting.background.color);
+                    resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
                     rndr->d2d1DeviceContext()->FillGeometry(
-                        activeCard.pathGeo.Get(), resource_utils::g_solidColorBrush.Get());
+                        activeCard.pathGeo.Get(), resource_utils::solidColorBrush());
                 }
                 activeCard.mask.endDraw(rndr->d2d1DeviceContext());
             }
@@ -728,8 +726,8 @@ do { \
         {
             auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Dormant];
 
-            resource_utils::g_solidColorBrush->SetColor(setting.background.color);
-            resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
+            resource_utils::solidColorBrush()->SetColor(setting.background.color);
+            resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
             rndr->d2d1DeviceContext()->FillRoundedRectangle(
             {
@@ -737,7 +735,7 @@ do { \
                 setting.geometry.roundRadius,
                 setting.geometry.roundRadius
             },
-            resource_utils::g_solidColorBrush.Get());
+            resource_utils::solidColorBrush());
         }
         // Hover-Card
         if (m_currHoverCardTabIndex.valid())
@@ -746,8 +744,8 @@ do { \
             {
                 auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Hover];
 
-                resource_utils::g_solidColorBrush->SetColor(setting.background.color);
-                resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
+                resource_utils::solidColorBrush()->SetColor(setting.background.color);
+                resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
                 rndr->d2d1DeviceContext()->FillRoundedRectangle(
                 {
@@ -755,7 +753,7 @@ do { \
                     setting.geometry.roundRadius,
                     setting.geometry.roundRadius
                 },
-                resource_utils::g_solidColorBrush.Get());
+                resource_utils::solidColorBrush());
             }
         }
         // Active-Card
@@ -764,11 +762,11 @@ do { \
             // Shadow
             activeCard.mask.color = getAppearance().tabBar.card.activeShadowColor;
 
-            activeCard.mask.configEffectInput(resource_utils::g_shadowEffect.Get());
+            activeCard.mask.configEffectInput(resource_utils::shadowEffect());
 
             auto shadowPosition = math_utils::roundf(math_utils::leftTop(cardAbsoluteRect(m_currActiveCardTabIndex)));
 
-            rndr->d2d1DeviceContext()->DrawImage(resource_utils::g_shadowEffect.Get(), shadowPosition);
+            rndr->d2d1DeviceContext()->DrawImage(resource_utils::shadowEffect(), shadowPosition);
 
             // Entity
             auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Active];
@@ -781,8 +779,8 @@ do { \
         {
             auto& background = getAppearance().background;
 
-            resource_utils::g_solidColorBrush->SetColor(background.color);
-            resource_utils::g_solidColorBrush->SetOpacity(background.opacity);
+            resource_utils::solidColorBrush()->SetColor(background.color);
+            resource_utils::solidColorBrush()->SetOpacity(background.opacity);
 
             ResizablePanel::drawBackground(rndr);
         }
@@ -816,11 +814,11 @@ do { \
                     {
                         auto& setting = getAppearance().tabBar.separator;
 
-                        resource_utils::g_solidColorBrush->SetColor(setting.background.color);
-                        resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
+                        resource_utils::solidColorBrush()->SetColor(setting.background.color);
+                        resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
                         rndr->d2d1DeviceContext()->FillRectangle(
-                            separatorAbsoluteRect(tabIndex), resource_utils::g_solidColorBrush.Get());
+                            separatorAbsoluteRect(tabIndex), resource_utils::solidColorBrush());
                     }
                 }
             }
@@ -832,8 +830,8 @@ do { \
                 // Button
                 auto& buttonBackground = setting.button.background[(size_t)state];
 
-                resource_utils::g_solidColorBrush->SetColor(buttonBackground.color);
-                resource_utils::g_solidColorBrush->SetOpacity(buttonBackground.opacity);
+                resource_utils::solidColorBrush()->SetColor(buttonBackground.color);
+                resource_utils::solidColorBrush()->SetOpacity(buttonBackground.opacity);
 
                 rndr->d2d1DeviceContext()->FillRoundedRectangle(
                 {
@@ -841,16 +839,16 @@ do { \
                     setting.button.geometry.roundRadius,
                     setting.button.geometry.roundRadius
                 },
-                resource_utils::g_solidColorBrush.Get());
+                resource_utils::solidColorBrush());
 
                 // Icon
                 auto& iconBackground = setting.icon.background[(size_t)state];
 
-                resource_utils::g_solidColorBrush->SetColor(iconBackground.color);
-                resource_utils::g_solidColorBrush->SetOpacity(iconBackground.opacity);
+                resource_utils::solidColorBrush()->SetColor(iconBackground.color);
+                resource_utils::solidColorBrush()->SetOpacity(iconBackground.opacity);
 
                 rndr->d2d1DeviceContext()->FillRectangle(
-                    moreCardsIconAbsoluteRect(), resource_utils::g_solidColorBrush.Get());
+                    moreCardsIconAbsoluteRect(), resource_utils::solidColorBrush());
 
                 ComPtr<ID2D1PathGeometry> pathGeo;
                 THROW_IF_FAILED(rndr->d2d1Factory()->CreatePathGeometry(&pathGeo));
@@ -868,7 +866,7 @@ do { \
                 }
                 THROW_IF_FAILED(geoSink->Close());
 
-                rndr->d2d1DeviceContext()->FillGeometry(pathGeo.Get(), resource_utils::g_solidColorBrush.Get());
+                rndr->d2d1DeviceContext()->FillGeometry(pathGeo.Get(), resource_utils::solidColorBrush());
             }
         }
         // Mask when Belowing Dragged Window
@@ -876,19 +874,19 @@ do { \
         {
             auto& maskSetting = getAppearance().maskWhenBelowDragWindow;
 
-            resource_utils::g_solidColorBrush->SetColor(maskSetting.color);
-            resource_utils::g_solidColorBrush->SetOpacity(maskSetting.opacity);
+            resource_utils::solidColorBrush()->SetColor(maskSetting.color);
+            resource_utils::solidColorBrush()->SetOpacity(maskSetting.opacity);
 
             rndr->d2d1DeviceContext()->FillRoundedRectangle(
-                { m_absoluteRect, roundRadiusX, roundRadiusY }, resource_utils::g_solidColorBrush.Get());
+                { m_absoluteRect, roundRadiusX, roundRadiusY }, resource_utils::solidColorBrush());
         }
     }
 
     void TabGroup::drawD2d1ObjectPosterior(renderer::Renderer* rndr)
     {
         // Outline
-        resource_utils::g_solidColorBrush->SetColor(getAppearance().stroke.color);
-        resource_utils::g_solidColorBrush->SetOpacity(getAppearance().stroke.opacity);
+        resource_utils::solidColorBrush()->SetColor(getAppearance().stroke.color);
+        resource_utils::solidColorBrush()->SetOpacity(getAppearance().stroke.opacity);
 
         // In general, the round-radius of the tab-group is 0, so we can draw
         // left, right and bottom lines separately to hide the topmost border.
@@ -911,17 +909,17 @@ do { \
 
         rndr->d2d1DeviceContext()->DrawLine(
             point00, point01,
-            resource_utils::g_solidColorBrush.Get(),
+            resource_utils::solidColorBrush(),
             stroke.width);
 
         rndr->d2d1DeviceContext()->DrawLine(
             point10, point11,
-            resource_utils::g_solidColorBrush.Get(),
+            resource_utils::solidColorBrush(),
             stroke.width);
 
         rndr->d2d1DeviceContext()->DrawLine(
             point20, point21,
-            resource_utils::g_solidColorBrush.Get(),
+            resource_utils::solidColorBrush(),
             stroke.width);
 
         // Content's Posterior Objects

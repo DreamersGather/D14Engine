@@ -18,7 +18,7 @@ namespace d14engine::uikit
         float roundRadius,
         const D2D1_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
+        Panel(rect, resource_utils::solidColorBrush()),
         FilledButton(content, roundRadius, rect),
         shadow(math_utils::roundu(size())) { }
 
@@ -40,7 +40,7 @@ namespace d14engine::uikit
         {
             auto& shadowSetting = getAppearance().shadow;
 
-            resource_utils::g_solidColorBrush->SetOpacity(1.0f);
+            resource_utils::solidColorBrush()->SetOpacity(1.0f);
 
             D2D1_ROUNDED_RECT roundedRect =
             {
@@ -50,7 +50,7 @@ namespace d14engine::uikit
             rndr->d2d1DeviceContext()->FillRoundedRectangle
             (
             /* roundedRect */ roundedRect,
-            /* brush       */ resource_utils::g_solidColorBrush.Get()
+            /* brush       */ resource_utils::solidColorBrush()
             );
         }
         shadow.endDraw(rndr->d2d1DeviceContext());
@@ -67,11 +67,11 @@ namespace d14engine::uikit
         shadow.color = shadowSetting.color[(size_t)m_currState];
         shadow.standardDeviation = shadowSetting.standardDeviation;
 
-        shadow.configEffectInput(resource_utils::g_shadowEffect.Get());
+        shadow.configEffectInput(resource_utils::shadowEffect());
 
         rndr->d2d1DeviceContext()->DrawImage
         (
-        /* effect       */ resource_utils::g_shadowEffect.Get(),
+        /* effect       */ resource_utils::shadowEffect(),
         /* targetOffset */ absolutePosition()
         );
 

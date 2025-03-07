@@ -68,7 +68,7 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
         {
             ui_screenshot->moveTopmost();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
-            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
             ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)

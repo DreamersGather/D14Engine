@@ -2,7 +2,7 @@
 
 #include "UIKit/PlatformUtils.h"
 
-#include "Common/MathUtils/Basic.h"
+#include "Common/MathUtils/2D.h"
 #include "Common/MathUtils/GDI.h"
 
 #include "UIKit/Application.h"
@@ -19,25 +19,13 @@ namespace d14engine::uikit::platform_utils
         return (float)GetSystemDpiForProcess(GetCurrentProcess());
     }
 
-    LONG scaledByDpi(LONG a)
-    {
-        auto factor = dpi() / 96.0f;
-        return math_utils::round((float)a * factor);
-    }
-
-    LONG restoredByDpi(LONG a)
-    {
-        auto factor = 96.0f / dpi();
-        return math_utils::round((float)a * factor);
-    }
-
     SIZE scaledByDpi(const SIZE& sz)
     {
         auto factor = dpi() / 96.0f;
         return
         {
-            math_utils::round((float)sz.cx * factor),
-            math_utils::round((float)sz.cy * factor)
+            math_utils::round<LONG>((float)sz.cx * factor),
+            math_utils::round<LONG>((float)sz.cy * factor)
         };
     }
 
@@ -46,8 +34,28 @@ namespace d14engine::uikit::platform_utils
         auto factor = 96.0f / dpi();
         return
         {
-            math_utils::round((float)sz.cx * factor),
-            math_utils::round((float)sz.cy * factor)
+            math_utils::round<LONG>((float)sz.cx * factor),
+            math_utils::round<LONG>((float)sz.cy * factor)
+        };
+    }
+
+    D2D1_SIZE_F scaledByDpi(const D2D1_SIZE_F& sz)
+    {
+        auto factor = dpi() / 96.0f;
+        return
+        {
+            math_utils::round<float>(sz.width * factor),
+            math_utils::round<float>(sz.height * factor)
+        };
+    }
+
+    D2D1_SIZE_F restoredByDpi(const D2D1_SIZE_F& sz)
+    {
+        auto factor = 96.0f / dpi();
+        return
+        {
+            math_utils::round<float>(sz.width * factor),
+            math_utils::round<float>(sz.height * factor)
         };
     }
 
@@ -71,6 +79,26 @@ namespace d14engine::uikit::platform_utils
         };
     }
 
+    D2D1_POINT_2F scaledByDpi(const D2D1_POINT_2F& pt)
+    {
+        auto factor = dpi() / 96.0f;
+        return
+        {
+            math_utils::round<float>(pt.x * factor),
+            math_utils::round<float>(pt.y * factor)
+        };
+    }
+
+    D2D1_POINT_2F restoredByDpi(const D2D1_POINT_2F& pt)
+    {
+        auto factor = 96.0f / dpi();
+        return
+        {
+            math_utils::round<float>(pt.x * factor),
+            math_utils::round<float>(pt.y * factor)
+        };
+    }
+
     RECT scaledByDpi(const RECT& rc)
     {
         return math_utils::rect
@@ -81,6 +109,24 @@ namespace d14engine::uikit::platform_utils
     }
 
     RECT restoredByDpi(const RECT& rc)
+    {
+        return math_utils::rect
+        (
+            restoredByDpi(math_utils::leftTop(rc)),
+            restoredByDpi(math_utils::size(rc))
+        );
+    }
+
+    D2D1_RECT_F scaledByDpi(const D2D1_RECT_F& rc)
+    {
+        return math_utils::rect
+        (
+            scaledByDpi(math_utils::leftTop(rc)),
+            scaledByDpi(math_utils::size(rc))
+        );
+    }
+
+    D2D1_RECT_F restoredByDpi(const D2D1_RECT_F& rc)
     {
         return math_utils::rect
         (

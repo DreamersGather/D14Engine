@@ -20,7 +20,7 @@ namespace d14engine::uikit
         BmpObjParam iconBitmap,
         const D2D1_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush)
+        Panel(rect, resource_utils::solidColorBrush())
     {
         m_takeOverChildrenDrawing = true;
 
@@ -127,7 +127,7 @@ namespace d14engine::uikit
             }
             else // Display the text in the center.
             {
-                pIconLabel->icon.rect = math_utils::zeroRectF();
+                pIconLabel->icon.rect = {};
                 pIconLabel->m_label->transform(pIconLabel->selfCoordRect());
             }
         };

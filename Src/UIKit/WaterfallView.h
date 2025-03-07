@@ -19,7 +19,7 @@ namespace d14engine::uikit
 
         explicit WaterfallView(const D2D1_RECT_F& rect = {})
             :
-            Panel(rect, resource_utils::g_solidColorBrush),
+            Panel(rect, resource_utils::solidColorBrush()),
             ScrollView(makeUIObject<ConstraintLayout>(), rect)
         {
             appEventReactability.focus.get = true;

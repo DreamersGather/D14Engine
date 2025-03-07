@@ -20,7 +20,7 @@ namespace d14engine::uikit
         }
         axis = {};
 
-        D2D1_RECT_F spacing = math_utils::zeroRectF();
+        D2D1_RECT_F spacing = {};
     };
 
     struct GridLayout : Layout<GridLayoutGeometryInfo>

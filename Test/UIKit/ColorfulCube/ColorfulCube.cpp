@@ -93,7 +93,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         {
             ui_screenshot->moveTopmost();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
-            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
             ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
@@ -656,7 +656,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
                         }
                     };
                     syncCameraDataComponent(ui_cameraData_.get(), component);
-                    ui_cameraData_->setTextFormat(D14_FONT(L"Default/Normal/14"));
+                    ui_cameraData_->setTextFormat(D14_FONT(L"Default/14"));
                     ui_cameraData_->setVisibleTextRect({ 5.0f, 5.0f, 95.0f, 35.0f });
 
                     GridLayout::GeometryInfo geoInfo = {};
@@ -810,7 +810,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
                             ui_objectData_->setText(std::to_wstring(*pValue));
                         }
                     }
-                    ui_objectData_->setTextFormat(D14_FONT(L"Default/Normal/14"));
+                    ui_objectData_->setTextFormat(D14_FONT(L"Default/14"));
                     ui_objectData_->setVisibleTextRect({ 5.0f, 5.0f, 95.0f, 35.0f });
 
                     GridLayout::GeometryInfo geoInfo = {};

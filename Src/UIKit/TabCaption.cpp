@@ -107,8 +107,8 @@ namespace d14engine::uikit
             auto& iconBackground = getAppearance().closeX.icon.background[stateIndex];
 
             // Close Button
-            resource_utils::g_solidColorBrush->SetColor(buttonBackground.color);
-            resource_utils::g_solidColorBrush->SetOpacity(buttonBackground.opacity);
+            resource_utils::solidColorBrush()->SetColor(buttonBackground.color);
+            resource_utils::solidColorBrush()->SetOpacity(buttonBackground.opacity);
 
             auto buttonRect = closeButtonAbsoluteRect();
 
@@ -118,21 +118,21 @@ namespace d14engine::uikit
                 getAppearance().closeX.button.geometry.roundRadius,
                 getAppearance().closeX.button.geometry.roundRadius
             },
-            resource_utils::g_solidColorBrush.Get());
+            resource_utils::solidColorBrush());
 
             // Close Icon
-            resource_utils::g_solidColorBrush->SetColor(iconBackground.color);
-            resource_utils::g_solidColorBrush->SetOpacity(iconBackground.opacity);
+            resource_utils::solidColorBrush()->SetColor(iconBackground.color);
+            resource_utils::solidColorBrush()->SetOpacity(iconBackground.opacity);
 
             auto iconRect = closeIconAbsoluteRect(buttonRect);
 
             rndr->d2d1DeviceContext()->DrawLine(
                 math_utils::leftTop(iconRect), math_utils::rightBottom(iconRect),
-                resource_utils::g_solidColorBrush.Get(), getAppearance().closeX.icon.strokeWidth);
+                resource_utils::solidColorBrush(), getAppearance().closeX.icon.strokeWidth);
 
             rndr->d2d1DeviceContext()->DrawLine(
                 math_utils::rightTop(iconRect), math_utils::leftBottom(iconRect),
-                resource_utils::g_solidColorBrush.Get(), getAppearance().closeX.icon.strokeWidth);
+                resource_utils::solidColorBrush(), getAppearance().closeX.icon.strokeWidth);
         }
     }
 

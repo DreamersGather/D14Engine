@@ -46,7 +46,7 @@ SharedPtr<TreeViewItem> createGuidancePage
         L"of the commonly used widgets in the library. Feel free to look around."
     );
     {
-        ui_synopsisLabel->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_synopsisLabel->setTextFormat(D14_FONT(L"Default/14"));
         ui_synopsisLabel->hardAlignment.vert = Label::VertAlignment::Top;
         THROW_IF_FAILED(ui_synopsisLabel->textLayout()->SetWordWrapping(DWRITE_WORD_WRAPPING_WRAP));
 
@@ -68,6 +68,6 @@ SharedPtr<TreeViewItem> createGuidancePage
         ui_layout->addElement(ui_synopsisLabel, geoInfo);
     }
     auto item = makeUIObject<TreeViewItem>(L"Guidance", math_utils::heightOnlyRect(40.0f));
-    item->getContent<IconLabel>().lock()->label()->setTextFormat(D14_FONT(L"Default/Normal/14"));
+    item->getContent<IconLabel>().lock()->label()->setTextFormat(D14_FONT(L"Default/14"));
     return item;
 }

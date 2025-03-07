@@ -41,7 +41,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     }
     auto ui_aboutTitle = makeUIObject<Label>(L"About");
     {
-        ui_aboutTitle->setTextFormat(D14_FONT(L"Default/SemiBold/22"));
+        ui_aboutTitle->setTextFormat(D14_FONT(L"Default/22"));
         ui_aboutTitle->hardAlignment.vert = Label::VertAlignment::Top;
 
         ConstraintLayout::GeometryInfo geoInfo = {};
@@ -63,7 +63,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         ui_aboutButton->resize(250.0f, 40.0f);
 
         auto& ui_btnLabel = ui_aboutButton->content()->label();
-        ui_btnLabel->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_btnLabel->setTextFormat(D14_FONT(L"Default/14"));
         THROW_IF_FAILED(ui_btnLabel->textLayout()->SetUnderline(true, { 0, UINT32_MAX }));
 
         ui_aboutButton->f_onChangeThemeStyle = [=](Panel* p, const Panel::ThemeStyle& style)
@@ -118,7 +118,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     }
     auto ui_aboutComment = makeUIObject<Label>(L"—— D14 means DreamersGather.");
     {
-        ui_aboutComment->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_aboutComment->setTextFormat(D14_FONT(L"Default/14"));
         THROW_IF_FAILED(ui_aboutComment->textLayout()->SetFontStyle(DWRITE_FONT_STYLE_ITALIC, { 0, UINT32_MAX }));
         ui_aboutComment->hardAlignment.vert = Label::VertAlignment::Top;
 
@@ -159,7 +159,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     }
     auto ui_topTitle = makeUIObject<Label>(L"Settings");
     {
-        ui_topTitle->setTextFormat(D14_FONT(L"Default/SemiBold/22"));
+        ui_topTitle->setTextFormat(D14_FONT(L"Default/22"));
         ui_topTitle->hardAlignment.vert = Label::VertAlignment::Top;
 
         ConstraintLayout::GeometryInfo geoInfo = {};
@@ -212,7 +212,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     }
     auto ui_themeModeLabel = makeUIObject<Label>(L"Theme Mode");
     {
-        ui_themeModeLabel->setTextFormat(D14_FONT(L"Default/SemiBold/18"));
+        ui_themeModeLabel->setTextFormat(D14_FONT(L"Default/18"));
         ui_themeModeLabel->hardAlignment.vert = Label::VertAlignment::Top;
 
         ConstraintLayout::GeometryInfo geoInfo = {};
@@ -234,7 +234,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         ui_autoThemeCheckBox->moveAbovePeerObject(ui_label.get());
 
         ui_label->transform(34.0f, 0.0f, 0.0f, ui_autoThemeCheckBox->height());
-        ui_label->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_label->setTextFormat(D14_FONT(L"Default/14"));
         ui_label->hardAlignment.vert = Label::VertAlignment::Center;
 
         ui_autoThemeCheckBox->f_isHit = [=](const Panel* p, const Event::Point& pt)
@@ -258,7 +258,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         ui_darkModeSwitch->moveAbovePeerObject(ui_label.get());
 
         ui_label->transform(63.0f, 0.0f, 0.0f, ui_darkModeSwitch->height());
-        ui_label->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_label->setTextFormat(D14_FONT(L"Default/14"));
         ui_label->hardAlignment.vert = Label::VertAlignment::Center;
 
         ui_darkModeSwitch->f_isHit = [=](const Panel* p, const Event::Point& pt)
@@ -314,7 +314,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     }
     auto ui_antialiasModeLabel = makeUIObject<Label>(L"Antialias Mode");
     {
-        ui_antialiasModeLabel->setTextFormat(D14_FONT(L"Default/SemiBold/18"));
+        ui_antialiasModeLabel->setTextFormat(D14_FONT(L"Default/18"));
         ui_antialiasModeLabel->hardAlignment.vert = Label::VertAlignment::Top;
 
         ConstraintLayout::GeometryInfo geoInfo = {};
@@ -340,7 +340,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         for (auto& strMode : strModeArray)
         {
             auto ui_content = IconLabel::comboBoxLayout(strMode.first);
-            ui_content->label()->setTextFormat(D14_FONT(L"Default/Normal/14"));
+            ui_content->label()->setTextFormat(D14_FONT(L"Default/14"));
 
             strModeItems.push_back(makeUIObject<MenuItem>(ui_content, math_utils::heightOnlyRect(40.0f)));
         }
@@ -362,7 +362,7 @@ void createSettingsTabPage(ConstraintLayout* page)
 
         auto ui_label = makeUIObject<Label>(L"2D", math_utils::heightOnlyRect(40.0f));
 
-        ui_label->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_label->setTextFormat(D14_FONT(L"Default/14"));
         ui_label->hardAlignment.vert = Label::VertAlignment::Center;
 
         ConstraintLayout::GeometryInfo geoInfo2 = {};
@@ -394,7 +394,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         for (auto& strMode : textAntialiasModePairs)
         {
             auto ui_content = IconLabel::comboBoxLayout(strMode.first);
-            ui_content->label()->setTextFormat(D14_FONT(L"Default/Normal/14"));
+            ui_content->label()->setTextFormat(D14_FONT(L"Default/14"));
 
             auto ui_menuItem = makeUIObject<MenuItem>(ui_content, math_utils::heightOnlyRect(40.0f));
             strModeItems.push_back(ui_menuItem);
@@ -410,7 +410,7 @@ void createSettingsTabPage(ConstraintLayout* page)
 
         auto ui_label = makeUIObject<Label>(L"Text", math_utils::heightOnlyRect(40.0f));
 
-        ui_label->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_label->setTextFormat(D14_FONT(L"Default/14"));
         ui_label->hardAlignment.vert = Label::VertAlignment::Center;
 
         ConstraintLayout::GeometryInfo geoInfo2 = {};
@@ -420,7 +420,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     }
     auto ui_textRenderingModeLabel = makeUIObject<Label>(L"Text Rendering Mode");
     {
-        ui_textRenderingModeLabel->setTextFormat(D14_FONT(L"Default/SemiBold/18"));
+        ui_textRenderingModeLabel->setTextFormat(D14_FONT(L"Default/18"));
         ui_textRenderingModeLabel->hardAlignment.vert = Label::VertAlignment::Top;
 
         ConstraintLayout::GeometryInfo geoInfo = {};
@@ -453,7 +453,7 @@ void createSettingsTabPage(ConstraintLayout* page)
 
         auto ui_label = makeUIObject<Label>(L"Gamma value", math_utils::heightOnlyRect(40.0f));
 
-        ui_label->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_label->setTextFormat(D14_FONT(L"Default/14"));
         ui_label->hardAlignment.vert = Label::VertAlignment::Center;
 
         ConstraintLayout::GeometryInfo geoInfo2 = {};
@@ -484,7 +484,7 @@ void createSettingsTabPage(ConstraintLayout* page)
 
         auto ui_label = makeUIObject<Label>(L"Enhanced contrast", math_utils::heightOnlyRect(40.0f));
 
-        ui_label->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_label->setTextFormat(D14_FONT(L"Default/14"));
         ui_label->hardAlignment.vert = Label::VertAlignment::Center;
 
         ConstraintLayout::GeometryInfo geoInfo2 = {};
@@ -515,7 +515,7 @@ void createSettingsTabPage(ConstraintLayout* page)
 
         auto ui_label = makeUIObject<Label>(L"ClearType level", math_utils::heightOnlyRect(40.0f));
 
-        ui_label->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_label->setTextFormat(D14_FONT(L"Default/14"));
         ui_label->hardAlignment.vert = Label::VertAlignment::Center;
 
         ConstraintLayout::GeometryInfo geoInfo2 = {};
@@ -543,7 +543,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         for (auto& strMode : pixelGeometryPairs)
         {
             auto ui_content = IconLabel::comboBoxLayout(strMode.first);
-            ui_content->label()->setTextFormat(D14_FONT(L"Default/Normal/14"));
+            ui_content->label()->setTextFormat(D14_FONT(L"Default/14"));
 
             strModeItems.push_back(makeUIObject<MenuItem>(ui_content, math_utils::heightOnlyRect(40.0f)));
         }
@@ -556,7 +556,7 @@ void createSettingsTabPage(ConstraintLayout* page)
 
         auto ui_label = makeUIObject<Label>(L"Pixel geometry", math_utils::heightOnlyRect(40.0f));
 
-        ui_label->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_label->setTextFormat(D14_FONT(L"Default/14"));
         ui_label->hardAlignment.vert = Label::VertAlignment::Center;
 
         ConstraintLayout::GeometryInfo geoInfo2 = {};
@@ -591,7 +591,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         for (auto& strMode : renderingModePairs)
         {
             auto ui_content = IconLabel::comboBoxLayout(strMode.first);
-            ui_content->label()->setTextFormat(D14_FONT(L"Default/Normal/14"));
+            ui_content->label()->setTextFormat(D14_FONT(L"Default/14"));
 
             auto ui_menuItem = makeUIObject<MenuItem>(ui_content, math_utils::heightOnlyRect(40.0f));
             strModeItems.push_back(ui_menuItem);
@@ -607,7 +607,7 @@ void createSettingsTabPage(ConstraintLayout* page)
 
         auto ui_label = makeUIObject<Label>(L"Rendering mode", math_utils::heightOnlyRect(40.0f));
 
-        ui_label->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_label->setTextFormat(D14_FONT(L"Default/14"));
         ui_label->hardAlignment.vert = Label::VertAlignment::Center;
 
         ConstraintLayout::GeometryInfo geoInfo2 = {};
@@ -779,7 +779,7 @@ void createSettingsTabPage(ConstraintLayout* page)
 
     auto ui_frameRateSettingLabel = makeUIObject<Label>(L"Frame Rate Setting");
     {
-        ui_frameRateSettingLabel->setTextFormat(D14_FONT(L"Default/SemiBold/18"));
+        ui_frameRateSettingLabel->setTextFormat(D14_FONT(L"Default/18"));
         ui_frameRateSettingLabel->hardAlignment.vert = Label::VertAlignment::Top;
 
         ConstraintLayout::GeometryInfo geoInfo = {};
@@ -800,7 +800,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         ui_fullSpeedRenderingSwitch->moveAbovePeerObject(ui_label.get());
 
         ui_label->transform(63.0f, 0.0f, 0.0f, ui_darkModeSwitch->height());
-        ui_label->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_label->setTextFormat(D14_FONT(L"Default/14"));
         ui_label->hardAlignment.vert = Label::VertAlignment::Center;
 
         ui_fullSpeedRenderingSwitch->f_isHit = [=](const Panel* p, const Event::Point& pt)
@@ -819,7 +819,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     {
         ui_frameRateLimitLabel->resize(0.0f, 40.0f);
 
-        ui_frameRateLimitLabel->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_frameRateLimitLabel->setTextFormat(D14_FONT(L"Default/14"));
         ui_frameRateLimitLabel->hardAlignment.vert = Label::VertAlignment::Center;
 
         ConstraintLayout::GeometryInfo geoInfo1 = {};
@@ -829,10 +829,10 @@ void createSettingsTabPage(ConstraintLayout* page)
 
         ui_frameRateLimitInput->resize(80.0f, 40.0f);
 
-        ui_frameRateLimitInput->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_frameRateLimitInput->setTextFormat(D14_FONT(L"Default/14"));
         ui_frameRateLimitInput->setVisibleTextRect({ 5.0f, 8.0f, 75.0f, 32.0f });
         ui_frameRateLimitInput->placeholder()->setText(L"1 ~ 999");
-        ui_frameRateLimitInput->placeholder()->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_frameRateLimitInput->placeholder()->setTextFormat(D14_FONT(L"Default/14"));
 
         ConstraintLayout::GeometryInfo geoInfo2 = {};
         geoInfo2.Left.ToLeft = 215.0f;
@@ -841,7 +841,7 @@ void createSettingsTabPage(ConstraintLayout* page)
 
         ui_realTimeFpsLabel->resize(0.0f, 40.0f);
 
-        ui_realTimeFpsLabel->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_realTimeFpsLabel->setTextFormat(D14_FONT(L"Default/14"));
         ui_realTimeFpsLabel->hardAlignment.vert = Label::VertAlignment::Center;
 
         ConstraintLayout::GeometryInfo geoInfo3 = {};

@@ -16,8 +16,8 @@ namespace d14engine::uikit
 {
     OnOffSwitch::OnOffSwitch(float roundRadius, const D2D1_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
-        ClickablePanel(rect, resource_utils::g_solidColorBrush)
+        Panel(rect, resource_utils::solidColorBrush()),
+        ClickablePanel(rect, resource_utils::solidColorBrush())
     {
         roundRadiusX = roundRadiusY = roundRadius;
 
@@ -160,8 +160,8 @@ namespace d14engine::uikit
         // Background //
         ////////////////
 
-        resource_utils::g_solidColorBrush->SetColor(setting.background.color);
-        resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
+        resource_utils::solidColorBrush()->SetColor(setting.background.color);
+        resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
         Panel::drawBackground(rndr);
 
@@ -172,8 +172,8 @@ namespace d14engine::uikit
         auto& geoSetting = getAppearance().handle.geometry[m_state.index()];
         auto& bkgnSetting = getAppearance().handle.background[m_state.index()];
 
-        resource_utils::g_solidColorBrush->SetColor(bkgnSetting.color);
-        resource_utils::g_solidColorBrush->SetOpacity(bkgnSetting.opacity);
+        resource_utils::solidColorBrush()->SetColor(bkgnSetting.color);
+        resource_utils::solidColorBrush()->SetOpacity(bkgnSetting.opacity);
 
         D2D1_ROUNDED_RECT handleRoundedRect =
         {
@@ -183,15 +183,15 @@ namespace d14engine::uikit
         rndr->d2d1DeviceContext()->FillRoundedRectangle
         (
         /* roundedRect */ handleRoundedRect,
-        /* brush       */ resource_utils::g_solidColorBrush.Get()
+        /* brush       */ resource_utils::solidColorBrush()
         );
 
         /////////////
         // Outline //
         /////////////
 
-        resource_utils::g_solidColorBrush->SetColor(setting.stroke.color);
-        resource_utils::g_solidColorBrush->SetOpacity(setting.stroke.opacity);
+        resource_utils::solidColorBrush()->SetColor(setting.stroke.color);
+        resource_utils::solidColorBrush()->SetOpacity(setting.stroke.opacity);
 
         auto frame = math_utils::inner(m_absoluteRect, setting.stroke.width);
         D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
@@ -199,7 +199,7 @@ namespace d14engine::uikit
         rndr->d2d1DeviceContext()->DrawRoundedRectangle
         (
         /* roundedRect */ outlineRect,
-        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* brush       */ resource_utils::solidColorBrush(),
         /* strokeWidth */ setting.stroke.width
         );
     }

@@ -14,13 +14,13 @@ namespace d14engine::uikit
 {
     Label::Label(WstrParam text, const D2D_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
+        Panel(rect, resource_utils::solidColorBrush()),
         m_text(text)
     {
         TextLayoutParams layoutParams =
         {
             .text               = std::nullopt,
-            .textFormat         = resource_utils::g_textFormats.at(defaultTextFormatName).Get(),
+            .textFormat         = D14_FONT(defaultTextFormatName),
             .maxWidth           = std::nullopt,
             .maxHeight          = std::nullopt,
             .incrementalTabStop = 4.0f * 96.0f / 72.0f,
@@ -32,7 +32,7 @@ namespace d14engine::uikit
         updateTextOverhangMetrics();
     }
 
-    Wstring Label::defaultTextFormatName = L"Default/Normal/16";
+    Wstring Label::defaultTextFormatName = L"Default/16";
 
     Optional<Wstring> Label::preprocessInputStr(WstrParam in)
     {
@@ -308,8 +308,8 @@ do { \
 
     void Label::drawBackground(renderer::Renderer* rndr)
     {
-        resource_utils::g_solidColorBrush->SetColor(getAppearance().background.color);
-        resource_utils::g_solidColorBrush->SetOpacity(getAppearance().background.opacity);
+        resource_utils::solidColorBrush()->SetColor(getAppearance().background.color);
+        resource_utils::solidColorBrush()->SetOpacity(getAppearance().background.opacity);
 
         Panel::drawBackground(rndr);
     }
@@ -318,8 +318,8 @@ do { \
     {
         auto& foreground = m_enabled ? getAppearance().foreground : getAppearance().secondaryForeground;
 
-        resource_utils::g_solidColorBrush->SetColor(foreground.color);
-        resource_utils::g_solidColorBrush->SetOpacity(foreground.opacity);
+        resource_utils::solidColorBrush()->SetColor(foreground.color);
+        resource_utils::solidColorBrush()->SetOpacity(foreground.opacity);
 
         auto origin = absolutePosition();
         switch (hardAlignment.horz)
@@ -364,7 +364,7 @@ do { \
         (
         /* origin           */ origin,
         /* textLayout       */ m_textLayout.Get(),
-        /* defaultFillBrush */ resource_utils::g_solidColorBrush.Get(),
+        /* defaultFillBrush */ resource_utils::solidColorBrush(),
         /* options          */ drawTextOptions
         );
     }
@@ -373,8 +373,8 @@ do { \
     {
         auto& stroke = getAppearance().stroke;
 
-        resource_utils::g_solidColorBrush->SetColor(stroke.color);
-        resource_utils::g_solidColorBrush->SetOpacity(stroke.opacity);
+        resource_utils::solidColorBrush()->SetColor(stroke.color);
+        resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
 
         auto frame = math_utils::inner(m_absoluteRect, stroke.width);
         D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
@@ -382,7 +382,7 @@ do { \
         rndr->d2d1DeviceContext()->DrawRoundedRectangle
         (
         /* roundedRect */ outlineRect,
-        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* brush       */ resource_utils::solidColorBrush(),
         /* strokeWidth */ stroke.width
         );
     }

@@ -8,57 +8,61 @@ namespace d14engine::uikit::resource_utils
 
 #pragma region Font
 
-    struct SystemFontName { Wstring family, locale; };
-
-    struct SystemFontNameSetLess
+    struct FontDetail
     {
-        bool operator()(const SystemFontName& lhs, const SystemFontName& rhs) const
+        Wstring family = {};
+        Wstring locale = {};
+    };
+    struct FontDetailLess
+    {
+        bool operator()(const FontDetail& lhs, const FontDetail& rhs) const
         {
             return std::tie(lhs.family, lhs.locale) < std::tie(rhs.family, rhs.locale);
         }
     };
-    using SystemFontNameSet = std::set<SystemFontName, SystemFontNameSetLess>;
+    using FontDetailSet = std::set<FontDetail, FontDetailLess>;
 
-    extern SystemFontNameSet g_systemFontNames;
+    FontDetailSet querySystemFonts();
+
+    // Call this with query=True to force updating the cached set.
+    // In most cases, there is no need to use the parameter because
+    // the application will perform an immediate query at startup and
+    // cache the returned result. If the user installs a new font
+    // while the application is running, set query=True to refresh.
+    const FontDetailSet& systemFonts(bool query = false);
 
     using TextFormatMap = std::unordered_map<Wstring, ComPtr<IDWriteTextFormat>>;
 
-    void updateSystemFontNames();
+    const TextFormatMap& textFormats();
 
-    extern TextFormatMap g_textFormats;
+    struct TextFormatDetail
+    {
+        FontDetail font = {}; FLOAT size = {};
+        DWRITE_FONT_WEIGHT weight = DWRITE_FONT_WEIGHT_NORMAL;
+        DWRITE_FONT_STYLE style = DWRITE_FONT_STYLE_NORMAL;
+        DWRITE_FONT_STRETCH stretch = DWRITE_FONT_STRETCH_NORMAL;
+    };
+    // Performance tip: When this function is called, the loaded text format will be cached
+    // in the application's global resource set (g_textFormats) with the specified name.
+    // Therefore, the next time the same text format is needed, it can be directly queried
+    // and obtained through textFormats(), eliminating the repeated loading of font data.
+    ComPtr<IDWriteTextFormat> loadTextFormat(WstrParam name, const TextFormatDetail& detail);
 
-    ComPtr<IDWriteTextFormat> loadSystemTextFormat(
-        WstrParam textFormatName,
-        WstrParam fontFamilyName,
-        FLOAT fontSize,
-        WstrParam localeName,
-        DWRITE_FONT_WEIGHT fontWeight = DWRITE_FONT_WEIGHT_NORMAL,
-        DWRITE_FONT_STYLE fontStyle = DWRITE_FONT_STYLE_NORMAL,
-        DWRITE_FONT_STRETCH fontStretch = DWRITE_FONT_STRETCH_NORMAL);
+    void loadBasicTextFormats();
 
-    void loadBasicSystemTextFormats();
-
-#define D14_FONT(Key_Name) d14engine::uikit::resource_utils::g_textFormats.at(Key_Name).Get()
-
-#pragma endregion
-
-#pragma region Text
-
-    const String& emptyStrRef();
-
-    const Wstring& emptyWstrRef();
+#define D14_FONT(Name) d14engine::uikit::resource_utils::textFormats().at(Name).Get()
 
 #pragma endregion
 
 #pragma region Common
 
+    ID2D1SolidColorBrush* solidColorBrush();
+
     void loadCommonBrushes();
 
-    extern ComPtr<ID2D1SolidColorBrush> g_solidColorBrush;
+    ID2D1Effect* shadowEffect();
 
     void loadCommonEffects();
-
-    extern ComPtr<ID2D1Effect> g_shadowEffect;
 
 #pragma endregion
 
@@ -72,14 +76,17 @@ namespace d14engine::uikit::resource_utils
 
 #pragma region Keyboard Layout
 
-    // Pick the alternative char if "shift" key pressed.
-    struct PrintableChar { WCHAR normal, alternative; };
-
+    struct PrintableChar
+    {
+        WCHAR normal = {};
+        // Pick the alternative char when Shift is pressed.
+        WCHAR alternative = {};
+    };
     using VirtualKeyCode = int;
 
     using KeyboardLayoutMap = std::unordered_map<VirtualKeyCode, PrintableChar>;
 
-    extern KeyboardLayoutMap g_usKeyboardLayout; // US standard keyboard layout
+    const KeyboardLayoutMap& keyboardLayout(); // standard keyboard layout
 
 #pragma endregion
 

@@ -177,8 +177,8 @@ namespace d14engine::uikit
         {
             auto& frameSetting = getAppearance().staticSizingGuideFrame;
 
-            resource_utils::g_solidColorBrush->SetColor(frameSetting.background.color);
-            resource_utils::g_solidColorBrush->SetOpacity(frameSetting.background.opacity);
+            resource_utils::solidColorBrush()->SetColor(frameSetting.background.color);
+            resource_utils::solidColorBrush()->SetOpacity(frameSetting.background.opacity);
 
             auto frame = math_utils::inner(m_sizingRect, frameSetting.strokeWidth);
             D2D1_ROUNDED_RECT outlineRect = { relativeToAbsolute(frame), roundRadiusX, roundRadiusY };
@@ -186,7 +186,7 @@ namespace d14engine::uikit
             rndr->d2d1DeviceContext()->DrawRoundedRectangle
             (
             /* roundedRect */ outlineRect,
-            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* brush       */ resource_utils::solidColorBrush(),
             /* strokeWidth */ frameSetting.strokeWidth,
             /* strokeStyle */ staticSizingGuideFrame.strokeStyle.Get()
             );

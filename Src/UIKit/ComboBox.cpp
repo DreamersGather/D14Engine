@@ -18,7 +18,7 @@ namespace d14engine::uikit
 {
     ComboBox::ComboBox(float roundRadius, const D2D1_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
+        Panel(rect, resource_utils::solidColorBrush()),
         FlatButton(IconLabel::comboBoxLayout(), roundRadius, rect)
     {
         m_dropDownMenu = makeRootUIObject<PopupMenu>();
@@ -148,8 +148,8 @@ namespace d14engine::uikit
         auto& arrowGeometry = arrowSetting.geometry;
         auto& arrowBackground = m_enabled ? arrowSetting.background : arrowSetting.secondaryBackground;
 
-        resource_utils::g_solidColorBrush->SetColor(arrowBackground.color);
-        resource_utils::g_solidColorBrush->SetOpacity(arrowBackground.opacity);
+        resource_utils::solidColorBrush()->SetColor(arrowBackground.color);
+        resource_utils::solidColorBrush()->SetOpacity(arrowBackground.opacity);
 
         auto arrowOrigin = math_utils::rightTop(m_absoluteRect);
 
@@ -157,7 +157,7 @@ namespace d14engine::uikit
         (
         /* point0      */ math_utils::offset(arrowOrigin, arrowGeometry.line0.point0),
         /* point1      */ math_utils::offset(arrowOrigin, arrowGeometry.line0.point1),
-        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* brush       */ resource_utils::solidColorBrush(),
         /* strokeWidth */ arrowSetting.strokeWidth,
         /* strokeStyle */ arrowIcon.strokeStyle.Get()
         );
@@ -165,7 +165,7 @@ namespace d14engine::uikit
         (
         /* point0      */ math_utils::offset(arrowOrigin, arrowGeometry.line1.point0),
         /* point1      */ math_utils::offset(arrowOrigin, arrowGeometry.line1.point1),
-        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* brush       */ resource_utils::solidColorBrush(),
         /* strokeWidth */ arrowSetting.strokeWidth,
         /* strokeStyle */ arrowIcon.strokeStyle.Get()
         );

@@ -19,7 +19,7 @@ namespace d14engine::uikit
         float captionPanelHeight,
         float decorativeBarHeight)
         :
-        Panel({}, resource_utils::g_solidColorBrush),
+        Panel({}, resource_utils::solidColorBrush()),
         Window(caption, {}, captionPanelHeight, decorativeBarHeight)
     {
         THROW_IF_NULL(Application::g_app);

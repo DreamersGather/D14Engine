@@ -12,7 +12,7 @@ namespace d14engine::uikit
         float roundRadius,
         const D2D1_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
+        Panel(rect, resource_utils::solidColorBrush()),
         FlatButton(content, roundRadius, rect) { }
 
     OutlinedButton::OutlinedButton(

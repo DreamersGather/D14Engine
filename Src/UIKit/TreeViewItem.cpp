@@ -460,8 +460,8 @@ namespace d14engine::uikit
             auto& arrowGeometry = arrowSetting.geometry[StatefulObject::m_state.index()];;
             auto& arrowBackground = m_enabled ? arrowSetting.background : arrowSetting.secondaryBackground;
 
-            resource_utils::g_solidColorBrush->SetColor(arrowBackground.color);
-            resource_utils::g_solidColorBrush->SetOpacity(arrowBackground.opacity);
+            resource_utils::solidColorBrush()->SetColor(arrowBackground.color);
+            resource_utils::solidColorBrush()->SetOpacity(arrowBackground.opacity);
 
             auto offset = m_nodeLevel * m_parentView.lock()->horzIndentEachNodelLevel();
             auto arrowLeftTop = math_utils::offset(absolutePosition(), { offset, 0.0f });
@@ -469,13 +469,13 @@ namespace d14engine::uikit
             rndr->d2d1DeviceContext()->DrawLine(
                 math_utils::offset(arrowLeftTop, arrowGeometry.line0.point0),
                 math_utils::offset(arrowLeftTop, arrowGeometry.line0.point1),
-                resource_utils::g_solidColorBrush.Get(),
+                resource_utils::solidColorBrush(),
                 arrowSetting.strokeWidth, arrowIcon.strokeStyle.Get());
 
             rndr->d2d1DeviceContext()->DrawLine(
                 math_utils::offset(arrowLeftTop, arrowGeometry.line1.point0),
                 math_utils::offset(arrowLeftTop, arrowGeometry.line1.point1),
-                resource_utils::g_solidColorBrush.Get(),
+                resource_utils::solidColorBrush(),
                 arrowSetting.strokeWidth, arrowIcon.strokeStyle.Get());
         }
     }

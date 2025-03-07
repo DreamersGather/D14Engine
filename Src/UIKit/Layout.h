@@ -19,8 +19,8 @@ namespace d14engine::uikit
 
         explicit Layout(const D2D1_RECT_F& rect = {})
             :
-            Panel(rect, resource_utils::g_solidColorBrush),
-            ResizablePanel(rect, resource_utils::g_solidColorBrush)
+            Panel(rect, resource_utils::solidColorBrush()),
+            ResizablePanel(rect, resource_utils::solidColorBrush())
         {
             appEventReactability.focus.get = false;
 
@@ -90,8 +90,8 @@ namespace d14engine::uikit
             // Background //
             ////////////////
 
-            resource_utils::g_solidColorBrush->SetColor(getAppearance().background.color);
-            resource_utils::g_solidColorBrush->SetOpacity(getAppearance().background.opacity);
+            resource_utils::solidColorBrush()->SetColor(getAppearance().background.color);
+            resource_utils::solidColorBrush()->SetOpacity(getAppearance().background.opacity);
 
             Panel::drawBackground(rndr);
         }
@@ -104,8 +104,8 @@ namespace d14engine::uikit
             // Outline //
             /////////////
 
-            resource_utils::g_solidColorBrush->SetColor(getAppearance().stroke.color);
-            resource_utils::g_solidColorBrush->SetOpacity(getAppearance().stroke.opacity);
+            resource_utils::solidColorBrush()->SetColor(getAppearance().stroke.color);
+            resource_utils::solidColorBrush()->SetOpacity(getAppearance().stroke.opacity);
 
             float strokeWidth = getAppearance().stroke.width;
 
@@ -115,7 +115,7 @@ namespace d14engine::uikit
             rndr->d2d1DeviceContext()->DrawRoundedRectangle
             (
             /* roundedRect */ outlineRect,
-            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* brush       */ resource_utils::solidColorBrush(),
             /* strokeWidth */ strokeWidth
             );
         }

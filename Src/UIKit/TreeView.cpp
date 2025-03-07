@@ -6,7 +6,7 @@ namespace d14engine::uikit
 {
     TreeView::TreeView(const D2D1_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
+        Panel(rect, resource_utils::solidColorBrush()),
         WaterfallView(rect) { }
 
     void TreeView::onInitializeFinish()

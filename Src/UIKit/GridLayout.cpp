@@ -13,7 +13,7 @@ namespace d14engine::uikit
         float vertSpacing,
         const D2D1_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
+        Panel(rect, resource_utils::solidColorBrush()),
         Layout(rect),
         m_horzCellCount(horzCellCount),
         m_vertCellCount(vertCellCount),

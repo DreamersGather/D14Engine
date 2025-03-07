@@ -131,7 +131,7 @@ namespace d14engine::uikit
         D2D1_RECT_F cardBarAbsoluteRect() const;
 
         // Returns the cached value directly.
-        const D2D1_RECT_F& cardAbsoluteRect(TabIndexParam tabIndex) const;
+        D2D1_RECT_F cardAbsoluteRect(TabIndexParam tabIndex) const;
 
         D2D1_RECT_F cardCaptionAbsoluteRect(TabIndexParam tabIndex) const;
 

@@ -336,8 +336,8 @@ namespace d14engine::uikit
 
         auto& bottomLineBkgn = getAppearance().bottomLine.background;
 
-        resource_utils::g_solidColorBrush->SetColor(bottomLineBkgn.color);
-        resource_utils::g_solidColorBrush->SetOpacity(bottomLineBkgn.opacity);
+        resource_utils::solidColorBrush()->SetColor(bottomLineBkgn.color);
+        resource_utils::solidColorBrush()->SetOpacity(bottomLineBkgn.opacity);
 
         auto point0 = math_utils::offset(math_utils::leftBottom(m_absoluteRect),
         {
@@ -347,7 +347,7 @@ namespace d14engine::uikit
         {
             -roundRadiusX, getAppearance().bottomLine.bottomOffset
         });
-        auto brush = resource_utils::g_solidColorBrush.Get();
+        auto brush = resource_utils::solidColorBrush();
         float strokeWidth = getAppearance().bottomLine.strokeWidth;
 
         rndr->d2d1DeviceContext()->DrawLine(point0, point1, brush, strokeWidth);
@@ -516,7 +516,7 @@ namespace d14engine::uikit
     Optional<LOGFONT> RawTextInput::getCompositionFont() const
     {
         LOGFONT font = {};
-        font.lfHeight = platform_utils::scaledByDpi(
+        font.lfHeight = (LONG)platform_utils::scaledByDpi(
         (
             m_indicatorGeometry.second.y - m_indicatorGeometry.first.y
         ));

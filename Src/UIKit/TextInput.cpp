@@ -84,8 +84,8 @@ namespace d14engine::uikit
         {
             auto& dynamicBackground = srcBtlnSetting.background.Dynamic;
 
-            resource_utils::g_solidColorBrush->SetColor(dynamicBackground.color);
-            resource_utils::g_solidColorBrush->SetOpacity(dynamicBackground.opacity);
+            resource_utils::solidColorBrush()->SetColor(dynamicBackground.color);
+            resource_utils::solidColorBrush()->SetOpacity(dynamicBackground.opacity);
 
             auto point0 = math_utils::offset(math_utils::leftBottom(m_absoluteRect),
             {
@@ -93,7 +93,7 @@ namespace d14engine::uikit
             });
             auto point1 = math_utils::offset(point0, { m_currDynamicBottomLineLength, 0.0f });
 
-            auto solidColorBrush = resource_utils::g_solidColorBrush.Get();
+            auto solidColorBrush = resource_utils::solidColorBrush();
             float strokeWidth = srcBtlnSetting.strokeWidth;
 
             rndr->d2d1DeviceContext()->DrawLine(point0, point1, solidColorBrush, strokeWidth);

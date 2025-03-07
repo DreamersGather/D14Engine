@@ -19,8 +19,8 @@ namespace d14engine::uikit
         ShrdPtrParam<Panel> content,
         const D2D1_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
-        ResizablePanel(rect, resource_utils::g_solidColorBrush),
+        Panel(rect, resource_utils::solidColorBrush()),
+        ResizablePanel(rect, resource_utils::solidColorBrush()),
         contentMask(math_utils::roundu(size())),
         m_content(content)
     {
@@ -213,11 +213,11 @@ namespace d14engine::uikit
             {
                 horzStart * selfSize.width,
                 height() - (geoSetting.offset + geoSetting.width),
-                horzEnd   * selfSize.width,
-                height() -  geoSetting.offset
+                horzEnd * selfSize.width,
+                height() - geoSetting.offset
             };
         }
-        else return math_utils::zeroRectF();
+        else return {};
     }
 
     D2D1_RECT_F ScrollView::vertBarSelfcoordRect(ScrollBarState state) const
@@ -234,13 +234,13 @@ namespace d14engine::uikit
             float vertEnd = vertStart + selfSize.height / contentSize.height;
             return
             {
-                width()  - (geoSetting.offset + geoSetting.width),
+                width() - (geoSetting.offset + geoSetting.width),
                 vertStart * selfSize.height,
-                width()  -  geoSetting.offset,
-                vertEnd   * selfSize.height
+                width() - geoSetting.offset,
+                vertEnd * selfSize.height
             };
         }
-        else return math_utils::zeroRectF();
+        else return {};
     }
 
     void ScrollView::onRendererDrawD2d1LayerHelper(Renderer* rndr)
@@ -276,8 +276,8 @@ namespace d14engine::uikit
     void ScrollView::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
         // Background
-        resource_utils::g_solidColorBrush->SetColor(getAppearance().background.color);
-        resource_utils::g_solidColorBrush->SetOpacity(getAppearance().background.opacity);
+        resource_utils::solidColorBrush()->SetColor(getAppearance().background.color);
+        resource_utils::solidColorBrush()->SetOpacity(getAppearance().background.opacity);
 
         ResizablePanel::drawBackground(rndr);
 
@@ -289,8 +289,8 @@ namespace d14engine::uikit
                 contentMask.opacity, contentMask.getInterpolationMode());
         }
         // Outline
-        resource_utils::g_solidColorBrush->SetColor(getAppearance().stroke.color);
-        resource_utils::g_solidColorBrush->SetOpacity(getAppearance().stroke.opacity);
+        resource_utils::solidColorBrush()->SetColor(getAppearance().stroke.color);
+        resource_utils::solidColorBrush()->SetOpacity(getAppearance().stroke.opacity);
 
         float strokeWidth = getAppearance().stroke.width;
 
@@ -298,7 +298,7 @@ namespace d14engine::uikit
         D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
 
         rndr->d2d1DeviceContext()->DrawRoundedRectangle(
-            outlineRect, resource_utils::g_solidColorBrush.Get(), strokeWidth);
+            outlineRect, resource_utils::solidColorBrush(), strokeWidth);
     }
 
     void ScrollView::drawD2d1ObjectPosterior(renderer::Renderer* rndr)
@@ -309,8 +309,8 @@ namespace d14engine::uikit
             auto horzState = getHorzBarState(m_isHorzBarHover, m_isHorzBarDown);
             auto& horzSetting = getAppearance().scrollBar[(size_t)horzState];
 
-            resource_utils::g_solidColorBrush->SetColor(horzSetting.background.color);
-            resource_utils::g_solidColorBrush->SetOpacity(horzSetting.background.opacity);
+            resource_utils::solidColorBrush()->SetColor(horzSetting.background.color);
+            resource_utils::solidColorBrush()->SetOpacity(horzSetting.background.opacity);
 
             rndr->d2d1DeviceContext()->FillRoundedRectangle(
             {
@@ -318,7 +318,7 @@ namespace d14engine::uikit
                 horzSetting.geometry.roundRadius,
                 horzSetting.geometry.roundRadius
             },
-            resource_utils::g_solidColorBrush.Get());
+            resource_utils::solidColorBrush());
         }
         // Vert Bar
         if (isVertBarEnabled)
@@ -326,8 +326,8 @@ namespace d14engine::uikit
             auto vertState = getVertBarState(m_isVertBarHover, m_isVertBarDown);
             auto& vertSetting = getAppearance().scrollBar[(size_t)vertState];
 
-            resource_utils::g_solidColorBrush->SetColor(vertSetting.background.color);
-            resource_utils::g_solidColorBrush->SetOpacity(vertSetting.background.opacity);
+            resource_utils::solidColorBrush()->SetColor(vertSetting.background.color);
+            resource_utils::solidColorBrush()->SetOpacity(vertSetting.background.opacity);
 
             rndr->d2d1DeviceContext()->FillRoundedRectangle(
             {
@@ -335,7 +335,7 @@ namespace d14engine::uikit
                 vertSetting.geometry.roundRadius,
                 vertSetting.geometry.roundRadius
             },
-            resource_utils::g_solidColorBrush.Get());
+            resource_utils::solidColorBrush());
         }
         ResizablePanel::drawD2d1ObjectPosterior(rndr);
     }

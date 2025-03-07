@@ -43,7 +43,7 @@ SharedPtr<TreeViewItem> createMiscellaneousPage
         L"Other useful widgets are classified into this cateogry."
     );
     {
-        ui_synopsisLabel->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_synopsisLabel->setTextFormat(D14_FONT(L"Default/14"));
         ui_synopsisLabel->hardAlignment.vert = Label::VertAlignment::Top;
         THROW_IF_FAILED(ui_synopsisLabel->textLayout()->SetWordWrapping(DWRITE_WORD_WRAPPING_WRAP));
 

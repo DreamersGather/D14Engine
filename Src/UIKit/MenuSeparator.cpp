@@ -19,8 +19,8 @@ namespace d14engine::uikit
     {
         auto& bkgn = getAppearance().background;
 
-        resource_utils::g_solidColorBrush->SetColor(bkgn.color);
-        resource_utils::g_solidColorBrush->SetOpacity(bkgn.opacity);
+        resource_utils::solidColorBrush()->SetColor(bkgn.color);
+        resource_utils::solidColorBrush()->SetOpacity(bkgn.opacity);
 
         auto& bkgnRect = m_absoluteRect;
 
@@ -28,7 +28,7 @@ namespace d14engine::uikit
         (
         /* point0      */ math_utils::leftCenter(bkgnRect),
         /* point1      */ math_utils::rightCenter(bkgnRect),
-        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* brush       */ resource_utils::solidColorBrush(),
         /* strokeWidth */ getAppearance().strokeWidth
         );
     }

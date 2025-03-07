@@ -19,8 +19,8 @@ namespace d14engine::uikit
         float roundRadius,
         const D2D1_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
-        ClickablePanel(rect, resource_utils::g_solidColorBrush)
+        Panel(rect, resource_utils::solidColorBrush()),
+        ClickablePanel(rect, resource_utils::solidColorBrush())
     {
         roundRadiusX = roundRadiusY = roundRadius;
 
@@ -127,8 +127,8 @@ namespace d14engine::uikit
         // Background //
         ////////////////
 
-        resource_utils::g_solidColorBrush->SetColor(setting.background.color);
-        resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
+        resource_utils::solidColorBrush()->SetColor(setting.background.color);
+        resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
         ClickablePanel::drawBackground(rndr);
 
@@ -141,13 +141,13 @@ namespace d14engine::uikit
             auto& geoSetting = getAppearance().icon.geometry.intermediate;
             auto& iconBackground = getAppearance().icon.background[m_state.index()];
 
-            resource_utils::g_solidColorBrush->SetColor(iconBackground.color);
-            resource_utils::g_solidColorBrush->SetOpacity(iconBackground.opacity);
+            resource_utils::solidColorBrush()->SetColor(iconBackground.color);
+            resource_utils::solidColorBrush()->SetOpacity(iconBackground.opacity);
 
             rndr->d2d1DeviceContext()->FillRectangle
             (
             /* rect  */ math_utils::centered(m_absoluteRect, geoSetting.size),
-            /* brush */ resource_utils::g_solidColorBrush.Get()
+            /* brush */ resource_utils::solidColorBrush()
             );
         }
         else if (m_state.activeFlag == Checked)
@@ -155,8 +155,8 @@ namespace d14engine::uikit
             auto& geoSetting = getAppearance().icon.geometry.checked;
             auto& iconBackground = getAppearance().icon.background[m_state.index()];
 
-            resource_utils::g_solidColorBrush->SetColor(iconBackground.color);
-            resource_utils::g_solidColorBrush->SetOpacity(iconBackground.opacity);
+            resource_utils::solidColorBrush()->SetColor(iconBackground.color);
+            resource_utils::solidColorBrush()->SetOpacity(iconBackground.opacity);
 
             auto iconLeftTop = absolutePosition();
 
@@ -164,7 +164,7 @@ namespace d14engine::uikit
             (
             /* point0      */ math_utils::offset(iconLeftTop, geoSetting.tickLine0.point0),
             /* point1      */ math_utils::offset(iconLeftTop, geoSetting.tickLine0.point1),
-            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* brush       */ resource_utils::solidColorBrush(),
             /* strokeWidth */ geoSetting.strokeWidth,
             /* strokeStyle */ checkedIcon.strokeStyle.Get()
             );
@@ -172,7 +172,7 @@ namespace d14engine::uikit
             (
             /* point0      */ math_utils::offset(iconLeftTop, geoSetting.tickLine1.point0),
             /* point1      */ math_utils::offset(iconLeftTop, geoSetting.tickLine1.point1),
-            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* brush       */ resource_utils::solidColorBrush(),
             /* strokeWidth */ geoSetting.strokeWidth,
             /* strokeStyle */ checkedIcon.strokeStyle.Get()
             );
@@ -182,8 +182,8 @@ namespace d14engine::uikit
         // Outline //
         /////////////
 
-        resource_utils::g_solidColorBrush->SetColor(setting.stroke.color);
-        resource_utils::g_solidColorBrush->SetOpacity(setting.stroke.opacity);
+        resource_utils::solidColorBrush()->SetColor(setting.stroke.color);
+        resource_utils::solidColorBrush()->SetOpacity(setting.stroke.opacity);
 
         auto frame = math_utils::inner(m_absoluteRect, setting.stroke.width);
         D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
@@ -191,7 +191,7 @@ namespace d14engine::uikit
         rndr->d2d1DeviceContext()->DrawRoundedRectangle
         (
         /* roundedRect */ outlineRect,
-        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* brush       */ resource_utils::solidColorBrush(),
         /* strokeWidth */ setting.stroke.width
         );
     }

@@ -22,9 +22,9 @@ namespace d14engine::uikit
         float captionPanelHeight,
         float decorativeBarHeight)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
-        DraggablePanel(rect, resource_utils::g_solidColorBrush),
-        ResizablePanel(rect, resource_utils::g_solidColorBrush),
+        Panel(rect, resource_utils::solidColorBrush()),
+        DraggablePanel(rect, resource_utils::solidColorBrush()),
+        ResizablePanel(rect, resource_utils::solidColorBrush()),
         contentMask(math_utils::roundu(size())),
         m_caption(caption),
         m_captionPanelHeight(captionPanelHeight),
@@ -365,16 +365,16 @@ namespace d14engine::uikit
     {
         auto& setting = getAppearance().threeBrothers[(size_t)state];
 
-        resource_utils::g_solidColorBrush->SetColor(setting.foreground.color);
-        resource_utils::g_solidColorBrush->SetOpacity(setting.foreground.opacity);
+        resource_utils::solidColorBrush()->SetColor(setting.foreground.color);
+        resource_utils::solidColorBrush()->SetOpacity(setting.foreground.opacity);
     }
 
     void Window::set3BrothersButtonBrushState(ThreeBrosState state)
     {
         auto& setting = getAppearance().threeBrothers[(size_t)state];
 
-        resource_utils::g_solidColorBrush->SetColor(setting.background.color);
-        resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
+        resource_utils::solidColorBrush()->SetColor(setting.background.color);
+        resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
     }
 
     void Window::registerTabGroup(WeakPtrParam<TabGroup> tg)
@@ -454,8 +454,8 @@ namespace d14engine::uikit
             // Background //
             ////////////////
             {
-                resource_utils::g_solidColorBrush->SetColor(getAppearance().background.color);
-                resource_utils::g_solidColorBrush->SetOpacity(getAppearance().background.opacity);
+                resource_utils::solidColorBrush()->SetColor(getAppearance().background.color);
+                resource_utils::solidColorBrush()->SetOpacity(getAppearance().background.opacity);
 
                 ResizablePanel::drawBackground(rndr);
             }
@@ -469,13 +469,13 @@ namespace d14engine::uikit
                 {
                     auto& bkgn = getAppearance().captionPanel.background;
 
-                    resource_utils::g_solidColorBrush->SetColor(bkgn.color);
-                    resource_utils::g_solidColorBrush->SetOpacity(bkgn.opacity);
+                    resource_utils::solidColorBrush()->SetColor(bkgn.color);
+                    resource_utils::solidColorBrush()->SetOpacity(bkgn.opacity);
 
                     rndr->d2d1DeviceContext()->FillRectangle
                     (
                     /* rect  */ captionPanelAbsoluteRect(),
-                    /* brush */ resource_utils::g_solidColorBrush.Get()
+                    /* brush */ resource_utils::solidColorBrush()
                     );
                 }
                 //---------------------------------------------
@@ -515,7 +515,7 @@ namespace d14engine::uikit
                     rndr->d2d1DeviceContext()->FillRectangle
                     (
                     /* rect  */ minimizeButtonAbsoluteRect(),
-                    /* brush */ resource_utils::g_solidColorBrush.Get()
+                    /* brush */ resource_utils::solidColorBrush()
                     );
                     set3BrothersIconBrushState(state);
 
@@ -523,7 +523,7 @@ namespace d14engine::uikit
                     rndr->d2d1DeviceContext()->FillRectangle
                     (
                     /* rect  */ minimizeIconAbsoluteRect(),
-                    /* brush */ resource_utils::g_solidColorBrush.Get()
+                    /* brush */ resource_utils::solidColorBrush()
                     );
                 }
                 //---------------------------------------------
@@ -539,7 +539,7 @@ namespace d14engine::uikit
                     rndr->d2d1DeviceContext()->FillRectangle
                     (
                     /* rect  */ maximizeButtonAbsoluteRect(),
-                    /* brush */ resource_utils::g_solidColorBrush.Get()
+                    /* brush */ resource_utils::solidColorBrush()
                     );
                     set3BrothersIconBrushState(state);
 
@@ -549,7 +549,7 @@ namespace d14engine::uikit
                         rndr->d2d1DeviceContext()->DrawRectangle
                         (
                         /* rect        */ maximizeIconAbsoluteRect(),
-                        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                        /* brush       */ resource_utils::solidColorBrush(),
                         /* strokeWidth */ maximizeIconStrokeWidth()
                         );
                     }
@@ -561,7 +561,7 @@ namespace d14engine::uikit
                         rndr->d2d1DeviceContext()->DrawRectangle
                         (
                         /* rect        */ rect,
-                        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                        /* brush       */ resource_utils::solidColorBrush(),
                         /* strokeWidth */ restoreIconStrokeWidth()
                         );
                         D2D1_POINT_2F point00 =
@@ -584,7 +584,7 @@ namespace d14engine::uikit
                         (
                         /* point0      */ point00,
                         /* point1      */ point01,
-                        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                        /* brush       */ resource_utils::solidColorBrush(),
                         /* strokeWidth */ restoreIconStrokeWidth()
                         );
 
@@ -596,7 +596,7 @@ namespace d14engine::uikit
                         (
                         /* point0      */ point10,
                         /* point1      */ point11,
-                        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                        /* brush       */ resource_utils::solidColorBrush(),
                         /* strokeWidth */ restoreIconStrokeWidth()
                         );
                     }
@@ -614,7 +614,7 @@ namespace d14engine::uikit
                     rndr->d2d1DeviceContext()->FillRectangle
                     (
                     /* rect  */ closeButtonAbsoluteRect(),
-                    /* brush */ resource_utils::g_solidColorBrush.Get()
+                    /* brush */ resource_utils::solidColorBrush()
                     );
                     set3BrothersIconBrushState(state);
 
@@ -625,7 +625,7 @@ namespace d14engine::uikit
                     (
                     /* point0      */ { iconRect.left, iconRect.top },
                     /* point1      */ { iconRect.right, iconRect.bottom },
-                    /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                    /* brush       */ resource_utils::solidColorBrush(),
                     /* strokeWidth */ closeIconStrokeWidth()
                     );
                     // Back Diagonal
@@ -633,7 +633,7 @@ namespace d14engine::uikit
                     (
                     /* point0      */ { iconRect.right, iconRect.top },
                     /* point1      */ { iconRect.left, iconRect.bottom },
-                    /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                    /* brush       */ resource_utils::solidColorBrush(),
                     /* strokeWidth */ closeIconStrokeWidth()
                     );
                 }
@@ -650,13 +650,13 @@ namespace d14engine::uikit
             {
                 auto& stroke = getAppearance().stroke;
 
-                resource_utils::g_solidColorBrush->SetColor(stroke.color);
-                resource_utils::g_solidColorBrush->SetOpacity(stroke.opacity);
+                resource_utils::solidColorBrush()->SetColor(stroke.color);
+                resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
 
                 rndr->d2d1DeviceContext()->DrawRectangle
                 (
                 /* rect        */ math_utils::inner(m_absoluteRect, stroke.width),
-                /* brush       */ resource_utils::g_solidColorBrush.Get(),
+                /* brush       */ resource_utils::solidColorBrush(),
                 /* strokeWidth */ stroke.width
                 );
             }
@@ -676,11 +676,11 @@ namespace d14engine::uikit
             contentMask.color = shadowSetting.color;
             contentMask.standardDeviation = shadowSetting.standardDeviation;
 
-            contentMask.configEffectInput(resource_utils::g_shadowEffect.Get());
+            contentMask.configEffectInput(resource_utils::shadowEffect());
 
             rndr->d2d1DeviceContext()->DrawImage
             (
-            /* effect       */ resource_utils::g_shadowEffect.Get(),
+            /* effect       */ resource_utils::shadowEffect(),
             /* targetOffset */ math_utils::roundf(absolutePosition())
             );
         }

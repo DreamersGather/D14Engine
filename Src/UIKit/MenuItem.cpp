@@ -64,8 +64,8 @@ namespace d14engine::uikit
         {
             auto& setting = getAppearance().arrow;
 
-            resource_utils::g_solidColorBrush->SetColor(setting.background.color);
-            resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
+            resource_utils::solidColorBrush()->SetColor(setting.background.color);
+            resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
             auto rigthTop = math_utils::rightTop(m_absoluteRect);
             auto arrowOrg = math_utils::offset(rigthTop, { setting.geometry.rightOffset, 0.0f });
@@ -74,14 +74,14 @@ namespace d14engine::uikit
             (
             /* point0      */ math_utils::offset(arrowOrg, setting.geometry.line0.point0),
             /* point1      */ math_utils::offset(arrowOrg, setting.geometry.line0.point1),
-            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* brush       */ resource_utils::solidColorBrush(),
             /* strokeWidth */ setting.strokeWidth
             );
             rndr->d2d1DeviceContext()->DrawLine
             (
             /* point0      */ math_utils::offset(arrowOrg, setting.geometry.line1.point0),
             /* point1      */ math_utils::offset(arrowOrg, setting.geometry.line1.point1),
-            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* brush       */ resource_utils::solidColorBrush(),
             /* strokeWidth */ setting.strokeWidth
             );
         }

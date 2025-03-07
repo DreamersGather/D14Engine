@@ -4,12 +4,6 @@
 
 namespace d14engine::math_utils
 {
-    constexpr RECT zeroRect()
-    {
-        return { 0, 0, 0, 0 };
-    }
-    const RECT& zeroRectRef();
-
     RECT rect(LONG left, LONG top, LONG width, LONG height);
     RECT rect(const POINT& leftTop, const SIZE& size);
 

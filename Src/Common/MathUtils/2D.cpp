@@ -131,24 +131,6 @@ namespace d14engine::math_utils
         return { point.x + offset.first, point.y + offset.second };
     }
 
-    const static D2D1_RECT_F g_zeroRectF =
-    {
-        0.0f, 0.0f, 0.0f, 0.0f
-    };
-    const D2D1_RECT_F& zeroRectFRef()
-    {
-        return g_zeroRectF;
-    }
-
-    const static D2D1_RECT_F g_infiniteRectF =
-    {
-        -FLT_MAX, -FLT_MAX, FLT_MAX, FLT_MAX
-    };
-    const D2D1_RECT_F& infiniteRectFRef()
-    {
-        return g_infiniteRectF;
-    }
-
     D2D1_RECT_F rect(float left, float top, float width, float height)
     {
         return { left, top, left + width, top + height };

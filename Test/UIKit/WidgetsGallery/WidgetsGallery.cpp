@@ -79,7 +79,7 @@ D14_SET_APP_ENTRY(mainWidgetsGallery)
             auto ui_caption = makeUIObject<TabCaption>(title);
             auto ui_content = makeUIObject<ConstraintLayout>();
 
-            ui_caption->title()->label()->setTextFormat(D14_FONT(L"Default/Normal/14"));
+            ui_caption->title()->label()->setTextFormat(D14_FONT(L"Default/14"));
 
             ui_caption->closable = false;
             ui_caption->draggable = false;

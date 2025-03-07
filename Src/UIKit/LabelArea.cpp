@@ -106,21 +106,21 @@ namespace d14engine::uikit
             // Background //
             ////////////////
 
-            resource_utils::g_solidColorBrush->SetColor(setting.background.color);
-            resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
+            resource_utils::solidColorBrush()->SetColor(setting.background.color);
+            resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
             rndr->d2d1DeviceContext()->FillRectangle
             (
             /* rect  */ hiliteRangeRect,
-            /* brush */ resource_utils::g_solidColorBrush.Get()
+            /* brush */ resource_utils::solidColorBrush()
             );
 
             /////////////
             // Outline //
             /////////////
 
-            resource_utils::g_solidColorBrush->SetColor(setting.stroke.color);
-            resource_utils::g_solidColorBrush->SetOpacity(setting.stroke.opacity);
+            resource_utils::solidColorBrush()->SetColor(setting.stroke.color);
+            resource_utils::solidColorBrush()->SetOpacity(setting.stroke.opacity);
 
             float strokeWidth = setting.stroke.width;
 
@@ -130,7 +130,7 @@ namespace d14engine::uikit
             rndr->d2d1DeviceContext()->DrawRoundedRectangle
             (
             /* roundedRect */ outlineRect,
-            /* brush       */ resource_utils::g_solidColorBrush.Get(),
+            /* brush       */ resource_utils::solidColorBrush(),
             /* strokeWidth */ strokeWidth
             );
         }
@@ -150,8 +150,8 @@ namespace d14engine::uikit
 
             if (result0.isOverlapped || result1.isOverlapped)
             {
-                resource_utils::g_solidColorBrush->SetColor(setting.background.color);
-                resource_utils::g_solidColorBrush->SetOpacity(setting.background.opacity);
+                resource_utils::solidColorBrush()->SetColor(setting.background.color);
+                resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
                 result0.point = math_utils::offset(math_utils::roundf(
                     selfCoordToAbsolute(result0.point)), { 0.5f, 0.0f });
@@ -163,7 +163,7 @@ namespace d14engine::uikit
                 (
                 /* point0 */ result0.point,
                 /* point1 */ result1.point,
-                /* brush  */ resource_utils::g_solidColorBrush.Get()
+                /* brush  */ resource_utils::solidColorBrush()
                 );
             }
         }

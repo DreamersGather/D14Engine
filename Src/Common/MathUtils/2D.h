@@ -105,18 +105,10 @@ namespace d14engine::math_utils
 
 #pragma region Rectangle
 
-    constexpr D2D1_RECT_F zeroRectF()
-    {
-        return { 0.0f, 0.0f, 0.0f, 0.0f };
-    }
-    const D2D1_RECT_F& zeroRectFRef();
-
     constexpr D2D1_RECT_F infiniteRectF()
     {
         return { -FLT_MAX, -FLT_MAX, FLT_MAX, FLT_MAX };
     }
-    const D2D1_RECT_F& infiniteRectFRef();
-
     D2D1_RECT_F rect(float left, float top, float width, float height);
     D2D1_RECT_F rect(const D2D1_POINT_2F& leftTop, const D2D1_SIZE_F& size);
 

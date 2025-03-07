@@ -10,162 +10,135 @@ namespace d14engine::uikit::resource_utils
 {
     void initialize()
     {
-        updateSystemFontNames();
-        loadBasicSystemTextFormats();
+        systemFonts(true);
+        loadBasicTextFormats();
 
         loadCommonBrushes();
         loadCommonEffects();
     }
 
-    SystemFontNameSet g_systemFontNames = {};
-
-    void updateSystemFontNames()
+    FontDetailSet querySystemFonts()
     {
         THROW_IF_NULL(Application::g_app);
 
-        g_systemFontNames.clear();
+        FontDetailSet fonts = {};
 
         auto factory = Application::g_app->dx12Renderer()->dwriteFactory();
 
-        ComPtr<IDWriteFontCollection1> fontCollection;
-        THROW_IF_FAILED(factory->GetSystemFontCollection(FALSE, &fontCollection, TRUE));
+        /////////////////////
+        // Font Collection //
+        /////////////////////
 
-        std::vector<ComPtr<IDWriteFontFamily>> fontFamilies(fontCollection->GetFontFamilyCount());
+        ComPtr<IDWriteFontCollection1> collection = {};
+        THROW_IF_FAILED(factory->GetSystemFontCollection(FALSE, &collection, TRUE));
 
-        for (UINT i = 0; i < fontFamilies.size(); ++i)
+        ///////////////////
+        // Font Families //
+        ///////////////////
+
+        auto familyCount = collection->GetFontFamilyCount();
+        std::vector<ComPtr<IDWriteFontFamily>> families(familyCount);
+
+        for (UINT32 i = 0; i < families.size(); ++i)
         {
-            THROW_IF_FAILED(fontCollection->GetFontFamily(i, &fontFamilies[i]));
+            THROW_IF_FAILED(collection->GetFontFamily(i, &families[i]));
         }
-        for (auto& family : fontFamilies)
+
+        //////////////////
+        // Font Details //
+        //////////////////
+
+        for (auto& f : families)
         {
-            ComPtr<IDWriteLocalizedStrings> familyNames;
-            THROW_IF_FAILED(family->GetFamilyNames(&familyNames));
+            ComPtr<IDWriteLocalizedStrings> names = {};
+            THROW_IF_FAILED(f->GetFamilyNames(&names));
 
-            UINT familyCount = familyNames->GetCount();
-            for (UINT i = 0; i < familyCount; ++i)
+            auto count = names->GetCount();
+            for (UINT32 i = 0; i < count; ++i)
             {
-                UINT length = 0;
+                UINT32 familyLen = {}, localeLen = {};
 
-                THROW_IF_FAILED(familyNames->GetLocaleNameLength(i, &length));
-                Wstring localeName(++length, L'\0');
-                THROW_IF_FAILED(familyNames->GetLocaleName(i, localeName.data(), length));
+                THROW_IF_FAILED(names->GetStringLength(i, &familyLen));
+                THROW_IF_FAILED(names->GetLocaleNameLength(i, &localeLen));
 
-                THROW_IF_FAILED(familyNames->GetStringLength(i, &length));
-                Wstring fontName(++length, L'\0');
-                THROW_IF_FAILED(familyNames->GetString(i, fontName.data(), length));
+                Wstring family(familyLen, (WCHAR)0);
+                Wstring locale(localeLen, (WCHAR)0);
 
-                g_systemFontNames.insert(
-                {
-                    fontName.erase(fontName.size() - 1),
-                    localeName.erase(localeName.size() - 1)
-                });
+                // The size must include space for the terminating null character.
+                THROW_IF_FAILED(names->GetString(i, family.data(), familyLen + 1));
+                THROW_IF_FAILED(names->GetLocaleName(i, locale.data(), localeLen + 1));
+
+                fonts.insert({ family, locale });
             }
         }
+        return fonts;
+    }
+
+    FontDetailSet g_systemFonts = {};
+
+    const FontDetailSet& systemFonts(bool query)
+    {
+        return query ? (g_systemFonts = querySystemFonts()) : g_systemFonts;
     }
 
     TextFormatMap g_textFormats = {};
 
-    ComPtr<IDWriteTextFormat> loadSystemTextFormat(
-        WstrParam textFormatName,
-        WstrParam fontFamilyName,
-        FLOAT fontSize,
-        WstrParam localeName,
-        DWRITE_FONT_WEIGHT fontWeight,
-        DWRITE_FONT_STYLE fontStyle,
-        DWRITE_FONT_STRETCH fontStretch)
+    const TextFormatMap& textFormats()
+    {
+        return g_textFormats;
+    }
+
+    ComPtr<IDWriteTextFormat> loadTextFormat
+    (WstrParam name, const TextFormatDetail& detail)
     {
         THROW_IF_NULL(Application::g_app);
 
-        THROW_IF_FAILED(Application::g_app->dx12Renderer()->dwriteFactory()->CreateTextFormat(
-            fontFamilyName.c_str(),
-            nullptr,
-            fontWeight,
-            fontStyle,
-            fontStretch,
-            // 1 inch == 72 pt == 96 dip
-            fontSize * 96.0f / 72.0f,
-            localeName.c_str(),
-            &g_textFormats[textFormatName]));
+        auto factory = Application::g_app->dx12Renderer()->dwriteFactory();
 
-        return g_textFormats[textFormatName];
+        auto& textFormat = (g_textFormats[name] = nullptr);
+
+        // 1 inch == 72 pt == 96 dip
+        THROW_IF_FAILED(factory->CreateTextFormat
+        (
+        /* fontFamilyName */ detail.font.family.c_str(),
+        /* fontCollection */ nullptr,
+        /* fontWeight     */ detail.weight,
+        /* fontStyle      */ detail.style,
+        /* fontStretch    */ detail.stretch,
+        /* fontSize       */ detail.size * 96.0f / 72.0f,
+        /* localeName     */ detail.font.locale.c_str(),
+        /* textFormat     */ &textFormat
+        ));
+        return textFormat;
     }
 
-    void loadBasicSystemTextFormats()
+    void loadBasicTextFormats()
     {
-        for (int fontSize = 1; fontSize <= 100; ++fontSize)
+        for (int size = 9; size <= 36; ++size)
         {
-            loadSystemTextFormat
-            (
-                /* textFormatName */ L"默认/细体/" + std::to_wstring(fontSize),
-                /* fontFamilyName */ L"微软雅黑",
-                /* fontSize       */ (float)fontSize,
-                /* localeName     */ L"zh-cn",
-                /* fontWeight     */ DWRITE_FONT_WEIGHT_LIGHT
-            );
-            loadSystemTextFormat
-            (
-                /* textFormatName */ L"默认/正常/" + std::to_wstring(fontSize),
-                /* fontFamilyName */ L"微软雅黑",
-                /* fontSize       */ (float)fontSize,
-                /* localeName     */ L"zh-cn",
-                /* fontWeight     */ DWRITE_FONT_WEIGHT_NORMAL
-            );
-            loadSystemTextFormat
-            (
-                /* textFormatName */ L"默认/粗体/" + std::to_wstring(fontSize),
-                /* fontFamilyName */ L"微软雅黑",
-                /* fontSize       */ (float)fontSize,
-                /* localeName     */ L"zh-cn",
-                /* fontWeight     */ DWRITE_FONT_WEIGHT_BOLD
-            );
-            loadSystemTextFormat
-            (
-                /* textFormatName */ L"Default/Light/" + std::to_wstring(fontSize),
-                /* fontFamilyName */ L"Segoe UI",
-                /* fontSize       */ (float)fontSize,
-                /* localeName     */ L"en-us",
-                /* fontWeight     */ DWRITE_FONT_WEIGHT_LIGHT
-            );
-            loadSystemTextFormat
-            (
-                /* textFormatName */ L"Default/SemiLight/" + std::to_wstring(fontSize),
-                /* fontFamilyName */ L"Segoe UI",
-                /* fontSize       */ (float)fontSize,
-                /* localeName     */ L"en-us",
-                /* fontWeight     */ DWRITE_FONT_WEIGHT_SEMI_LIGHT
-            );
-            loadSystemTextFormat
-            (
-                /* textFormatName */ L"Default/Normal/" + std::to_wstring(fontSize),
-                /* fontFamilyName */ L"Segoe UI",
-                /* fontSize       */ (float)fontSize,
-                /* localeName     */ L"en-us",
-                /* fontWeight     */ DWRITE_FONT_WEIGHT_NORMAL
-            );
-            loadSystemTextFormat
-            (
-                /* textFormatName */ L"Default/SemiBold/" + std::to_wstring(fontSize),
-                /* fontFamilyName */ L"Segoe UI",
-                /* fontSize       */ (float)fontSize,
-                /* localeName     */ L"en-us",
-                /* fontWeight     */ DWRITE_FONT_WEIGHT_SEMI_BOLD
-            );
-            loadSystemTextFormat
-            (
-                /* textFormatName */ L"Default/Bold/" + std::to_wstring(fontSize),
-                /* fontFamilyName */ L"Segoe UI",
-                /* fontSize       */ (float)fontSize,
-                /* localeName     */ L"en-us",
-                /* fontWeight     */ DWRITE_FONT_WEIGHT_BOLD
-            );
+            Wstring name =
+            {
+                L"Default/" + std::to_wstring(size)
+            };
+            TextFormatDetail detail =
+            {
+                .font =
+                {
+                    .family = L"Segoe UI",
+                    .locale = L"en-us"
+                },
+                .size = (float)size
+            };
+            loadTextFormat(name, detail);
         }
     }
 
-    const static String g_emptyStr = {};
-    const String& emptyStrRef() { return g_emptyStr; }
+    ComPtr<ID2D1SolidColorBrush> g_solidColorBrush = {};
 
-    const static Wstring g_emptyWstr = {};
-    const Wstring& emptyWstrRef() { return g_emptyWstr; }
+    ID2D1SolidColorBrush* solidColorBrush()
+    {
+        return g_solidColorBrush.Get();
+    }
 
     void loadCommonBrushes()
     {
@@ -173,11 +146,20 @@ namespace d14engine::uikit::resource_utils
 
         auto context = Application::g_app->dx12Renderer()->d2d1DeviceContext();
 
-        // Solid Color Brush
-        THROW_IF_FAILED(context->CreateSolidColorBrush(D2D1::ColorF{ 0x000000 }, &g_solidColorBrush));
+        ///////////////////////
+        // Solid Color Brush //
+        ///////////////////////
+
+        auto black = (D2D1_COLOR_F)D2D1::ColorF::Black;
+        THROW_IF_FAILED(context->CreateSolidColorBrush(black, &g_solidColorBrush));
     }
 
-    ComPtr<ID2D1SolidColorBrush> g_solidColorBrush = {};
+    ComPtr<ID2D1Effect> g_shadowEffect = {};
+
+    ID2D1Effect* shadowEffect()
+    {
+        return g_shadowEffect.Get();
+    }
 
     void loadCommonEffects()
     {
@@ -185,29 +167,33 @@ namespace d14engine::uikit::resource_utils
 
         auto context = Application::g_app->dx12Renderer()->d2d1DeviceContext();
 
-        // Shadow Effect
+        ///////////////////
+        // Shadow Effect //
+        ///////////////////
+
         THROW_IF_FAILED(context->CreateEffect(CLSID_D2D1Shadow, &g_shadowEffect));
     }
-
-    ComPtr<ID2D1Effect> g_shadowEffect = {};
 
     Optional<Wstring> getClipboardText(HWND hWndNewOwner)
     {
         Optional<Wstring> content = {};
 
-        if (IsClipboardFormatAvailable(CF_UNICODETEXT) && OpenClipboard(hWndNewOwner))
+        if (IsClipboardFormatAvailable(CF_UNICODETEXT))
         {
-            auto hGlobal = GetClipboardData(CF_UNICODETEXT);
-            if (hGlobal)
+            if (OpenClipboard(hWndNewOwner))
             {
-                auto pGlobal = (WCHAR*)GlobalLock(hGlobal);
-                if (pGlobal)
+                auto hGlobal = GetClipboardData(CF_UNICODETEXT);
+                if (hGlobal)
                 {
-                    content = pGlobal;
-                    GlobalUnlock(hGlobal);
+                    auto pGlobal = (WCHAR*)GlobalLock(hGlobal);
+                    if (pGlobal)
+                    {
+                        content = pGlobal;
+                        GlobalUnlock(hGlobal);
+                    }
                 }
+                CloseClipboard();
             }
-            CloseClipboard();
         }
         return content;
     }
@@ -216,25 +202,31 @@ namespace d14engine::uikit::resource_utils
     {
         if (OpenClipboard(hWndNewOwner))
         {
-            auto hGlobal = GlobalAlloc(GHND | GMEM_SHARE, sizeof(WCHAR) * (content.size() + 1));
+            auto hSize = sizeof(WCHAR) * (content.size() + 1);
+            auto hGlobal = GlobalAlloc(GMEM_MOVEABLE, hSize);
             if (hGlobal)
             {
                 auto pGlobal = (WCHAR*)GlobalLock(hGlobal);
                 if (pGlobal)
                 {
-                    memcpy(pGlobal, content.data(), sizeof(WCHAR) * content.size());
+                    auto pSize = sizeof(WCHAR) * content.size();
+                    memcpy(pGlobal, content.data(), pSize);
+                    pGlobal[content.size()] = (WCHAR)0;
                     GlobalUnlock(hGlobal);
 
-                    if (EmptyClipboard()) SetClipboardData(CF_UNICODETEXT, hGlobal);
+                    SetClipboardData(CF_UNICODETEXT, hGlobal);
                 }
             }
             CloseClipboard();
         }
     }
 
-    KeyboardLayoutMap g_usKeyboardLayout =
+    const static KeyboardLayoutMap g_keyboardLayout =
     {
-        // Alphabet
+        //////////////
+        // Alphabet //
+        //////////////
+
         { 0x41, { L'a', L'A' } },
         { 0x42, { L'b', L'B' } },
         { 0x43, { L'c', L'C' } },
@@ -261,7 +253,11 @@ namespace d14engine::uikit::resource_utils
         { 0x58, { L'x', L'X' } },
         { 0x59, { L'y', L'Y' } },
         { 0x5A, { L'z', L'Z' } },
-        // Numbers
+
+        /////////////
+        // Numbers //
+        /////////////
+
         { 0x30, { L'0', L')' } },
         { 0x31, { L'1', L'!' } },
         { 0x32, { L'2', L'@' } },
@@ -272,7 +268,11 @@ namespace d14engine::uikit::resource_utils
         { 0x37, { L'7', L'&' } },
         { 0x38, { L'8', L'*' } },
         { 0x39, { L'9', L'(' } },
-        // Symbols
+
+        /////////////
+        // Symbols //
+        /////////////
+
         { VK_OEM_1, { L';', L':' } },
         { VK_OEM_2, { L'/', L'?' } },
         { VK_OEM_3, { L'`', L'~' } },
@@ -280,13 +280,21 @@ namespace d14engine::uikit::resource_utils
         { VK_OEM_5, { L'\\', L'|' } },
         { VK_OEM_6, { L']', L'}' } },
         { VK_OEM_7, { L'\'', L'"' } },
-        // Miscellaneous
+
+        ///////////////////
+        // Miscellaneous //
+        ///////////////////
+
         { VK_SPACE,      { L' ', L' ' } },
         { VK_OEM_PLUS,   { L'=', L'+' } },
         { VK_OEM_COMMA,  { L',', L'<' } },
         { VK_OEM_MINUS,  { L'-', L'_' } },
         { VK_OEM_PERIOD, { L'.', L'>' } },
-        // NumPad Numbers
+
+        ////////////////////
+        // NumPad Numbers //
+        ////////////////////
+
         { VK_NUMPAD0, { L'0', L'0' } },
         { VK_NUMPAD1, { L'1', L'1' } },
         { VK_NUMPAD2, { L'2', L'2' } },
@@ -297,11 +305,20 @@ namespace d14engine::uikit::resource_utils
         { VK_NUMPAD7, { L'7', L'7' } },
         { VK_NUMPAD8, { L'8', L'8' } },
         { VK_NUMPAD9, { L'9', L'9' } },
-        // NumPad Symbols
+
+        ////////////////////
+        // NumPad Symbols //
+        ////////////////////
+
         { VK_ADD,      { L'+', L'+' } },
         { VK_SUBTRACT, { L'-', L'-' } },
         { VK_MULTIPLY, { L'*', L'*' } },
         { VK_DIVIDE,   { L'/', L'/' } },
         { VK_DECIMAL,  { L'.', L'.' } },
     };
+
+    const KeyboardLayoutMap& keyboardLayout()
+    {
+        return g_keyboardLayout;
+    }
 }

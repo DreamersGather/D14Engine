@@ -12,7 +12,7 @@ namespace d14engine::uikit
 {
     PopupMenu::PopupMenu(const D2D1_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
+        Panel(rect, resource_utils::solidColorBrush()),
         WaterfallView(rect),
         shadow(math_utils::roundu(extendedSize(size())))
     {
@@ -216,7 +216,7 @@ namespace d14engine::uikit
             auto& geoSetting = getAppearance().geometry;
             auto& shadowSetting = getAppearance().shadow;
 
-            resource_utils::g_solidColorBrush->SetOpacity(1.0f);
+            resource_utils::solidColorBrush()->SetOpacity(1.0f);
 
             auto extRect = math_utils::rect(
                 { 0.0f, 0.0f }, extendedSize(size()));
@@ -229,7 +229,7 @@ namespace d14engine::uikit
             rndr->d2d1DeviceContext()->FillRoundedRectangle
             (
             /* roundedRect */ shadowRect,
-            /* brush       */ resource_utils::g_solidColorBrush.Get()
+            /* brush       */ resource_utils::solidColorBrush()
             );
         }
         shadow.endDraw(rndr->d2d1DeviceContext());
@@ -247,14 +247,14 @@ namespace d14engine::uikit
         shadow.color = shadowSetting.color;
         shadow.standardDeviation = shadowSetting.standardDeviation;
 
-        shadow.configEffectInput(resource_utils::g_shadowEffect.Get());
+        shadow.configEffectInput(resource_utils::shadowEffect());
 
         auto leftTop = absolutePosition();
         auto shadowLeftTop = math_utils::increaseY(leftTop, -geoSetting.extension);
 
         rndr->d2d1DeviceContext()->DrawImage
         (
-        /* effect       */ resource_utils::g_shadowEffect.Get(),
+        /* effect       */ resource_utils::shadowEffect(),
         /* targetOffset */ shadowLeftTop
         );
 
@@ -264,8 +264,8 @@ namespace d14engine::uikit
 
         auto& extBkgn = getAppearance().background;
 
-        resource_utils::g_solidColorBrush->SetColor(extBkgn.color);
-        resource_utils::g_solidColorBrush->SetOpacity(extBkgn.opacity);
+        resource_utils::solidColorBrush()->SetColor(extBkgn.color);
+        resource_utils::solidColorBrush()->SetOpacity(extBkgn.opacity);
 
         D2D1_ROUNDED_RECT extRect =
         {
@@ -275,7 +275,7 @@ namespace d14engine::uikit
         rndr->d2d1DeviceContext()->FillRoundedRectangle
         (
         /* roundedRect */ extRect,
-        /* brush       */ resource_utils::g_solidColorBrush.Get()
+        /* brush       */ resource_utils::solidColorBrush()
         );
 
         //////////////////

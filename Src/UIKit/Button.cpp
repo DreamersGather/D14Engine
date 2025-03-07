@@ -18,8 +18,8 @@ namespace d14engine::uikit
         float roundRadius,
         const D2D1_RECT_F& rect)
         :
-        Panel(rect, resource_utils::g_solidColorBrush),
-        ClickablePanel(rect, resource_utils::g_solidColorBrush),
+        Panel(rect, resource_utils::solidColorBrush()),
+        ClickablePanel(rect, resource_utils::solidColorBrush()),
         m_content(content)
     {
         m_takeOverChildrenDrawing = true;
@@ -85,8 +85,8 @@ namespace d14engine::uikit
 
         auto& bkgn = getAppearance().background;
 
-        resource_utils::g_solidColorBrush->SetColor(bkgn.color);
-        resource_utils::g_solidColorBrush->SetOpacity(bkgn.opacity);
+        resource_utils::solidColorBrush()->SetColor(bkgn.color);
+        resource_utils::solidColorBrush()->SetOpacity(bkgn.opacity);
 
         ClickablePanel::drawBackground(rndr);
 
@@ -110,8 +110,8 @@ namespace d14engine::uikit
 
         auto& stroke = getAppearance().stroke;
 
-        resource_utils::g_solidColorBrush->SetColor(stroke.color);
-        resource_utils::g_solidColorBrush->SetOpacity(stroke.opacity);
+        resource_utils::solidColorBrush()->SetColor(stroke.color);
+        resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
 
         auto frame = math_utils::inner(m_absoluteRect, stroke.width);
         D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
@@ -119,7 +119,7 @@ namespace d14engine::uikit
         rndr->d2d1DeviceContext()->DrawRoundedRectangle
         (
         /* roundedRect */ outlineRect,
-        /* brush       */ resource_utils::g_solidColorBrush.Get(),
+        /* brush       */ resource_utils::solidColorBrush(),
         /* strokeWidth */ stroke.width
         );
     }
