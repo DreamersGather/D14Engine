@@ -70,24 +70,49 @@ namespace d14engine::uikit
 
     D2D1_RECT_F TabCaption::titleSelfcoordRect() const
     {
-        return math_utils::increaseLeftRight(selfCoordRect(),
-            { getAppearance().title.leftPadding, -getAppearance().title.rightPadding });
+        auto selfRect = selfCoordRect();
+
+        auto& title = getAppearance().title;
+        D2D1_POINT_2F offset =
+        {
+            title.leftPadding, -title.rightPadding
+        };
+        return math_utils::increaseLeftRight(selfRect, offset);
     }
 
-    D2D1_RECT_F TabCaption::closeIconAbsoluteRect(const D2D1_RECT_F& buttonRect) const
+    D2D1_POINT_2F TabCaption::closeButtonAbsolutePosition() const
     {
-        return math_utils::rect(math_utils::offset(math_utils::leftTop(buttonRect),
-            getAppearance().closeX.icon.geometry.offset), getAppearance().closeX.icon.geometry.size);
+        auto rightTop = math_utils::rightTop(m_absoluteRect);
+
+        auto& buttonGeo = getAppearance().closeX.button.geometry;
+        D2D1_POINT_2F buttonOffset =
+        {
+            buttonGeo.rightOffset,
+            (height() - buttonGeo.size.height) * 0.5f
+        };
+        auto buttonLeftTop = math_utils::offset(rightTop, buttonOffset);
+
+        return buttonLeftTop;
+    }
+
+    D2D1_RECT_F TabCaption::closeIconAbsoluteRect() const
+    {
+        auto& iconGeo = getAppearance().closeX.icon.geometry;
+
+        auto iconLeftTop = math_utils::offset
+        (
+            closeButtonAbsolutePosition(), iconGeo.offset
+        );
+        return math_utils::rect(iconLeftTop, iconGeo.size);
     }
 
     D2D1_RECT_F TabCaption::closeButtonAbsoluteRect() const
     {
-        return math_utils::rect(math_utils::offset(math_utils::rightTop(m_absoluteRect),
-        {
-            getAppearance().closeX.button.geometry.rightOffset,
-            (height() - getAppearance().closeX.button.geometry.size.height) * 0.5f
-        }),
-        getAppearance().closeX.button.geometry.size); // keep the button always vertical centrally
+        return math_utils::rect
+        (
+            closeButtonAbsolutePosition(),
+            getAppearance().closeX.button.geometry.size
+        );
     }
 
     TabCaption::ButtonState TabCaption::getCloseButtonState() const
@@ -103,36 +128,54 @@ namespace d14engine::uikit
         {
             auto stateIndex = (size_t)getCloseButtonState();
 
-            auto& buttonBackground = getAppearance().closeX.button.background[stateIndex];
-            auto& iconBackground = getAppearance().closeX.icon.background[stateIndex];
+            //////////////////
+            // Close Button //
+            //////////////////
 
-            // Close Button
+            auto& buttonSetting = getAppearance().closeX.button;
+            auto& buttonBackground = buttonSetting.background[stateIndex];
+
             resource_utils::solidColorBrush()->SetColor(buttonBackground.color);
             resource_utils::solidColorBrush()->SetOpacity(buttonBackground.opacity);
 
-            auto buttonRect = closeButtonAbsoluteRect();
-
-            rndr->d2d1DeviceContext()->FillRoundedRectangle(
+            D2D1_ROUNDED_RECT buttonRect =
             {
-                buttonRect,
-                getAppearance().closeX.button.geometry.roundRadius,
-                getAppearance().closeX.button.geometry.roundRadius
-            },
-            resource_utils::solidColorBrush());
+                closeButtonAbsoluteRect(),
+                buttonSetting.geometry.roundRadius,
+                buttonSetting.geometry.roundRadius
+            };
+            rndr->d2d1DeviceContext()->FillRoundedRectangle
+            (
+            /* roundedRect */ buttonRect,
+            /* brush       */ resource_utils::solidColorBrush()
+            );
 
-            // Close Icon
+            ////////////////
+            // Close Icon //
+            ////////////////
+
+            auto& iconSetting = getAppearance().closeX.icon;
+            auto& iconBackground = iconSetting.background[stateIndex];
+
             resource_utils::solidColorBrush()->SetColor(iconBackground.color);
             resource_utils::solidColorBrush()->SetOpacity(iconBackground.opacity);
 
-            auto iconRect = closeIconAbsoluteRect(buttonRect);
+            auto iconRect = closeIconAbsoluteRect();
 
-            rndr->d2d1DeviceContext()->DrawLine(
-                math_utils::leftTop(iconRect), math_utils::rightBottom(iconRect),
-                resource_utils::solidColorBrush(), getAppearance().closeX.icon.strokeWidth);
-
-            rndr->d2d1DeviceContext()->DrawLine(
-                math_utils::rightTop(iconRect), math_utils::leftBottom(iconRect),
-                resource_utils::solidColorBrush(), getAppearance().closeX.icon.strokeWidth);
+            rndr->d2d1DeviceContext()->DrawLine
+            (
+            /* point0      */ math_utils::leftTop(iconRect),
+            /* point1      */ math_utils::rightBottom(iconRect),
+            /* brush       */ resource_utils::solidColorBrush(),
+            /* strokeWidth */ iconSetting.strokeWidth
+            );
+            rndr->d2d1DeviceContext()->DrawLine
+            (
+            /* point0      */ math_utils::rightTop(iconRect),
+            /* point1      */ math_utils::leftBottom(iconRect),
+            /* brush       */ resource_utils::solidColorBrush(),
+            /* strokeWidth */ iconSetting.strokeWidth
+            );
         }
     }
 

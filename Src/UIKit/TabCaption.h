@@ -39,7 +39,9 @@ namespace d14engine::uikit
     protected:
         D2D1_RECT_F titleSelfcoordRect() const;
 
-        D2D1_RECT_F closeIconAbsoluteRect(const D2D1_RECT_F& buttonRect) const;
+        D2D1_POINT_2F closeButtonAbsolutePosition() const;
+
+        D2D1_RECT_F closeIconAbsoluteRect() const;
         D2D1_RECT_F closeButtonAbsoluteRect() const;
 
     public:
