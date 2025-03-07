@@ -33,7 +33,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
     {
         .windowSize = { 800, 600 }
     };
-    return Application(info).run([&](Application* app)
+    return Application(info).run([](Application* app)
     {
         auto textDrawMode = app->dx12Renderer()->getDefaultTextRenderingMode();
         textDrawMode.renderingMode = DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC;
@@ -57,9 +57,9 @@ D14_SET_APP_ENTRY(mainVariousFonts)
 
             if (app->themeStyle().name == L"Light")
             {
-                ui_darkModeSwitch->setOnOffState(OnOffSwitch::OFF);
+                ui_darkModeSwitch->setOnOffState(OnOffSwitch::Off);
             }
-            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::ON);
+            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::On);
 
             app->f_onSystemThemeStyleChange = [app]
             (const Application::ThemeStyle& style)
@@ -79,19 +79,19 @@ D14_SET_APP_ENTRY(mainVariousFonts)
         {
             ui_screenshot->moveTopmost();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
-            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
             ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = app->screenshot();
+                auto image = app->windowshot();
                 CreateDirectory(L"Screenshots", nullptr);
                 bitmap_utils::saveBitmap(image.Get(), D14_SCREENSHOT_PATH);
             };
         }
         auto ui_clientArea = makeUIObject<Panel>();
         {
-            ui_mainWindow->setCenterUIObject(ui_clientArea);
+            ui_mainWindow->setContent(ui_clientArea);
         }
         auto ui_textViewer = makeManagedUIObject<TabGroup>(ui_clientArea);
         auto wk_textViewer = (WeakPtr<TabGroup>)ui_textViewer;
@@ -129,21 +129,12 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             auto fileName = file_system_utils::extractFileName(filePath);
             auto filePrefix = file_system_utils::extractFilePrefix(fileName);
 
-            bool isLangZhCn = file_system_utils::extractFileSuffix(filePrefix) == L"zh_CN";
-
-            auto& formats = resource_utils::g_textFormats;
-            auto captionFormat = formats.at(isLangZhCn ? L"默认/正常/14" : L"Default/Normal/14").Get();
-            auto contentFormat = formats.at(isLangZhCn ? L"默认/正常/16" : L"Default/Normal/16").Get();
-
-            auto contentWrapping = isLangZhCn ? DWRITE_WORD_WRAPPING_WRAP : DWRITE_WORD_WRAPPING_NO_WRAP;
-            auto contentAlignment = isLangZhCn ? DWRITE_TEXT_ALIGNMENT_LEADING : DWRITE_TEXT_ALIGNMENT_CENTER;
-
             auto ui_caption = makeUIObject<TabCaption>(filePrefix);
 
             ui_caption->getAppearance().title.rightPadding = 12.0f;
 
             ui_caption->closable = false;
-            ui_caption->title()->label()->setTextFormat(captionFormat);
+            ui_caption->title()->label()->setTextFormat(D14_FONT(L"Default/14"));
 
 #pragma warning(push)
 #pragma warning(disable : 4996)
@@ -161,9 +152,8 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             auto ui_block = makeUIObject<LabelArea>(fileBuffer, math_utils::widthOnlyRect(750.0f));
             auto wk_block = (WeakPtr<LabelArea>)ui_block;
 
-            ui_block->setTextFormat(contentFormat);
-            THROW_IF_FAILED(ui_block->textLayout()->SetWordWrapping(contentWrapping));
-            THROW_IF_FAILED(ui_block->textLayout()->SetTextAlignment(contentAlignment));
+            ui_block->setTextFormat(D14_FONT(L"Default/16"));
+            THROW_IF_FAILED(ui_block->textLayout()->SetWordWrapping(DWRITE_WORD_WRAPPING_WRAP));
 
             auto ui_wrapper = makeUIObject<ConstraintLayout>();
             ui_wrapper->resize(800.0f, ui_block->textMetrics().height + 100.0f);
@@ -312,8 +302,8 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             dropDownMenu->resize(dropDownMenu->width(), 240.0f);
             dropDownMenu->appendItem(fontNameItems);
 
-            ui_fontNameSelector->customMenuRelativePosition = { 0.0f, -240.0f };
-            ui_fontNameSelector->setCurrSelected(0);
+            ui_fontNameSelector->menuOffset = { 0.0f, -240.0f };
+            ui_fontNameSelector->setSelected(0);
         }
         auto ui_textAntialiasModeSelector = makeUIObject<ComboBox>(5.0f);
         {
@@ -350,7 +340,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             dropDownMenu->resize(dropDownMenu->width(), 120.0f);
             dropDownMenu->appendItem(strModeItems);
 
-            ui_textAntialiasModeSelector->setCurrSelected(0);
+            ui_textAntialiasModeSelector->setSelected(0);
 
             using StrModeMap = std::unordered_map<Wstring, D2D1_TEXT_ANTIALIAS_MODE>;
             ui_textAntialiasModeSelector->f_onSelectedChange =
@@ -381,7 +371,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             ui_fontSizeSlider->loadSideTrianglePathGeo();
             valueLabelAppear.isResident = true;
 
-            ui_fontSizeSlider->valueLabel()->setTextFormat(D14_FONT(L"Default/Normal/16"));
+            ui_fontSizeSlider->valueLabel()->setTextFormat(D14_FONT(L"Default/16"));
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -417,7 +407,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             ui_fontWeightSelector->loadSideTrianglePathGeo();
             valueLabelAppear.isResident = true;
 
-            ui_fontWeightSelector->valueLabel()->setTextFormat(D14_FONT(L"Default/Normal/16"));
+            ui_fontWeightSelector->valueLabel()->setTextFormat(D14_FONT(L"Default/16"));
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;

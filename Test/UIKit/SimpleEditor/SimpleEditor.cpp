@@ -26,7 +26,7 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
     {
         .windowSize = { 800, 600 }
     };
-    return Application(info).run([&](Application* app)
+    return Application(info).run([](Application* app)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {

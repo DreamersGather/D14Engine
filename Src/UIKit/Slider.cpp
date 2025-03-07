@@ -46,9 +46,9 @@ namespace d14engine::uikit
 
         m_valueLabel->transform(valueLabelSelfCoordRect());
 
-        int precision = getAppearance().valueLabel.precision;
+        std::wstringstream ss = {};
 
-        std::wstringstream ss;
+        auto& precision = getAppearance().valueLabel.precision;
         ss << std::fixed << std::setprecision(precision) << m_value;
 
         m_valueLabel->setText(ss.str());
@@ -95,7 +95,7 @@ namespace d14engine::uikit
         auto factory = Application::g_app->dx12Renderer()->d2d1Factory();
         THROW_IF_FAILED(factory->CreatePathGeometry(&sideTrianglePathGeo));
 
-        ComPtr<ID2D1GeometrySink> geoSink;
+        ComPtr<ID2D1GeometrySink> geoSink = {};
         THROW_IF_FAILED(sideTrianglePathGeo->Open(&geoSink));
         {
             auto triangleVertices = valueLabelSideTriangleInShadow();
@@ -157,54 +157,77 @@ namespace d14engine::uikit
 
     void Slider::onRendererDrawD2d1LayerHelper(Renderer* rndr)
     {
-        // Handle Shadow
+        ///////////////////
+        // Handle Shadow //
+        ///////////////////
+
         handleShadow.beginDraw(rndr->d2d1DeviceContext());
         {
-            auto& geoSetting = getAppearance().handle.geometry;
+            auto& setting = getAppearance().handle;
 
             resource_utils::solidColorBrush()->SetOpacity(1.0f);
 
-            auto handleRect = math_utils::rect({ 0.0f, 0.0f }, geoSetting.size);
-
-            rndr->d2d1DeviceContext()->FillRoundedRectangle(
+            auto handleRect = math_utils::rect
+            (
+                { 0.0f, 0.0f }, setting.geometry.size
+            );
+            D2D1_ROUNDED_RECT roundedRect =
             {
-                math_utils::moveVertex(handleRect, getAppearance().handle.shadow.offset),
-                geoSetting.roundRadius, geoSetting.roundRadius
-            },
-            resource_utils::solidColorBrush());
+                math_utils::moveVertex(handleRect, setting.shadow.offset),
+                setting.geometry.roundRadius, setting.geometry.roundRadius
+            };
+            rndr->d2d1DeviceContext()->FillRoundedRectangle
+            (
+            /* roundedRect */ roundedRect,
+            /* brush       */ resource_utils::solidColorBrush()
+            );
         }
         handleShadow.endDraw(rndr->d2d1DeviceContext());
 
-        // Value Label Mask
+        //////////////////////
+        // Value Label Mask //
+        //////////////////////
+
         if (m_valueLabel->isD2d1ObjectVisible())
         {
             valueLabelMask.beginDraw(rndr->d2d1DeviceContext());
             {
                 auto& setting = getAppearance().valueLabel;
 
+                //----------------------------------------------------------
                 // Main rect
+                //----------------------------------------------------------
+
                 auto& rectBkgn = setting.mainRect.background;
 
                 resource_utils::solidColorBrush()->SetColor(rectBkgn.color);
                 resource_utils::solidColorBrush()->SetOpacity(rectBkgn.opacity);
-
-                rndr->d2d1DeviceContext()->FillRoundedRectangle(
+                
+                D2D1_ROUNDED_RECT roundedRect =
                 {
                     valueLabelMainRectInShadow(),
                     setting.mainRect.geometry.roundRadius,
                     setting.mainRect.geometry.roundRadius
-                },
-                resource_utils::solidColorBrush());
-
+                };
+                rndr->d2d1DeviceContext()->FillRoundedRectangle
+                (
+                /* roundedRect */ roundedRect,
+                /* brush       */ resource_utils::solidColorBrush()
+                );
+                //----------------------------------------------------------
                 // Side Triangle
+                //----------------------------------------------------------
+
                 auto& trngBkgn = setting.sideTriangle.background;
 
                 resource_utils::solidColorBrush()->SetColor(trngBkgn.color);
                 resource_utils::solidColorBrush()->SetOpacity(trngBkgn.opacity);
 
-                rndr->d2d1DeviceContext()->FillGeometry(
-                    sideTrianglePathGeo.Get(),
-                    resource_utils::solidColorBrush());
+                rndr->d2d1DeviceContext()->FillGeometry
+                (
+                /* geometry */ sideTrianglePathGeo.Get(),
+                /* brush    */ resource_utils::solidColorBrush()
+                );
             }
             valueLabelMask.endDraw(rndr->d2d1DeviceContext());
         }
@@ -212,54 +235,94 @@ namespace d14engine::uikit
 
     void Slider::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        // Complete Bar
+        //////////////////
+        // Complete Bar //
+        //////////////////
+
         auto& complete = getAppearance().bar.complete;
         auto& completeBkgn = m_enabled ? complete.background : complete.secondaryBackground;
 
         resource_utils::solidColorBrush()->SetColor(completeBkgn.color);
         resource_utils::solidColorBrush()->SetOpacity(completeBkgn.opacity);
 
-        float radius = complete.geometry.roundRadius;
+        D2D1_ROUNDED_RECT completeRect =
+        {
+            completeBarAbsoluteRect(),
+            complete.geometry.roundRadius,
+            complete.geometry.roundRadius
+        };
+        rndr->d2d1DeviceContext()->FillRoundedRectangle
+        (
+        /* roundedRect */ completeRect,
+        /* brush       */ resource_utils::solidColorBrush()
+        );
 
-        rndr->d2d1DeviceContext()->FillRoundedRectangle(
-            { completeBarAbsoluteRect(), radius, radius }, resource_utils::solidColorBrush());
+        ////////////////
+        // Filled Bar //
+        ////////////////
 
-        // Filled Bar
         auto& filled = getAppearance().bar.filled;
         auto& filledBkgn = m_enabled ? filled.background : filled.secondaryBackground;
 
         resource_utils::solidColorBrush()->SetColor(filledBkgn.color);
         resource_utils::solidColorBrush()->SetOpacity(filledBkgn.opacity);
 
-        float fradius = filled.geometry.roundRadius;
-
-        rndr->d2d1DeviceContext()->FillRoundedRectangle(
-            { filledBarAbsoluteRect(), fradius, fradius }, resource_utils::solidColorBrush());
-
-        // Handle
+        D2D1_ROUNDED_RECT filledRect =
         {
+            filledBarAbsoluteRect(),
+            filled.geometry.roundRadius,
+            filled.geometry.roundRadius
+        };
+        rndr->d2d1DeviceContext()->FillRoundedRectangle
+        (
+        /* roundedRect */ filledRect,
+        /* brush       */ resource_utils::solidColorBrush()
+        );
+
+        ////////////
+        // Handle //
+        ////////////
+        {
+            //-------------------------------------------------------------------------
             // Shadow
+            //-------------------------------------------------------------------------
+
             auto& shadow = getAppearance().handle.shadow;
             handleShadow.color = m_enabled ? shadow.color : shadow.secondaryColor;
 
             handleShadow.configEffectInput(resource_utils::shadowEffect());
 
-            rndr->d2d1DeviceContext()->DrawImage(
-                resource_utils::shadowEffect(), math_utils::leftTop(handleAbsoluteRect()));
-
+            rndr->d2d1DeviceContext()->DrawImage
+            (
+            /* effect       */ resource_utils::shadowEffect(),
+            /* targetOffset */ math_utils::leftTop(handleAbsoluteRect())
+            );
+            //-------------------------------------------------------------------------
             // Entity
+            //-------------------------------------------------------------------------
+
             auto& handle = getAppearance().handle;
             auto& handleBkgn = m_enabled ? handle.background : handle.secondaryBackground;
 
             resource_utils::solidColorBrush()->SetColor(handleBkgn.color);
             resource_utils::solidColorBrush()->SetOpacity(handleBkgn.opacity);
 
-            float hradius = getAppearance().handle.geometry.roundRadius;
-
-            rndr->d2d1DeviceContext()->FillRoundedRectangle(
-                { handleAbsoluteRect(), hradius, hradius }, resource_utils::solidColorBrush());
+            D2D1_ROUNDED_RECT roundedRect =
+            {
+                handleAbsoluteRect(),
+                handle.geometry.roundRadius,
+                handle.geometry.roundRadius
+            };
+            rndr->d2d1DeviceContext()->FillRoundedRectangle
+            (
+            /* roundedRect */ roundedRect,
+            /* brush       */ resource_utils::solidColorBrush()
+            );
         }
-        // Value Label
+        /////////////////
+        // Value Label //
+        /////////////////
+
         if (getAppearance().valueLabel.isResident)
         {
             m_valueLabel->setPrivateVisible(true);
@@ -269,7 +332,10 @@ namespace d14engine::uikit
         {
             auto vlblRect = selfCoordToAbsolute(valueLabelShadowSelfCoordRect());
 
+            //-------------------------------------------------------------------------
             // Shadow
+            //-------------------------------------------------------------------------
+
             auto& shadowSetting = getAppearance().valueLabel.shadow;
 
             valueLabelMask.color = shadowSetting.color;
@@ -277,18 +343,26 @@ namespace d14engine::uikit
 
             valueLabelMask.configEffectInput(resource_utils::shadowEffect());
 
-            auto targetOffset = math_utils::roundf(math_utils::leftTop(vlblRect));
-
-            rndr->d2d1DeviceContext()->DrawImage(resource_utils::shadowEffect(), targetOffset);
-
+            rndr->d2d1DeviceContext()->DrawImage
+            (
+            /* effect       */ resource_utils::shadowEffect(),
+            /* targetOffset */ math_utils::leftTop(vlblRect)
+            );
+            //-------------------------------------------------------------------------
             // Entity
-            auto destinationRect = math_utils::roundf(vlblRect);
+            //-------------------------------------------------------------------------
 
-            rndr->d2d1DeviceContext()->DrawBitmap(
-                valueLabelMask.data.Get(), destinationRect,
-                valueLabelMask.opacity, valueLabelMask.getInterpolationMode());
-
+            rndr->d2d1DeviceContext()->DrawBitmap
+            (
+            /* bitmap               */ valueLabelMask.data.Get(),
+            /* destinationRectangle */ vlblRect,
+            /* opacity              */ valueLabelMask.opacity,
+            /* interpolationMode    */ valueLabelMask.getInterpolationMode()
+            );
+            //-------------------------------------------------------------------------
             // Text
+            //-------------------------------------------------------------------------
+
             m_valueLabel->onRendererDrawD2d1Object(rndr);
         }
     }
@@ -363,9 +437,9 @@ namespace d14engine::uikit
 
         m_valueLabel->transform(valueLabelSelfCoordRect());
 
-        int precision = getAppearance().valueLabel.precision;
-
         std::wstringstream ss;
+
+        auto& precision = getAppearance().valueLabel.precision;
         ss << std::fixed << std::setprecision(precision) << value;
 
         m_valueLabel->setText(ss.str());
