@@ -162,7 +162,7 @@ namespace d14engine::uikit
 
     protected:
         // Indicates whether a special operation is being performed on the
-        // window (e.g. resizing, dragging).  When this is true, 3-bros
+        // window (e.g. resizing, dragging). When this is true, 3-bros
         // should not respond UI events even if they are enabled indeed.
         bool m_isPerformSpecialOperation = false;
 

@@ -132,7 +132,7 @@ namespace d14engine::renderer::graph_utils
 
 #pragma warning(push)
 // This warning will be raised if an annotated function parameter is passed
-// an unexpected value.  In the official example on GitHub the 4th parameter
+// an unexpected value. In the official example on GitHub the 4th parameter
 // of IDxcResult::GetOutput is discarded (i.e. null ppOutputName), though it
 // is annotated as _COM_Outptr_ instead of _COM_Outptr_opt_result_maybenull_.
 #pragma warning(disable : 6387)

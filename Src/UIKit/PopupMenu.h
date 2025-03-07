@@ -9,10 +9,10 @@
 
 namespace d14engine::uikit
 {
-    // A popup menu should be created as a root UI object, so that it can
-    // be activated at any position.  The design idea is that the menu is
-    // used to perform some shortcuts and will be deactivated immediately
-    // after use, so it is a bad idea to make the menu managed by another.
+    // A popup menu should be created as a root UI object, thus it can
+    // be activated at any position. The design idea is that the menu is
+    // used to perform some shortcuts and can be deactivated immediately
+    // after use, so it is a bad idea to make the menu managed by others.
 
     struct PopupMenu : appearance::PopupMenu, WaterfallView<MenuItem>
     {
