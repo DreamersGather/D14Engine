@@ -373,6 +373,9 @@ namespace d14engine::uikit
         float height() const;
         D2D1_SIZE_F size() const;
 
+        // Returns size scaled by DPI.
+        D2D1_SIZE_U pixelSize() const;
+
         D2D1_POINT_2F position() const;
         D2D1_POINT_2F absolutePosition() const;
 

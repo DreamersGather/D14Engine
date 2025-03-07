@@ -10,12 +10,13 @@
 #include "Renderer/GraphUtils/ParamHelper.h"
 #include "Renderer/Interfaces/DrawLayer.h"
 
+// Do NOT remove this header for code tidy
+// as the template deduction relies on it.
+#include "Renderer/Interfaces/IDrawObject.h"
+
 #include "UIKit/Application.h"
 #include "UIKit/BitmapObject.h"
 #include "UIKit/PlatformUtils.h"
-
-// Template deduction depends on IDrawObject
-#include "Renderer/Interfaces/IDrawObject.h"
 
 using namespace d14engine::renderer;
 
@@ -29,22 +30,32 @@ namespace d14engine::uikit
 
         auto rndr = Application::g_app->dx12Renderer();
 
-        auto device = rndr->d3d12Device();
-        m_cmdLayer = std::make_shared<Renderer::CommandLayer>(device);
+        ///////////////////////
+        // Scene Render Pass //
+        ///////////////////////
 
-        m_cmdLayer->setPriority(cmdLayerPriority);
+        using SceneCmdLayer = Renderer::CommandLayer;
+        using SceneTarget = SceneCmdLayer::D3D12Target;
+
+        auto device = rndr->d3d12Device();
+        m_cmdLayer = std::make_shared<SceneCmdLayer>(device);
+        {
+            m_cmdLayer->setPriority(cmdLayerPriority);
+            m_cmdLayer->drawTarget.emplace<SceneTarget>();
+        }
         rndr->cmdLayers.insert(m_cmdLayer);
 
-        using D3D12Target = Renderer::CommandLayer::D3D12Target;
-        auto& target = m_cmdLayer->drawTarget.emplace<D3D12Target>();
+        auto& target = m_cmdLayer->drawTarget;
+        auto& sceneTarget = std::get<SceneTarget>(target);
+        {
+            m_primaryLayer = std::make_shared<DrawLayer>();
+            m_primaryLayer->setPriority(INT_MIN);
+            sceneTarget[m_primaryLayer] = {};
 
-        m_primaryLayer = std::make_shared<DrawLayer>();
-        m_primaryLayer->setPriority(INT_MIN);
-        target[m_primaryLayer] = {};
-
-        m_closingLayer = std::make_shared<DrawLayer>();
-        m_closingLayer->setPriority(INT_MAX);
-        target[m_closingLayer] = {};
+            m_closingLayer = std::make_shared<DrawLayer>();
+            m_closingLayer->setPriority(INT_MAX);
+            sceneTarget[m_closingLayer] = {};
+        }
     }
 
     void ScenePanel::onInitializeFinish()
@@ -55,26 +66,25 @@ namespace d14engine::uikit
 
         auto rndr = Application::g_app->dx12Renderer();
 
-        // The back/MSAA buffers share the same RTV heap. Just 1 RTV seat
-        // is enough since only 1 of them is used as render target at the same time:
-        // MSAA Enabled: back buffer == staging, MSAA buffer == render target
-        // MSAA Disabled: back buffer == render target, MSAA buffer == not used
+        // The back/MSAA buffers share the same RTV heap. Literally 1 RTV seat
+        // is enough as only 1 of them is used as render target at the same time:
+        // (MSAA Enabled) back buffer == staging, MSAA buffer == render target
+        // (MSAA Disabled) back buffer == render target, MSAA buffer == not used
 
-        D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-        desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-        desc.NumDescriptors = 1;
-        desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-        desc.NodeMask = 0; // single-adapter
-
+        D3D12_DESCRIPTOR_HEAP_DESC desc =
+        {
+            .Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
+            .NumDescriptors = 1
+        };
         auto device = rndr->d3d12Device();
         THROW_IF_FAILED(device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_rtvHeap)));
 
         loadOffscreenTexture();
 
-        // It is worth noting that the back buffer is always transitioned to
-        // PIXEL_SHADER_RESOURCE state after finishing the Direct3D rendering.
-        // This is because Direct2D::DrawBitmap requires the underlying resource
-        // be of such state to resample the shared bitmap to the render target.
+        // It is worth noting that the back buffer will always be transitioned to
+        // PIXEL_SHADER_RESOURCE state after the renderer presents current frame.
+        // This is because D2D1DeviceContext::DrawBitmap requires the underlying
+        // resource be of such state to resample the shared bitmap to the target.
 
         m_primaryLayer->f_onRendererDrawD3d12LayerAfter = [this]
         (DrawLayer* layer, Renderer* rndr)
@@ -89,8 +99,11 @@ namespace d14engine::uikit
                 );
                 rndr->cmdList()->ResourceBarrier(1, &barrier);
             }
-            auto rtvHandle = m_rtvHeap->GetCPUDescriptorHandleForHeapStart();
+            ////////////////////////////
+            // Clear Background Color //
+            ////////////////////////////
 
+            auto rtvHandle = m_rtvHeap->GetCPUDescriptorHandleForHeapStart();
             rndr->cmdList()->OMSetRenderTargets(1, &rtvHandle, TRUE, nullptr);
             rndr->cmdList()->ClearRenderTargetView(rtvHandle, m_clearColor, 0, nullptr);
         };
@@ -101,25 +114,32 @@ namespace d14engine::uikit
             {
                 D3D12_RESOURCE_BARRIER barriers[] =
                 {
-                    CD3DX12_RESOURCE_BARRIER::Transition
-                    (
-                        m_backBuffer.Get(),
-                        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-                        D3D12_RESOURCE_STATE_RESOLVE_DEST
-                    ),
-                    CD3DX12_RESOURCE_BARRIER::Transition
-                    (
-                        m_msaaBuffer.Get(),
-                        D3D12_RESOURCE_STATE_RENDER_TARGET,
-                        D3D12_RESOURCE_STATE_RESOLVE_SOURCE
-                    ),
-                };
+                CD3DX12_RESOURCE_BARRIER::Transition
+                (
+                    m_backBuffer.Get(),
+                    D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+                    D3D12_RESOURCE_STATE_RESOLVE_DEST
+                ),
+                CD3DX12_RESOURCE_BARRIER::Transition
+                (
+                    m_msaaBuffer.Get(),
+                    D3D12_RESOURCE_STATE_RENDER_TARGET,
+                    D3D12_RESOURCE_STATE_RESOLVE_SOURCE
+                )};
                 rndr->cmdList()->ResourceBarrier(NUM_ARR_ARGS(barriers));
 
-                rndr->cmdList()->ResolveSubresource(
-                    /* dstResource */ m_backBuffer.Get(), 0,
-                    /* srcResource */ m_msaaBuffer.Get(), 0,
-                    Renderer::g_renderTargetFormat);
+                //////////////////////////
+                // Resolve MSAA Texture //
+                //////////////////////////
+
+                rndr->cmdList()->ResolveSubresource
+                (
+                /* pDstResource   */ m_backBuffer.Get(),
+                /* DstSubresource */ 0,
+                /* pSrcResource   */ m_msaaBuffer.Get(),
+                /* SrcSubresource */ 0,
+                /* Format         */ Renderer::g_renderTargetFormat
+                );
 
                 graph_utils::revertBarrier(NUM_ARR_ARGS(barriers));
                 rndr->cmdList()->ResourceBarrier(NUM_ARR_ARGS(barriers));
@@ -162,9 +182,15 @@ namespace d14engine::uikit
         THROW_IF_NULL(Application::g_app);
 
         auto rndr = Application::g_app->dx12Renderer();
+
         rndr->cmdLayers.erase(m_cmdLayer);
         m_cmdLayer->setPriority(value);
         rndr->cmdLayers.insert(m_cmdLayer);
+    }
+
+    bool ScenePanel::msaaEnabled() const
+    {
+        return m_msaaEnabled;
     }
 
     UINT ScenePanel::sampleCount() const
@@ -199,10 +225,10 @@ namespace d14engine::uikit
             auto level = feature.queryMsaaQualityLevel(count);
             if (level.has_value())
             {
+                m_msaaEnabled = true;
+
                 m_sampleCount = count;
                 m_sampleQuality = level.value();
-
-                m_msaaEnabled = true;
 
                 loadOffscreenTexture();
                 return true;
@@ -211,16 +237,12 @@ namespace d14engine::uikit
         }
     }
 
-    bool ScenePanel::msaaEnabled() const
-    {
-        return m_msaaEnabled;
-    }
-
     void ScenePanel::loadOffscreenTexture()
     {
         THROW_IF_NULL(Application::g_app);
 
         auto rndr = Application::g_app->dx12Renderer();
+
         rndr->beginGpuCommand();
 
         createBackBuffer();
@@ -229,43 +251,91 @@ namespace d14engine::uikit
             createMsaaBuffer();
         }
         else m_msaaBuffer.Reset();
+
         createWrappedBuffer();
 
         rndr->endGpuCommand();
     }
 
+//--------------------------------------------------------------------------
+// Note how ScenePanel switches between the two modes,
+// which involves resource creation and render-pass implementation:
+//--------------------------------------------------------------------------
+// (MSAA Enabled):
+//--------------------------------------------------------------------------
+//
+// Resources:
+//
+// m_backBuffer == resolve target
+// m_msaaBuffer == render target
+//
+// Render Pass:
+//
+// Data --> m_msaaBuffer (Render) --> m_backBuffer (Resolve)
+//
+//--------------------------------------------------------------------------
+// (MSAA Disabled):
+//--------------------------------------------------------------------------
+//
+// Resources:
+//
+// m_backBuffer == render target
+// m_msaaBuffer == NONE
+//
+// Render Pass:
+//
+// Data --> m_backBuffer (Render)
+//
+//--------------------------------------------------------------------------
+
     void ScenePanel::createBackBuffer()
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto texSize = math_utils::roundu(size());
+        auto rndr = Application::g_app->dx12Renderer();
+
+        ////////////////////////
+        // Setup Texture Info //
+        ////////////////////////
+
+        auto prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+
+        auto texSize = pixelSize();
         texSize.width = std::max(texSize.width, 1u);
         texSize.height = std::max(texSize.height, 1u);
 
-        auto rndr = Application::g_app->dx12Renderer();
-
-        auto prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
         auto desc = CD3DX12_RESOURCE_DESC::Tex2D
         (
-            /* format    */ Renderer::g_renderTargetFormat,
-            /* width     */ math_utils::round<UINT64>(texSize.width),
-            /* height    */ math_utils::round<UINT>(texSize.height),
-            /* arraySize */ 1,
-            /* mipLevels */ 1
+        /* format    */ Renderer::g_renderTargetFormat,
+        /* width     */ math_utils::round<UINT64>(texSize.width),
+        /* height    */ math_utils::round<UINT>(texSize.height),
+        /* arraySize */ 1,
+        /* mipLevels */ 1
         );
-        if (m_msaaEnabled)
+
+        ///////////////////////
+        // As Resolve Target //
+        ///////////////////////
+
+        if (m_msaaEnabled) // MSAA buffer == render target
         {
-            THROW_IF_FAILED(rndr->d3d12Device()->CreateCommittedResource
+            auto device = rndr->d3d12Device();
+            THROW_IF_FAILED(device->CreateCommittedResource
             (
-                /* pHeapProperties      */ &prop,
-                /* HeapFlags            */ D3D12_HEAP_FLAG_NONE,
-                /* pDesc                */ &desc,
-                /* InitialResourceState */ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-                /* pOptimizedClearValue */ nullptr,
-                /* riidResource         */
-                /* ppvResource          */ IID_PPV_ARGS(&m_backBuffer)
+            /* pHeapProperties      */ &prop,
+            /* HeapFlags            */ D3D12_HEAP_FLAG_NONE,
+            /* pDesc                */ &desc,
+            /* InitialResourceState */ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+            /* pOptimizedClearValue */ nullptr,
+            /* riidResource         */
+            /* ppvResource          */ IID_PPV_ARGS(&m_backBuffer)
             ));
         }
+
+        //////////////////////
+        // As Render Target //
+        //////////////////////
+
         else // back buffer == render target
         {
             desc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
@@ -275,18 +345,16 @@ namespace d14engine::uikit
             memcpy(clearValue.Color, m_clearColor, 4 * sizeof(FLOAT));
 
             auto device = rndr->d3d12Device();
-
             THROW_IF_FAILED(device->CreateCommittedResource
             (
-                /* pHeapProperties      */ &prop,
-                /* HeapFlags            */ D3D12_HEAP_FLAG_NONE,
-                /* pDesc                */ &desc,
-                /* InitialResourceState */ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-                /* pOptimizedClearValue */ &clearValue,
-                /* riidResource         */
-                /* ppvResource          */ IID_PPV_ARGS(&m_backBuffer)
+            /* pHeapProperties      */ &prop,
+            /* HeapFlags            */ D3D12_HEAP_FLAG_NONE,
+            /* pDesc                */ &desc,
+            /* InitialResourceState */ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+            /* pOptimizedClearValue */ &clearValue,
+            /* riidResource         */
+            /* ppvResource          */ IID_PPV_ARGS(&m_backBuffer)
             ));
-
             auto rtvHandle = m_rtvHeap->GetCPUDescriptorHandleForHeapStart();
             device->CreateRenderTargetView(m_backBuffer.Get(), nullptr, rtvHandle);
         }
@@ -296,20 +364,25 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto texSize = math_utils::roundu(size());
+        auto rndr = Application::g_app->dx12Renderer();
+
+        ////////////////////////
+        // Setup Texture Info //
+        ////////////////////////
+
+        auto prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+
+        auto texSize = pixelSize();
         texSize.width = std::max(texSize.width, 1u);
         texSize.height = std::max(texSize.height, 1u);
 
-        auto rndr = Application::g_app->dx12Renderer();
-
-        auto prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
         auto desc = CD3DX12_RESOURCE_DESC::Tex2D
         (
-            /* format    */ Renderer::g_renderTargetFormat,
-            /* width     */ math_utils::round<UINT64>(texSize.width),
-            /* height    */ math_utils::round<UINT>(texSize.height),
-            /* arraySize */ 1,
-            /* mipLevels */ 1
+        /* format    */ Renderer::g_renderTargetFormat,
+        /* width     */ math_utils::round<UINT64>(texSize.width),
+        /* height    */ math_utils::round<UINT>(texSize.height),
+        /* arraySize */ 1,
+        /* mipLevels */ 1
         );
         desc.SampleDesc.Count = m_sampleCount;
         desc.SampleDesc.Quality = m_sampleQuality;
@@ -319,19 +392,21 @@ namespace d14engine::uikit
         clearValue.Format = Renderer::g_renderTargetFormat;
         memcpy(clearValue.Color, m_clearColor, 4 * sizeof(FLOAT));
 
-        auto device = rndr->d3d12Device();
+        //////////////////////////
+        // Create Render Target //
+        //////////////////////////
 
+        auto device = rndr->d3d12Device();
         THROW_IF_FAILED(device->CreateCommittedResource
         (
-            /* pHeapProperties      */ &prop,
-            /* HeapFlags            */ D3D12_HEAP_FLAG_NONE,
-            /* pDesc                */ &desc,
-            /* InitialResourceState */ D3D12_RESOURCE_STATE_RENDER_TARGET,
-            /* pOptimizedClearValue */ &clearValue,
-            /* riidResource         */
-            /* ppvResource          */ IID_PPV_ARGS(&m_msaaBuffer)
+        /* pHeapProperties      */ &prop,
+        /* HeapFlags            */ D3D12_HEAP_FLAG_NONE,
+        /* pDesc                */ &desc,
+        /* InitialResourceState */ D3D12_RESOURCE_STATE_RENDER_TARGET,
+        /* pOptimizedClearValue */ &clearValue,
+        /* riidResource         */
+        /* ppvResource          */ IID_PPV_ARGS(&m_msaaBuffer)
         ));
-
         auto rtvHandle = m_rtvHeap->GetCPUDescriptorHandleForHeapStart();
         device->CreateRenderTargetView(m_msaaBuffer.Get(), nullptr, rtvHandle);
     }
@@ -341,31 +416,47 @@ namespace d14engine::uikit
         THROW_IF_NULL(Application::g_app);
 
         auto rndr = Application::g_app->dx12Renderer();
-        auto dpi = platform_utils::dpi();
 
-        auto props = D2D1::BitmapProperties
-        (
-            /* pixelFormat */ D2D1::PixelFormat(Renderer::g_renderTargetFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
-            /* dpiX        */ dpi,
-            /* dpiY        */ dpi
-        );
+        ////////////////////
+        // Wrapped Buffer //
+        ////////////////////
+
         D3D11_RESOURCE_FLAGS flags = {};
         flags.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
         auto device = rndr->d3d11On12Device();
         THROW_IF_FAILED(device->CreateWrappedResource
         (
-            /* pResource12  */ m_backBuffer.Get(),
-            /* pFlags11     */ &flags,
-            /* InState      */ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-            /* OutState     */ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-            /* ppResource11 */ IID_PPV_ARGS(&m_wrappedBuffer)
+        /* pResource12  */ m_backBuffer.Get(),
+        /* pFlags11     */ &flags,
+        /* InState      */ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+        /* OutState     */ D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+        /* riid         */
+        /* ppResource11 */ IID_PPV_ARGS(&m_wrappedBuffer)
         ));
-        ComPtr<IDXGISurface> surface;
+
+        ///////////////////
+        // Shared Bitmap //
+        ///////////////////
+
+        ComPtr<IDXGISurface> surface = {};
         THROW_IF_FAILED(m_wrappedBuffer.As(&surface));
 
+        auto dpi = platform_utils::dpi();
+        auto props = D2D1::BitmapProperties
+        (
+        /* pixelFormat */ D2D1::PixelFormat(Renderer::g_renderTargetFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
+        /* dpiX        */ dpi,
+        /* dpiY        */ dpi
+        );
         auto context = rndr->d2d1DeviceContext();
-        THROW_IF_FAILED(context->CreateSharedBitmap(__uuidof(surface), surface.Get(), &props, &m_sharedBitmap));
+        THROW_IF_FAILED(context->CreateSharedBitmap
+        (
+        /* riid             */ __uuidof(surface),
+        /* data             */ surface.Get(),
+        /* bitmapProperties */ &props,
+        /* bitmap           */ &m_sharedBitmap
+        ));
     }
 
     const XMVECTORF32& ScenePanel::clearColor() const
@@ -407,9 +498,6 @@ namespace d14engine::uikit
         // There is no need to acquire or release the wrapped buffer since
         // the state transition has already been handled in Direct3D layer.
 
-        // round to fit pixel size
-        auto rect = math_utils::roundf(m_absoluteRect);
-
         D2D1_INTERPOLATION_MODE mode = {};
         if (sharedBitmapProperty.interpolationMode.has_value())
         {
@@ -417,8 +505,13 @@ namespace d14engine::uikit
         }
         else mode = BitmapObject::g_interpolationMode;
 
-        rndr->d2d1DeviceContext()->DrawBitmap(
-            m_sharedBitmap.Get(), rect, sharedBitmapProperty.opacity, mode);
+        rndr->d2d1DeviceContext()->DrawBitmap
+        (
+        /* bitmap               */ m_sharedBitmap.Get(),
+        /* destinationRectangle */ m_absoluteRect,
+        /* opacity              */ sharedBitmapProperty.opacity,
+        /* interpolationMode    */ mode
+        );
     }
 
     void ScenePanel::onSizeHelper(SizeEvent& e)

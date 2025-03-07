@@ -259,7 +259,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             camera->nearZ = 0.1f; camera->farZ = 100.0f;
             // proj-mat will be updated in onViewResize
 
-            auto viewSize = math_utils::roundu(ui_scenePanel->size());
+            auto viewSize = ui_scenePanel->pixelSize();
             camera->onViewResize(viewSize.width, viewSize.height);
 
             camera->f_onRendererUpdateObjectBefore = [=]

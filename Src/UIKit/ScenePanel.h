@@ -30,26 +30,28 @@ namespace d14engine::uikit
         void setCmdLayerPriority(int value);
 
     protected:
-        UINT m_sampleCount = 1, m_sampleQuality = 0;
-
         bool m_msaaEnabled = false;
 
-    public:
-        UINT sampleCount() const; UINT sampleQuality() const;
+        UINT m_sampleCount = 1;
+        UINT m_sampleQuality = 0;
 
-        // Uses the max supported MSAA quality level when quality is empty.
+    public:
+        bool msaaEnabled() const;
+
+        UINT sampleCount() const;
+        UINT sampleQuality() const;
+
+        // Uses the max supported MSAA quality level if quality is empty.
         // Returns whether the target MSAA setting is enabled successfully.
         bool setMultiSample(UINT count, OptParam<UINT> quality = {});
-
-        bool msaaEnabled() const;
 
     protected:
         XMVECTORF32 m_clearColor = Colors::Black;
 
         ComPtr<ID3D12DescriptorHeap> m_rtvHeap = {};
 
-        ComPtr<ID3D12Resource> m_msaaBuffer = {};
         ComPtr<ID3D12Resource> m_backBuffer = {};
+        ComPtr<ID3D12Resource> m_msaaBuffer = {};
 
         ComPtr<ID3D11Resource> m_wrappedBuffer = {};
 

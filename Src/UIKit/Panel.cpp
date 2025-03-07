@@ -9,6 +9,7 @@
 
 #include "UIKit/Application.h"
 #include "UIKit/BitmapObject.h"
+#include "UIKit/PlatformUtils.h"
 
 using namespace d14engine::renderer;
 
@@ -843,6 +844,12 @@ namespace d14engine::uikit
     D2D1_SIZE_F Panel::size() const
     {
         return { width(), height() };
+    }
+
+    D2D1_SIZE_U Panel::pixelSize() const
+    {
+        return math_utils::roundu(
+            platform_utils::scaledByDpi(size()));
     }
 
     D2D1_POINT_2F Panel::position() const
