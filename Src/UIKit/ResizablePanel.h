@@ -22,7 +22,7 @@ namespace d14engine::uikit
 
         struct StaticSizingGuideFrame : MasterPtr
         {
-            using EnableMasterPtr::EnableMasterPtr;
+            using MasterPtr::MasterPtr;
 
             ComPtr<ID2D1StrokeStyle> strokeStyle = {};
 
