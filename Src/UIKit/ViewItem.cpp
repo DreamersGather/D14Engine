@@ -183,28 +183,45 @@ namespace d14engine::uikit
     {
         auto& setting = getAppearance().main[(size_t)(m_enabled ? state : State::Idle)];
 
-        // Background
+        ////////////////
+        // Background //
+        ////////////////
+
         resource_utils::solidColorBrush()->SetColor(setting.background.color);
         resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
         Panel::drawBackground(rndr);
 
-        // Content
+        /////////////
+        // Content //
+        /////////////
+
         if (m_content && m_content->isD2d1ObjectVisible())
         {
-            rndr->d2d1DeviceContext()->DrawBitmap(
-                contentMask.data.Get(), math_utils::roundf(m_absoluteRect),
-                contentMask.opacity, contentMask.getInterpolationMode());
+            rndr->d2d1DeviceContext()->DrawBitmap
+            (
+            /* bitmap               */ contentMask.data.Get(),
+            /* destinationRectangle */ m_absoluteRect,
+            /* opacity              */ contentMask.opacity,
+            /* interpolationMode    */ contentMask.getInterpolationMode()
+            );
         }
-        // Outline
+        /////////////
+        // Outline //
+        /////////////
+
         resource_utils::solidColorBrush()->SetColor(setting.stroke.color);
         resource_utils::solidColorBrush()->SetOpacity(setting.stroke.opacity);
 
         auto frame = math_utils::inner(m_absoluteRect, setting.stroke.width);
         D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
 
-        rndr->d2d1DeviceContext()->DrawRoundedRectangle(
-            outlineRect, resource_utils::solidColorBrush(), setting.stroke.width);
+        rndr->d2d1DeviceContext()->DrawRoundedRectangle
+        (
+        /* roundedRect */ outlineRect,
+        /* brush       */ resource_utils::solidColorBrush(),
+        /* strokeWidth */ setting.stroke.width
+        );
     }
 
     bool ViewItem::isHitHelper(const Event::Point& p) const
