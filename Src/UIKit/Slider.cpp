@@ -202,7 +202,7 @@ namespace d14engine::uikit
 
                 resource_utils::solidColorBrush()->SetColor(rectBkgn.color);
                 resource_utils::solidColorBrush()->SetOpacity(rectBkgn.opacity);
-                
+
                 D2D1_ROUNDED_RECT roundedRect =
                 {
                     valueLabelMainRectInShadow(),
