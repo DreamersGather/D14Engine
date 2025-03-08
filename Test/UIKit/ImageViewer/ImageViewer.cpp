@@ -185,7 +185,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
                     auto content = makeUIObject<Panel>(imageRect, nullptr, images[index].second);
                     auto wrapper = makeUIObject<ScrollView>(content);
 
-                    size_t currTabIndex = sh_tabGroup->currActiveCardTabIndex().index;
+                    size_t currTabIndex = sh_tabGroup->activeCardTabIndex().index;
                     sh_tabGroup->insertTab({ caption, wrapper }, currTabIndex);
                     sh_tabGroup->selectTab(currTabIndex);
 
@@ -298,7 +298,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
             {
                 if (!wk_tabGroup.expired())
                 {
-                    auto& selected = wk_tabGroup.lock()->currActiveCardTabIndex();
+                    auto& selected = wk_tabGroup.lock()->activeCardTabIndex();
                     if (selected.valid()) selected->caption->title()->label()->setText(text);
                 }
             };
@@ -326,7 +326,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
             {
                 if (!wk_tabGroup.expired())
                 {
-                    auto& selected = wk_tabGroup.lock()->currActiveCardTabIndex();
+                    auto& selected = wk_tabGroup.lock()->activeCardTabIndex();
                     if (selected.valid()) selected->caption->closable = e.checked();
                 }
             };
@@ -354,7 +354,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
             {
                 if (!wk_tabGroup.expired())
                 {
-                    auto& selected = wk_tabGroup.lock()->currActiveCardTabIndex();
+                    auto& selected = wk_tabGroup.lock()->activeCardTabIndex();
                     if (selected.valid()) selected->caption->draggable = e.checked();
                 }
             };
@@ -382,7 +382,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
             {
                 if (!wk_tabGroup.expired())
                 {
-                    auto& selected = wk_tabGroup.lock()->currActiveCardTabIndex();
+                    auto& selected = wk_tabGroup.lock()->activeCardTabIndex();
                     if (selected.valid()) selected->caption->promotable = e.checked();
                 }
             };

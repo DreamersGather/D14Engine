@@ -40,17 +40,19 @@ namespace d14engine::uikit
     {
         ResizablePanel::onInitializeFinish();
 
-        activeCard.loadMaskBitmap();
+        activeCard.loadMask();
         activeCard.loadPathGeo();
+
+        moreCards.loadMask();
+        moreCards.loadPathGeo();
     }
 
-    void TabGroup::ActiveCard::loadMaskBitmap()
+    void TabGroup::ActiveCard::loadMask()
     {
         TabGroup* tg = m_master;
         THROW_IF_NULL(tg);
 
-        auto& setting = tg->getAppearance().
-            tabBar.card.main[(size_t)CardState::Active];
+        auto& setting = tg->getAppearance().tabBar.card.main[(size_t)CardState::Active];
 
         mask.loadBitmap(setting.geometry.size);
     }
@@ -73,54 +75,101 @@ namespace d14engine::uikit
         float cardRoundRadius = setting.geometry.roundRadius;
         D2D1_SIZE_F cardCornerSize = { cardRoundRadius, cardRoundRadius };
 
-        ComPtr<ID2D1GeometrySink> geoSink;
+        ComPtr<ID2D1GeometrySink> geoSink = {};
         THROW_IF_FAILED(pathGeo->Open(&geoSink));
         {
             geoSink->BeginFigure({ 0.0f, cardHeight }, D2D1_FIGURE_BEGIN_FILLED);
 
-            // Left Bottom Corner
+            ////////////////////////
+            // Left Bottom Corner //
+            ////////////////////////
+
             geoSink->AddArc(
             {
-                /* point            */ { cardRoundRadius, cardHeight - cardRoundRadius },
-                /* size             */ cardCornerSize,
-                /* rotation degrees */ 90.0f,
-                /* sweep direction  */ D2D1_SWEEP_DIRECTION_COUNTER_CLOCKWISE,
-                /* arc size         */ D2D1_ARC_SIZE_SMALL
+            /* point            */ { cardRoundRadius, cardHeight - cardRoundRadius },
+            /* size             */ cardCornerSize,
+            /* rotation degrees */ 90.0f,
+            /* sweep direction  */ D2D1_SWEEP_DIRECTION_COUNTER_CLOCKWISE,
+            /* arc size         */ D2D1_ARC_SIZE_SMALL
             });
             geoSink->AddLine({ cardRoundRadius, cardRoundRadius });
 
-            // Left Top Corner
+            /////////////////////
+            // Left Top Corner //
+            /////////////////////
+
             geoSink->AddArc(
             {
-                /* point            */ { cardRoundRadius * 2.0f, 0.0f },
-                /* size             */ cardCornerSize,
-                /* rotation degrees */ 90.0f,
-                /* sweep direction  */ D2D1_SWEEP_DIRECTION_CLOCKWISE,
-                /* arc size         */ D2D1_ARC_SIZE_SMALL
+            /* point            */ { cardRoundRadius * 2.0f, 0.0f },
+            /* size             */ cardCornerSize,
+            /* rotation degrees */ 90.0f,
+            /* sweep direction  */ D2D1_SWEEP_DIRECTION_CLOCKWISE,
+            /* arc size         */ D2D1_ARC_SIZE_SMALL
             });
             geoSink->AddLine({ cardWidth -  cardRoundRadius * 2.0f, 0.0f });
 
-            // Right Top Corner
+            //////////////////////
+            // Right Top Corner //
+            //////////////////////
+
             geoSink->AddArc(
             {
-                /* point            */ { cardWidth - cardRoundRadius, cardRoundRadius },
-                /* size             */ cardCornerSize,
-                /* rotation degrees */ 90.0f,
-                /* sweep direction  */ D2D1_SWEEP_DIRECTION_CLOCKWISE,
-                /* arc size         */ D2D1_ARC_SIZE_SMALL
+            /* point            */ { cardWidth - cardRoundRadius, cardRoundRadius },
+            /* size             */ cardCornerSize,
+            /* rotation degrees */ 90.0f,
+            /* sweep direction  */ D2D1_SWEEP_DIRECTION_CLOCKWISE,
+            /* arc size         */ D2D1_ARC_SIZE_SMALL
             });
             geoSink->AddLine({ cardWidth - cardRoundRadius, cardHeight - cardRoundRadius });
 
-            // Right Bottom Corner
+            /////////////////////////
+            // Right Bottom Corner //
+            /////////////////////////
+
             geoSink->AddArc(
             {
-                /* point            */ { cardWidth, cardHeight },
-                /* size             */ cardCornerSize,
-                /* rotation degrees */ 90.0f,
-                /* sweep direction  */ D2D1_SWEEP_DIRECTION_COUNTER_CLOCKWISE,
-                /* arc size         */ D2D1_ARC_SIZE_SMALL
+            /* point            */ { cardWidth, cardHeight },
+            /* size             */ cardCornerSize,
+            /* rotation degrees */ 90.0f,
+            /* sweep direction  */ D2D1_SWEEP_DIRECTION_COUNTER_CLOCKWISE,
+            /* arc size         */ D2D1_ARC_SIZE_SMALL
             });
             geoSink->AddLine({ 0.0f, cardHeight });
+
+            geoSink->EndFigure(D2D1_FIGURE_END_CLOSED);
+        }
+        THROW_IF_FAILED(geoSink->Close());
+    }
+
+    void TabGroup::MoreCards::loadMask()
+    {
+        TabGroup* tg = m_master;
+        THROW_IF_NULL(tg);
+
+        auto& setting = tg->getAppearance().tabBar.moreCards.control.button;
+
+        mask.loadBitmap(setting.geometry.size);
+    }
+
+    void TabGroup::MoreCards::loadPathGeo()
+    {
+        TabGroup* tg = m_master;
+        THROW_IF_NULL(tg);
+
+        THROW_IF_NULL(Application::g_app);
+
+        auto factory = Application::g_app->dx12Renderer()->d2d1Factory();
+        THROW_IF_FAILED(factory->CreatePathGeometry(&pathGeo));
+
+        ComPtr<ID2D1GeometrySink> geoSink = {};
+        THROW_IF_FAILED(pathGeo->Open(&geoSink));
+        {
+            auto& setting = tg->getAppearance().tabBar.moreCards.control.icon;
+            auto& triangleVertices = setting.geometry.bottomTriangle.points;
+
+            geoSink->BeginFigure(triangleVertices[0], D2D1_FIGURE_BEGIN_FILLED);
+
+            geoSink->AddLines(triangleVertices, _countof(triangleVertices));
 
             geoSink->EndFigure(D2D1_FIGURE_END_CLOSED);
         }
@@ -148,9 +197,9 @@ namespace d14engine::uikit
     {
         float minWidth = getAppearance().tabBar.geometry.rightPadding;
 
-        if (m_currActiveCardTabIndex.valid())
+        if (m_activeCardTabIndex.valid())
         {
-            auto rect = cardAbsoluteRect(m_currActiveCardTabIndex);
+            auto rect = cardAbsoluteRect(m_activeCardTabIndex);
             minWidth += absoluteToSelfCoord(rect).right;
         }
         return minWidth;
@@ -225,10 +274,10 @@ namespace d14engine::uikit
         {
             selectTab({ &m_tabs, index });
         }
-        else if (m_currActiveCardTabIndex.valid())
+        else if (m_activeCardTabIndex.valid())
         {
-            m_currActiveCardTabIndex->content->setPrivateEnabled(false);
-            m_currActiveCardTabIndex.invalidate();
+            m_activeCardTabIndex->content->setPrivateEnabled(false);
+            m_activeCardTabIndex.invalidate();
 
             updateCandidateTabInfo();
             updatePreviewPanelItems();
@@ -282,9 +331,9 @@ do { \
         // Note tabIndex may be invalidated if it is one of the following.
         size_t insertedIndex = tabIndex.index;
 
-        UPDATE_TAB_INDEX(m_currHoverCardTabIndex);
-        UPDATE_TAB_INDEX(m_currActiveCardTabIndex);
-        UPDATE_TAB_INDEX(m_currDraggedCardTabIndex);
+        UPDATE_TAB_INDEX(m_hoverCardTabIndex);
+        UPDATE_TAB_INDEX(m_activeCardTabIndex);
+        UPDATE_TAB_INDEX(m_draggedCardTabIndex);
 
 #undef UPDATE_TAB_INDEX
 
@@ -302,7 +351,7 @@ do { \
 
     void TabGroup::removeTab(TabIndexParam tabIndex, size_t count)
     {
-        size_t orgActiveCardIndex = m_currActiveCardTabIndex.index;
+        size_t orgActiveCardIndex = m_activeCardTabIndex.index;
 
         TabList::iterator tabItor = tabIndex.iterator;
 
@@ -338,57 +387,57 @@ do { \
         // Note tabIndex may be invalidated if it is one of the following.
         size_t removedIndex = tabIndex.index;
 
-        UPDATE_TAB_INDEX(m_currHoverCardTabIndex);
-        UPDATE_TAB_INDEX(m_currActiveCardTabIndex);
-        UPDATE_TAB_INDEX(m_currDraggedCardTabIndex);
+        UPDATE_TAB_INDEX(m_hoverCardTabIndex);
+        UPDATE_TAB_INDEX(m_activeCardTabIndex);
+        UPDATE_TAB_INDEX(m_draggedCardTabIndex);
 
 #undef UPDATE_TAB_INDEX
 
         updateCandidateTabInfo();
 
-        if (m_currActiveCardTabIndex != orgActiveCardIndex)
+        if (m_activeCardTabIndex != orgActiveCardIndex)
         {
-            onSelectedTabIndexChange(m_currActiveCardTabIndex);
+            onSelectedTabIndexChange(m_activeCardTabIndex);
         }
         updatePreviewPanelItems();
     }
 
     void TabGroup::selectTab(TabIndexParam tabIndex)
     {
-        size_t orgActiveCardIndex = m_currActiveCardTabIndex.index;
+        size_t orgActiveCardIndex = m_activeCardTabIndex.index;
 
-        if (tabIndex != m_currActiveCardTabIndex)
+        if (tabIndex != m_activeCardTabIndex)
         {
-            if (m_currActiveCardTabIndex.valid())
+            if (m_activeCardTabIndex.valid())
             {
-                m_currActiveCardTabIndex->content->setPrivateEnabled(false);
+                m_activeCardTabIndex->content->setPrivateEnabled(false);
             }
         }
         if (tabIndex >= m_candidateTabCount)
         {
-            if (!m_currActiveCardTabIndex.valid())
+            if (!m_activeCardTabIndex.valid())
             {
-                m_currActiveCardTabIndex = TabIndex::begin(&m_tabs);
+                m_activeCardTabIndex = TabIndex::begin(&m_tabs);
             }
-            swapTab(tabIndex, m_currActiveCardTabIndex);
+            swapTab(tabIndex, m_activeCardTabIndex);
         }
-        else m_currActiveCardTabIndex = tabIndex;
+        else m_activeCardTabIndex = tabIndex;
 
         updateCandidateTabInfo();
 
         if (m_candidateTabCount > 0)
         {
-            m_currActiveCardTabIndex->content->setPrivateEnabled(true);
+            m_activeCardTabIndex->content->setPrivateEnabled(true);
         }
-        else m_currActiveCardTabIndex.invalidate();
+        else m_activeCardTabIndex.invalidate();
 
-        if (m_currActiveCardTabIndex.valid())
+        if (m_activeCardTabIndex.valid())
         {
-            m_currActiveCardTabIndex->content->transform(selfCoordRect());
+            m_activeCardTabIndex->content->transform(selfCoordRect());
         }
-        if (m_currActiveCardTabIndex != orgActiveCardIndex)
+        if (m_activeCardTabIndex != orgActiveCardIndex)
         {
-            onSelectedTabIndexChange(m_currActiveCardTabIndex);
+            onSelectedTabIndexChange(m_activeCardTabIndex);
         }
         updatePreviewPanelItems();
     }
@@ -399,10 +448,10 @@ do { \
         {
             std::swap(*tabIndex1.iterator, *tabIndex2.iterator);
 
-            if (m_currActiveCardTabIndex == tabIndex1 ||
-                m_currActiveCardTabIndex == tabIndex2)
+            if (m_activeCardTabIndex == tabIndex1 ||
+                m_activeCardTabIndex == tabIndex2)
             {
-                onSelectedTabIndexChange(m_currActiveCardTabIndex);
+                onSelectedTabIndexChange(m_activeCardTabIndex);
             }
         }
     }
@@ -411,11 +460,11 @@ do { \
     {
         if (tabIndex.valid())
         {
-            if (tabIndex == m_currActiveCardTabIndex)
+            if (tabIndex == m_activeCardTabIndex)
             {
                 return CardState::Active;
             }
-            else if (tabIndex == m_currHoverCardTabIndex)
+            else if (tabIndex == m_hoverCardTabIndex)
             {
                 return CardState::Hover;
             }
@@ -424,9 +473,9 @@ do { \
         return CardState::Dormant;
     }
 
-    const TabGroup::TabIndex& TabGroup::currActiveCardTabIndex() const
+    const TabGroup::TabIndex& TabGroup::activeCardTabIndex() const
     {
-        return m_currActiveCardTabIndex;
+        return m_activeCardTabIndex;
     }
 
     TabGroup::ButtonState TabGroup::getMoreCardsButtonState() const
@@ -588,26 +637,6 @@ do { \
             math_utils::rightTop(cardAbsoluteRect(tabIndex)), setting.offset), setting.size);
     }
 
-    D2D1_RECT_F TabGroup::moreCardsIconAbsoluteRect() const
-    {
-        auto& setting = getAppearance().tabBar.moreCards.control.icon.geometry.topRect;
-
-        return math_utils::rect(math_utils::offset(
-            math_utils::leftTop(moreCardsButtonAbsoluteRect()), setting.offset), setting.size);
-    }
-
-    math_utils::Triangle2D TabGroup::moreCardsIconAbsoluteTriangle() const
-    {
-        auto relative = math_utils::leftTop(moreCardsButtonAbsoluteRect());
-        auto& setting = getAppearance().tabBar.moreCards.control.icon.geometry.bottomTriangle;
-        return
-        {
-            math_utils::offset(relative, setting.point0),
-            math_utils::offset(relative, setting.point1),
-            math_utils::offset(relative, setting.point2)
-        };
-    }
-
     D2D1_RECT_F TabGroup::moreCardsButtonAbsoluteRect() const
     {
         auto& setting = getAppearance().tabBar.moreCards.control.button.geometry;
@@ -653,9 +682,9 @@ do { \
     {
         THROW_IF_NULL(Application::g_app);
 
-        if (m_currDraggedCardTabIndex.valid() && m_currDraggedCardTabIndex->caption->promotable)
+        if (m_draggedCardTabIndex.valid() && m_draggedCardTabIndex->caption->promotable)
         {
-            auto w = promoteTabToWindow(m_currDraggedCardTabIndex);
+            auto w = promoteTabToWindow(m_draggedCardTabIndex);
 
             // Ensure the cursor is within the caption of the promoted window,
             // so we can send a pseudo mouse-button event to trigger dragging.
@@ -695,15 +724,18 @@ do { \
 
     void TabGroup::onRendererDrawD2d1LayerHelper(Renderer* rndr)
     {
-        if (m_currActiveCardTabIndex.valid())
+        if (m_activeCardTabIndex.valid())
         {
-            if (m_currActiveCardTabIndex->content->isD2d1ObjectVisible())
+            if (m_activeCardTabIndex->content->isD2d1ObjectVisible())
             {
-                m_currActiveCardTabIndex->content->onRendererDrawD2d1Layer(rndr);
+                m_activeCardTabIndex->content->onRendererDrawD2d1Layer(rndr);
             }
-            if (m_currActiveCardTabIndex.index < m_candidateTabCount)
+            if (m_activeCardTabIndex.index < m_candidateTabCount)
             {
-                // Active-Card Mask
+                //////////////////////
+                // Active-Card Mask //
+                //////////////////////
+
                 activeCard.mask.beginDraw(rndr->d2d1DeviceContext());
                 {
                     auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Active];
@@ -711,70 +743,156 @@ do { \
                     resource_utils::solidColorBrush()->SetColor(setting.background.color);
                     resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
-                    rndr->d2d1DeviceContext()->FillGeometry(
-                        activeCard.pathGeo.Get(), resource_utils::solidColorBrush());
+                    rndr->d2d1DeviceContext()->FillGeometry
+                    (
+                    /* geometry */ activeCard.pathGeo.Get(),
+                    /* brush    */ resource_utils::solidColorBrush()
+                    );
                 }
                 activeCard.mask.endDraw(rndr->d2d1DeviceContext());
+
+                /////////////////////
+                // More-Cards Mask //
+                /////////////////////
+
+                moreCards.mask.beginDraw(rndr->d2d1DeviceContext());
+                {
+                    auto state = getMoreCardsButtonState();
+                    auto& setting = getAppearance().tabBar.moreCards.control;
+
+                    //-------------------------------------------------------------------------
+                    // Button
+                    //-------------------------------------------------------------------------
+
+                    auto& buttonBackground = setting.button.background[(size_t)state];
+
+                    resource_utils::solidColorBrush()->SetColor(buttonBackground.color);
+                    resource_utils::solidColorBrush()->SetOpacity(buttonBackground.opacity);
+
+                    D2D1_ROUNDED_RECT roundedRect =
+                    {
+                        math_utils::sizeOnlyRect(setting.button.geometry.size),
+                        setting.button.geometry.roundRadius,
+                        setting.button.geometry.roundRadius
+                    };
+                    rndr->d2d1DeviceContext()->FillRoundedRectangle
+                    (
+                    /* roundedRect */ roundedRect,
+                    /* brush       */ resource_utils::solidColorBrush()
+                    );
+                    //-------------------------------------------------------------------------
+                    // Icon
+                    //-------------------------------------------------------------------------
+
+                    auto& iconBackground = setting.icon.background[(size_t)state];
+
+                    resource_utils::solidColorBrush()->SetColor(iconBackground.color);
+                    resource_utils::solidColorBrush()->SetOpacity(iconBackground.opacity);
+
+                    auto& topRect = setting.icon.geometry.topRect;
+                    rndr->d2d1DeviceContext()->FillRectangle
+                    (
+                    /* rect  */ math_utils::rect(topRect.offset, topRect.size),
+                    /* brush */ resource_utils::solidColorBrush()
+                    );
+                    rndr->d2d1DeviceContext()->FillGeometry
+                    (
+                    /* geometry */ moreCards.pathGeo.Get(),
+                    /* brush    */ resource_utils::solidColorBrush()
+                    );
+                }
+                moreCards.mask.endDraw(rndr->d2d1DeviceContext());
             }
         }
     }
 
     void TabGroup::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        // Card-Bar Panel
+        ////////////////////
+        // Card-Bar Panel //
+        ////////////////////
         {
             auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Dormant];
 
             resource_utils::solidColorBrush()->SetColor(setting.background.color);
             resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
-            rndr->d2d1DeviceContext()->FillRoundedRectangle(
+            D2D1_ROUNDED_RECT roundedRect =
             {
                 cardBarAbsoluteRect(),
                 setting.geometry.roundRadius,
                 setting.geometry.roundRadius
-            },
-            resource_utils::solidColorBrush());
+            };
+            rndr->d2d1DeviceContext()->FillRoundedRectangle
+            (
+            /* roundedRect */ roundedRect,
+            /* brush       */ resource_utils::solidColorBrush()
+            );
         }
-        // Hover-Card
-        if (m_currHoverCardTabIndex.valid())
+        ////////////////
+        // Hover-Card //
+        ////////////////
+
+        if (m_hoverCardTabIndex.valid())
         {
-            if (m_currHoverCardTabIndex != m_currActiveCardTabIndex)
+            if (m_hoverCardTabIndex != m_activeCardTabIndex)
             {
                 auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Hover];
 
                 resource_utils::solidColorBrush()->SetColor(setting.background.color);
                 resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
-                rndr->d2d1DeviceContext()->FillRoundedRectangle(
+                D2D1_ROUNDED_RECT roundedRect =
                 {
-                    cardAbsoluteRect(m_currHoverCardTabIndex),
+                    cardAbsoluteRect(m_hoverCardTabIndex),
                     setting.geometry.roundRadius,
                     setting.geometry.roundRadius
-                },
-                resource_utils::solidColorBrush());
+                };
+                rndr->d2d1DeviceContext()->FillRoundedRectangle
+                (
+                /* roundedRect */ roundedRect,
+                /* brush       */ resource_utils::solidColorBrush()
+                );
             }
         }
-        // Active-Card
-        if (m_currActiveCardTabIndex.valid() && m_currActiveCardTabIndex.index < m_candidateTabCount)
+        /////////////////
+        // Active-Card //
+        /////////////////
+
+        if (m_activeCardTabIndex.valid() && m_activeCardTabIndex.index < m_candidateTabCount)
         {
+            //-------------------------------------------------------------------------
             // Shadow
+            //-------------------------------------------------------------------------
+
             activeCard.mask.color = getAppearance().tabBar.card.activeShadowColor;
 
             activeCard.mask.configEffectInput(resource_utils::shadowEffect());
 
-            auto shadowPosition = math_utils::roundf(math_utils::leftTop(cardAbsoluteRect(m_currActiveCardTabIndex)));
+            auto shadowPosition = math_utils::leftTop(cardAbsoluteRect(m_activeCardTabIndex));
 
-            rndr->d2d1DeviceContext()->DrawImage(resource_utils::shadowEffect(), shadowPosition);
-
+            rndr->d2d1DeviceContext()->DrawImage
+            (
+            /* effect       */ resource_utils::shadowEffect(),
+            /* targetOffset */ shadowPosition
+            );
+            //-------------------------------------------------------------------------
             // Entity
+            //-------------------------------------------------------------------------
+
             auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Active];
 
-            rndr->d2d1DeviceContext()->DrawBitmap(
-                activeCard.mask.data.Get(), cardAbsoluteRect(m_currActiveCardTabIndex),
-                setting.background.opacity, activeCard.mask.getInterpolationMode());
+            rndr->d2d1DeviceContext()->DrawBitmap
+            (
+            /* bitmap               */ activeCard.mask.data.Get(),
+            /* destinationRectangle */ cardAbsoluteRect(m_activeCardTabIndex),
+            /* opacity              */ setting.background.opacity,
+            /* interpolationMode    */ activeCard.mask.getInterpolationMode()
+            );
         }
-        // Background
+        ////////////////
+        // Background //
+        ////////////////
         {
             auto& background = getAppearance().background;
 
@@ -783,30 +901,36 @@ do { \
 
             ResizablePanel::drawBackground(rndr);
         }
-        // Content
-        if (m_currActiveCardTabIndex.valid())
+        /////////////
+        // Content //
+        /////////////
+
+        if (m_activeCardTabIndex.valid())
         {
-            if (m_currActiveCardTabIndex->content->isD2d1ObjectVisible())
+            if (m_activeCardTabIndex->content->isD2d1ObjectVisible())
             {
-                m_currActiveCardTabIndex->content->onRendererDrawD2d1Object(rndr);
+                m_activeCardTabIndex->content->onRendererDrawD2d1Object(rndr);
             }
         }
-        // Miscellaneous
+        ///////////////////
+        // Miscellaneous //
+        ///////////////////
         {
             for (TabIndex tabIndex = { &m_tabs, 0 }; tabIndex < m_candidateTabCount; ++tabIndex)
             {
                 auto currState = getCardState(tabIndex);
                 auto nextState = getCardState(tabIndex.getNext());
 
-                // Card Controls
+                //-------------------------------------------------------------------------
+                // Caption
+                //-------------------------------------------------------------------------
+                if (tabIndex->caption->isD2d1ObjectVisible())
                 {
-                    // Caption
-                    if (tabIndex->caption->isD2d1ObjectVisible())
-                    {
-                        tabIndex->caption->onRendererDrawD2d1Object(rndr);
-                    }
+                    tabIndex->caption->onRendererDrawD2d1Object(rndr);
                 }
+                //-------------------------------------------------------------------------
                 // Separators
+                //-------------------------------------------------------------------------
                 if (currState == CardState::Dormant && nextState == CardState::Dormant)
                 {
                     if (tabIndex != m_candidateTabCount - 1)
@@ -816,59 +940,30 @@ do { \
                         resource_utils::solidColorBrush()->SetColor(setting.background.color);
                         resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
 
-                        rndr->d2d1DeviceContext()->FillRectangle(
-                            separatorAbsoluteRect(tabIndex), resource_utils::solidColorBrush());
+                        rndr->d2d1DeviceContext()->FillRectangle
+                        (
+                        /* rect  */ separatorAbsoluteRect(tabIndex),
+                        /* brush */ resource_utils::solidColorBrush()
+                        );
                     }
                 }
             }
-            // More-Cards Control
-            {
-                auto state = getMoreCardsButtonState();
-                auto& setting = getAppearance().tabBar.moreCards.control;
+            //-------------------------------------------------------------------------
+            // More-Cards
+            //-------------------------------------------------------------------------
 
-                // Button
-                auto& buttonBackground = setting.button.background[(size_t)state];
-
-                resource_utils::solidColorBrush()->SetColor(buttonBackground.color);
-                resource_utils::solidColorBrush()->SetOpacity(buttonBackground.opacity);
-
-                rndr->d2d1DeviceContext()->FillRoundedRectangle(
-                {
-                    moreCardsButtonAbsoluteRect(),
-                    setting.button.geometry.roundRadius,
-                    setting.button.geometry.roundRadius
-                },
-                resource_utils::solidColorBrush());
-
-                // Icon
-                auto& iconBackground = setting.icon.background[(size_t)state];
-
-                resource_utils::solidColorBrush()->SetColor(iconBackground.color);
-                resource_utils::solidColorBrush()->SetOpacity(iconBackground.opacity);
-
-                rndr->d2d1DeviceContext()->FillRectangle(
-                    moreCardsIconAbsoluteRect(), resource_utils::solidColorBrush());
-
-                ComPtr<ID2D1PathGeometry> pathGeo;
-                THROW_IF_FAILED(rndr->d2d1Factory()->CreatePathGeometry(&pathGeo));
-
-                ComPtr<ID2D1GeometrySink> geoSink;
-                THROW_IF_FAILED(pathGeo->Open(&geoSink));
-                {
-                    auto triangleVertices = moreCardsIconAbsoluteTriangle();
-
-                    geoSink->BeginFigure(triangleVertices[2], D2D1_FIGURE_BEGIN_FILLED);
-
-                    geoSink->AddLines(triangleVertices.data(), (UINT32)triangleVertices.size());
-
-                    geoSink->EndFigure(D2D1_FIGURE_END_CLOSED);
-                }
-                THROW_IF_FAILED(geoSink->Close());
-
-                rndr->d2d1DeviceContext()->FillGeometry(pathGeo.Get(), resource_utils::solidColorBrush());
-            }
+            rndr->d2d1DeviceContext()->DrawBitmap
+            (
+            /* bitmap               */ moreCards.mask.data.Get(),
+            /* destinationRectangle */ moreCardsButtonAbsoluteRect(),
+            /* opacity              */ moreCards.mask.opacity,
+            /* interpolationMode    */ moreCards.mask.getInterpolationMode()
+            );
         }
-        // Mask when Belowing Dragged Window
+        ////////////////////////
+        // Mask below Window //
+        ///////////////////////
+
         if (isAssociatedWindowDraggedAbove())
         {
             auto& maskSetting = getAppearance().maskWhenBelowDragWindow;
@@ -876,14 +971,20 @@ do { \
             resource_utils::solidColorBrush()->SetColor(maskSetting.color);
             resource_utils::solidColorBrush()->SetOpacity(maskSetting.opacity);
 
-            rndr->d2d1DeviceContext()->FillRoundedRectangle(
-                { m_absoluteRect, roundRadiusX, roundRadiusY }, resource_utils::solidColorBrush());
+            rndr->d2d1DeviceContext()->FillRoundedRectangle
+            (
+            /* roundedRect */ { m_absoluteRect, roundRadiusX, roundRadiusY },
+            /* brush       */ resource_utils::solidColorBrush()
+            );
         }
     }
 
-    void TabGroup::drawD2d1ObjectPosterior(renderer::Renderer* rndr)
+    void TabGroup::drawD2d1ObjectPosterior(Renderer* rndr)
     {
-        // Outline
+        /////////////
+        // Outline //
+        /////////////
+
         resource_utils::solidColorBrush()->SetColor(getAppearance().stroke.color);
         resource_utils::solidColorBrush()->SetOpacity(getAppearance().stroke.opacity);
 
@@ -906,27 +1007,36 @@ do { \
         auto point20 = math_utils::offset(leftTop, { 0.0f, selfHeight - stroke.width * 0.5f });
         auto point21 = math_utils::offset(point20, { selfWidth, 0.0f });
 
-        rndr->d2d1DeviceContext()->DrawLine(
-            point00, point01,
-            resource_utils::solidColorBrush(),
-            stroke.width);
+        rndr->d2d1DeviceContext()->DrawLine
+        (
+        /* point0      */ point00,
+        /* point1      */ point01,
+        /* brush       */ resource_utils::solidColorBrush(),
+        /* strokeWidth */ stroke.width
+        );
+        rndr->d2d1DeviceContext()->DrawLine
+        (
+        /* point0      */ point10,
+        /* point1      */ point11,
+        /* brush       */ resource_utils::solidColorBrush(),
+        /* strokeWidth */ stroke.width
+        );
+        rndr->d2d1DeviceContext()->DrawLine
+        (
+        /* point0      */ point20,
+        /* point1      */ point21,
+        /* brush       */ resource_utils::solidColorBrush(),
+        /* strokeWidth */ stroke.width
+        );
+        ///////////////////////
+        // Content Posterior //
+        //////////////////////
 
-        rndr->d2d1DeviceContext()->DrawLine(
-            point10, point11,
-            resource_utils::solidColorBrush(),
-            stroke.width);
-
-        rndr->d2d1DeviceContext()->DrawLine(
-            point20, point21,
-            resource_utils::solidColorBrush(),
-            stroke.width);
-
-        // Content's Posterior Objects
-        if (m_currActiveCardTabIndex.valid())
+        if (m_activeCardTabIndex.valid())
         {
-            if (m_currActiveCardTabIndex->content->isD2d1ObjectVisible())
+            if (m_activeCardTabIndex->content->isD2d1ObjectVisible())
             {
-                m_currActiveCardTabIndex->content->drawD2d1ObjectPosterior(rndr);
+                m_activeCardTabIndex->content->drawD2d1ObjectPosterior(rndr);
             }
         }
         ResizablePanel::drawD2d1ObjectPosterior(rndr);
@@ -941,9 +1051,9 @@ do { \
     {
         ResizablePanel::onSizeHelper(e);
 
-        if (m_currActiveCardTabIndex.valid())
+        if (m_activeCardTabIndex.valid())
         {
-            m_currActiveCardTabIndex->content->resize(size());
+            m_activeCardTabIndex->content->resize(size());
         }
         updateCandidateTabInfo();
     }
@@ -978,31 +1088,31 @@ do { \
 
         if (math_utils::isOverlapped(p, cardBarExtendedCardBarAbsoluteRect()))
         {
-            if (m_currDraggedCardTabIndex.valid())
+            if (m_draggedCardTabIndex.valid())
             {
                 if (e.buttonState.leftPressed)
                 {
                     auto nextCardTabIndex = selfcoordOffsetToCardTabIndex(absoluteToSelfCoord(p).x);
 
-                    if (nextCardTabIndex.valid() && nextCardTabIndex != m_currDraggedCardTabIndex)
+                    if (nextCardTabIndex.valid() && nextCardTabIndex != m_draggedCardTabIndex)
                     {
-                        swapTab(m_currDraggedCardTabIndex, nextCardTabIndex);
+                        swapTab(m_draggedCardTabIndex, nextCardTabIndex);
 
-                        selectTab(nextCardTabIndex); // m_currActiveCardTabIndex is updated in this.
+                        selectTab(nextCardTabIndex); // m_activeCardTabIndex is updated in this.
 
-                        m_currHoverCardTabIndex = m_currDraggedCardTabIndex = nextCardTabIndex;
+                        m_hoverCardTabIndex = m_draggedCardTabIndex = nextCardTabIndex;
                     }
                 }
             }
             else // No card being dragged.
             {
-                m_currHoverCardTabIndex.invalidate();
+                m_hoverCardTabIndex.invalidate();
 
                 for (TabIndex tabIndex = { &m_tabs, 0 }; tabIndex < m_candidateTabCount; ++tabIndex)
                 {
                     if (math_utils::isInside(p, cardAbsoluteRect(tabIndex)))
                     {
-                        m_currHoverCardTabIndex = tabIndex;
+                        m_hoverCardTabIndex = tabIndex;
                     }
                 }
                 if (!math_utils::isInside(p, moreCardsButtonAbsoluteRect()))
@@ -1015,13 +1125,13 @@ do { \
         }
         else // Not above the card-bar.
         {
-            m_currHoverCardTabIndex.invalidate();
+            m_hoverCardTabIndex.invalidate();
 
             if (e.buttonState.leftPressed)
             {
                 triggerTabPromoting(e);
             }
-            m_currDraggedCardTabIndex.invalidate();
+            m_draggedCardTabIndex.invalidate();
 
             m_isMoreCardsButtonHover = false;
             m_isMoreCardsButtonDown = false;
@@ -1032,13 +1142,13 @@ do { \
     {
         ResizablePanel::onMouseLeaveHelper(e);
 
-        m_currHoverCardTabIndex.invalidate();
+        m_hoverCardTabIndex.invalidate();
 
         if (e.buttonState.leftPressed)
         {
             triggerTabPromoting(e);
         }
-        m_currDraggedCardTabIndex.invalidate();
+        m_draggedCardTabIndex.invalidate();
 
         m_isMoreCardsButtonHover = false;
         m_isMoreCardsButtonDown = false;
@@ -1052,13 +1162,13 @@ do { \
 
         if (e.state.leftDown() || e.state.leftDblclk())
         {
-            if (m_currHoverCardTabIndex.valid())
+            if (m_hoverCardTabIndex.valid())
             {
-                if (m_currHoverCardTabIndex->caption->draggable &&
-                   (!m_currHoverCardTabIndex->caption->closable ||
-                    !m_currHoverCardTabIndex->caption->m_isCloseButtonHover))
+                if (m_hoverCardTabIndex->caption->draggable &&
+                   (!m_hoverCardTabIndex->caption->closable ||
+                    !m_hoverCardTabIndex->caption->m_isCloseButtonHover))
                 {
-                    m_currDraggedCardTabIndex = m_currHoverCardTabIndex;
+                    m_draggedCardTabIndex = m_hoverCardTabIndex;
                 }
             }
             m_isMoreCardsButtonDown = m_isMoreCardsButtonHover;
@@ -1072,7 +1182,7 @@ do { \
                 updatePreviewPanelItems();
                 m_previewPanel->setActivated(true);
             }
-            m_currDraggedCardTabIndex.invalidate();
+            m_draggedCardTabIndex.invalidate();
         }
     }
 }

@@ -4,7 +4,6 @@
 
 #include "Common/CppLangUtils/EnableMasterPtr.h"
 #include "Common/CppLangUtils/IndexIterator.h"
-#include "Common/MathUtils/2D.h"
 
 #include "UIKit/Appearances/TabGroup.h"
 #include "UIKit/ResizablePanel.h"
@@ -27,17 +26,31 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        struct ActiveCard : cpp_lang_utils::EnableMasterPtr<TabGroup>
+        using MasterPtr = cpp_lang_utils::EnableMasterPtr<TabGroup>;
+
+        struct ActiveCard : MasterPtr
         {
-            using EnableMasterPtr::EnableMasterPtr;
+            using MasterPtr::MasterPtr;
 
             ShadowMask mask = {};
             ComPtr<ID2D1PathGeometry> pathGeo = {};
 
-            void loadMaskBitmap();
+            void loadMask();
             void loadPathGeo();
         }
         activeCard{ this };
+
+        struct MoreCards : MasterPtr
+        {
+            using MasterPtr::MasterPtr;
+
+            MaskObject mask = {};
+            ComPtr<ID2D1PathGeometry> pathGeo = {};
+
+            void loadMask();
+            void loadPathGeo();
+        }
+        moreCards{ this };
 
         D2D1_RECT_F cardBarExtendedAbsoluteRect() const;
         D2D1_RECT_F cardBarExtendedCardBarAbsoluteRect() const;
@@ -103,13 +116,13 @@ namespace d14engine::uikit
         void swapTab(TabIndexParam tabIndex1, TabIndexParam tabIndex2);
 
     protected:
-        TabIndex m_currActiveCardTabIndex{};
-        TabIndex m_currHoverCardTabIndex{};
+        TabIndex m_activeCardTabIndex{};
+        TabIndex m_hoverCardTabIndex{};
 
         CardState getCardState(TabIndexParam tabIndex) const;
 
     public:
-        const TabIndex& currActiveCardTabIndex() const;
+        const TabIndex& activeCardTabIndex() const;
 
     protected:
         bool m_isMoreCardsButtonHover = false;
@@ -137,12 +150,10 @@ namespace d14engine::uikit
 
         D2D1_RECT_F separatorAbsoluteRect(TabIndexParam tabIndex) const;
 
-        D2D1_RECT_F moreCardsIconAbsoluteRect() const;
-        math_utils::Triangle2D moreCardsIconAbsoluteTriangle() const;
         D2D1_RECT_F moreCardsButtonAbsoluteRect() const;
 
     protected:
-        TabIndex m_currDraggedCardTabIndex{};
+        TabIndex m_draggedCardTabIndex{};
 
     public:
         SharedPtr<Window> promoteTabToWindow(size_t index);

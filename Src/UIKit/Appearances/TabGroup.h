@@ -49,7 +49,7 @@ namespace d14engine::uikit::appearance
                     {
                         struct Geometry
                         {
-                            // Call activeCard.loadMaskBitmap after changing fields of active-card.
+                            // Call activeCard.loadMask after changing fields of active-card.
                             // Call activeCard.loadPathGeo after changing fields of active-card.
                             D2D1_SIZE_F size = {};
                             float roundRadius = {};
@@ -94,9 +94,12 @@ namespace d14engine::uikit::appearance
 
                                 struct BottomTriangle
                                 {
-                                    D2D1_POINT_2F point0 = { 4.0f, 8.0f };
-                                    D2D1_POINT_2F point1 = { 14.0f, 8.0f };
-                                    D2D1_POINT_2F point2 = { 9.0f, 14.0f };
+                                    D2D1_POINT_2F points[3] =
+                                    {
+                                        { 4.0f, 8.0f },
+                                        { 14.0f, 8.0f },
+                                        { 9.0f, 14.0f }
+                                    };
                                 }
                                 bottomTriangle = {};
                             }
