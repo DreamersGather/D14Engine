@@ -3,6 +3,7 @@
 #include "UIKit/TabCaption.h"
 
 #include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/MathUtils/2D.h"
 #include "Common/RuntimeError.h"
 
 #include "UIKit/Application.h"

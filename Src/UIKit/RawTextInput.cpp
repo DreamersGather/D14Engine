@@ -94,9 +94,7 @@ namespace d14engine::uikit
         THROW_IF_FAILED(m_textLayout->SetMaxWidth(maskWidth));
         THROW_IF_FAILED(m_textLayout->SetMaxHeight(maskHeight));
 
-        m_visibleTextMask.loadBitmap(
-            math_utils::round<UINT>(maskWidth),
-            math_utils::round<UINT>(maskHeight));
+        m_visibleTextMask.loadBitmap(maskWidth, maskHeight);
 
         m_placeholder->transform(m_visibleTextRect);
     }

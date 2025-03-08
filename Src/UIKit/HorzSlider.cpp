@@ -2,8 +2,6 @@
 
 #include "UIKit/HorzSlider.h"
 
-#include "Common/MathUtils/Basic.h"
-
 namespace d14engine::uikit
 {
     void HorzSlider::loadValueLabelMaskBitmap()
@@ -11,10 +9,7 @@ namespace d14engine::uikit
         auto& rectSize = getAppearance().valueLabel.mainRect.geometry.size;
         auto& trngSize = getAppearance().valueLabel.sideTriangle.size;
 
-        auto bitmapWidth = math_utils::round<UINT>(rectSize.width);
-        auto bitmapHeight = math_utils::round<UINT>(rectSize.height + trngSize.height);
-
-        valueLabelMask.loadBitmap(bitmapWidth, bitmapHeight);
+        valueLabelMask.loadBitmap(rectSize.width, rectSize.height + trngSize.height);
     }
 
     D2D1_RECT_F HorzSlider::thumbAreaRect(const D2D1_RECT_F& flatRect) const
