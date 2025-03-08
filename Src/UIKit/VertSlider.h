@@ -19,12 +19,17 @@ namespace d14engine::uikit
         float geometryOffsetToValue(const D2D1_POINT_2F& offset) const override;
 
         D2D1_RECT_F valueLabelMainRectInShadow() const override;
+
         math_utils::Triangle2D valueLabelSideTriangleInShadow() const override;
 
         D2D1_RECT_F filledBarAbsoluteRect() const override;
+
         D2D1_RECT_F completeBarAbsoluteRect() const override;
+
         D2D1_RECT_F handleAbsoluteRect() const override;
+
         D2D1_RECT_F valueLabelSelfCoordRect() const override;
+
         D2D1_RECT_F valueLabelShadowSelfCoordRect() const override;
     };
 }

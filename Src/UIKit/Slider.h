@@ -79,12 +79,17 @@ namespace d14engine::uikit
         void updateValue(const D2D1_POINT_2F& offset);
 
         virtual D2D1_RECT_F valueLabelMainRectInShadow() const = 0;
+
         virtual math_utils::Triangle2D valueLabelSideTriangleInShadow() const = 0;
 
         virtual D2D1_RECT_F filledBarAbsoluteRect() const = 0;
+
         virtual D2D1_RECT_F completeBarAbsoluteRect() const = 0;
+
         virtual D2D1_RECT_F handleAbsoluteRect() const = 0;
+
         virtual D2D1_RECT_F valueLabelSelfCoordRect() const = 0;
+
         virtual D2D1_RECT_F valueLabelShadowSelfCoordRect() const = 0;
 
     protected:
