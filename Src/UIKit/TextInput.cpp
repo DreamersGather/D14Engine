@@ -46,13 +46,8 @@ namespace d14engine::uikit
         if (isFocused() && animSetting.enabled && totalDistance > 0.0f)
         {
             m_dynamicBottomLineLength = animation_utils::motionAccelUniformDecel
-            (
-                /* currDisplacement   */ m_dynamicBottomLineLength,
-                /* lastFrameDeltaSecs */ deltaSecs,
-                /* totalDistance      */ totalDistance,
-                /* uniformMotionSecs  */ animSetting.durationInSecs.uniform,
-                /* variableMotionSecs */ animSetting.durationInSecs.variable
-            );
+                (m_dynamicBottomLineLength, deltaSecs, totalDistance,
+                animSetting.durationInSecs.uniform, animSetting.durationInSecs.variable);
         }
     }
 
@@ -69,7 +64,10 @@ namespace d14engine::uikit
 
     void TextInput::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        // Static Bottom Line
+        ////////////////////////
+        // Static Bottom Line //
+        ////////////////////////
+
         auto& srcBtlnSetting = getAppearance().bottomLine;
         auto& dstSetting = RawTextInput::getAppearance();
 
@@ -79,7 +77,10 @@ namespace d14engine::uikit
 
         RawTextInput::onRendererDrawD2d1ObjectHelper(rndr);
 
-        // Dynamic Bottom Line
+        /////////////////////////
+        // Dynamic Bottom Line //
+        /////////////////////////
+
         if (m_dynamicBottomLineLength > 0.0f)
         {
             auto& dynamicBackground = srcBtlnSetting.background.Dynamic;
@@ -96,7 +97,13 @@ namespace d14engine::uikit
             auto solidColorBrush = resource_utils::solidColorBrush();
             float strokeWidth = srcBtlnSetting.strokeWidth;
 
-            rndr->d2d1DeviceContext()->DrawLine(point0, point1, solidColorBrush, strokeWidth);
+            rndr->d2d1DeviceContext()->DrawLine
+            (
+            /* point0      */ point0,
+            /* point1      */ point1,
+            /* brush       */ solidColorBrush,
+            /* strokeWidth */ strokeWidth
+            );
         }
     }
 
