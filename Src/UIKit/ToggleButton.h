@@ -54,8 +54,8 @@ namespace d14engine::uikit
         _D14_SET_APPEARANCE_GETTER(ToggleButton)
 
     public:
-        constexpr static auto ACTIVATED = StatefulObject::State::ActiveFlag::Activated;
-        constexpr static auto DEACTIVATED = StatefulObject::State::ActiveFlag::Deactivated;
+        constexpr static auto Activated = StatefulObject::State::ActiveFlag::Activated;
+        constexpr static auto Deactivated = StatefulObject::State::ActiveFlag::Deactivated;
 
         void setActivated(StatefulObject::State::ActiveFlag flag);
         // Skip comparison and directly set the state.

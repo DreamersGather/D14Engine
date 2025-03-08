@@ -3,7 +3,6 @@
 #include "UIKit/ToggleButton.h"
 
 #include "UIKit/IconLabel.h"
-#include "UIKit/Label.h"
 #include "UIKit/ResourceUtils.h"
 
 namespace d14engine::uikit
@@ -16,8 +15,8 @@ namespace d14engine::uikit
         Panel(rect, resource_utils::solidColorBrush()),
         FilledButton(content, roundRadius, rect)
     {
-        StatefulObject::m_state = { DEACTIVATED, StatefulObject::State::ButtonFlag::Idle };
-        StatefulObject::m_stateDetail.flag = DEACTIVATED;
+        StatefulObject::m_state = { Deactivated, StatefulObject::State::ButtonFlag::Idle };
+        StatefulObject::m_stateDetail.flag = Deactivated;
     }
 
     ToggleButton::ToggleButton(
@@ -52,7 +51,7 @@ namespace d14engine::uikit
 
     void ToggleButton::onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr)
     {
-        if (StatefulObject::m_state.activeFlag == ACTIVATED)
+        if (StatefulObject::m_state.activeFlag == Activated)
         {
             auto& dstSetting = Button::getAppearance();
             auto& srcSetting = getAppearance().main[(size_t)Button::m_state];
@@ -77,6 +76,6 @@ namespace d14engine::uikit
     {
         FilledButton::onMouseButtonReleaseHelper(e);
 
-        if (e.left()) setActivated(StatefulObject::m_stateDetail.activated() ? DEACTIVATED : ACTIVATED);
+        if (e.left()) setActivated(StatefulObject::m_stateDetail.activated() ? Deactivated : Activated);
     }
 }
