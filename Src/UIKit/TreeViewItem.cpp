@@ -65,18 +65,21 @@ namespace d14engine::uikit
 
         auto factory = Application::g_app->dx12Renderer()->d2d1Factory();
 
-        auto properties = D2D1::StrokeStyleProperties
+        auto prop = D2D1::StrokeStyleProperties
         (
-            D2D1_CAP_STYLE_ROUND,
-            D2D1_CAP_STYLE_ROUND,
-            D2D1_CAP_STYLE_ROUND,
-            D2D1_LINE_JOIN_MITER,
-            10.0f, // miterLimit
-            D2D1_DASH_STYLE_SOLID,
-            0.0f   // dashOffset
+        /* startCap */ D2D1_CAP_STYLE_ROUND,
+        /* endCap   */ D2D1_CAP_STYLE_ROUND,
+        /* dashCap  */ D2D1_CAP_STYLE_ROUND
         );
-        THROW_IF_FAILED(factory->CreateStrokeStyle(
-            properties, nullptr, 0, &arrowIcon.strokeStyle));
+        auto& style = arrowIcon.strokeStyle;
+
+        THROW_IF_FAILED(factory->CreateStrokeStyle
+        (
+        /* strokeStyleProperties */ prop,
+        /* dashes                */ nullptr,
+        /* dashesCount           */ 0,
+        /* strokeStyle           */ &style
+        ));
     }
 
     void TreeViewItem::setEnabled(bool value)
@@ -170,7 +173,7 @@ namespace d14engine::uikit
             item->updateMiscellaneousFields();
 
             auto itemItor = m_childrenItems.insert(childItor, item);
-            item->m_itemImplPointer = &(*itemItor);
+            item->m_itemImplPtr = &(*itemItor);
 
             if (item->m_stateDetail.ancestorFolded())
             {
@@ -244,7 +247,7 @@ namespace d14engine::uikit
             }
             for (size_t i = 0; i < count; ++i)
             {
-                startChildItor->ptr->m_itemImplPointer = nullptr;
+                startChildItor->ptr->m_itemImplPtr = nullptr;
                 startChildItor->ptr->m_parentItem.reset();
                 startChildItor->ptr->updateMiscellaneousFields();
 
@@ -261,7 +264,7 @@ namespace d14engine::uikit
 
     TreeViewItem::ChildItemImpl* TreeViewItem::peekItemImpl() const
     {
-        return m_itemImplPointer;
+        return m_itemImplPtr;
     }
 
     void TreeViewItem::fold()
@@ -453,7 +456,10 @@ namespace d14engine::uikit
     {
         ViewItem::onRendererDrawD2d1ObjectHelper(rndr);
 
-        // Fold/Unfold Arrow
+        ///////////////////////
+        // Fold/Unfold Arrow //
+        ///////////////////////
+
         if (!m_childrenItems.empty() && !m_parentView.expired())
         {
             auto& arrowSetting = getAppearance().arrow;
@@ -466,17 +472,21 @@ namespace d14engine::uikit
             auto offset = m_nodeLevel * m_parentView.lock()->horzIndentEachNodelLevel();
             auto arrowLeftTop = math_utils::offset(absolutePosition(), { offset, 0.0f });
 
-            rndr->d2d1DeviceContext()->DrawLine(
-                math_utils::offset(arrowLeftTop, arrowGeometry.line0.point0),
-                math_utils::offset(arrowLeftTop, arrowGeometry.line0.point1),
-                resource_utils::solidColorBrush(),
-                arrowSetting.strokeWidth, arrowIcon.strokeStyle.Get());
+            rndr->d2d1DeviceContext()->DrawLine
+            (
+            /* point0      */ math_utils::offset(arrowLeftTop, arrowGeometry.line0.point0),
+            /* point1      */ math_utils::offset(arrowLeftTop, arrowGeometry.line0.point1),
+            /* brush       */ resource_utils::solidColorBrush(),
+            /* strokeWidth */ arrowSetting.strokeWidth, arrowIcon.strokeStyle.Get()
+            );
 
-            rndr->d2d1DeviceContext()->DrawLine(
-                math_utils::offset(arrowLeftTop, arrowGeometry.line1.point0),
-                math_utils::offset(arrowLeftTop, arrowGeometry.line1.point1),
-                resource_utils::solidColorBrush(),
-                arrowSetting.strokeWidth, arrowIcon.strokeStyle.Get());
+            rndr->d2d1DeviceContext()->DrawLine
+            (
+            /* point0      */ math_utils::offset(arrowLeftTop, arrowGeometry.line1.point0),
+            /* point1      */ math_utils::offset(arrowLeftTop, arrowGeometry.line1.point1),
+            /* brush       */ resource_utils::solidColorBrush(),
+            /* strokeWidth */ arrowSetting.strokeWidth, arrowIcon.strokeStyle.Get()
+            );
         }
     }
 

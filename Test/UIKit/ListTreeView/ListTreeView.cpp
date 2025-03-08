@@ -27,16 +27,10 @@ using namespace d14engine::uikit;
 
 D14_SET_APP_ENTRY(mainListTreeView)
 {
-    Application::CreateInfo info = {};
-    if (argc >= 2 && lstrcmp(argv[1], L"HighDPI") == 0)
+    Application::CreateInfo info =
     {
-        info.dpi = 192.0f;
-    }
-    else info.dpi = 96.0f;
-    info.windowSize = { 800, 600 };
-
-    BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC;
-
+        .windowSize = { 800, 600 }
+    };
     return Application(info).run([&](Application* app)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
@@ -57,9 +51,9 @@ D14_SET_APP_ENTRY(mainListTreeView)
 
             if (app->themeStyle().name == L"Light")
             {
-                ui_darkModeSwitch->setOnOffState(OnOffSwitch::OFF);
+                ui_darkModeSwitch->setOnOffState(OnOffSwitch::Off);
             }
-            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::ON);
+            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::On);
 
             app->f_onSystemThemeStyleChange = [app]
             (const Application::ThemeStyle& style)
@@ -79,19 +73,19 @@ D14_SET_APP_ENTRY(mainListTreeView)
         {
             ui_screenshot->moveTopmost();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
-            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
             ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = app->screenshot();
+                auto image = app->windowshot();
                 CreateDirectory(L"Screenshots", nullptr);
                 bitmap_utils::saveBitmap(image.Get(), D14_SCREENSHOT_PATH);
             };
         }
         auto ui_clientArea = makeUIObject<Panel>();
         {
-            ui_mainWindow->setCenterUIObject(ui_clientArea);
+            ui_mainWindow->setContent(ui_clientArea);
         }
         auto ui_listView = makeManagedUIObject<ListView>(ui_clientArea);
         {
@@ -162,7 +156,7 @@ D14_SET_APP_ENTRY(mainListTreeView)
         }
         auto ui_checkBox1 = makeUIObject<CheckBox>(true);
         {
-            ui_checkBox1->setCheckedState(CheckBox::CHECKED);
+            ui_checkBox1->setCheckedState(CheckBox::Checked);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -277,7 +271,7 @@ D14_SET_APP_ENTRY(mainListTreeView)
         }
         auto ui_checkBox2 = makeUIObject<CheckBox>(true);
         {
-            ui_checkBox2->setCheckedState(CheckBox::CHECKED);
+            ui_checkBox2->setCheckedState(CheckBox::Checked);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;

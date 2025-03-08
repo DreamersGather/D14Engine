@@ -105,7 +105,7 @@ namespace d14engine::uikit
 
         // Points to ChildItemImpl maintained in ChildItemImplList of the
         // parent item (however, always equals nullptr for any root-item).
-        ChildItemImpl* m_itemImplPointer = nullptr;
+        ChildItemImpl* m_itemImplPtr = nullptr;
 
     public:
         const WeakPtr<TreeView>& parentView() const;
