@@ -24,8 +24,10 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
+        selfObject.mask.enabled = false;
+
         // Try to adapt the fluent design of Windows 11.
-        if (!setCornerState(Round) || !setBorderColor(DefaultColor))
+        //if (!setCornerState(Round) || !setBorderColor(DefaultColor))
         {
             // Fall back to the accent border for Windows 10.
             getAppearance().stroke.opacity = 1.0f;

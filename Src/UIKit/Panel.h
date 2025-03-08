@@ -80,11 +80,6 @@ namespace d14engine::uikit
             f_onRendererDrawD2d1ObjectAfter = {};
 
     protected:
-        // Introduce onXxxHelper to solve the inheritance conflicts of
-        // the "override", "before" and "after" event callback lambdas.
-        //
-        // See the implementation of the UI part for a detailed explanation.
-
         virtual void onRendererUpdateObject2DHelper(renderer::Renderer* rndr);
         virtual void onRendererDrawD2d1LayerHelper(renderer::Renderer* rndr);
         virtual void onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr);

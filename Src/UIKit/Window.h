@@ -28,18 +28,43 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        ShadowMask contentMask = {};
-
-        ComPtr<ID2D1LinearGradientBrush> decorativeBarBrush = {};
-
-        void loadDecorativeBarBrush();
-
         _D14_SET_APPEARANCE_GETTER(Window)
 
-        float minimalWidth() const override;
+        //////////////////////
+        // Cached Resources //
+        //////////////////////
 
-        float minimalHeight() const override;
+        using MasterPtr = cpp_lang_utils::EnableMasterPtr<Window>;
 
+        struct SelfObject : MasterPtr
+        {
+            using MasterPtr::MasterPtr;
+
+            ShadowMask mask = {};
+            ComPtr<ID2D1BitmapBrush1> brush = {};
+
+            void loadMask();
+            void loadBrush();
+        }
+        selfObject{ this };
+
+        struct DecorativeBar : MasterPtr
+        {
+            using MasterPtr::MasterPtr;
+
+            ComPtr<ID2D1LinearGradientBrush> brush = {};
+
+            void loadBrush();
+        }
+        decorativeBar{ this };
+
+        ////////////////////////
+        // Callback Functions //
+        ////////////////////////
+
+        //------------------------------------------------------------------
+        // Public Interfaces
+        //------------------------------------------------------------------
     public:
         void onMinimize();
 
@@ -57,12 +82,22 @@ namespace d14engine::uikit
 
         Function<void(Window*)> f_onClose = {};
 
+        //------------------------------------------------------------------
+        // Protected Helpers
+        //------------------------------------------------------------------
     protected:
         virtual void onMinimizeHelper();
         virtual void onMaximizeHelper();
         virtual void onRestoreHelper();
         virtual void onCloseHelper();
 
+        /////////////////////////
+        // Graphics Components //
+        /////////////////////////
+
+        //------------------------------------------------------------------
+        // Children Objects
+        //------------------------------------------------------------------
     protected:
         SharedPtr<IconLabel> m_caption = {};
 
@@ -80,6 +115,9 @@ namespace d14engine::uikit
         }
         void setContent(ShrdPtrParam<Panel> uiobj);
 
+        //------------------------------------------------------------------
+        // Drawing Properties
+        //------------------------------------------------------------------
     protected:
         float m_captionPanelHeight = {};
         float m_decorativeBarHeight = {};
@@ -87,44 +125,7 @@ namespace d14engine::uikit
         D2D1_RECT_F captionPanelAbsoluteRect() const;
         D2D1_RECT_F decorativeBarAbsoluteRect() const;
 
-        constexpr static float minMaxButtonWidth() { return 32.0f; }
-        constexpr static float closeButtonWidth() { return 40.0f; }
-
-        constexpr static float threeBrosHeight() { return 24.0f; }
-
-        constexpr static float threeBrosLeftmostOffset();
-        constexpr static float threeBrosRightmostOffset() { return 20.0f; }
-
-        constexpr static D2D1_RECT_F minimizeIconVertexOffset()
-        {
-            return { 10.0f, 14.0f, -10.0f, -8.0f };
-        }
-        constexpr static D2D1_RECT_F restoreIconVertexOffset()
-        {
-            return { 11.0f, 10.0f, -14.0f, -7.0f };
-        }
-        constexpr static D2D1_RECT_F maximizeIconVertexOffset()
-        {
-            return { 11.0f, 7.0f, -11.0f, -7.0f };
-        }
-        constexpr static D2D1_RECT_F closeIconVertexOffset()
-        {
-            return { 15.0f, 7.0f, -15.0f, -7.0f };
-        }
-        constexpr static float restoreIconStrokeWidth() { return 2.0f; }
-        constexpr static float restoreOrnamentOffset() { return 3.0f; }
-        constexpr static float maximizeIconStrokeWidth() { return 2.0f; }
-        constexpr static float closeIconStrokeWidth() { return 2.0f; }
-
-        D2D1_RECT_F minimizeIconAbsoluteRect() const;
-        D2D1_RECT_F minimizeButtonAbsoluteRect() const;
-        D2D1_RECT_F restoreIconAbsoluteRect() const;
-        D2D1_RECT_F maximizeIconAbsoluteRect() const;
-        D2D1_RECT_F maximizeButtonAbsoluteRect() const;
-        D2D1_RECT_F closeIconAbsoluteRect() const;
-        D2D1_RECT_F closeButtonAbsoluteRect() const;
-
-        D2D1_RECT_F captionIconLabelSelfcoordRect() const;
+        D2D1_RECT_F captionTitleSelfcoordRect() const;
 
     public:
         float captionPanelHeight() const;
@@ -136,13 +137,105 @@ namespace d14engine::uikit
         float clientAreaHeight() const;
         D2D1_RECT_F clientAreaSelfcoordRect() const;
 
+        constexpr static float nonClientAreaMinimalWidth()
+        {
+            return 144.0f;
+        }
+        constexpr static float nonClientAreaDefaultHeight()
+        {
+            return 36.0f;
+        }
         float nonClientAreaHeight() const;
         D2D1_RECT_F nonClientAreaSelfcoordRect() const;
         D2D1_RECT_F nonClientAreaMinimalSelfcoordRect() const;
 
-        constexpr static float nonClientAreaMinimalWidth() { return 144.0f; }
-        constexpr static float nonClientAreaDefaultHeight() { return 36.0f; }
+    protected:
+        // Button panel consists of 3 buttons, from left to right:
+        // (Minimize Button) (Maximize/Restore Button) (Close Button)
 
+        constexpr static float button1Width()
+        {
+            return 32.0f;
+        }
+        constexpr static float button2Width()
+        {
+            return 32.0f;
+        }
+        constexpr static float button3Width()
+        {
+            return 40.0f;
+        }
+        constexpr static float buttonHeight()
+        {
+            return 24.0f;
+        }
+        constexpr static float buttonPanelWidth()
+        {
+            return button1Width() + button2Width() + button3Width();
+        }
+        constexpr static float buttonPanelLeftmostOffset()
+        {
+            return buttonPanelRightmostOffset() + buttonPanelWidth();
+        }
+        constexpr static float buttonPanelRightmostOffset()
+        {
+            return 20.0f;
+        }
+        D2D1_RECT_F button1AbsoluteRect() const;
+        D2D1_RECT_F button2AbsoluteRect() const;
+        D2D1_RECT_F button3AbsoluteRect() const;
+
+        constexpr static D2D1_RECT_F minimizeIconVertexOffset()
+        {
+            return { 10.0f, 14.0f, -10.0f, -8.0f };
+        }
+        constexpr static D2D1_RECT_F maximizeIconVertexOffset()
+        {
+            return { 11.0f, 7.0f, -11.0f, -7.0f };
+        }
+        constexpr static float maximizeIconStrokeWidth()
+        {
+            return 2.0f;
+        }
+        constexpr static D2D1_RECT_F restoreIconVertexOffset()
+        {
+            return { 11.0f, 10.0f, -14.0f, -7.0f };
+        }
+        constexpr static float restoreOrnamentOffset()
+        {
+            return 3.0f;
+        }
+        constexpr static float restoreIconStrokeWidth()
+        {
+            return 2.0f;
+        }
+        constexpr static D2D1_RECT_F closeIconVertexOffset()
+        {
+            return { 15.0f, 7.0f, -15.0f, -7.0f };
+        }
+        constexpr static float closeIconStrokeWidth()
+        {
+            return 2.0f;
+        }
+        D2D1_RECT_F minimizeIconAbsoluteRect() const;
+        D2D1_RECT_F minimizeButtonAbsoluteRect() const;
+
+        D2D1_RECT_F maximizeIconAbsoluteRect() const;
+        D2D1_RECT_F maximizeButtonAbsoluteRect() const;
+
+        D2D1_RECT_F restoreIconAbsoluteRect() const;
+        D2D1_RECT_F restoreButtonAbsoluteRect() const;
+
+        D2D1_RECT_F closeIconAbsoluteRect() const;
+        D2D1_RECT_F closeButtonAbsoluteRect() const;
+
+        ///////////////////////
+        // Interaction Logic //
+        ///////////////////////
+
+        //------------------------------------------------------------------
+        // Display State
+        //------------------------------------------------------------------
     public:
         enum class DisplayState { Normal, Minimized, Maximized };
 
@@ -157,35 +250,42 @@ namespace d14engine::uikit
         DisplayState displayState() const;
         void setDisplayState(DisplayState state);
 
+        //------------------------------------------------------------------
+        // Button Panel
+        //------------------------------------------------------------------
     public:
-        bool isMinimizeEnabled = true, isMaximizeEnabled = true, isCloseEnabled = true;
+        bool button1Enabled = true, button2Enabled = true, button3Enabled = true;
+
+        bool& minimizeButtonEnabled = button1Enabled;
+        bool& maximizeButtonEnabled = button2Enabled;
+        bool& restoreButtonEnabled = button2Enabled;
+        bool& closeButtonEnabled = button3Enabled;
 
     protected:
         // Indicates whether a special operation is being performed on the
-        // window (e.g. resizing, dragging). When this is true, 3-bros
+        // window (e.g. resizing, dragging). When this is true, the buttons
         // should not respond UI events even if they are enabled indeed.
         bool m_isPerformSpecialOperation = false;
 
-        bool m_isMinimizeHover = false, m_isMinimizeDown = false;
-        bool m_isMaximizeHover = false, m_isMaximizeDown = false;
-        bool m_isCloseHover = false, m_isCloseDown = false;
+        bool m_isButton1Hover = false, m_isButton1Down = false;
+        bool m_isButton2Hover = false, m_isButton2Down = false;
+        bool m_isButton3Hover = false, m_isButton3Down = false;
 
-        ThreeBrosState getMinMaxBroState(bool isHover, bool isDown) const;
-        ThreeBrosState getCloseXBroState(bool isHover, bool isDown) const;
+        ButtonState getButton1State(bool isHover, bool isDown) const;
+        ButtonState getButton2State(bool isHover, bool isDown) const;
+        ButtonState getButton3State(bool isHover, bool isDown) const;
 
-        void set3BrothersIconBrushState(ThreeBrosState state);
-        void set3BrothersButtonBrushState(ThreeBrosState state);
+        void setIconBrushState(ButtonState state);
+        void setButtonBrushState(ButtonState state);
 
-    public:
-        // Whether to move to the topmost when receiving mouse-button event.
-        bool respondSetForegroundEvent = true;
-
+        //------------------------------------------------------------------
+        // TabGroup Linkage
+        //------------------------------------------------------------------
     protected:
-        using RegisteredTabGroupSet = std::set<
-            WeakPtr<TabGroup>, std::owner_less<WeakPtr<TabGroup>>>;
+        using TabGroupSet = std::set<WeakPtr<TabGroup>, std::owner_less<WeakPtr<TabGroup>>>;
 
         // Only the registered tab-groups can be associated with the window.
-        RegisteredTabGroupSet m_registeredTabGroups = {};
+        TabGroupSet m_registeredTabGroups = {};
 
     public:
         void registerTabGroup(WeakPtrParam<TabGroup> tg);
@@ -206,13 +306,41 @@ namespace d14engine::uikit
         void handleMouseMoveForRegisteredTabGroups(MouseMoveEvent& e);
         void handleMouseButtonForRegisteredTabGroups(MouseButtonEvent& e);
 
+        //------------------------------------------------------------------
+        // Miscellaneous
+        //------------------------------------------------------------------
+    public:
+        // Whether to move to the topmost when receiving mouse-button event.
+        bool respondSetForegroundEvent = true;
+
+        /////////////////////////
+        // Interface Overrides //
+        /////////////////////////
+
+    public:
+        //------------------------------------------------------------------
+        // Panel
+        //------------------------------------------------------------------
+
+        float minimalWidth() const override;
+
+        float minimalHeight() const override;
+
     protected:
+        //------------------------------------------------------------------
         // IDrawObject2D
+        //------------------------------------------------------------------
+
         void onRendererDrawD2d1LayerHelper(renderer::Renderer* rndr) override;
 
         void onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr) override;
 
+        void drawD2d1ObjectPosterior(renderer::Renderer* rndr) override;
+
+        //------------------------------------------------------------------
         // Panel
+        //------------------------------------------------------------------
+
         bool releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj) override;
 
         void onSizeHelper(SizeEvent& e) override;
@@ -225,14 +353,20 @@ namespace d14engine::uikit
 
         void onMouseButtonHelper(MouseButtonEvent& e) override;
 
+        //------------------------------------------------------------------
         // DraggablePanel
+        //------------------------------------------------------------------
+
         bool isTriggerDraggingHelper(const Event::Point& p) override;
 
         void onStartDraggingHelper() override;
 
         void onEndDraggingHelper() override;
 
+        //------------------------------------------------------------------
         // ResizablePanel
+        //------------------------------------------------------------------
+
         void onStartResizingHelper() override;
 
         void onEndResizingHelper() override;

@@ -25,7 +25,6 @@ namespace d14engine::uikit
         Panel(rect, resource_utils::solidColorBrush()),
         DraggablePanel(rect, resource_utils::solidColorBrush()),
         ResizablePanel(rect, resource_utils::solidColorBrush()),
-        contentMask(size()),
         m_caption(caption),
         m_captionPanelHeight(captionPanelHeight),
         m_decorativeBarHeight(decorativeBarHeight)
@@ -57,53 +56,65 @@ namespace d14engine::uikit
         }
         addUIObject(m_caption);
 
-        m_caption->transform(captionIconLabelSelfcoordRect());
+        m_caption->transform(captionTitleSelfcoordRect());
 
-        loadDecorativeBarBrush();
+        selfObject.loadMask();
+        decorativeBar.loadBrush();
     }
 
-    void Window::loadDecorativeBarBrush()
+    void Window::SelfObject::loadMask()
     {
+        Window* w = m_master;
+        THROW_IF_NULL(w);
+
+        mask.loadBitmap(w->size());
+    }
+
+    void Window::SelfObject::loadBrush()
+    {
+        Window* w = m_master;
+        THROW_IF_NULL(w);
+
+        auto rndr = Application::g_app->dx12Renderer();
+        auto context = rndr->d2d1DeviceContext();
+
+        THROW_IF_FAILED(context->CreateBitmapBrush
+        (
+        /* bitmap      */ mask.data.Get(),
+        /* bitmapBrush */ &brush
+        ));
+    }
+
+    void Window::DecorativeBar::loadBrush()
+    {
+        Window* w = m_master;
+        THROW_IF_NULL(w);
+
         THROW_IF_NULL(Application::g_app);
 
-        auto context = Application::g_app->dx12Renderer()->d2d1DeviceContext();
-
+        auto& colors = w->getAppearance().decorativeBar.gradientColors;
         D2D1_GRADIENT_STOP stop[] =
         {
-            { 0.0f, getAppearance().decorativeBar.gradientColor._0_0 },
-            { 0.5f, getAppearance().decorativeBar.gradientColor._0_5 },
-            { 1.0f, getAppearance().decorativeBar.gradientColor._1_0 }
+            { 0.0f, colors[0] },
+            { 0.5f, colors[1] },
+            { 1.0f, colors[2] },
         };
-        ComPtr<ID2D1GradientStopCollection> coll;
+        auto rndr = Application::g_app->dx12Renderer();
+        auto context = rndr->d2d1DeviceContext();
 
-        THROW_IF_FAILED(context->CreateGradientStopCollection(stop, _countof(stop), &coll));
-        THROW_IF_FAILED(context->CreateLinearGradientBrush({}, coll.Get(), &decorativeBarBrush));
-    }
-
-    float Window::minimalWidth() const
-    {
-        if (minimalWidthHint.has_value())
-        {
-            auto userWidth = minimalWidthHint.value();
-            if (userWidth > nonClientAreaMinimalWidth())
-            {
-                return userWidth;
-            }
-        }
-        return nonClientAreaMinimalWidth();
-    }
-
-    float Window::minimalHeight() const
-    {
-        if (minimalHeightHint.has_value())
-        {
-            auto userHeight = minimalHeightHint.value();
-            if (userHeight > nonClientAreaHeight())
-            {
-                return userHeight;
-            }
-        }
-        return nonClientAreaHeight();
+        ComPtr<ID2D1GradientStopCollection> collection = {};
+        THROW_IF_FAILED(context->CreateGradientStopCollection
+        (
+        /* gradientStops          */ stop,
+        /* gradientStopsCount     */ _countof(stop),
+        /* gradientStopCollection */ &collection
+        ));
+        THROW_IF_FAILED(context->CreateLinearGradientBrush
+        (
+        /* linearGradientBrushProperties */ {},
+        /* gradientStopCollection        */ collection.Get(),
+        /* linearGradientBrush           */ &brush)
+        );
     }
 
     void Window::onMinimize()
@@ -168,7 +179,7 @@ namespace d14engine::uikit
             m_caption = caption;
             addUIObject(m_caption);
 
-            m_caption->transform(captionIconLabelSelfcoordRect());
+            m_caption->transform(captionTitleSelfcoordRect());
         }
     }
 
@@ -207,71 +218,13 @@ namespace d14engine::uikit
         };
     }
 
-    constexpr float Window::threeBrosLeftmostOffset()
-    {
-        return threeBrosRightmostOffset() + closeButtonWidth() + minMaxButtonWidth() * 2.0f;
-    }
-
-    D2D1_RECT_F Window::minimizeIconAbsoluteRect() const
-    {
-        return math_utils::moveVertex(minimizeButtonAbsoluteRect(), minimizeIconVertexOffset());
-    }
-
-    D2D1_RECT_F Window::minimizeButtonAbsoluteRect() const
+    D2D1_RECT_F Window::captionTitleSelfcoordRect() const
     {
         return
         {
-            m_absoluteRect.right - threeBrosLeftmostOffset(),
-            m_absoluteRect.top,
-            m_absoluteRect.right - threeBrosLeftmostOffset() + minMaxButtonWidth(),
-            m_absoluteRect.top + threeBrosHeight()
-        };
-    }
-
-    D2D1_RECT_F Window::restoreIconAbsoluteRect() const
-    {
-        return math_utils::moveVertex(maximizeButtonAbsoluteRect(), restoreIconVertexOffset());
-    }
-
-    D2D1_RECT_F Window::maximizeIconAbsoluteRect() const
-    {
-        return math_utils::moveVertex(maximizeButtonAbsoluteRect(), maximizeIconVertexOffset());
-    }
-
-    D2D1_RECT_F Window::maximizeButtonAbsoluteRect() const
-    {
-        return
-        {
-            m_absoluteRect.right - threeBrosLeftmostOffset() + minMaxButtonWidth(),
-            m_absoluteRect.top,
-            m_absoluteRect.right - threeBrosRightmostOffset() - closeButtonWidth(),
-            m_absoluteRect.top + threeBrosHeight()
-        };
-    }
-
-    D2D1_RECT_F Window::closeIconAbsoluteRect() const
-    {
-        return math_utils::moveVertex(closeButtonAbsoluteRect(), closeIconVertexOffset());
-    }
-
-    D2D1_RECT_F Window::closeButtonAbsoluteRect() const
-    {
-        return
-        {
-            m_absoluteRect.right - threeBrosRightmostOffset() - closeButtonWidth(),
-            m_absoluteRect.top,
-            m_absoluteRect.right - threeBrosRightmostOffset(),
-            m_absoluteRect.top + threeBrosHeight()
-        };
-    }
-
-    D2D1_RECT_F Window::captionIconLabelSelfcoordRect() const
-    {
-        return
-        {
-            threeBrosLeftmostOffset(),
+            buttonPanelLeftmostOffset(),
             0.0f,
-            std::max(width() - threeBrosLeftmostOffset(), threeBrosLeftmostOffset()),
+            std::max(width() - buttonPanelLeftmostOffset(), buttonPanelLeftmostOffset()),
             m_captionPanelHeight
         };
     }
@@ -285,7 +238,7 @@ namespace d14engine::uikit
     {
         m_captionPanelHeight = value;
 
-        m_caption->transform(captionIconLabelSelfcoordRect());
+        m_caption->transform(captionTitleSelfcoordRect());
         if (m_content) m_content->transform(clientAreaSelfcoordRect());
     }
 
@@ -298,7 +251,7 @@ namespace d14engine::uikit
     {
         m_decorativeBarHeight = value;
 
-        m_caption->transform(captionIconLabelSelfcoordRect());
+        m_caption->transform(captionTitleSelfcoordRect());
         if (m_content) m_content->transform(clientAreaSelfcoordRect());
     }
 
@@ -309,7 +262,7 @@ namespace d14engine::uikit
 
     D2D1_RECT_F Window::clientAreaSelfcoordRect() const
     {
-        return { 0.0f, nonClientAreaHeight(), width(), height()};
+        return { 0.0f, nonClientAreaHeight(), width(), height() };
     }
 
     float Window::nonClientAreaHeight() const
@@ -327,6 +280,79 @@ namespace d14engine::uikit
         return { 0.0f, 0.0f, nonClientAreaMinimalWidth(), nonClientAreaHeight() };
     }
 
+    D2D1_RECT_F Window::button1AbsoluteRect() const
+    {
+        return
+        {
+            m_absoluteRect.right - buttonPanelLeftmostOffset(),
+            m_absoluteRect.top,
+            m_absoluteRect.right - buttonPanelLeftmostOffset() + button1Width(),
+            m_absoluteRect.top + buttonHeight()
+        };
+    }
+
+    D2D1_RECT_F Window::button2AbsoluteRect() const
+    {
+        return
+        {
+            m_absoluteRect.right - buttonPanelLeftmostOffset() + button1Width(),
+            m_absoluteRect.top,
+            m_absoluteRect.right - buttonPanelRightmostOffset() - button3Width(),
+            m_absoluteRect.top + buttonHeight()
+        };
+    }
+
+    D2D1_RECT_F Window::button3AbsoluteRect() const
+    {
+        return
+        {
+            m_absoluteRect.right - buttonPanelRightmostOffset() - button3Width(),
+            m_absoluteRect.top,
+            m_absoluteRect.right - buttonPanelRightmostOffset(),
+            m_absoluteRect.top + buttonHeight()
+        };
+    }
+
+    D2D1_RECT_F Window::minimizeIconAbsoluteRect() const
+    {
+        return math_utils::moveVertex(minimizeButtonAbsoluteRect(), minimizeIconVertexOffset());
+    }
+
+    D2D1_RECT_F Window::minimizeButtonAbsoluteRect() const
+    {
+        return button1AbsoluteRect();
+    }
+
+    D2D1_RECT_F Window::maximizeIconAbsoluteRect() const
+    {
+        return math_utils::moveVertex(maximizeButtonAbsoluteRect(), maximizeIconVertexOffset());
+    }
+
+    D2D1_RECT_F Window::maximizeButtonAbsoluteRect() const
+    {
+        return button2AbsoluteRect();
+    }
+
+    D2D1_RECT_F Window::restoreIconAbsoluteRect() const
+    {
+        return math_utils::moveVertex(maximizeButtonAbsoluteRect(), restoreIconVertexOffset());
+    }
+
+    D2D1_RECT_F Window::restoreButtonAbsoluteRect() const
+    {
+        return button2AbsoluteRect();
+    }
+
+    D2D1_RECT_F Window::closeIconAbsoluteRect() const
+    {
+        return math_utils::moveVertex(closeButtonAbsoluteRect(), closeIconVertexOffset());
+    }
+
+    D2D1_RECT_F Window::closeButtonAbsoluteRect() const
+    {
+        return button3AbsoluteRect();
+    }
+
     Window::DisplayState Window::displayState() const
     {
         return m_displayState;
@@ -336,45 +362,51 @@ namespace d14engine::uikit
     {
         if (state != m_displayState)
         {
-            switch (state)
+            switch (state = m_displayState)
             {
             case Normal: onRestore(); break;
             case Minimized: onMinimize(); break;
             case Maximized: onMaximize(); break;
             default: break;
             }
-            m_displayState = state;
         }
     }
 
-    Window::ThreeBrosState Window::getMinMaxBroState(bool isHover, bool isDown) const
+    Window::ButtonState Window::getButton1State(bool isHover, bool isDown) const
     {
-        if (isDown) return ThreeBrosState::Down;
-        else if (isHover) return ThreeBrosState::Hover;
-        else return ThreeBrosState::Idle;
+        if (isDown) return ButtonState::Down;
+        else if (isHover) return ButtonState::Hover;
+        else return ButtonState::Idle;
     }
 
-    Window::ThreeBrosState Window::getCloseXBroState(bool isHover, bool isDown) const
+    Window::ButtonState Window::getButton2State(bool isHover, bool isDown) const
     {
-        if (isDown) return ThreeBrosState::CloseDown;
-        else if (isHover) return ThreeBrosState::CloseHover;
-        else return ThreeBrosState::CloseIdle;
+        if (isDown) return ButtonState::Down;
+        else if (isHover) return ButtonState::Hover;
+        else return ButtonState::Idle;
     }
 
-    void Window::set3BrothersIconBrushState(ThreeBrosState state)
+    Window::ButtonState Window::getButton3State(bool isHover, bool isDown) const
     {
-        auto& setting = getAppearance().threeBrothers[(size_t)state];
-
-        resource_utils::solidColorBrush()->SetColor(setting.foreground.color);
-        resource_utils::solidColorBrush()->SetOpacity(setting.foreground.opacity);
+        if (isDown) return ButtonState::CloseDown;
+        else if (isHover) return ButtonState::CloseHover;
+        else return ButtonState::CloseIdle;
     }
 
-    void Window::set3BrothersButtonBrushState(ThreeBrosState state)
+    void Window::setIconBrushState(ButtonState state)
     {
-        auto& setting = getAppearance().threeBrothers[(size_t)state];
+        auto& foreground = getAppearance().buttonPanel[(size_t)state].foreground;
 
-        resource_utils::solidColorBrush()->SetColor(setting.background.color);
-        resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
+        resource_utils::solidColorBrush()->SetColor(foreground.color);
+        resource_utils::solidColorBrush()->SetOpacity(foreground.opacity);
+    }
+
+    void Window::setButtonBrushState(ButtonState state)
+    {
+        auto& background = getAppearance().buttonPanel[(size_t)state].background;
+
+        resource_utils::solidColorBrush()->SetColor(background.color);
+        resource_utils::solidColorBrush()->SetOpacity(background.opacity);
     }
 
     void Window::registerTabGroup(WeakPtrParam<TabGroup> tg)
@@ -440,6 +472,32 @@ namespace d14engine::uikit
         }
     }
 
+    float Window::minimalWidth() const
+    {
+        if (minimalWidthHint.has_value())
+        {
+            auto userWidth = minimalWidthHint.value();
+            if (userWidth > nonClientAreaMinimalWidth())
+            {
+                return userWidth;
+            }
+        }
+        return nonClientAreaMinimalWidth();
+    }
+
+    float Window::minimalHeight() const
+    {
+        if (minimalHeightHint.has_value())
+        {
+            auto userHeight = minimalHeightHint.value();
+            if (userHeight > nonClientAreaHeight())
+            {
+                return userHeight;
+            }
+        }
+        return nonClientAreaHeight();
+    }
+
     void Window::onRendererDrawD2d1LayerHelper(Renderer* rndr)
     {
         Panel::drawChildrenLayers(rndr);
@@ -448,14 +506,16 @@ namespace d14engine::uikit
         (
             -m_absoluteRect.left, -m_absoluteRect.top
         );
-        contentMask.beginDraw(rndr->d2d1DeviceContext(), maskDrawTrans);
+        selfObject.mask.beginDraw(rndr->d2d1DeviceContext(), maskDrawTrans);
         {
             ////////////////
             // Background //
             ////////////////
             {
-                resource_utils::solidColorBrush()->SetColor(getAppearance().background.color);
-                resource_utils::solidColorBrush()->SetOpacity(getAppearance().background.opacity);
+                auto& background = getAppearance().background;
+
+                resource_utils::solidColorBrush()->SetColor(background.color);
+                resource_utils::solidColorBrush()->SetOpacity(background.opacity);
 
                 ResizablePanel::drawBackground(rndr);
             }
@@ -463,14 +523,14 @@ namespace d14engine::uikit
             // Non-client Area //
             /////////////////////
             {
-                //---------------------------------------------
+                //------------------------------------------------------------------
                 // Caption Panel
-                //---------------------------------------------
+                //------------------------------------------------------------------
                 {
-                    auto& bkgn = getAppearance().captionPanel.background;
+                    auto& background = getAppearance().captionPanel.background;
 
-                    resource_utils::solidColorBrush()->SetColor(bkgn.color);
-                    resource_utils::solidColorBrush()->SetOpacity(bkgn.opacity);
+                    resource_utils::solidColorBrush()->SetColor(background.color);
+                    resource_utils::solidColorBrush()->SetOpacity(background.opacity);
 
                     rndr->d2d1DeviceContext()->FillRectangle
                     (
@@ -478,23 +538,23 @@ namespace d14engine::uikit
                     /* brush */ resource_utils::solidColorBrush()
                     );
                 }
-                //---------------------------------------------
-                // The caption icon-label is drawn as a child.
-                //---------------------------------------------
+                //------------------------------------------------------------------
+                // The caption title will be drawn as a child.
+                //------------------------------------------------------------------
 
-                //---------------------------------------------
+                //------------------------------------------------------------------
                 // Decorative Bar
-                //---------------------------------------------
+                //------------------------------------------------------------------
                 {
-                    auto dbr = decorativeBarAbsoluteRect();
+                    auto rect = decorativeBarAbsoluteRect();
 
-                    decorativeBarBrush->SetStartPoint({ dbr.left, dbr.top });
-                    decorativeBarBrush->SetEndPoint({ dbr.right, dbr.top });
+                    decorativeBar.brush->SetStartPoint({ rect.left, rect.top });
+                    decorativeBar.brush->SetEndPoint({ rect.right, rect.top });
 
                     rndr->d2d1DeviceContext()->FillRectangle
                     (
-                    /* rect  */ dbr,
-                    /* brush */ decorativeBarBrush.Get()
+                    /* rect  */ rect,
+                    /* brush */ decorativeBar.brush.Get()
                     );
                 }
             }
@@ -502,14 +562,14 @@ namespace d14engine::uikit
             // 3 Brothers //
             ////////////////
             {
-                //---------------------------------------------
+                //------------------------------------------------------------------
                 // Minimize Button
-                //---------------------------------------------
-                if (isMinimizeEnabled)
+                //------------------------------------------------------------------
+                if (button1Enabled)
                 {
-                    auto state = getMinMaxBroState(m_isMinimizeHover, m_isMinimizeDown);
+                    auto state = getButton1State(m_isButton1Hover, m_isButton1Down);
 
-                    set3BrothersButtonBrushState(state);
+                    setButtonBrushState(state);
 
                     // Background
                     rndr->d2d1DeviceContext()->FillRectangle
@@ -517,7 +577,7 @@ namespace d14engine::uikit
                     /* rect  */ minimizeButtonAbsoluteRect(),
                     /* brush */ resource_utils::solidColorBrush()
                     );
-                    set3BrothersIconBrushState(state);
+                    setIconBrushState(state);
 
                     // Center Dash
                     rndr->d2d1DeviceContext()->FillRectangle
@@ -526,14 +586,14 @@ namespace d14engine::uikit
                     /* brush */ resource_utils::solidColorBrush()
                     );
                 }
-                //---------------------------------------------
+                //------------------------------------------------------------------
                 // Maximize/Restore Button
-                //---------------------------------------------
-                if (isMaximizeEnabled)
+                //------------------------------------------------------------------
+                if (button2Enabled)
                 {
-                    auto state = getMinMaxBroState(m_isMaximizeHover, m_isMaximizeDown);
+                    auto state = getButton1State(m_isButton2Hover, m_isButton2Down);
 
-                    set3BrothersButtonBrushState(state);
+                    setButtonBrushState(state);
 
                     // Background
                     rndr->d2d1DeviceContext()->FillRectangle
@@ -541,7 +601,7 @@ namespace d14engine::uikit
                     /* rect  */ maximizeButtonAbsoluteRect(),
                     /* brush */ resource_utils::solidColorBrush()
                     );
-                    set3BrothersIconBrushState(state);
+                    setIconBrushState(state);
 
                     // Maximize Button
                     if (m_displayState == Normal)
@@ -601,14 +661,14 @@ namespace d14engine::uikit
                         );
                     }
                 }
-                //---------------------------------------------
+                //------------------------------------------------------------------
                 // Close Button
-                //---------------------------------------------
-                if (isCloseEnabled)
+                //------------------------------------------------------------------
+                if (button3Enabled)
                 {
-                    auto state = getCloseXBroState(m_isCloseHover, m_isCloseDown);
+                    auto state = getButton3State(m_isButton3Hover, m_isButton3Down);
 
-                    set3BrothersButtonBrushState(state);
+                    setButtonBrushState(state);
 
                     // Background
                     rndr->d2d1DeviceContext()->FillRectangle
@@ -616,23 +676,23 @@ namespace d14engine::uikit
                     /* rect  */ closeButtonAbsoluteRect(),
                     /* brush */ resource_utils::solidColorBrush()
                     );
-                    set3BrothersIconBrushState(state);
+                    setIconBrushState(state);
 
-                    auto iconRect = closeIconAbsoluteRect();
+                    auto rect = closeIconAbsoluteRect();
 
                     // Main Diagonal
                     rndr->d2d1DeviceContext()->DrawLine
                     (
-                    /* point0      */ { iconRect.left, iconRect.top },
-                    /* point1      */ { iconRect.right, iconRect.bottom },
+                    /* point0      */ { rect.left, rect.top },
+                    /* point1      */ { rect.right, rect.bottom },
                     /* brush       */ resource_utils::solidColorBrush(),
                     /* strokeWidth */ closeIconStrokeWidth()
                     );
                     // Back Diagonal
                     rndr->d2d1DeviceContext()->DrawLine
                     (
-                    /* point0      */ { iconRect.right, iconRect.top },
-                    /* point1      */ { iconRect.left, iconRect.bottom },
+                    /* point0      */ { rect.right, rect.top },
+                    /* point1      */ { rect.left, rect.bottom },
                     /* brush       */ resource_utils::solidColorBrush(),
                     /* strokeWidth */ closeIconStrokeWidth()
                     );
@@ -644,24 +704,8 @@ namespace d14engine::uikit
             {
                 Panel::drawChildrenObjects(rndr);
             }
-            /////////////
-            // Outline //
-            /////////////
-            {
-                auto& stroke = getAppearance().stroke;
-
-                resource_utils::solidColorBrush()->SetColor(stroke.color);
-                resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
-
-                rndr->d2d1DeviceContext()->DrawRectangle
-                (
-                /* rect        */ math_utils::inner(m_absoluteRect, stroke.width),
-                /* brush       */ resource_utils::solidColorBrush(),
-                /* strokeWidth */ stroke.width
-                );
-            }
         }
-        contentMask.endDraw(rndr->d2d1DeviceContext());
+        selfObject.mask.endDraw(rndr->d2d1DeviceContext());
     }
 
     void Window::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
@@ -669,36 +713,70 @@ namespace d14engine::uikit
         ////////////
         // Shadow //
         ////////////
-        if (associatedTabGroup.expired())
+        if (selfObject.mask.enabled && associatedTabGroup.expired())
         {
-            auto& shadowSetting = getAppearance().shadow;
+            auto& shadow = getAppearance().shadow;
 
-            contentMask.color = shadowSetting.color;
-            contentMask.standardDeviation = shadowSetting.standardDeviation;
+            selfObject.mask.color = shadow.color;
+            selfObject.mask.standardDeviation = shadow.standardDeviation;
 
-            contentMask.configEffectInput(resource_utils::shadowEffect());
+            selfObject.mask.configEffectInput(resource_utils::shadowEffect());
+
+            auto offset = math_utils::offset(
+                absolutePosition(), selfObject.mask.offset);
 
             rndr->d2d1DeviceContext()->DrawImage
             (
             /* effect       */ resource_utils::shadowEffect(),
-            /* targetOffset */ math_utils::roundf(absolutePosition())
+            /* targetOffset */ offset
             );
         }
         /////////////
         // Content //
         /////////////
         {
-            float maskOpacity = associatedTabGroup.expired() ?
-                contentMask.opacity : getAppearance().maskOpacityWhenDragAboveTabGroup;
+            float maskOpacity = {};
+            if (associatedTabGroup.expired())
+            {
+                maskOpacity = selfObject.mask.opacity;
+            }
+            else maskOpacity = getAppearance().maskOpacityAboveTabGroup;
 
-            rndr->d2d1DeviceContext()->DrawBitmap
+            selfObject.brush->SetOpacity(maskOpacity);
+
+            auto mode = selfObject.mask.getInterpolationMode();
+            selfObject.brush->SetInterpolationMode1(mode);
+
+            rndr->d2d1DeviceContext()->FillRoundedRectangle
             (
-            /* bitmap               */ contentMask.data.Get(),
-            /* destinationRectangle */ math_utils::roundf(m_absoluteRect),
-            /* opacity              */ maskOpacity,
-            /* interpolationMode    */ contentMask.getInterpolationMode()
+            /* roundedRect */ { m_absoluteRect, roundRadiusX, roundRadiusY },
+            /* brush       */ selfObject.brush.Get()
             );
         }
+    }
+
+    void Window::drawD2d1ObjectPosterior(Renderer* rndr)
+    {
+        /////////////
+        // Outline //
+        /////////////
+        {
+            auto& stroke = getAppearance().stroke;
+
+            resource_utils::solidColorBrush()->SetColor(stroke.color);
+            resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
+
+            auto rect = math_utils::inner(m_absoluteRect, stroke.width);
+            D2D1_ROUNDED_RECT roundedRect = { rect, roundRadiusX, roundRadiusY };
+
+            rndr->d2d1DeviceContext()->DrawRoundedRectangle
+            (
+            /* roundedRect */ roundedRect,
+            /* brush       */ resource_utils::solidColorBrush(),
+            /* strokeWidth */ stroke.width
+            );
+        }
+        ResizablePanel::drawD2d1ObjectPosterior(rndr);
     }
 
     bool Window::releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj)
@@ -712,9 +790,10 @@ namespace d14engine::uikit
     {
         ResizablePanel::onSizeHelper(e);
 
-        contentMask.loadBitmap(e.size);
+        selfObject.loadMask();
+        selfObject.loadBrush();
 
-        m_caption->transform(captionIconLabelSelfcoordRect());
+        m_caption->transform(captionTitleSelfcoordRect());
         if (m_content) m_content->transform(clientAreaSelfcoordRect());
     }
 
@@ -724,7 +803,7 @@ namespace d14engine::uikit
 
         getAppearance().changeTheme(style.name);
 
-        loadDecorativeBarBrush();
+        decorativeBar.loadBrush();
     }
 
     void Window::onMouseMoveHelper(MouseMoveEvent& e)
@@ -735,35 +814,35 @@ namespace d14engine::uikit
 
         if (!m_isPerformSpecialOperation)
         {
-            if (isMinimizeEnabled)
+            if (button1Enabled)
             {
-                if (!math_utils::isOverlappedExcludingRight(p, minimizeButtonAbsoluteRect()))
+                if (!math_utils::isOverlappedExcludingRight(p, button1AbsoluteRect()))
                 {
-                    m_isMinimizeHover = false;
-                    m_isMinimizeDown = false;
+                    m_isButton1Hover = false;
+                    m_isButton1Down = false;
                 }
-                else m_isMinimizeHover = true;
+                else m_isButton1Hover = true;
             }
-            if (isMaximizeEnabled)
+            if (button2Enabled)
             {
-                if (!math_utils::isOverlapped(p, maximizeButtonAbsoluteRect()))
+                if (!math_utils::isOverlapped(p, button2AbsoluteRect()))
                 {
-                    m_isMaximizeHover = false;
-                    m_isMaximizeDown = false;
+                    m_isButton2Hover = false;
+                    m_isButton2Down = false;
                 }
-                else m_isMaximizeHover = true;
+                else m_isButton2Hover = true;
             }
-            if (isCloseEnabled)
+            if (button3Enabled)
             {
-                if (!math_utils::isOverlappedExcludingLeft(p, closeButtonAbsoluteRect()))
+                if (!math_utils::isOverlappedExcludingLeft(p, button3AbsoluteRect()))
                 {
-                    m_isCloseHover = false;
-                    m_isCloseDown = false;
+                    m_isButton3Hover = false;
+                    m_isButton3Down = false;
                 }
-                else m_isCloseHover = true;
+                else m_isButton3Hover = true;
             }
         }
-        else m_isMinimizeHover = m_isMaximizeHover = m_isCloseHover = false;
+        else m_isButton1Hover = m_isButton2Hover = m_isButton3Hover = false;
 
         DraggablePanel::onMouseMoveWrapper(e);
         ResizablePanel::onMouseMoveWrapper(e);
@@ -776,9 +855,9 @@ namespace d14engine::uikit
         Panel::onMouseLeaveHelper(e);
         ResizablePanel::onMouseLeaveWrapper(e);
 
-        m_isMinimizeHover = m_isMinimizeDown = false;
-        m_isMaximizeHover = m_isMaximizeDown = false;
-        m_isCloseHover = m_isCloseDown = false;
+        m_isButton1Hover = m_isButton1Down = false;
+        m_isButton2Hover = m_isButton2Down = false;
+        m_isButton3Hover = m_isButton3Down = false;
     }
 
     void Window::onMouseButtonHelper(MouseButtonEvent& e)
@@ -800,19 +879,19 @@ namespace d14engine::uikit
         {
             if (!m_isPerformSpecialOperation)
             {
-                if (isMinimizeEnabled) m_isMinimizeDown = m_isMinimizeHover;
-                if (isMaximizeEnabled) m_isMaximizeDown = m_isMaximizeHover;
-                if (isCloseEnabled) m_isCloseDown = m_isCloseHover;
+                if (button1Enabled) m_isButton1Down = m_isButton1Hover;
+                if (button2Enabled) m_isButton2Down = m_isButton2Hover;
+                if (button3Enabled) m_isButton3Down = m_isButton3Hover;
             }
-            else m_isMinimizeDown = m_isMaximizeDown = m_isCloseDown = false;
+            else m_isButton1Down = m_isButton2Down = m_isButton3Down = false;
         }
         else if (e.state.leftUp())
         {
-            if (m_isMinimizeDown)
+            if (m_isButton1Down)
             {
                 setDisplayState(Minimized);
             }
-            else if (m_isMaximizeDown)
+            else if (m_isButton2Down)
             {
                 if (m_displayState == Normal)
                 {
@@ -820,11 +899,11 @@ namespace d14engine::uikit
                 }
                 else setDisplayState(Normal);
             }
-            else if (m_isCloseDown)
+            else if (m_isButton3Down)
             {
                 onClose();
             }
-            m_isMinimizeDown = m_isMaximizeDown = m_isCloseDown = false;
+            m_isButton1Down = m_isButton2Down = m_isButton3Down = false;
         }
         DraggablePanel::onMouseButtonWrapper(e);
         ResizablePanel::onMouseButtonWrapper(e);
@@ -835,7 +914,7 @@ namespace d14engine::uikit
     bool Window::isTriggerDraggingHelper(const Event::Point& p)
     {
         return math_utils::isInside(p, captionPanelAbsoluteRect()) &&
-            !m_isMinimizeHover && !m_isMaximizeHover && !m_isCloseHover;
+            !m_isButton1Hover && !m_isButton2Hover && !m_isButton3Hover;
     }
 
     void Window::onStartDraggingHelper()

@@ -56,7 +56,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
             ui_mainWindow->moveTopmost();
-            ui_mainWindow->isMaximizeEnabled = false;
+            ui_mainWindow->maximizeButtonEnabled = false;
 
             ui_mainWindow->caption()->transform(300.0f, 0.0f, 376.0f, 32.0f);
         }

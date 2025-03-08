@@ -81,8 +81,8 @@ D14_SET_APP_ENTRY(mainEditor)
 
                 w->moveTopmost();
 
-                w->isMinimizeEnabled = false;
-                w->isMaximizeEnabled = false;
+                w->button1Enabled = false;
+                w->button2Enabled = false;
 
                 w->f_onClose = [](Window* w) { w->release(); };
             };

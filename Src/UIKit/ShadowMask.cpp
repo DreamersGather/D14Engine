@@ -8,10 +8,14 @@ namespace d14engine::uikit
 {
     void ShadowMask::configEffectInput(ID2D1Effect* effect)
     {
-        effect->SetInput(0, data.Get());
+        if (enabled)
+        {
+            effect->SetInput(0, data.Get());
 
-        THROW_IF_FAILED(effect->SetValue(D2D1_SHADOW_PROP_COLOR, color));
-        THROW_IF_FAILED(effect->SetValue(D2D1_SHADOW_PROP_BLUR_STANDARD_DEVIATION, standardDeviation));
-        THROW_IF_FAILED(effect->SetValue(D2D1_SHADOW_PROP_OPTIMIZATION, optimization));
+            THROW_IF_FAILED(effect->SetValue(D2D1_SHADOW_PROP_COLOR, color));
+            THROW_IF_FAILED(effect->SetValue(D2D1_SHADOW_PROP_BLUR_STANDARD_DEVIATION, standardDeviation));
+            THROW_IF_FAILED(effect->SetValue(D2D1_SHADOW_PROP_OPTIMIZATION, optimization));
+        }
+        else effect->SetInput(0, nullptr);
     }
 }

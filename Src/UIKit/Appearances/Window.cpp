@@ -21,7 +21,7 @@ namespace d14engine::uikit::appearance
             {
                 D2D1::ColorF{ 0xf3f3f3 } // color
             };
-            light.threeBrothers[(size_t)ThreeBrosState::Idle] =
+            light.buttonPanel[(size_t)ButtonState::Idle] =
             {
                 // foreground
                 {
@@ -34,7 +34,7 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            light.threeBrothers[(size_t)ThreeBrosState::Hover] =
+            light.buttonPanel[(size_t)ButtonState::Hover] =
             {
                 // foreground
                 {
@@ -47,7 +47,7 @@ namespace d14engine::uikit::appearance
                     0.8f // opacity
                 }
             };
-            light.threeBrothers[(size_t)ThreeBrosState::Down] =
+            light.buttonPanel[(size_t)ButtonState::Down] =
             {
                 // foreground
                 {
@@ -60,7 +60,7 @@ namespace d14engine::uikit::appearance
                     0.65f // opacity
                 }
             };
-            light.threeBrothers[(size_t)ThreeBrosState::CloseIdle] =
+            light.buttonPanel[(size_t)ButtonState::CloseIdle] =
             {
                 // foreground
                 {
@@ -73,7 +73,7 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            light.threeBrothers[(size_t)ThreeBrosState::CloseHover] =
+            light.buttonPanel[(size_t)ButtonState::CloseHover] =
             {
                 // foreground
                 {
@@ -86,7 +86,7 @@ namespace d14engine::uikit::appearance
                     0.8f // opacity
                 }
             };
-            light.threeBrothers[(size_t)ThreeBrosState::CloseDown] =
+            light.buttonPanel[(size_t)ButtonState::CloseDown] =
             {
                 // foreground
                 {
@@ -110,7 +110,7 @@ namespace d14engine::uikit::appearance
             {
                 D2D1::ColorF{ 0x202020 } // color
             };
-            dark.threeBrothers[(size_t)ThreeBrosState::Idle] =
+            dark.buttonPanel[(size_t)ButtonState::Idle] =
             {
                 // foreground
                 {
@@ -123,7 +123,7 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            dark.threeBrothers[(size_t)ThreeBrosState::Hover] =
+            dark.buttonPanel[(size_t)ButtonState::Hover] =
             {
                 // foreground
                 {
@@ -136,7 +136,7 @@ namespace d14engine::uikit::appearance
                     0.8f // opacity
                 }
             };
-            dark.threeBrothers[(size_t)ThreeBrosState::Down] =
+            dark.buttonPanel[(size_t)ButtonState::Down] =
             {
                 // foreground
                 {
@@ -149,7 +149,7 @@ namespace d14engine::uikit::appearance
                     0.55f // opacity
                 }
             };
-            dark.threeBrothers[(size_t)ThreeBrosState::CloseIdle] =
+            dark.buttonPanel[(size_t)ButtonState::CloseIdle] =
             {
                 // foreground
                 {
@@ -162,7 +162,7 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            dark.threeBrothers[(size_t)ThreeBrosState::CloseHover] =
+            dark.buttonPanel[(size_t)ButtonState::CloseHover] =
             {
                 // foreground
                 {
@@ -175,7 +175,7 @@ namespace d14engine::uikit::appearance
                     0.8f // opacity
                 }
             };
-            dark.threeBrothers[(size_t)ThreeBrosState::CloseDown] =
+            dark.buttonPanel[(size_t)ButtonState::CloseDown] =
             {
                 // foreground
                 {
@@ -195,12 +195,10 @@ namespace d14engine::uikit::appearance
     {
         stroke.color = color::normal();
 
-        decorativeBar.gradientColor =
-        {
-            ._0_0 = color3(),
-            ._0_5 = color2(),
-            ._1_0 = color1()
-        };
+        decorativeBar.gradientColors[0] = color3();
+        decorativeBar.gradientColors[1] = color2();
+        decorativeBar.gradientColors[2] = color1();
+
         _D14_FIND_THEME_DATA(themeName);
 
         _D14_UPDATE_THEME_DATA_1(background.color);
@@ -208,7 +206,7 @@ namespace d14engine::uikit::appearance
 
         _D14_UPDATE_THEME_DATA_1(captionPanel.background.color);
 
-        _D14_UPDATE_THEME_DATA_ARRAY_1(threeBrothers);
+        _D14_UPDATE_THEME_DATA_ARRAY_1(buttonPanel);
     }
     _D14_SET_THEME_DATA_MAP_IMPL(Window)
 }

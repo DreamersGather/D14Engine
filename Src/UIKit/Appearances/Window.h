@@ -12,7 +12,7 @@ namespace d14engine::uikit::appearance
 {
     struct Window
     {
-        enum class ThreeBrosState
+        enum class ButtonState
         {
             Idle, Hover, Down, CloseIdle, CloseHover, CloseDown
         };
@@ -24,7 +24,7 @@ namespace d14engine::uikit::appearance
             void changeTheme(WstrParam themeName) override;
 
             constexpr static auto g_stateCount =
-                cpp_lang_utils::enumCount<ThreeBrosState>;
+                cpp_lang_utils::enumCount<ButtonState>;
 
             SolidStyle background = {};
             StrokeStyle stroke = {};
@@ -45,23 +45,19 @@ namespace d14engine::uikit::appearance
 
             struct DecorativeBar
             {
-                // Call loadDecorativeBarBrush after changing this field.
-                struct GradientColor
-                {
-                    D2D1_COLOR_F _0_0 = {}, _0_5 = {}, _1_0 = {};
-                }
-                gradientColor = {};
+                // Call decorativeBar.loadBrush after changing these.
+                D2D1_COLOR_F gradientColors[3] = {};
             }
             decorativeBar = {};
 
-            struct ThreeBrothers
+            struct ButtonPanel
             {
                 SolidStyle foreground = {};
                 SolidStyle background = {};
             }
-            threeBrothers[g_stateCount] = {};
+            buttonPanel[g_stateCount] = {};
 
-            float maskOpacityWhenDragAboveTabGroup = 0.5f;
+            float maskOpacityAboveTabGroup = 0.5f;
 
             struct ThemeData
             {
@@ -87,12 +83,12 @@ namespace d14engine::uikit::appearance
                 }
                 captionPanel = {};
 
-                struct ThreeBrothers
+                struct ButtonPanel
                 {
                     SolidStyle foreground = {};
                     SolidStyle background = {};
                 }
-                threeBrothers[g_stateCount] = {};
+                buttonPanel[g_stateCount] = {};
             };
             _D14_SET_THEME_DATA_MAP_DECL
         }
