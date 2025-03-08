@@ -45,7 +45,8 @@ namespace d14engine::uikit
 
         void setItemIndexRangeActive(bool value) override;
 
-        ItemIndex getRootItemGlobalIndex(size_t rootIndex,
+        ItemIndex getRootItemGlobalIndex(
+            size_t rootIndex,
             Optional<ItemIndex> start = {}) const;
     };
 }
