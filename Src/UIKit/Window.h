@@ -36,7 +36,7 @@ namespace d14engine::uikit
 
         using MasterPtr = cpp_lang_utils::EnableMasterPtr<Window>;
 
-        struct SelfObject : MasterPtr
+        struct DrawBuffer : MasterPtr
         {
             using MasterPtr::MasterPtr;
 
@@ -46,7 +46,7 @@ namespace d14engine::uikit
             void loadMask();
             void loadBrush();
         }
-        selfObject{ this };
+        drawBuffer{ this };
 
         struct DecorativeBar : MasterPtr
         {
@@ -265,7 +265,7 @@ namespace d14engine::uikit
         // Indicates whether a special operation is being performed on the
         // window (e.g. resizing, dragging). When this is true, the buttons
         // should not respond UI events even if they are enabled indeed.
-        bool m_isPerformSpecialOperation = false;
+        bool isPerformSpecialOperation() const;
 
         bool m_isButton1Hover = false, m_isButton1Down = false;
         bool m_isButton2Hover = false, m_isButton2Down = false;
@@ -358,17 +358,5 @@ namespace d14engine::uikit
         //------------------------------------------------------------------
 
         bool isTriggerDraggingHelper(const Event::Point& p) override;
-
-        void onStartDraggingHelper() override;
-
-        void onEndDraggingHelper() override;
-
-        //------------------------------------------------------------------
-        // ResizablePanel
-        //------------------------------------------------------------------
-
-        void onStartResizingHelper() override;
-
-        void onEndResizingHelper() override;
     };
 }

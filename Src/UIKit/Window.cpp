@@ -58,11 +58,11 @@ namespace d14engine::uikit
 
         m_caption->transform(captionTitleSelfcoordRect());
 
-        selfObject.loadMask();
+        drawBuffer.loadMask();
         decorativeBar.loadBrush();
     }
 
-    void Window::SelfObject::loadMask()
+    void Window::DrawBuffer::loadMask()
     {
         Window* w = m_master;
         THROW_IF_NULL(w);
@@ -70,7 +70,7 @@ namespace d14engine::uikit
         mask.loadBitmap(w->size());
     }
 
-    void Window::SelfObject::loadBrush()
+    void Window::DrawBuffer::loadBrush()
     {
         Window* w = m_master;
         THROW_IF_NULL(w);
@@ -372,6 +372,11 @@ namespace d14engine::uikit
         }
     }
 
+    bool Window::isPerformSpecialOperation() const
+    {
+        return m_isDragging || isSizing();
+    }
+
     Window::ButtonState Window::getButton1State(bool isHover, bool isDown) const
     {
         if (isDown) return ButtonState::Down;
@@ -506,7 +511,7 @@ namespace d14engine::uikit
         (
             -m_absoluteRect.left, -m_absoluteRect.top
         );
-        selfObject.mask.beginDraw(rndr->d2d1DeviceContext(), maskDrawTrans);
+        drawBuffer.mask.beginDraw(rndr->d2d1DeviceContext(), maskDrawTrans);
         {
             ////////////////
             // Background //
@@ -705,7 +710,7 @@ namespace d14engine::uikit
                 Panel::drawChildrenObjects(rndr);
             }
         }
-        selfObject.mask.endDraw(rndr->d2d1DeviceContext());
+        drawBuffer.mask.endDraw(rndr->d2d1DeviceContext());
     }
 
     void Window::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
@@ -713,17 +718,17 @@ namespace d14engine::uikit
         ////////////
         // Shadow //
         ////////////
-        if (selfObject.mask.enabled && associatedTabGroup.expired())
+        if (drawBuffer.mask.enabled && associatedTabGroup.expired())
         {
             auto& shadow = getAppearance().shadow;
 
-            selfObject.mask.color = shadow.color;
-            selfObject.mask.standardDeviation = shadow.standardDeviation;
+            drawBuffer.mask.color = shadow.color;
+            drawBuffer.mask.standardDeviation = shadow.standardDeviation;
 
-            selfObject.mask.configEffectInput(resource_utils::shadowEffect());
+            drawBuffer.mask.configEffectInput(resource_utils::shadowEffect());
 
             auto offset = math_utils::offset(
-                absolutePosition(), selfObject.mask.offset);
+                absolutePosition(), drawBuffer.mask.offset);
 
             rndr->d2d1DeviceContext()->DrawImage
             (
@@ -738,19 +743,19 @@ namespace d14engine::uikit
             float maskOpacity = {};
             if (associatedTabGroup.expired())
             {
-                maskOpacity = selfObject.mask.opacity;
+                maskOpacity = drawBuffer.mask.opacity;
             }
             else maskOpacity = getAppearance().maskOpacityAboveTabGroup;
 
-            selfObject.brush->SetOpacity(maskOpacity);
+            drawBuffer.brush->SetOpacity(maskOpacity);
 
-            auto mode = selfObject.mask.getInterpolationMode();
-            selfObject.brush->SetInterpolationMode1(mode);
+            auto mode = drawBuffer.mask.getInterpolationMode();
+            drawBuffer.brush->SetInterpolationMode1(mode);
 
             rndr->d2d1DeviceContext()->FillRoundedRectangle
             (
             /* roundedRect */ { m_absoluteRect, roundRadiusX, roundRadiusY },
-            /* brush       */ selfObject.brush.Get()
+            /* brush       */ drawBuffer.brush.Get()
             );
         }
     }
@@ -790,8 +795,8 @@ namespace d14engine::uikit
     {
         ResizablePanel::onSizeHelper(e);
 
-        selfObject.loadMask();
-        selfObject.loadBrush();
+        drawBuffer.loadMask();
+        drawBuffer.loadBrush();
 
         m_caption->transform(captionTitleSelfcoordRect());
         if (m_content) m_content->transform(clientAreaSelfcoordRect());
@@ -812,7 +817,7 @@ namespace d14engine::uikit
 
         auto& p = e.cursorPoint;
 
-        if (!m_isPerformSpecialOperation)
+        if (!isPerformSpecialOperation())
         {
             if (button1Enabled)
             {
@@ -877,7 +882,7 @@ namespace d14engine::uikit
 
         if (e.state.leftDown() || e.state.leftDblclk())
         {
-            if (!m_isPerformSpecialOperation)
+            if (!isPerformSpecialOperation())
             {
                 if (button1Enabled) m_isButton1Down = m_isButton1Hover;
                 if (button2Enabled) m_isButton2Down = m_isButton2Hover;
@@ -915,33 +920,5 @@ namespace d14engine::uikit
     {
         return math_utils::isInside(p, captionPanelAbsoluteRect()) &&
             !m_isButton1Hover && !m_isButton2Hover && !m_isButton3Hover;
-    }
-
-    void Window::onStartDraggingHelper()
-    {
-        DraggablePanel::onStartDraggingHelper();
-
-        m_isPerformSpecialOperation = true;
-    }
-
-    void Window::onEndDraggingHelper()
-    {
-        DraggablePanel::onEndDraggingHelper();
-
-        m_isPerformSpecialOperation = isSizing();
-    }
-
-    void Window::onStartResizingHelper()
-    {
-        ResizablePanel::onStartResizingHelper();
-
-        m_isPerformSpecialOperation = true;
-    }
-
-    void Window::onEndResizingHelper()
-    {
-        ResizablePanel::onEndResizingHelper();
-
-        m_isPerformSpecialOperation = m_isDragging;
     }
 }

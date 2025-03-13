@@ -50,11 +50,12 @@ namespace d14engine::uikit
 
         forceGlobalExclusiveFocusing = true;
 
-        if (operationTarget == OperationTarget::GlobalWin32Window)
+        auto& app = Application::g_app;
+        if (draggingTarget == RootWindow)
         {
-            Application::g_app->isTriggerDraggingWin32Window = true;
+            app->isTriggerDraggingWin32Window = true;
         }
-        Application::g_app->cursor()->setIcon(Cursor::Move);
+        app->cursor()->setIcon(Cursor::Move);
     }
 
     void DraggablePanel::onEndDraggingHelper()
@@ -63,16 +64,27 @@ namespace d14engine::uikit
 
         forceGlobalExclusiveFocusing = false;
 
-        if (operationTarget == OperationTarget::GlobalWin32Window)
+        auto& app = Application::g_app;
+        if (draggingTarget == RootWindow)
         {
-            Application::g_app->isTriggerDraggingWin32Window = false;
+            app->isTriggerDraggingWin32Window = false;
         }
-        Application::g_app->cursor()->setIcon(Cursor::Arrow);
+        app->cursor()->setIcon(Cursor::Arrow);
     }
 
     bool DraggablePanel::isTriggerDraggingHelper(const Event::Point& p)
     {
         return isHit(p);
+    }
+
+    bool DraggablePanel::isDragging() const
+    {
+        return m_isDragging;
+    }
+
+    const DraggablePanel::DraggingPoint& DraggablePanel::draggingPoint() const
+    {
+        return m_draggingPoint;
     }
 
     void DraggablePanel::onMouseMoveHelper(MouseMoveEvent& e)
@@ -92,28 +104,34 @@ namespace d14engine::uikit
         {
             m_skipDeliverNextMouseMoveEventToChildren = true;
 
-            switch (operationTarget)
+            switch (draggingTarget)
             {
-            case OperationTarget::LocalSelfWindow:
+            case SelfObject:
             {
-                auto relative = absoluteToRelative(p);
-                auto& draggingPoint = m_draggingPoint.localSelfWindow;
+                if (std::holds_alternative<SelfPoint>(m_draggingPoint))
+                {
+                    auto& point = std::get<SelfPoint>(m_draggingPoint);
 
-                move(relative.x - draggingPoint.x, relative.y - draggingPoint.y);
+                    auto relative = absoluteToRelative(p);
+                    move(relative.x - point.x, relative.y - point.y);
+                }
                 break;
             }
-            case OperationTarget::GlobalWin32Window:
+            case RootWindow:
             {
-                auto hwnd = Application::g_app->win32Window();
-                auto& draggingPoint = m_draggingPoint.globalWin32Window;
+                if (std::holds_alternative<RootPoint>(m_draggingPoint))
+                {
+                    auto& point = std::get<RootPoint>(m_draggingPoint);
 
-                POINT cursorPoint = {};
-                GetCursorPos(&cursorPoint);
+                    POINT cursorPoint = {};
+                    GetCursorPos(&cursorPoint);
 
-                int X = cursorPoint.x - draggingPoint.x;
-                int Y = cursorPoint.y - draggingPoint.y;
+                    int X = cursorPoint.x - point.x;
+                    int Y = cursorPoint.y - point.y;
 
-                SetWindowPos(hwnd, HWND_TOP, X, Y, 0, 0, SWP_NOSIZE);
+                    auto hwnd = Application::g_app->win32Window();
+                    SetWindowPos(hwnd, HWND_TOP, X, Y, 0, 0, SWP_NOSIZE);
+                }
                 break;
             }
             default: break;
@@ -139,14 +157,24 @@ namespace d14engine::uikit
         {
             if (m_isDragging = isTriggerDragging(p))
             {
-                m_draggingPoint.localSelfWindow = absoluteToSelfCoord(p);
+                switch (draggingTarget)
+                {
+                case SelfObject:
+                {
+                    m_draggingPoint = absoluteToSelfCoord(p);
+                    break;
+                }
+                case RootWindow:
+                {
+                    POINT cursorPoint = {};
+                    GetCursorPos(&cursorPoint);
+                    ScreenToClient(Application::g_app->win32Window(), &cursorPoint);
 
-                POINT cursorPoint = {};
-                GetCursorPos(&cursorPoint);
-                ScreenToClient(Application::g_app->win32Window(), &cursorPoint);
-
-                m_draggingPoint.globalWin32Window = cursorPoint;
-
+                    m_draggingPoint = cursorPoint;
+                    break;
+                }
+                default: m_draggingPoint = {};
+                }
                 onStartDragging();
             }
         }

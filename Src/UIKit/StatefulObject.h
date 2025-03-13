@@ -33,6 +33,7 @@ namespace d14engine::uikit
         StateDetail_T m_stateDetail = {};
 
     public:
+        const State_T state() const { return m_state; }
         const StateDetail_T& stateDetail() const { return m_stateDetail; }
     };
 }

@@ -231,7 +231,7 @@ namespace d14engine::uikit
 
         const D2D1_POINT_2F& lastCursorPoint() const;
 
-        // Note the access level is public, so any object can modify this.
+        // Note that the access level is public, so any object can modify this.
         // Therefore, this is merely a flag indicating that a dragging might occur.
         // If this is set, the window process may skip updating cursor's position,
         // as the cursor should be fixed relative to the window during a dragging.

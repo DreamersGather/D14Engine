@@ -35,20 +35,29 @@ namespace d14engine::uikit
     public:
         bool isDraggable = true;
 
-        enum class OperationTarget
+        enum class DraggingTarget
         {
-            LocalSelfWindow, GlobalWin32Window
-        }
-        operationTarget = OperationTarget::LocalSelfWindow;
+            SelfObject, RootWindow
+        };
+        constexpr static auto SelfObject = DraggingTarget::SelfObject;
+        constexpr static auto RootWindow = DraggingTarget::RootWindow;
+
+        DraggingTarget draggingTarget = SelfObject;
 
     protected:
         bool m_isDragging = false;
 
-        struct DraggingPoint
-        {
-            D2D1_POINT_2F localSelfWindow = {}; POINT globalWin32Window = {};
-        }
-        m_draggingPoint = {};
+        using SelfPoint = D2D1_POINT_2F;
+        using RootPoint = POINT;
+
+        using DraggingPoint = Variant<std::monostate, SelfPoint, RootPoint>;
+
+        DraggingPoint m_draggingPoint = {};
+
+    public:
+        bool isDragging() const;
+
+        const DraggingPoint& draggingPoint() const;
 
     protected:
         // Panel

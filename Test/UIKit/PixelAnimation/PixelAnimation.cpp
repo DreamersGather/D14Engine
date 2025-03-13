@@ -32,22 +32,16 @@ using namespace d14engine::uikit;
 
 D14_SET_APP_ENTRY(mainPixelAnimation)
 {
-    Application::CreateInfo info = {};
-    if (argc >= 2 && lstrcmp(argv[1], L"HighDPI") == 0)
+    Application::CreateInfo info =
     {
-        info.dpi = 192.0f;
-    }
-    else info.dpi = 96.0f;
-    info.windowSize = { 800, 600 };
-
-    BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC;
-
-    return Application(info).run([&](Application* app)
+        .windowSize = { 800, 600 }
+    };
+    return Application(info).run([](Application* app)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
             ui_mainWindow->moveTopmost();
-            ui_mainWindow->isMaximizeEnabled = false;
+            ui_mainWindow->maximizeButtonEnabled = false;
 
             ui_mainWindow->caption()->transform(300.0f, 0.0f, 376.0f, 32.0f);
         }
@@ -62,9 +56,9 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
 
             if (app->themeStyle().name == L"Light")
             {
-                ui_darkModeSwitch->setOnOffState(OnOffSwitch::OFF);
+                ui_darkModeSwitch->setOnOffState(OnOffSwitch::Off);
             }
-            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::ON);
+            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::On);
 
             app->f_onSystemThemeStyleChange = [app]
             (const Application::ThemeStyle& style)
@@ -84,19 +78,19 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
         {
             ui_screenshot->moveTopmost();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
-            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
             ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = app->screenshot();
+                auto image = app->windowshot();
                 CreateDirectory(L"Screenshots", nullptr);
                 bitmap_utils::saveBitmap(image.Get(), D14_SCREENSHOT_PATH);
             };
         }
         auto ui_clientArea = makeUIObject<Panel>();
         {
-            ui_mainWindow->setCenterUIObject(ui_clientArea);
+            ui_mainWindow->setContent(ui_clientArea);
         }
         auto ui_pixelViewer = makeManagedUIObject<TabGroup>(ui_clientArea);
         auto wk_pixelViewer = (WeakPtr<TabGroup>)ui_pixelViewer;
@@ -131,7 +125,7 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
                 ui_stickBoy->bitmapData.fanim.timeSpanDataInSecs = 0.06f;
             }
             auto caption = makeUIObject<TabCaption>(L"stick_boy");
-            caption->title()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            caption->title()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
             auto content = makeUIObject<GridLayout>();
             GridLayout::GeometryInfo geoInfo = {};
@@ -152,7 +146,7 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
                 interpMode = D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR;
 
                 auto caption = makeUIObject<TabCaption>(std::to_wstring(i));
-                caption->title()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+                caption->title()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
                 auto content = makeUIObject<GridLayout>();
                 GridLayout::GeometryInfo geoInfo = {};
@@ -197,11 +191,11 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
                 static UINT fps = 0;
                 if (!wk_animCtrlButton.expired())
                 {
-                    if (wk_animCtrlButton.lock()->currState().activated())
+                    if (wk_animCtrlButton.lock()->stateDetail().activated())
                     {
                         if (rndr->timer()->fps() != fps)
                         {
-                            fps = rndr->timer()->fps();
+                            fps = rndr->timer()->fpsNum();
                             ((Label*)p)->setText(L"FPS: " + std::to_wstring(fps));
                         }
                     }
@@ -288,7 +282,7 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
             {
                 auto sh_animCtrlButton = wk_animCtrlButton.lock();
                 sh_animCtrlButton->setEnabled(false);
-                sh_animCtrlButton->setActivatedState(ToggleButton::DEACTIVATED);
+                sh_animCtrlButton->setActivatedState(ToggleButton::Deactivated);
             }
             if (!wk_timeSpanInput.expired())
             {
@@ -332,7 +326,7 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
             {
                 if (!wk_pixelViewer.expired())
                 {
-                    auto& selected = wk_pixelViewer.lock()->currActiveCardTabIndex();
+                    auto& selected = wk_pixelViewer.lock()->activeCardTabIndex();
                     if (selected.valid())
                     {
                         auto layout = std::dynamic_pointer_cast<GridLayout>(selected->content);
