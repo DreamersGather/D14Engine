@@ -26,7 +26,7 @@ namespace d14engine::uikit
         constexpr static auto Off = State::ActiveFlag::Off;
 
         void setOnOff(State::ActiveFlag flag);
-        // Skip comparison and directly set the state.
+        // Set the state directly without callback.
         void setOnOffState(State::ActiveFlag flag);
 
     protected:
