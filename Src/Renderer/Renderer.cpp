@@ -783,8 +783,8 @@ namespace d14engine::renderer
 
     void Renderer::queryDescHandleSizes()
     {
-#define GET_DESC_HANDLE_SIZE(Type) do \
-{ \
+#define GET_DESC_HANDLE_SIZE(Type) \
+do { \
     m_d3d12DeviceInfo.property.descHandleSize.Type = \
     m_d3d12Device->GetDescriptorHandleIncrementSize \
     (D3D12_DESCRIPTOR_HEAP_TYPE_##Type); \

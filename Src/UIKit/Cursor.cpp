@@ -93,8 +93,8 @@ namespace d14engine::uikit
         // Load dynamic icons. //
         /////////////////////////
 
-#define LOAD_DYNAMIC_ICON(Name, ...) do \
-{ \
+#define LOAD_DYNAMIC_ICON(Name, ...) \
+do { \
     auto frames = loadBasicIconFrames(cursorPath + L#Name L"/"); \
     frames.hotSpotOffset = __VA_ARGS__; \
     icons.dynamicIcons[(size_t)DynamicIconIndex::Name] = std::move(frames); \

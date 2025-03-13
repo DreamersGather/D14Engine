@@ -543,8 +543,8 @@ namespace d14engine::uikit
 
         if (e.state.leftDown() || e.state.leftDblclk())
         {
-#define UPDATE_SIZING_STATE(Border) do \
-{ \
+#define UPDATE_SIZING_STATE(Border) \
+do { \
     if (is##Border##Resizable) \
     { \
         m_is##Border##Sizing = m_is##Border##Hover; \

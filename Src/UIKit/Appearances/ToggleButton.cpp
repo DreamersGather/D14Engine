@@ -170,8 +170,8 @@ namespace d14engine::uikit::appearance
     {
         _D14_FIND_THEME_DATA(themeName);
 
-#define UPDATE_BUTTON_COLOR(Btn_State, Btn_Color) do \
-{ \
+#define UPDATE_BUTTON_COLOR(Btn_State, Btn_Color) \
+do { \
     constexpr auto index = (size_t)uikit::Button::State::Btn_State; \
     _ref.main[index].background.color = Btn_Color(); \
 } while (0)
