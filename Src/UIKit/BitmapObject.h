@@ -8,8 +8,6 @@ namespace d14engine::uikit
     {
         BitmapObject() = default;
 
-        // This constructor is intentionally declared as implicit
-        // to facilitate the initialization from multiple bitmaps.
         BitmapObject(ComPtrParam<ID2D1Bitmap1> data);
 
         ComPtr<ID2D1Bitmap1> data = {};

@@ -14,7 +14,6 @@ namespace d14engine::uikit
     {
         friend TabGroup;
 
-        // Intentionally declared as implicit to be compatible with IconLabel.
         TabCaption(ShrdPtrParam<IconLabel> title);
 
         explicit TabCaption(WstrParam text = L"Untitled");

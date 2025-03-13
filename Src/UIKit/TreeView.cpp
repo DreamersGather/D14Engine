@@ -144,11 +144,11 @@ namespace d14engine::uikit
     {
         auto& range = m_activeItemIndexRange;
 
-        if (range.first.valid() && range.last.valid())
+        if (range.index1.valid() && range.index2.valid())
         {
             if (value)
             {
-                for (ItemIndex itemIndex = range.first; itemIndex <= range.last; ++itemIndex)
+                for (ItemIndex itemIndex = range.index1; itemIndex <= range.index2; ++itemIndex)
                 {
                     auto value = (*itemIndex)->m_stateDetail.ancestorUnfolded();
 
@@ -164,7 +164,7 @@ namespace d14engine::uikit
             }
             else // It is always safe to deactivate an item.
             {
-                for (ItemIndex itemIndex = range.first; itemIndex <= range.last; ++itemIndex)
+                for (ItemIndex itemIndex = range.index1; itemIndex <= range.index2; ++itemIndex)
                 {
                     (*itemIndex)->setPrivateVisible(false);
                     (*itemIndex)->appEventReactability.hitTest = false;

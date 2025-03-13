@@ -163,11 +163,6 @@ namespace d14engine::uikit
         });
     }
 
-    void ScrollView::setViewportOffsetDirect(const D2D1_POINT_2F& offset)
-    {
-        m_viewportOffset = validateViewportOffset(offset);
-    }
-
     bool ScrollView::isControllingHorzBar() const
     {
         return m_isHorzBarHover || m_isHorzBarDown;
@@ -386,9 +381,8 @@ namespace d14engine::uikit
 
         contentMask.loadBitmap(e.size);
 
-        // The viewport offset may be out of range after resizing.
-        setViewportOffsetDirect(m_viewportOffset);
-        onViewportOffsetChange(m_viewportOffset);
+        // The viewport offset may be invalid after resizing.
+        setViewportOffset(m_viewportOffset);
     }
 
     void ScrollView::onChangeThemeStyleHelper(const ThemeStyle& style)

@@ -85,8 +85,6 @@ namespace d14engine::uikit
         D2D1_POINT_2F viewportOffsetPercentage() const;
         void setViewportOffsetPercentage(const D2D1_POINT_2F& relative);
 
-        void setViewportOffsetDirect(const D2D1_POINT_2F& offset);
-
     public:
         bool isHorzBarEnabled = true, isVertBarEnabled = true;
 

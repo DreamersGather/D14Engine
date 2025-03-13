@@ -190,7 +190,7 @@ namespace d14engine::uikit
             {
                 // Search the child item in the global expanded list at first,
                 // and then locate the insert position according to the index.
-                for (auto& child : viewPtr->childrenItems())
+                for (auto& child : viewPtr->items())
                 {
                     if (cpp_lang_utils::isMostDerivedEqual(child, childItor->ptr)) break;
                     ++insertIndex;
@@ -198,7 +198,7 @@ namespace d14engine::uikit
             }
             else // Insert as the first child (immediately after the parent).
             {
-                for (auto& child : viewPtr->childrenItems())
+                for (auto& child : viewPtr->items())
                 {
                     if (cpp_lang_utils::isMostDerivedEqual(child, shared_from_this())) break;
                     ++insertIndex;
@@ -231,7 +231,7 @@ namespace d14engine::uikit
                 ChildItemImplList::iterator childItor = startChildItor;
 
                 size_t removeIndex = 0;
-                for (auto& child : viewPtr->childrenItems())
+                for (auto& child : viewPtr->items())
                 {
                     if (cpp_lang_utils::isMostDerivedEqual(child, childItor->ptr)) break;
                     ++removeIndex;

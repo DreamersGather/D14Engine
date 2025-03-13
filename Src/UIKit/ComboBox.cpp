@@ -91,7 +91,7 @@ namespace d14engine::uikit
     {
         WeakPtr<MenuItem> originalSelected = m_selected;
 
-        auto& items = m_dropDownMenu->childrenItems();
+        auto& items = m_dropDownMenu->items();
         if (indexInDropDownMenu >= 0 && indexInDropDownMenu < items.size())
         {
             auto itor = std::next(items.begin(), indexInDropDownMenu);

@@ -36,19 +36,19 @@ namespace d14engine::uikit
 
             m_layout->f_onReleaseUIObject = [this](Panel* p, ShrdPtrParam<Panel> uiobj)
             {
-                size_t index = 0;
-                for (auto& item : m_items)
+                for (ItemIndex itemIndex = &m_items; itemIndex.valid(); ++itemIndex)
                 {
-                    if (cpp_lang_utils::isMostDerivedEqual(uiobj, item))
-                        { removeItem(index); return true; } ++index;
+                    if (cpp_lang_utils::isMostDerivedEqual(uiobj, *itemIndex))
+                    {
+                        removeItem(itemIndex); return true;
+                    }
                 }
                 return false;
             };
             m_layout->f_onSize = [this](Panel* p, SizeEvent& e)
             {
-                // The viewport offset may be out of range after resizing.
-                setViewportOffsetDirect(m_viewportOffset);
-                onViewportOffsetChange(m_viewportOffset);
+                // The viewport offset may be invalid after resizing.
+                setViewportOffset(m_viewportOffset);
             };
             m_layout->f_onParentSize = [](Panel* p, SizeEvent& e)
             {
@@ -56,12 +56,20 @@ namespace d14engine::uikit
             };
         }
 
+        ////////////////////////
+        // Callback Functions //
+        ////////////////////////
+
+        //------------------------------------------------------------------
+        // Public Interfaces
+        //------------------------------------------------------------------
     public:
         using ItemList = std::list<SharedPtr<Item_T>>;
 
         using ItemIndex = cpp_lang_utils::IndexIterator<ItemList>;
 
-        using ItemIndexSet = std::set<ItemIndex, std::less</* Heterogeneous Lookup */>>;
+        // Use std::less to enable Heterogeneous Lookup.
+        using ItemIndexSet = std::set<ItemIndex, std::less<>>;
 
         void onSelectChange(const ItemIndexSet& selected)
         {
@@ -71,8 +79,41 @@ namespace d14engine::uikit
         }
         Function<void(WaterfallView*, const ItemIndexSet&)> f_onSelectChange = {};
 
+        //------------------------------------------------------------------
+        // Protected Helpers
+        //------------------------------------------------------------------
     protected:
-        virtual void onSelectChangeHelper(const ItemIndexSet& selected) { }
+        virtual void onSelectChangeHelper(const ItemIndexSet& selected)
+        {
+            // This method intentionally left blank.
+        }
+
+        /////////////////////////
+        // Graphics Components //
+        /////////////////////////
+
+        //------------------------------------------------------------------
+        // Children Objects
+        //------------------------------------------------------------------
+    protected:
+        SharedPtr<ConstraintLayout> m_layout = {};
+
+    public:
+        void updateItemConstraints()
+        {
+            float offset = 0.0f;
+            for (auto& item : m_items)
+            {
+                auto elemItor = m_layout->findElement(item);
+                if (elemItor.has_value())
+                {
+                    elemItor.value()->second.Top.ToTop = offset;
+                    m_layout->updateElement(elemItor.value());
+                }
+                offset += item->height();
+            }
+            m_layout->resize(width(), offset);
+        }
 
     protected:
         ItemList m_items = {};
@@ -80,7 +121,7 @@ namespace d14engine::uikit
         ItemIndexSet m_selectedItemIndices = {};
 
     public:
-        const ItemList& childrenItems() const
+        const ItemList& items() const
         {
             return m_items;
         }
@@ -91,7 +132,6 @@ namespace d14engine::uikit
 
         virtual void insertItem(const ItemList& items, size_t index = 0)
         {
-            // "index == m_items.size()" ---> append
             index = std::clamp(index, 0_uz, m_items.size());
 
             float height = 0.0f;
@@ -110,7 +150,7 @@ namespace d14engine::uikit
                 offset += (*itemIndex)->height();
             }
             ItemIndex insertStartIndex = itemIndex;
-            // New Items
+            // Inserted Items
             for (auto& item : items)
             {
                 item->setPrivateVisible(false);
@@ -140,33 +180,30 @@ namespace d14engine::uikit
             }
             m_items.insert(insertStartIndex.iterator, items.begin(), items.end());
 
-            ItemIndexSet updatedItemIndexSet = {};
+            ItemIndexSet updatedItemIndices = {};
             for (auto& itemIndex : m_selectedItemIndices)
             {
                 if (itemIndex < index)
                 {
-                    updatedItemIndexSet.insert(itemIndex);
+                    updatedItemIndices.insert(itemIndex);
                 }
-                else updatedItemIndexSet.insert(itemIndex.getIndexNext(items.size()));
+                else updatedItemIndices.insert(itemIndex.getIndexNext(items.size()));
             }
-            m_selectedItemIndices = std::move(updatedItemIndexSet);
+            m_selectedItemIndices = std::move(updatedItemIndices);
 
 #define UPDATE_ITEM_INDEX(Item_Index) \
 do { \
-    if (Item_Index.generalValid()) \
+    if (Item_Index.generalValid() && Item_Index >= index) \
     { \
-        if (Item_Index >= index) \
-        { \
-            Item_Index.moveIndexNext(items.size()); \
-        } \
+        Item_Index.moveIndexNext(items.size()); \
     } \
 } while (0)
             UPDATE_ITEM_INDEX(m_lastHoverItemIndex);
             UPDATE_ITEM_INDEX(m_lastSelectedItemIndex);
-            UPDATE_ITEM_INDEX(m_extendedSelectItemIndexOrigin);
+            UPDATE_ITEM_INDEX(m_extendedSelectItemIndex);
 
-            UPDATE_ITEM_INDEX(m_activeItemIndexRange.first);
-            UPDATE_ITEM_INDEX(m_activeItemIndexRange.last);
+            UPDATE_ITEM_INDEX(m_activeItemIndexRange.index1);
+            UPDATE_ITEM_INDEX(m_activeItemIndexRange.index2);
 
 #undef UPDATE_ITEM_INDEX
 
@@ -175,7 +212,7 @@ do { \
 
         virtual void removeItem(size_t index, size_t count = 1)
         {
-            if (index >= 0 && index < m_items.size() && count > 0)
+            if (index < m_items.size())
             {
                 count = std::min(count, m_items.size() - index);
                 size_t endIndex = index + count;
@@ -196,7 +233,7 @@ do { \
                     offset += (*itemIndex)->height();
                 }
                 ItemIndex eraseStartIndex = itemIndex;
-                // Old Items
+                // Removed Items
                 for (; itemIndex < endIndex; ++itemIndex)
                 {
                     m_layout->removeElement(*itemIndex);
@@ -215,19 +252,19 @@ do { \
                 }
                 m_items.erase(eraseStartIndex.iterator, eraseEndIndex.iterator);
 
-                ItemIndexSet updatedItemIndexSet = {};
+                ItemIndexSet updatedItemIndices = {};
                 for (auto& itemIndex : m_selectedItemIndices)
                 {
                     if (itemIndex < index)
                     {
-                        updatedItemIndexSet.insert(itemIndex);
+                        updatedItemIndices.insert(itemIndex);
                     }
                     else if (itemIndex >= endIndex)
                     {
-                        updatedItemIndexSet.insert(itemIndex.getIndexPrev(count));
+                        updatedItemIndices.insert(itemIndex.getIndexPrev(count));
                     }
                 }
-                m_selectedItemIndices = std::move(updatedItemIndexSet);
+                m_selectedItemIndices = std::move(updatedItemIndices);
 
 #define UPDATE_ITEM_INDEX(Item_Index) \
 do { \
@@ -245,37 +282,37 @@ do { \
 } while (0)
                 UPDATE_ITEM_INDEX(m_lastHoverItemIndex);
                 UPDATE_ITEM_INDEX(m_lastSelectedItemIndex);
-                UPDATE_ITEM_INDEX(m_extendedSelectItemIndexOrigin);
+                UPDATE_ITEM_INDEX(m_extendedSelectItemIndex);
 
 #undef UPDATE_ITEM_INDEX
 
-                if (m_activeItemIndexRange.first.generalValid() &&
-                    m_activeItemIndexRange.last.generalValid())
+                if (m_activeItemIndexRange.index1.generalValid() &&
+                    m_activeItemIndexRange.index2.generalValid())
                 {
-                    if (m_activeItemIndexRange.first >= endIndex)
+                    if (m_activeItemIndexRange.index1 >= endIndex)
                     {
-                        m_activeItemIndexRange.first.moveIndexPrev(count);
-                        m_activeItemIndexRange.last.moveIndexPrev(count);
+                        m_activeItemIndexRange.index1.moveIndexPrev(count);
+                        m_activeItemIndexRange.index2.moveIndexPrev(count);
                     }
-                    else if (m_activeItemIndexRange.first >= index)
+                    else if (m_activeItemIndexRange.index1 >= index)
                     {
-                        if (m_activeItemIndexRange.last >= endIndex)
+                        if (m_activeItemIndexRange.index2 >= endIndex)
                         {
-                            m_activeItemIndexRange.first = eraseEndIndex.getIndexPrev(count);
+                            m_activeItemIndexRange.index1 = eraseEndIndex.getIndexPrev(count);
                         }
                         else // all visible items removed
                         {
-                            m_activeItemIndexRange.first.invalidate();
-                            m_activeItemIndexRange.last.invalidate();
+                            m_activeItemIndexRange.index1.invalidate();
+                            m_activeItemIndexRange.index2.invalidate();
                         }
                     }
-                    else if (m_activeItemIndexRange.last >= endIndex)
+                    else if (m_activeItemIndexRange.index2 >= endIndex)
                     {
-                        m_activeItemIndexRange.last.moveIndexPrev(count);
+                        m_activeItemIndexRange.index2.moveIndexPrev(count);
                     }
-                    else if (m_activeItemIndexRange.last >= index)
+                    else if (m_activeItemIndexRange.index2 >= index)
                     {
-                        m_activeItemIndexRange.last = eraseEndIndex.getIndexPrev(count + 1);
+                        m_activeItemIndexRange.index2 = eraseEndIndex.getIndexPrev(count + 1);
                     }
                 }
                 updateItemIndexRangeActivity();
@@ -292,53 +329,19 @@ do { \
             m_selectedItemIndices.clear();
             m_lastHoverItemIndex.invalidate();
             m_lastSelectedItemIndex.invalidate();
-            m_extendedSelectItemIndexOrigin.invalidate();
+            m_extendedSelectItemIndex.invalidate();
 
-            m_activeItemIndexRange.first.invalidate();
-            m_activeItemIndexRange.last.invalidate();
+            m_activeItemIndexRange.index1.invalidate();
+            m_activeItemIndexRange.index2.invalidate();
         }
 
-    protected:
-        SharedPtr<ConstraintLayout> m_layout = {};
+        ///////////////////////
+        // Interaction Logic //
+        ///////////////////////
 
-    public:
-        void updateItemConstraints()
-        {
-            float offset = 0.0f;
-            for (auto& item : m_items)
-            {
-                auto elemItor = m_layout->findElement(item);
-                if (elemItor.has_value())
-                {
-                    elemItor.value()->second.Top.ToTop = offset;
-                    m_layout->updateElement(elemItor.value());
-                }
-                offset += item->height();
-            }
-            m_layout->resize(width(), offset);
-        }
-
-    protected:
-        using ItemIndexParam = const ItemIndex&;
-
-        ItemIndex viewportOffsetToItemIndex(float offset) const
-        {
-            float itemHeight = 0.0f;
-            for (ItemIndex itemIndex = { (ItemList*)&m_items, 0}; itemIndex.valid(); ++itemIndex)
-            {
-                // Do not use "itemHeight < offset" since it might cause the
-                // unexpected capture failure when the cursor-point is right
-                // on the edge of an item.
-                if (itemHeight <= offset)
-                {
-                    itemHeight += (*itemIndex)->height();
-                    if (itemHeight > offset) return itemIndex;
-                }
-                else break;
-            }
-            return ItemIndex{};
-        }
-
+        //------------------------------------------------------------------
+        // Select Mode
+        //------------------------------------------------------------------
     public:
         enum class SelectMode
         {
@@ -346,11 +349,16 @@ do { \
         }
         selectMode = SelectMode::Extended;
 
+        //------------------------------------------------------------------
+        // Select Trigger
+        //------------------------------------------------------------------
     protected:
+        using ItemIndexParam = const ItemIndex&;
+
         ItemIndex m_lastHoverItemIndex{};
         ItemIndex m_lastSelectedItemIndex{};
 
-        ItemIndex m_extendedSelectItemIndexOrigin{};
+        ItemIndex m_extendedSelectItemIndex{};
 
         void triggerNoneSelect()
         {
@@ -361,7 +369,7 @@ do { \
             m_selectedItemIndices.clear();
 
             m_lastSelectedItemIndex.invalidate();
-            m_extendedSelectItemIndexOrigin.invalidate();
+            m_extendedSelectItemIndex.invalidate();
         }
 
         void triggerSingleSelect(ItemIndexParam itemIndex)
@@ -374,7 +382,7 @@ do { \
 
             m_selectedItemIndices = { itemIndex };
 
-            m_lastSelectedItemIndex = m_extendedSelectItemIndexOrigin = itemIndex;
+            m_lastSelectedItemIndex = m_extendedSelectItemIndex = itemIndex;
         }
 
         void triggerMultipleSelect(ItemIndexParam itemIndex)
@@ -390,9 +398,9 @@ do { \
                 {
                     m_lastSelectedItemIndex.invalidate();
                 }
-                if (m_extendedSelectItemIndexOrigin == itemIndex)
+                if (m_extendedSelectItemIndex == itemIndex)
                 {
-                    m_extendedSelectItemIndexOrigin.invalidate();
+                    m_extendedSelectItemIndex.invalidate();
                 }
             }
             else // select new item
@@ -405,7 +413,7 @@ do { \
                 {
                     (*m_lastSelectedItemIndex)->triggerLeaveStateTrans();
                 }
-                m_lastSelectedItemIndex = m_extendedSelectItemIndexOrigin = itemIndex;
+                m_lastSelectedItemIndex = m_extendedSelectItemIndex = itemIndex;
             }
         }
 
@@ -425,13 +433,14 @@ do { \
                     }
                     m_selectedItemIndices.clear();
 
-                    auto range = std::minmax(itemIndex, m_extendedSelectItemIndexOrigin);
+                    auto range = std::minmax(itemIndex, m_extendedSelectItemIndex);
                     for (auto index = range.first; index <= range.second; ++index)
                     {
                         (*index)->triggerCheckStateTrans();
 
-                        if (index != itemIndex) // Highlight only the last selected item.
+                        if (index != itemIndex)
                         {
+                            // Highlight only the last selected item.
                             (*index)->triggerLeaveStateTrans();
                         }
                         m_selectedItemIndices.insert(index);
@@ -443,20 +452,41 @@ do { \
             else triggerSingleSelect(itemIndex);
         }
 
+        //------------------------------------------------------------------
+        // Active Item Index Range
+        //------------------------------------------------------------------
     protected:
-        struct VisibleItemIndexRange
+        ItemIndex viewportOffsetToItemIndex(float offset) const
         {
-            ItemIndex first{}, last{};
+            float itemHeight = 0.0f;
+            for (ItemIndex itemIndex = (ItemList*)&m_items; itemIndex.valid(); ++itemIndex)
+            {
+                // Do not use "itemHeight < offset" since it might cause the
+                // unexpected capture failure when the cursor-point is right
+                // on the edge of an item.
+                if (itemHeight <= offset)
+                {
+                    itemHeight += (*itemIndex)->height();
+                    if (itemHeight > offset) return itemIndex;
+                }
+                else break;
+            }
+            return ItemIndex{};
+        }
+
+    protected:
+        struct ItemIndexRange
+        {
+            ItemIndex index1 = {}, index2 = {};
         }
         m_activeItemIndexRange = {};
 
         virtual void setItemIndexRangeActive(bool value)
         {
             auto& range = m_activeItemIndexRange;
-
-            if (range.first.valid() && range.last.valid())
+            if (range.index1.valid() && range.index2.valid())
             {
-                for (auto itemIndex = range.first; itemIndex <= range.last; ++itemIndex)
+                for (auto itemIndex = range.index1; itemIndex <= range.index2; ++itemIndex)
                 {
                     (*itemIndex)->setPrivateVisible(value);
                     (*itemIndex)->appEventReactability.hitTest = value;
@@ -469,23 +499,30 @@ do { \
         {
             setItemIndexRangeActive(false);
 
-            m_activeItemIndexRange.first = viewportOffsetToItemIndex
+            m_activeItemIndexRange.index1 = viewportOffsetToItemIndex
             (
                 m_viewportOffset.y
             );
-            m_activeItemIndexRange.last  = viewportOffsetToItemIndex
+            m_activeItemIndexRange.index2  = viewportOffsetToItemIndex
             (
                 m_viewportOffset.y + height()
             );
-            if (m_activeItemIndexRange.first.valid() && !m_activeItemIndexRange.last.valid())
+            if (m_activeItemIndexRange.index1.valid() && !m_activeItemIndexRange.index2.valid())
             {
-                m_activeItemIndexRange.last = ItemIndex::last(&m_items);
+                m_activeItemIndexRange.index2 = ItemIndex::last(&m_items);
             }
             setItemIndexRangeActive(true);
         }
 
+        /////////////////////////
+        // Interface Overrides //
+        /////////////////////////
+
     protected:
+        //------------------------------------------------------------------
         // Panel
+        //------------------------------------------------------------------
+
         void onGetFocusHelper() override
         {
             ScrollView::onGetFocusHelper();
@@ -567,7 +604,10 @@ do { \
             }
         }
 
-        // ScrollView
+        //------------------------------------------------------------------
+        // Scroll View
+        //------------------------------------------------------------------
+
         void onViewportOffsetChangeHelper(const D2D1_POINT_2F& offset) override
         {
             ScrollView::onViewportOffsetChangeHelper(offset);

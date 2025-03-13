@@ -26,21 +26,19 @@ namespace d14engine::cpp_lang_utils
 
         typename T::iterator iterator = {};
 
-        explicit IndexIterator(T* pList = nullptr)
+        IndexIterator(T* pList = nullptr)
             :
-            m_pList(pList)
-        {
-            if (m_pList == nullptr)
-            {
-                invalidate();
-            }
-        }
+            IndexIterator(pList, 0) { }
 
         IndexIterator(T* pList, size_t index)
             :
             m_pList(pList)
         {
-            move(index);
+            if (m_pList != nullptr)
+            {
+                move(index);
+            }
+            else invalidate();
         }
 
         IndexIterator(const Type& rhs)
@@ -90,6 +88,11 @@ namespace d14engine::cpp_lang_utils
             return old;
         }
 
+        operator size_t() const
+        {
+            return index;
+        }
+
         auto operator<=>(size_t rhs) const
         {
             return index <=> rhs;
@@ -127,17 +130,17 @@ namespace d14engine::cpp_lang_utils
             return tmp;
         }
 
-        static IndexIterator last(T* pList)
-        {
-            IndexIterator tmp{ pList };
-            tmp.moveLast();
-            return tmp;
-        }
-
         static IndexIterator end(T* pList)
         {
             IndexIterator tmp{ pList };
             tmp.moveEnd();
+            return tmp;
+        }
+
+        static IndexIterator last(T* pList)
+        {
+            IndexIterator tmp{ pList };
+            tmp.moveLast();
             return tmp;
         }
 
@@ -166,14 +169,14 @@ namespace d14engine::cpp_lang_utils
             return valid() && index == 0;
         }
 
-        bool atLast() const
-        {
-            return valid() && index == m_pList->size() - 1;
-        }
-
         bool atEnd() const
         {
             return m_pList != nullptr && index == m_pList->size();
+        }
+
+        bool atLast() const
+        {
+            return valid() && index == m_pList->size() - 1;
         }
 
         Type& move(size_t index)
@@ -190,17 +193,17 @@ namespace d14engine::cpp_lang_utils
             return *this;
         }
 
-        Type& moveLast()
-        {
-            index = m_pList->size() - 1;
-            iterator = --m_pList->end();
-            return *this;
-        }
-
         Type& moveEnd()
         {
             index = m_pList->size();
             iterator = m_pList->end();
+            return *this;
+        }
+
+        Type& moveLast()
+        {
+            index = m_pList->size() - 1;
+            iterator = --m_pList->end();
             return *this;
         }
 
