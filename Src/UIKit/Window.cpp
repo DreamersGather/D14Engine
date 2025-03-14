@@ -58,11 +58,13 @@ namespace d14engine::uikit
 
         m_caption->transform(captionTitleSelfcoordRect());
 
-        drawBuffer.loadMask();
-        decorativeBar.loadBrush();
+        drawBufferRes.loadMask();
+        drawBufferRes.loadBrush();
+
+        decorativeBarRes.loadBrush();
     }
 
-    void Window::DrawBuffer::loadMask()
+    void Window::DrawBufferRes::loadMask()
     {
         Window* w = m_master;
         THROW_IF_NULL(w);
@@ -70,7 +72,7 @@ namespace d14engine::uikit
         mask.loadBitmap(w->size());
     }
 
-    void Window::DrawBuffer::loadBrush()
+    void Window::DrawBufferRes::loadBrush()
     {
         Window* w = m_master;
         THROW_IF_NULL(w);
@@ -85,7 +87,7 @@ namespace d14engine::uikit
         ));
     }
 
-    void Window::DecorativeBar::loadBrush()
+    void Window::DecorativeBarRes::loadBrush()
     {
         Window* w = m_master;
         THROW_IF_NULL(w);
@@ -507,11 +509,13 @@ namespace d14engine::uikit
     {
         Panel::drawChildrenLayers(rndr);
 
+        auto& mask = drawBufferRes.mask;
+
         auto maskDrawTrans = D2D1::Matrix3x2F::Translation
         (
             -m_absoluteRect.left, -m_absoluteRect.top
         );
-        drawBuffer.mask.beginDraw(rndr->d2d1DeviceContext(), maskDrawTrans);
+        mask.beginDraw(rndr->d2d1DeviceContext(), maskDrawTrans);
         {
             ////////////////
             // Background //
@@ -551,15 +555,17 @@ namespace d14engine::uikit
                 // Decorative Bar
                 //------------------------------------------------------------------
                 {
+                    auto& brush = decorativeBarRes.brush;
+
                     auto rect = decorativeBarAbsoluteRect();
 
-                    decorativeBar.brush->SetStartPoint({ rect.left, rect.top });
-                    decorativeBar.brush->SetEndPoint({ rect.right, rect.top });
+                    brush->SetStartPoint({ rect.left, rect.top });
+                    brush->SetEndPoint({ rect.right, rect.top });
 
                     rndr->d2d1DeviceContext()->FillRectangle
                     (
                     /* rect  */ rect,
-                    /* brush */ decorativeBar.brush.Get()
+                    /* brush */ brush.Get()
                     );
                 }
             }
@@ -710,25 +716,27 @@ namespace d14engine::uikit
                 Panel::drawChildrenObjects(rndr);
             }
         }
-        drawBuffer.mask.endDraw(rndr->d2d1DeviceContext());
+        mask.endDraw(rndr->d2d1DeviceContext());
     }
 
     void Window::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
+        auto& mask = drawBufferRes.mask;
+        auto& brush = drawBufferRes.brush;
+
         ////////////
         // Shadow //
         ////////////
-        if (drawBuffer.mask.enabled && associatedTabGroup.expired())
+        if (mask.enabled && associatedTabGroup.expired())
         {
             auto& shadow = getAppearance().shadow;
 
-            drawBuffer.mask.color = shadow.color;
-            drawBuffer.mask.standardDeviation = shadow.standardDeviation;
+            mask.color = shadow.color;
+            mask.standardDeviation = shadow.standardDeviation;
 
-            drawBuffer.mask.configEffectInput(resource_utils::shadowEffect());
+            mask.configEffectInput(resource_utils::shadowEffect());
 
-            auto offset = math_utils::offset(
-                absolutePosition(), drawBuffer.mask.offset);
+            auto offset = math_utils::offset(absolutePosition(), mask.offset);
 
             rndr->d2d1DeviceContext()->DrawImage
             (
@@ -743,19 +751,19 @@ namespace d14engine::uikit
             float maskOpacity = {};
             if (associatedTabGroup.expired())
             {
-                maskOpacity = drawBuffer.mask.opacity;
+                maskOpacity = mask.opacity;
             }
             else maskOpacity = getAppearance().maskOpacityAboveTabGroup;
 
-            drawBuffer.brush->SetOpacity(maskOpacity);
+            brush->SetOpacity(maskOpacity);
 
-            auto mode = drawBuffer.mask.getInterpolationMode();
-            drawBuffer.brush->SetInterpolationMode1(mode);
+            auto mode = mask.getInterpolationMode();
+            brush->SetInterpolationMode1(mode);
 
             rndr->d2d1DeviceContext()->FillRoundedRectangle
             (
             /* roundedRect */ { m_absoluteRect, roundRadiusX, roundRadiusY },
-            /* brush       */ drawBuffer.brush.Get()
+            /* brush       */ brush.Get()
             );
         }
     }
@@ -795,11 +803,11 @@ namespace d14engine::uikit
     {
         ResizablePanel::onSizeHelper(e);
 
-        drawBuffer.loadMask();
-        drawBuffer.loadBrush();
-
         m_caption->transform(captionTitleSelfcoordRect());
         if (m_content) m_content->transform(clientAreaSelfcoordRect());
+
+        drawBufferRes.loadMask();
+        drawBufferRes.loadBrush();
     }
 
     void Window::onChangeThemeStyleHelper(const ThemeStyle& style)
@@ -808,7 +816,7 @@ namespace d14engine::uikit
 
         getAppearance().changeTheme(style.name);
 
-        decorativeBar.loadBrush();
+        decorativeBarRes.loadBrush();
     }
 
     void Window::onMouseMoveHelper(MouseMoveEvent& e)

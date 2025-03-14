@@ -36,7 +36,7 @@ namespace d14engine::uikit
 
         using MasterPtr = cpp_lang_utils::EnableMasterPtr<Window>;
 
-        struct DrawBuffer : MasterPtr
+        struct DrawBufferRes : MasterPtr
         {
             using MasterPtr::MasterPtr;
 
@@ -46,16 +46,16 @@ namespace d14engine::uikit
             ComPtr<ID2D1BitmapBrush1> brush = {};
             void loadBrush();
         }
-        drawBuffer{ this };
+        drawBufferRes{ this };
 
-        struct DecorativeBar : MasterPtr
+        struct DecorativeBarRes : MasterPtr
         {
             using MasterPtr::MasterPtr;
 
             ComPtr<ID2D1LinearGradientBrush> brush = {};
             void loadBrush();
         }
-        decorativeBar{ this };
+        decorativeBarRes{ this };
 
         ////////////////////////
         // Callback Functions //
