@@ -2,8 +2,6 @@
 
 #include "Common/Precompile.h"
 
-#include "Common/CppLangUtils/EnumMagic.h"
-
 #include "UIKit/Appearances/ViewItem.h"
 #include "UIKit/MaskObject.h"
 #include "UIKit/Panel.h"
@@ -26,12 +24,31 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        MaskObject contentMask = {};
-
         _D14_SET_APPEARANCE_GETTER(ViewItem)
 
-        void setEnabled(bool value) override;
+        //////////////////////
+        // Cached Resources //
+        //////////////////////
 
+        using MasterPtr = cpp_lang_utils::EnableMasterPtr<ViewItem>;
+
+        struct DrawBuffer : MasterPtr
+        {
+            using MasterPtr::MasterPtr;
+
+            MaskObject mask = {};
+
+            void loadMask();
+        }
+        drawBuffer{ this };
+
+        /////////////////////////
+        // Graphics Components //
+        /////////////////////////
+
+        //------------------------------------------------------------------
+        // Children Objects
+        //------------------------------------------------------------------
     protected:
         // NO WeakPtr here as we provide a content-param in the ctor.
         SharedPtr<Panel> m_content = {};
@@ -46,8 +63,15 @@ namespace d14engine::uikit
         WeakPtr<Panel> content() const;
         void setContent(ShrdPtrParam<Panel> content);
 
+        ///////////////////////
+        // Interaction Logic //
+        ///////////////////////
+
+        //------------------------------------------------------------------
+        // State & Transition Map
+        //------------------------------------------------------------------
     public:
-        State state = {};
+        State state = State::Idle;
 
         using StateTransitionMap = cpp_lang_utils::EnumMap<State>;
 
@@ -66,13 +90,30 @@ namespace d14engine::uikit
         void triggerGetfcStateTrans();
         void triggerLosfcStateTrans();
 
+        /////////////////////////
+        // Interface Overrides //
+        /////////////////////////
+
+    public:
+        //------------------------------------------------------------------
+        // Panel
+        //------------------------------------------------------------------
+
+        void setEnabled(bool value) override;
+
     protected:
+        //------------------------------------------------------------------
         // IDrawObject2D
+        //------------------------------------------------------------------
+
         void onRendererDrawD2d1LayerHelper(renderer::Renderer* rndr) override;
 
         void onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr) override;
 
+        //------------------------------------------------------------------
         // Panel
+        //------------------------------------------------------------------
+
         bool isHitHelper(const Event::Point& p) const override;
 
         bool releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj) override;

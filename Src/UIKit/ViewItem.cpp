@@ -4,6 +4,7 @@
 
 #include "Common/CppLangUtils/PointerEquality.h"
 #include "Common/MathUtils/2D.h"
+#include "Common/RuntimeError.h"
 
 #include "Renderer/Renderer.h"
 
@@ -19,15 +20,17 @@ namespace d14engine::uikit
         const D2D1_RECT_F& rect)
         :
         Panel(rect, resource_utils::solidColorBrush()),
-        contentMask(size()),
         m_content(content)
     {
         m_takeOverChildrenDrawing = true;
     }
 
     ViewItem::ViewItem(WstrParam text, const D2D1_RECT_F& rect)
-        : ViewItem(IconLabel::uniformLayout(text), rect) { }
-
+        :
+        ViewItem(IconLabel::uniformLayout(text), rect)
+    {
+        // Here left blank intentionally.
+    }
 
     void ViewItem::onInitializeFinish()
     {
@@ -36,13 +39,16 @@ namespace d14engine::uikit
         addUIObject(m_content);
 
         if (m_content) m_content->transform(selfCoordRect());
+
+        drawBuffer.loadMask();
     }
 
-    void ViewItem::setEnabled(bool value)
+    void ViewItem::DrawBuffer::loadMask()
     {
-        Panel::setEnabled(value);
+        ViewItem* vitem = m_master;
+        THROW_IF_NULL(vitem);
 
-        if (m_content) m_content->setEnabled(value);
+        mask.loadBitmap(vitem->size());
     }
 
     WeakPtr<Panel> ViewItem::content() const
@@ -147,6 +153,13 @@ namespace d14engine::uikit
         state = LOSFC_STATE_TRANS_MAP[(size_t)state];
     }
 
+    void ViewItem::setEnabled(bool value)
+    {
+        Panel::setEnabled(value);
+
+        if (m_content) m_content->setEnabled(value);
+    }
+
     void ViewItem::onRendererDrawD2d1LayerHelper(Renderer* rndr)
     {
         if (m_content && m_content->isD2d1ObjectVisible())
@@ -164,18 +177,20 @@ namespace d14engine::uikit
             // The rendering result depends on the target background color,
             // so you must set an opaque background (better a value >= 0.5).
             //--------------------------------------------------------------
-            contentMask.color = setting.background.color;
-            contentMask.color.a = setting.background.opacity;
+            auto& background = setting.background;
+
+            drawBuffer.mask.color = background.color;
+            drawBuffer.mask.color.a = background.opacity;
 
             auto maskDrawTrans = D2D1::Matrix3x2F::Translation
             (
                 -m_absoluteRect.left, -m_absoluteRect.top
             );
-            contentMask.beginDraw(rndr->d2d1DeviceContext(), maskDrawTrans);
+            drawBuffer.mask.beginDraw(rndr->d2d1DeviceContext(), maskDrawTrans);
             {
                 m_content->onRendererDrawD2d1Object(rndr);
             }
-            contentMask.endDraw(rndr->d2d1DeviceContext());
+            drawBuffer.mask.endDraw(rndr->d2d1DeviceContext());
         }
     }
 
@@ -186,42 +201,46 @@ namespace d14engine::uikit
         ////////////////
         // Background //
         ////////////////
+        {
+            auto& background = setting.background;
 
-        resource_utils::solidColorBrush()->SetColor(setting.background.color);
-        resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
+            resource_utils::solidColorBrush()->SetColor(background.color);
+            resource_utils::solidColorBrush()->SetOpacity(background.opacity);
 
-        Panel::drawBackground(rndr);
-
+            Panel::drawBackground(rndr);
+        }
         /////////////
         // Content //
         /////////////
-
         if (m_content && m_content->isD2d1ObjectVisible())
         {
             rndr->d2d1DeviceContext()->DrawBitmap
             (
-            /* bitmap               */ contentMask.data.Get(),
+            /* bitmap               */ drawBuffer.mask.data.Get(),
             /* destinationRectangle */ m_absoluteRect,
-            /* opacity              */ contentMask.opacity,
-            /* interpolationMode    */ contentMask.getInterpolationMode()
+            /* opacity              */ drawBuffer.mask.opacity,
+            /* interpolationMode    */ drawBuffer.mask.getInterpolationMode()
             );
         }
         /////////////
         // Outline //
         /////////////
+        {
+            auto& stroke = setting.stroke;
 
-        resource_utils::solidColorBrush()->SetColor(setting.stroke.color);
-        resource_utils::solidColorBrush()->SetOpacity(setting.stroke.opacity);
+            resource_utils::solidColorBrush()->SetColor(stroke.color);
+            resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
 
-        auto frame = math_utils::inner(m_absoluteRect, setting.stroke.width);
-        D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
+            auto rect = math_utils::inner(m_absoluteRect, stroke.width);
+            D2D1_ROUNDED_RECT roundedRect = { rect, roundRadiusX, roundRadiusY };
 
-        rndr->d2d1DeviceContext()->DrawRoundedRectangle
-        (
-        /* roundedRect */ outlineRect,
-        /* brush       */ resource_utils::solidColorBrush(),
-        /* strokeWidth */ setting.stroke.width
-        );
+            rndr->d2d1DeviceContext()->DrawRoundedRectangle
+            (
+            /* roundedRect */ roundedRect,
+            /* brush       */ resource_utils::solidColorBrush(),
+            /* strokeWidth */ stroke.width
+            );
+        }
     }
 
     bool ViewItem::isHitHelper(const Event::Point& p) const
@@ -245,9 +264,9 @@ namespace d14engine::uikit
     {
         Panel::onSizeHelper(e);
 
-        contentMask.loadBitmap(e.size);
-
         if (m_content) m_content->transform(selfCoordRect());
+
+        drawBuffer.loadMask();
     }
 
     void ViewItem::onChangeThemeStyleHelper(const ThemeStyle& style)
