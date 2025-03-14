@@ -23,6 +23,8 @@ namespace d14engine::uikit
         m_content(content)
     {
         m_takeOverChildrenDrawing = true;
+
+        drawBufferRes.loadMask();
     }
 
     ViewItem::ViewItem(WstrParam text, const D2D1_RECT_F& rect)
@@ -39,8 +41,6 @@ namespace d14engine::uikit
         addUIObject(m_content);
 
         if (m_content) m_content->transform(selfCoordRect());
-
-        drawBufferRes.loadMask();
     }
 
     void ViewItem::DrawBuffer::loadMask()
@@ -168,6 +168,9 @@ namespace d14engine::uikit
 
             auto& setting = getAppearance().main[(size_t)(m_enabled ? state : State::Idle)];
 
+            auto& mask = drawBufferRes.mask;
+            auto& background = setting.background;
+
             //--------------------------------------------------------------
             // 1. Grayscale text anti-aliasing:
             // The rendering result is independent of the target background,
@@ -177,9 +180,6 @@ namespace d14engine::uikit
             // The rendering result depends on the target background color,
             // so you must set an opaque background (better a value >= 0.5).
             //--------------------------------------------------------------
-            auto& mask = drawBufferRes.mask;
-            auto& background = setting.background;
-
             mask.color = background.color;
             mask.color.a = background.opacity;
 
@@ -267,9 +267,9 @@ namespace d14engine::uikit
     {
         Panel::onSizeHelper(e);
 
-        if (m_content) m_content->transform(selfCoordRect());
-
         drawBufferRes.loadMask();
+
+        if (m_content) m_content->transform(selfCoordRect());
     }
 
     void ViewItem::onChangeThemeStyleHelper(const ThemeStyle& style)
