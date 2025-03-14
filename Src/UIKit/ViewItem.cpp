@@ -40,7 +40,7 @@ namespace d14engine::uikit
 
         if (m_content) m_content->transform(selfCoordRect());
 
-        drawBuffer.loadMask();
+        drawBufferRes.loadMask();
     }
 
     void ViewItem::DrawBuffer::loadMask()
@@ -177,20 +177,21 @@ namespace d14engine::uikit
             // The rendering result depends on the target background color,
             // so you must set an opaque background (better a value >= 0.5).
             //--------------------------------------------------------------
+            auto& mask = drawBufferRes.mask;
             auto& background = setting.background;
 
-            drawBuffer.mask.color = background.color;
-            drawBuffer.mask.color.a = background.opacity;
+            mask.color = background.color;
+            mask.color.a = background.opacity;
 
             auto maskDrawTrans = D2D1::Matrix3x2F::Translation
             (
                 -m_absoluteRect.left, -m_absoluteRect.top
             );
-            drawBuffer.mask.beginDraw(rndr->d2d1DeviceContext(), maskDrawTrans);
+            mask.beginDraw(rndr->d2d1DeviceContext(), maskDrawTrans);
             {
                 m_content->onRendererDrawD2d1Object(rndr);
             }
-            drawBuffer.mask.endDraw(rndr->d2d1DeviceContext());
+            mask.endDraw(rndr->d2d1DeviceContext());
         }
     }
 
@@ -214,12 +215,14 @@ namespace d14engine::uikit
         /////////////
         if (m_content && m_content->isD2d1ObjectVisible())
         {
+            auto& mask = drawBufferRes.mask;
+
             rndr->d2d1DeviceContext()->DrawBitmap
             (
-            /* bitmap               */ drawBuffer.mask.data.Get(),
+            /* bitmap               */ mask.data.Get(),
             /* destinationRectangle */ m_absoluteRect,
-            /* opacity              */ drawBuffer.mask.opacity,
-            /* interpolationMode    */ drawBuffer.mask.getInterpolationMode()
+            /* opacity              */ mask.opacity,
+            /* interpolationMode    */ mask.getInterpolationMode()
             );
         }
         /////////////
@@ -266,7 +269,7 @@ namespace d14engine::uikit
 
         if (m_content) m_content->transform(selfCoordRect());
 
-        drawBuffer.loadMask();
+        drawBufferRes.loadMask();
     }
 
     void ViewItem::onChangeThemeStyleHelper(const ThemeStyle& style)

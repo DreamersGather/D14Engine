@@ -39,7 +39,7 @@ namespace d14engine::uikit
             MaskObject mask = {};
             void loadMask();
         }
-        drawBuffer{ this };
+        drawBufferRes{ this };
 
         /////////////////////////
         // Graphics Components //
