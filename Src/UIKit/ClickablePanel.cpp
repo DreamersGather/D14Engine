@@ -59,9 +59,9 @@ namespace d14engine::uikit
         Event be = {};
         be.cursorPoint = e.cursorPoint;
 
-        bool leftDown = e.state.leftDown() || (!enableDoubleClick && e.state.leftDblclk());
-        bool rightDown = e.state.rightDown() || (!enableDoubleClick && e.state.rightDblclk());
-        bool middleDown = e.state.middleDown() || (!enableDoubleClick && e.state.middleDblclk());
+        bool leftDown = e.state.leftDown() || (captureDoubleClick && e.state.leftDblclk());
+        bool rightDown = e.state.rightDown() || (captureDoubleClick && e.state.rightDblclk());
+        bool middleDown = e.state.middleDown() || (captureDoubleClick && e.state.middleDblclk());
 
         if (leftDown || rightDown || middleDown)
         {

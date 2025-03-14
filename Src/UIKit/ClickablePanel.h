@@ -10,8 +10,6 @@ namespace d14engine::uikit
     {
         using Panel::Panel;
 
-        void setEnabled(bool value) override;
-
         struct Event : MouseEvent
         {
             enum class Flag { Unknown, Left, Right, Middle } flag = Flag::Unknown;
@@ -42,13 +40,13 @@ namespace d14engine::uikit
         // events in Panel::onMouseButton.
         //
         // ClickablePanel::onMouseButtonPress is designed to only receive
-        // mouse-down events (no mouse-double-click), so if enableDoubleClick
-        // is true, ClickablePanel::onMouseButtonPress will not be triggered
+        // mouse-down events (no mouse-double-click), so if captureDoubleClick
+        // is false, ClickablePanel::onMouseButtonPress will not be triggered
         // when double clicking the mouse button, otherwise every native
         // mouse-double-click event will be translated into mouse-down before
         // delivering to ClickablePanel::onMouseButtonPress.
 
-        bool enableDoubleClick = false;
+        bool captureDoubleClick = false;
 
     protected:
         // Since there is no capture mechanism in the UI event system, so the
@@ -65,33 +63,106 @@ namespace d14engine::uikit
 
         bool m_hasLeftPressed = false, m_hasRightPressed = false, m_hasMiddlePressed = false;
 
-    protected:
+        /////////////////////////
+        // Interface Overrides //
+        /////////////////////////
+
+    public:
+        //------------------------------------------------------------------
         // Panel
-        void onMouseLeaveHelper(MouseMoveEvent& e) override;
-        void onMouseLeaveWrapper(MouseMoveEvent& e);
+        //------------------------------------------------------------------
 
-        void onMouseButtonHelper(MouseButtonEvent& e) override;
-        void onMouseButtonWrapper(MouseButtonEvent& e);
+        void setEnabled(bool value) override;
 
+    protected:
         // Introduce onXxxWrapper to avoid duplicated calls of the virtual
         // methods in the multiple inheritance.
         //
         // For example, suppose we define a virtual method called "func()":
         //
-        // A { virtual func() { A's work... } }
-        // B1 -> A { func() override { A::func(); B1's work... } }
-        // B2 -> A { func() override { A::func(); B2's work... } }
-        // C -> B1, B2 { func() override { ???::func(); C's work... } }
+        // class A
+        // {
+        //     virtual void func()
+        //     {
+        //         // A's work...
+        //     }
+        // };
+        // class B1 : public A
+        // {
+        //     void func() override
+        //     {
+        //         A::func();
+        //         // B1's work...
+        //     }
+        // };
+        // class B2 : public A
+        // {
+        //     void func() override
+        //     {
+        //         A::func();
+        //         // B2's work...
+        //     }
+        // };
+        // class C : public B1, public B2
+        // {
+        //     void func() override
+        //     {
+        //         ???::func();
+        //         // C's work...
+        //     }
+        // };
         //
         // If we call B1::func() and B2::func() in C::func(), then A::func()
         // will be called twice, which is obviously not the expected behavior.
         //
         // Introduce an intermediate method to easily solve this problem:
         //
-        // B1 -> A { ... funcWrapper() { B1's work... } }
-        // B2 -> A { ... funcWrapper() { B2's work... } }
-        // C -> B1, B2 { func() override { A::func(); B1/B2::funcWrapper(); C's work... } }
+        // class B1 : public A
+        // {
+        //     void wrapper()
+        //     {
+        //         // B1's work...
+        //     }
+        //     void func() override
+        //     {
+        //         A::func();
+        //         wrapper();
+        //     }
+        // };
+        // class B2 : public A
+        // {
+        //     void wrapper()
+        //     {
+        //         // B2's work...
+        //     }
+        //     void func() override
+        //     {
+        //         A::func();
+        //         wrapper();
+        //     }
+        // };
+        // class C : public B1, public B2
+        // {
+        //     void func() override
+        //     {
+        //         A::func();
+        //         B1::wrapper();
+        //         B2::wrapper();
+        //         // C's work...
+        //     }
+        // };
 
         void setEnabledWrapper(bool value);
+
+    protected:
+        //------------------------------------------------------------------
+        // Panel
+        //------------------------------------------------------------------
+
+        void onMouseLeaveHelper(MouseMoveEvent& e) override;
+        void onMouseLeaveWrapper(MouseMoveEvent& e);
+
+        void onMouseButtonHelper(MouseButtonEvent& e) override;
+        void onMouseButtonWrapper(MouseButtonEvent& e);
     };
 }
