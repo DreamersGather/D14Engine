@@ -37,7 +37,6 @@ namespace d14engine::uikit
             using MasterPtr::MasterPtr;
 
             MaskObject mask = {};
-
             void loadMask();
         }
         drawBuffer{ this };

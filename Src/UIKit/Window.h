@@ -41,9 +41,9 @@ namespace d14engine::uikit
             using MasterPtr::MasterPtr;
 
             ShadowMask mask = {};
-            ComPtr<ID2D1BitmapBrush1> brush = {};
-
             void loadMask();
+
+            ComPtr<ID2D1BitmapBrush1> brush = {};
             void loadBrush();
         }
         drawBuffer{ this };
@@ -53,7 +53,6 @@ namespace d14engine::uikit
             using MasterPtr::MasterPtr;
 
             ComPtr<ID2D1LinearGradientBrush> brush = {};
-
             void loadBrush();
         }
         decorativeBar{ this };
