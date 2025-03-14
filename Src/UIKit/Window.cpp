@@ -31,6 +31,11 @@ namespace d14engine::uikit
     {
         m_takeOverChildrenDrawing = true;
 
+        drawBufferRes.loadMask();
+        drawBufferRes.loadBrush();
+
+        decorativeBarRes.loadBrush();
+
         transform(math_utils::adaptMaxSize(rect, minimalSize()));
     }
 
@@ -57,11 +62,6 @@ namespace d14engine::uikit
         addUIObject(m_caption);
 
         m_caption->transform(captionTitleSelfcoordRect());
-
-        drawBufferRes.loadMask();
-        drawBufferRes.loadBrush();
-
-        decorativeBarRes.loadBrush();
     }
 
     void Window::DrawBufferRes::loadMask()
@@ -803,11 +803,11 @@ namespace d14engine::uikit
     {
         ResizablePanel::onSizeHelper(e);
 
-        m_caption->transform(captionTitleSelfcoordRect());
-        if (m_content) m_content->transform(clientAreaSelfcoordRect());
-
         drawBufferRes.loadMask();
         drawBufferRes.loadBrush();
+
+        m_caption->transform(captionTitleSelfcoordRect());
+        if (m_content) m_content->transform(clientAreaSelfcoordRect());
     }
 
     void Window::onChangeThemeStyleHelper(const ThemeStyle& style)
