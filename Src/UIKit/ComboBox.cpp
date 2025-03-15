@@ -30,7 +30,7 @@ namespace d14engine::uikit
         };
         m_dropDownMenu->setBackgroundTriggerPanel(true);
 
-        auto& geoSetting = m_dropDownMenu->getAppearance().geometry;
+        auto& geoSetting = m_dropDownMenu->appearance().geometry;
         geoSetting.extension = geoSetting.roundRadius = roundRadius;
 
         // The shadow bitmap of the drop-down menu will be loaded later
@@ -144,7 +144,7 @@ namespace d14engine::uikit
         // Drop-down Arrow //
         /////////////////////
 
-        auto& arrowSetting = getAppearance().arrow;
+        auto& arrowSetting = appearance().arrow;
         auto& arrowGeometry = arrowSetting.geometry;
         auto& arrowBackground = m_enabled ? arrowSetting.background : arrowSetting.secondaryBackground;
 
@@ -182,7 +182,7 @@ namespace d14engine::uikit
     {
         Button::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(FlatButton::getAppearance(), style.name);
+        appearance().changeTheme(FlatButton::appearance(), style.name);
     }
 
     void ComboBox::onMouseButtonReleaseHelper(ClickablePanel::Event& e)

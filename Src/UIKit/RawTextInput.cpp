@@ -248,8 +248,8 @@ namespace d14engine::uikit
         // The rendering result depends on the target background color,
         // so you must set an opaque background (better a value >= 0.5).
         //--------------------------------------------------------------
-        m_visibleTextMask.color = Label::getAppearance().background.color;
-        m_visibleTextMask.color.a = Label::getAppearance().background.opacity;
+        m_visibleTextMask.color = Label::appearance().background.color;
+        m_visibleTextMask.color.a = Label::appearance().background.opacity;
 
         m_visibleTextMask.beginDraw(rndr->d2d1DeviceContext());
         {
@@ -332,21 +332,21 @@ namespace d14engine::uikit
         // Bottom Line //
         /////////////////
 
-        auto& bottomLineBkgn = getAppearance().bottomLine.background;
+        auto& bottomLineBkgn = appearance().bottomLine.background;
 
         resource_utils::solidColorBrush()->SetColor(bottomLineBkgn.color);
         resource_utils::solidColorBrush()->SetOpacity(bottomLineBkgn.opacity);
 
         auto point0 = math_utils::offset(math_utils::leftBottom(m_absoluteRect),
         {
-            roundRadiusX, getAppearance().bottomLine.bottomOffset
+            roundRadiusX, appearance().bottomLine.bottomOffset
         });
         auto point1 = math_utils::offset(math_utils::rightBottom(m_absoluteRect),
         {
-            -roundRadiusX, getAppearance().bottomLine.bottomOffset
+            -roundRadiusX, appearance().bottomLine.bottomOffset
         });
         auto brush = resource_utils::solidColorBrush();
-        float strokeWidth = getAppearance().bottomLine.strokeWidth;
+        float strokeWidth = appearance().bottomLine.strokeWidth;
 
         rndr->d2d1DeviceContext()->DrawLine(point0, point1, brush, strokeWidth);
     }
@@ -364,13 +364,13 @@ namespace d14engine::uikit
 
         if (style.name == L"Light")
         {
-            m_placeholder->getAppearance().foreground.color = D2D1::ColorF{ 0x8c8c8c };
+            m_placeholder->appearance().foreground.color = D2D1::ColorF{ 0x8c8c8c };
         }
         else if (style.name == L"Dark")
         {
-            m_placeholder->getAppearance().foreground.color = D2D1::ColorF{ 0xa6a6a6 };
+            m_placeholder->appearance().foreground.color = D2D1::ColorF{ 0xa6a6a6 };
         }
-        getAppearance().changeTheme(Label::getAppearance(), style.name);
+        appearance().changeTheme(Label::appearance(), style.name);
     }
 
     void RawTextInput::onKeyboardHelper(KeyboardEvent& e)

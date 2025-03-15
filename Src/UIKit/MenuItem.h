@@ -15,7 +15,7 @@ namespace d14engine::uikit
 
         using ViewItem::ViewItem;
 
-        _D14_SET_APPEARANCE_GETTER(MenuItem)
+        _D14_SET_APPEARANCE_PROPERTY(MenuItem)
 
     protected:
         WeakPtr<PopupMenu> m_parentMenu = {};

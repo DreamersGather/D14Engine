@@ -34,7 +34,7 @@ namespace d14engine::uikit
 
         void loadArrowIconStrokeStyle();
 
-        _D14_SET_APPEARANCE_GETTER(TreeViewItem)
+        _D14_SET_APPEARANCE_PROPERTY(TreeViewItem)
 
         void setEnabled(bool value) override;
 

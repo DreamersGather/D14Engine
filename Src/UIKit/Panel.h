@@ -44,6 +44,19 @@ namespace d14engine::uikit
 
         Function<void(Panel*)> f_onDestroy = {};
 
+        //------------------------------------------------------------------
+        // Some initialization processes depend on special operations,
+        // and thus they cannot be completed in the constructor of Panel:
+        //------------------------------------------------------------------
+        // 1. virtual methods:
+        //    The vtbl is not fully initialized at this time.
+        // 
+        // 2. enable_shared_from_this:
+        //    Some methods depend on it (such as addUIObject).
+        // 
+        //------------------------------------------------------------------
+        // These initializations should be moved into onInitializeFinish.
+        //------------------------------------------------------------------
         virtual void onInitializeFinish();
 
         // Return whether the UI object is released successfully.
@@ -285,8 +298,8 @@ namespace d14engine::uikit
     protected:
         struct TopmostPriority
         {
-            int d2d1Object = INT_MIN;
-            int uiObject = INT_MAX;
+            int d2d1Object = 0;
+            int uiObject = 0;
         }
         m_topmostPriority = {};
 

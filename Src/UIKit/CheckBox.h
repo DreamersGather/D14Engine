@@ -28,7 +28,7 @@ namespace d14engine::uikit
 
         void loadCheckedIconStrokeStyle();
 
-        _D14_SET_APPEARANCE_GETTER(CheckBox)
+        _D14_SET_APPEARANCE_PROPERTY(CheckBox)
 
         void setEnabled(bool value) override;
 

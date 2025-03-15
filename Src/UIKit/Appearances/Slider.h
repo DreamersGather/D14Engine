@@ -69,7 +69,7 @@ namespace d14engine::uikit::appearance
                 float offset = 12.0f;
 
                 int precision = 0;
-                bool isResident = false;
+                bool resident = false;
 
                 struct Shadow
                 {
@@ -155,6 +155,6 @@ namespace d14engine::uikit::appearance
             };
             _D14_SET_THEME_DATA_MAP_DECL
         }
-        appearance = {};
+        appearanceData = {};
     };
 }

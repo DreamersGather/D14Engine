@@ -104,7 +104,7 @@ namespace d14engine::uikit
     {
         if (source)
         {
-            getAppearance() = source->getAppearance();
+            appearance() = source->appearance();
 
             ComPtr<IDWriteTextFormat> textFormat = {};
             source->m_textLayout.As(&textFormat);
@@ -308,15 +308,15 @@ do { \
 
     void Label::drawBackground(renderer::Renderer* rndr)
     {
-        resource_utils::solidColorBrush()->SetColor(getAppearance().background.color);
-        resource_utils::solidColorBrush()->SetOpacity(getAppearance().background.opacity);
+        resource_utils::solidColorBrush()->SetColor(appearance().background.color);
+        resource_utils::solidColorBrush()->SetOpacity(appearance().background.opacity);
 
         Panel::drawBackground(rndr);
     }
 
     void Label::drawText(renderer::Renderer* rndr)
     {
-        auto& foreground = m_enabled ? getAppearance().foreground : getAppearance().secondaryForeground;
+        auto& foreground = m_enabled ? appearance().foreground : appearance().secondaryForeground;
 
         resource_utils::solidColorBrush()->SetColor(foreground.color);
         resource_utils::solidColorBrush()->SetOpacity(foreground.opacity);
@@ -371,7 +371,7 @@ do { \
 
     void Label::drawOutline(renderer::Renderer* rndr)
     {
-        auto& stroke = getAppearance().stroke;
+        auto& stroke = appearance().stroke;
 
         resource_utils::solidColorBrush()->SetColor(stroke.color);
         resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
@@ -406,6 +406,6 @@ do { \
     {
         Panel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 }

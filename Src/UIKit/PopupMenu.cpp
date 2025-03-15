@@ -24,12 +24,12 @@ namespace d14engine::uikit
 
     D2D1_SIZE_F PopupMenu::extendedSize(const D2D1_SIZE_F& rawSize) const
     {
-        return math_utils::increaseHeight(rawSize, +2.0f * getAppearance().geometry.extension);
+        return math_utils::increaseHeight(rawSize, +2.0f * appearance().geometry.extension);
     }
 
     D2D1_SIZE_F PopupMenu::narrowedSize(const D2D1_SIZE_F& rawSize) const
     {
-        return math_utils::increaseHeight(rawSize, -2.0f * getAppearance().geometry.extension);
+        return math_utils::increaseHeight(rawSize, -2.0f * appearance().geometry.extension);
     }
 
     void PopupMenu::onChangeActivity(bool value)
@@ -169,7 +169,7 @@ namespace d14engine::uikit
         }
         expectedOffset.y = std::max(expectedOffset.y, constrainedRectangle.top);
 
-        move(math_utils::increaseY(expectedOffset, getAppearance().geometry.extension));
+        move(math_utils::increaseY(expectedOffset, appearance().geometry.extension));
         setActivated(true); // Note a vast menu could still overflow in both directions.
     }
 
@@ -213,8 +213,8 @@ namespace d14engine::uikit
 
         shadow.beginDraw(rndr->d2d1DeviceContext());
         {
-            auto& geoSetting = getAppearance().geometry;
-            auto& shadowSetting = getAppearance().shadow;
+            auto& geoSetting = appearance().geometry;
+            auto& shadowSetting = appearance().shadow;
 
             resource_utils::solidColorBrush()->SetOpacity(1.0f);
 
@@ -241,8 +241,8 @@ namespace d14engine::uikit
         // Shadow //
         ////////////
 
-        auto& geoSetting = getAppearance().geometry;
-        auto& shadowSetting = getAppearance().shadow;
+        auto& geoSetting = appearance().geometry;
+        auto& shadowSetting = appearance().shadow;
 
         shadow.color = shadowSetting.color;
         shadow.standardDeviation = shadowSetting.standardDeviation;
@@ -262,7 +262,7 @@ namespace d14engine::uikit
         // Extension //
         ///////////////
 
-        auto& extBkgn = getAppearance().background;
+        auto& extBkgn = appearance().background;
 
         resource_utils::solidColorBrush()->SetColor(extBkgn.color);
         resource_utils::solidColorBrush()->SetOpacity(extBkgn.opacity);
@@ -296,7 +296,7 @@ namespace d14engine::uikit
     {
         WaterfallView::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 
     void PopupMenu::onMouseMoveHelper(MouseMoveEvent& e)

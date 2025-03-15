@@ -16,7 +16,7 @@ namespace d14engine::uikit
 
         MaskObject contentMask = {};
 
-        _D14_SET_APPEARANCE_GETTER(ScrollView)
+        _D14_SET_APPEARANCE_PROPERTY(ScrollView)
 
     public:
         void onStartThumbScrolling(const D2D1_POINT_2F& offset);

@@ -55,7 +55,7 @@ namespace d14engine::uikit
 
     D2D1_RECT_F ResizablePanel::sizingFrameExtendedRect(const D2D1_RECT_F& flatRect) const
     {
-        auto& frameExt = getAppearance().sizingFrame.extension;
+        auto& frameExt = appearance().sizingFrame.extension;
         return
         {
             flatRect.left   - (isLeftResizable   ? frameExt.left   : 0.0f),
@@ -141,28 +141,28 @@ namespace d14engine::uikit
 
     bool ResizablePanel::isHitLeftTopSizingCorner(const D2D1_POINT_2F& p) const
     {
-        auto& offset = getAppearance().sizingFrame.cornerOffset;
+        auto& offset = appearance().sizingFrame.cornerOffset;
         return (p.x < m_absoluteRect.left && p.y < m_absoluteRect.top + offset.left) ||
                (p.x < m_absoluteRect.left + offset.top && p.y < m_absoluteRect.top);
     }
 
     bool ResizablePanel::isHitLeftBottomSizingCorner(const D2D1_POINT_2F& p) const
     {
-        auto& offset = getAppearance().sizingFrame.cornerOffset;
+        auto& offset = appearance().sizingFrame.cornerOffset;
         return (p.x < m_absoluteRect.left && p.y > m_absoluteRect.bottom - offset.left) ||
                (p.x < m_absoluteRect.left + offset.bottom && p.y > m_absoluteRect.bottom);
     }
 
     bool ResizablePanel::isHitRightTopSizingCorner(const D2D1_POINT_2F& p) const
     {
-        auto& offset = getAppearance().sizingFrame.cornerOffset;
+        auto& offset = appearance().sizingFrame.cornerOffset;
         return (p.x > m_absoluteRect.right && p.y < m_absoluteRect.top + offset.right) ||
                (p.x > m_absoluteRect.right - offset.top && p.y < m_absoluteRect.top);
     }
 
     bool ResizablePanel::isHitRightBottomSizingCorner(const D2D1_POINT_2F& p) const
     {
-        auto& offset = getAppearance().sizingFrame.cornerOffset;
+        auto& offset = appearance().sizingFrame.cornerOffset;
         return (p.x > m_absoluteRect.right && p.y > m_absoluteRect.bottom - offset.right) ||
                (p.x > m_absoluteRect.right - offset.bottom && p.y > m_absoluteRect.bottom);
     }
@@ -175,7 +175,7 @@ namespace d14engine::uikit
 
         if (!enableDynamicSizing && isSizing())
         {
-            auto& frameSetting = getAppearance().staticSizingGuideFrame;
+            auto& frameSetting = appearance().staticSizingGuideFrame;
 
             resource_utils::solidColorBrush()->SetColor(frameSetting.background.color);
             resource_utils::solidColorBrush()->SetOpacity(frameSetting.background.opacity);
@@ -207,7 +207,7 @@ namespace d14engine::uikit
 
     void ResizablePanel::onChangeThemeStyleWrapper(const ThemeStyle& style)
     {
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 
     void ResizablePanel::onMouseMoveHelper(MouseMoveEvent& e)

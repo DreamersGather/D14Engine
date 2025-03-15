@@ -460,7 +460,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         {
             ui_sideLayout->setUIObjectPriority(1);
             ui_sideLayout->transform(564.0f, 0.0f, 436.0f, 564.0f);
-            ui_sideLayout->getAppearance().background.opacity = 1.0f;
+            ui_sideLayout->appearance().background.opacity = 1.0f;
             ui_sideLayout->setCellCount(8, 10);
             ui_sideLayout->setMargin(10.0f, 10.0f);
         }

@@ -32,7 +32,7 @@ namespace d14engine::uikit
 
         D2D1_RECT_F sizingFrameExtendedRect(const D2D1_RECT_F& flatRect) const;
 
-        _D14_SET_APPEARANCE_GETTER(ResizablePanel)
+        _D14_SET_APPEARANCE_PROPERTY(ResizablePanel)
 
     public:
         void onStartResizing();

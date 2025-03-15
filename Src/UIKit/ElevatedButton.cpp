@@ -38,7 +38,7 @@ namespace d14engine::uikit
 
         shadow.beginDraw(rndr->d2d1DeviceContext());
         {
-            auto& shadowSetting = getAppearance().shadow;
+            auto& shadowSetting = appearance().shadow;
 
             resource_utils::solidColorBrush()->SetOpacity(1.0f);
 
@@ -62,7 +62,7 @@ namespace d14engine::uikit
         // Shadow //
         ////////////
 
-        auto& shadowSetting = getAppearance().shadow;
+        auto& shadowSetting = appearance().shadow;
 
         shadow.color = shadowSetting.color[(size_t)m_state];
         shadow.standardDeviation = shadowSetting.standardDeviation;
@@ -93,6 +93,6 @@ namespace d14engine::uikit
     {
         FilledButton::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 }

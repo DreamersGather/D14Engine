@@ -22,7 +22,7 @@ namespace d14engine::uikit
 
         ShadowMask shadow = {};
 
-        _D14_SET_APPEARANCE_GETTER(ElevatedButton)
+        _D14_SET_APPEARANCE_PROPERTY(ElevatedButton)
 
     protected:
         // IDrawObject2D

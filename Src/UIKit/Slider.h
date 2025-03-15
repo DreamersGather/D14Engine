@@ -5,15 +5,14 @@
 #include "Common/MathUtils/2D.h"
 
 #include "UIKit/Appearances/Slider.h"
-#include "UIKit/Panel.h"
 #include "UIKit/ShadowMask.h"
-#include "UIKit/ValuefulObject.h"
+#include "UIKit/SliderBase.h"
 
 namespace d14engine::uikit
 {
     struct Label;
 
-    struct Slider : appearance::Slider, Panel, ValuefulObject<float>
+    struct Slider : appearance::Slider, SliderBase
     {
         Slider(
             const D2D1_RECT_F& rect = {},
@@ -23,60 +22,62 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        ShadowMask handleShadow = {};
-        ShadowMask valueLabelMask = {};
+        _D14_SET_APPEARANCE_PROPERTY(Slider)
 
-        void loadHandleShadowBitmap();
-        virtual void loadValueLabelMaskBitmap() = 0;
+        //////////////////////
+        // Cached Resources //
+        //////////////////////
 
-        ComPtr<ID2D1PathGeometry> sideTrianglePathGeo = {};
+        using MasterPtr = cpp_lang_utils::EnableMasterPtr<Slider>;
 
-        void loadSideTrianglePathGeo();
-
-        virtual D2D1_RECT_F thumbAreaRect(const D2D1_RECT_F& flatRect) const = 0;
-
-        _D14_SET_APPEARANCE_GETTER(Slider)
-
-    public:
-        void onStartSliding(float value);
-
-        Function<void(Slider*, float)> f_onStartSliding = {};
-
-        void onEndSliding(float value);
-
-        Function<void(Slider*, float)> f_onEndSliding = {};
-
-    protected:
-        void onStartSlidingHelper(float value);
-        void onEndSlidingHelper(float value);
-
-    public:
-        enum class StepMode
+        struct HandleRes : MasterPtr
         {
-            Continuous, Discrete
+            using MasterPtr::MasterPtr;
+
+            ShadowMask shadow = {};
+            void loadShadow();
         }
-        stepMode = StepMode::Continuous;
+        handleRes{ this };
 
-        float stepInterval = 0.0f;
+        struct ValueLabelRes : MasterPtr
+        {
+            using MasterPtr::MasterPtr;
 
-    public:
-        bool setValue(float value) override;
-        bool setMinValue(float value) override;
-        bool setMaxValue(float value) override;
+            ShadowMask shadowMask = {};
+            Function<void()> loadShadowMask = {};
 
+            MaskObject& mask();
+            ShadowMask& shadow();
+        }
+        valueLabelRes{ this };
+
+        struct SideTriangleRes : MasterPtr
+        {
+            using MasterPtr::MasterPtr;
+
+            ComPtr<ID2D1PathGeometry> pathGeo = {};
+            void loadPathGeo();
+        }
+        sideTriangleRes{ this };
+
+        /////////////////////////
+        // Graphics Components //
+        /////////////////////////
+
+        //------------------------------------------------------------------
+        // Children Objects
+        //------------------------------------------------------------------
     protected:
-        bool m_isSliding = false;
-
         SharedPtr<Label> m_valueLabel = {};
 
     public:
         const SharedPtr<Label>& valueLabel() const;
 
+        //------------------------------------------------------------------
+        // Drawing Properties
+        //------------------------------------------------------------------
     protected:
-        virtual D2D1_POINT_2F valueToGeometryOffset(float value) const = 0;
-        virtual float geometryOffsetToValue(const D2D1_POINT_2F& offset) const = 0;
-
-        void updateValue(const D2D1_POINT_2F& offset);
+        virtual D2D1_RECT_F thumbAreaRect(const D2D1_RECT_F& flatRect) const = 0;
 
         virtual D2D1_RECT_F valueLabelMainRectInShadow() const = 0;
 
@@ -92,24 +93,33 @@ namespace d14engine::uikit
 
         virtual D2D1_RECT_F valueLabelShadowSelfCoordRect() const = 0;
 
+        /////////////////////////
+        // Interface Overrides //
+        /////////////////////////
+
     protected:
+        //------------------------------------------------------------------
         // IDrawObject2D
+        //------------------------------------------------------------------
+
         void onRendererDrawD2d1LayerHelper(renderer::Renderer* rndr) override;
 
         void onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr) override;
 
+        //------------------------------------------------------------------
         // Panel
+        //------------------------------------------------------------------
+
         bool isHitHelper(const Event::Point& p) const override;
 
         void onSizeHelper(SizeEvent& e) override;
 
         void onChangeThemeStyleHelper(const ThemeStyle& style) override;
 
-        void onMouseMoveHelper(MouseMoveEvent& e) override;
-
-        void onMouseButtonHelper(MouseButtonEvent& e) override;
-
+        //------------------------------------------------------------------
         // ValuefulObject
+        //------------------------------------------------------------------
+
         void onValueChangeHelper(float value) override;
     };
 }

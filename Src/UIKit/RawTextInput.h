@@ -15,7 +15,7 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        _D14_SET_APPEARANCE_GETTER(RawTextInput)
+        _D14_SET_APPEARANCE_PROPERTY(RawTextInput)
 
         const bool multiline = {};
 

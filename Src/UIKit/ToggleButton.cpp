@@ -53,8 +53,8 @@ namespace d14engine::uikit
     {
         if (StatefulObject::m_state.activeFlag == Activated)
         {
-            auto& dstSetting = Button::getAppearance();
-            auto& srcSetting = getAppearance().main[(size_t)Button::m_state];
+            auto& dstSetting = Button::appearance();
+            auto& srcSetting = appearance().main[(size_t)Button::m_state];
 
             dstSetting.foreground = srcSetting.foreground;
             dstSetting.background = srcSetting.background;
@@ -69,7 +69,7 @@ namespace d14engine::uikit
     {
         FilledButton::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 
     void ToggleButton::onMouseButtonReleaseHelper(Button::Event& e)

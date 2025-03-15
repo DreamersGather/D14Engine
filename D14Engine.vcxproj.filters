@@ -355,7 +355,10 @@
     <ClCompile Include="Src\Renderer\InfoUtils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Test\UIKit\ColorfulCube\ColorfulCube.cpp">
+    <ClCompile Include="Src\UIKit\SliderBase.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test\UIKit\SimpleEditor\SimpleEditor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -784,6 +787,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\Renderer\InfoUtils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\UIKit\SliderBase.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

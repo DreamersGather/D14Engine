@@ -57,7 +57,7 @@ D14_SET_APP_ENTRY(mainEditor)
             ui_centerLayout->addElement(ui_tabGroup, geoInfo);
 
 #define SET_CARD_SIZE(State, Width, Height) \
-    ui_tabGroup->getAppearance().tabBar.card.main \
+    ui_tabGroup->appearance().tabBar.card.main \
     [(size_t)TabGroup::CardState::State].geometry.size = { Width, Height }
 
             SET_CARD_SIZE(Dormant, 250.0f, 32.0f);
@@ -68,7 +68,7 @@ D14_SET_APP_ENTRY(mainEditor)
             ui_tabGroup->activeCard.loadMask();
             ui_tabGroup->activeCard.loadPathGeo();
 
-            auto& barAppear = ui_tabGroup->getAppearance().tabBar;
+            auto& barAppear = ui_tabGroup->appearance().tabBar;
 
             barAppear.geometry.height = 40.0f;
             barAppear.separator.geometry.size.height = 24.0f;

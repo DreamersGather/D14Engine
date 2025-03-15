@@ -31,12 +31,16 @@ namespace d14engine::uikit
     {
         m_takeOverChildrenDrawing = true;
 
-        drawBufferRes.loadMask();
+        transform(math_utils::adaptMaxSize(rect, minimalSize()));
+
+        ///////////////////////////
+        // Load Cached Resources //
+        ///////////////////////////
+
+        drawBufferRes.loadShadowMask();
         drawBufferRes.loadBrush();
 
         decorativeBarRes.loadBrush();
-
-        transform(math_utils::adaptMaxSize(rect, minimalSize()));
     }
 
     Window::Window(
@@ -53,7 +57,11 @@ namespace d14engine::uikit
 
     void Window::onInitializeFinish()
     {
-        ResizablePanel::onInitializeFinish();
+        Panel::onInitializeFinish();
+
+        ///////////////////////////
+        // Init Children Objects //
+        ///////////////////////////
 
         if (!m_caption)
         {
@@ -64,12 +72,22 @@ namespace d14engine::uikit
         m_caption->transform(captionTitleSelfcoordRect());
     }
 
-    void Window::DrawBufferRes::loadMask()
+    void Window::DrawBufferRes::loadShadowMask()
     {
         Window* w = m_master;
         THROW_IF_NULL(w);
 
-        mask.loadBitmap(w->size());
+        shadowMask.loadBitmap(w->size());
+    }
+
+    MaskObject& Window::DrawBufferRes::mask()
+    {
+        return shadowMask;
+    }
+
+    ShadowMask& Window::DrawBufferRes::shadow()
+    {
+        return shadowMask;
     }
 
     void Window::DrawBufferRes::loadBrush()
@@ -82,7 +100,7 @@ namespace d14engine::uikit
 
         THROW_IF_FAILED(context->CreateBitmapBrush
         (
-        /* bitmap      */ mask.data.Get(),
+        /* bitmap      */ mask().data.Get(),
         /* bitmapBrush */ &brush
         ));
     }
@@ -94,7 +112,7 @@ namespace d14engine::uikit
 
         THROW_IF_NULL(Application::g_app);
 
-        auto& colors = w->getAppearance().decorativeBar.gradientColors;
+        auto& colors = w->appearance().decorativeBar.gradientColors;
         D2D1_GRADIENT_STOP stop[] =
         {
             { 0.0f, colors[0] },
@@ -402,7 +420,7 @@ namespace d14engine::uikit
 
     void Window::setIconBrushState(ButtonState state)
     {
-        auto& foreground = getAppearance().buttonPanel[(size_t)state].foreground;
+        auto& foreground = appearance().buttonPanel[(size_t)state].foreground;
 
         resource_utils::solidColorBrush()->SetColor(foreground.color);
         resource_utils::solidColorBrush()->SetOpacity(foreground.opacity);
@@ -410,7 +428,7 @@ namespace d14engine::uikit
 
     void Window::setButtonBrushState(ButtonState state)
     {
-        auto& background = getAppearance().buttonPanel[(size_t)state].background;
+        auto& background = appearance().buttonPanel[(size_t)state].background;
 
         resource_utils::solidColorBrush()->SetColor(background.color);
         resource_utils::solidColorBrush()->SetOpacity(background.opacity);
@@ -428,8 +446,6 @@ namespace d14engine::uikit
 
     void Window::handleMouseMoveForRegisteredTabGroups(MouseMoveEvent& e)
     {
-        auto& p = e.cursorPoint;
-
         associatedTabGroup.reset();
         if (!m_isDragging) return;
 
@@ -438,7 +454,7 @@ namespace d14engine::uikit
             if (!tgItor->expired())
             {
                 auto tabGroup = tgItor->lock();
-                if (math_utils::isInside(p, tabGroup->cardBarExtendedCardBarAbsoluteRect()))
+                if (math_utils::isInside(e.cursorPoint, tabGroup->cardBarExtendedCardBarAbsoluteRect()))
                 {
                     associatedTabGroup = tabGroup;
                     tabGroup->associatedWindow = std::dynamic_pointer_cast<Window>(shared_from_this());
@@ -509,7 +525,7 @@ namespace d14engine::uikit
     {
         Panel::drawChildrenLayers(rndr);
 
-        auto& mask = drawBufferRes.mask;
+        auto& mask = drawBufferRes.mask();
 
         auto maskDrawTrans = D2D1::Matrix3x2F::Translation
         (
@@ -521,7 +537,7 @@ namespace d14engine::uikit
             // Background //
             ////////////////
             {
-                auto& background = getAppearance().background;
+                auto& background = appearance().background;
 
                 resource_utils::solidColorBrush()->SetColor(background.color);
                 resource_utils::solidColorBrush()->SetOpacity(background.opacity);
@@ -536,7 +552,7 @@ namespace d14engine::uikit
                 // Caption Panel
                 //------------------------------------------------------------------
                 {
-                    auto& background = getAppearance().captionPanel.background;
+                    auto& background = appearance().captionPanel.background;
 
                     resource_utils::solidColorBrush()->SetColor(background.color);
                     resource_utils::solidColorBrush()->SetOpacity(background.opacity);
@@ -576,6 +592,7 @@ namespace d14engine::uikit
                 //------------------------------------------------------------------
                 // Minimize Button
                 //------------------------------------------------------------------
+
                 if (button1Enabled)
                 {
                     auto state = getButton1State(m_isButton1Hover, m_isButton1Down);
@@ -600,6 +617,7 @@ namespace d14engine::uikit
                 //------------------------------------------------------------------
                 // Maximize/Restore Button
                 //------------------------------------------------------------------
+
                 if (button2Enabled)
                 {
                     auto state = getButton1State(m_isButton2Hover, m_isButton2Down);
@@ -675,6 +693,7 @@ namespace d14engine::uikit
                 //------------------------------------------------------------------
                 // Close Button
                 //------------------------------------------------------------------
+                
                 if (button3Enabled)
                 {
                     auto state = getButton3State(m_isButton3Hover, m_isButton3Down);
@@ -682,31 +701,35 @@ namespace d14engine::uikit
                     setButtonBrushState(state);
 
                     // Background
-                    rndr->d2d1DeviceContext()->FillRectangle
-                    (
-                    /* rect  */ closeButtonAbsoluteRect(),
-                    /* brush */ resource_utils::solidColorBrush()
-                    );
-                    setIconBrushState(state);
+                    {
+                        rndr->d2d1DeviceContext()->FillRectangle
+                        (
+                        /* rect  */ closeButtonAbsoluteRect(),
+                        /* brush */ resource_utils::solidColorBrush()
+                        );
+                        setIconBrushState(state);
+                    }
+                    // Foreground
+                    {
+                        auto rect = closeIconAbsoluteRect();
 
-                    auto rect = closeIconAbsoluteRect();
-
-                    // Main Diagonal
-                    rndr->d2d1DeviceContext()->DrawLine
-                    (
-                    /* point0      */ { rect.left, rect.top },
-                    /* point1      */ { rect.right, rect.bottom },
-                    /* brush       */ resource_utils::solidColorBrush(),
-                    /* strokeWidth */ closeIconStrokeWidth()
-                    );
-                    // Back Diagonal
-                    rndr->d2d1DeviceContext()->DrawLine
-                    (
-                    /* point0      */ { rect.right, rect.top },
-                    /* point1      */ { rect.left, rect.bottom },
-                    /* brush       */ resource_utils::solidColorBrush(),
-                    /* strokeWidth */ closeIconStrokeWidth()
-                    );
+                        // Main Diagonal
+                        rndr->d2d1DeviceContext()->DrawLine
+                        (
+                        /* point0      */ { rect.left, rect.top },
+                        /* point1      */ { rect.right, rect.bottom },
+                        /* brush       */ resource_utils::solidColorBrush(),
+                        /* strokeWidth */ closeIconStrokeWidth()
+                        );
+                        // Back Diagonal
+                        rndr->d2d1DeviceContext()->DrawLine
+                        (
+                        /* point0      */ { rect.right, rect.top },
+                        /* point1      */ { rect.left, rect.bottom },
+                        /* brush       */ resource_utils::solidColorBrush(),
+                        /* strokeWidth */ closeIconStrokeWidth()
+                        );
+                    }
                 }
             }
             //////////////
@@ -721,39 +744,43 @@ namespace d14engine::uikit
 
     void Window::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        auto& mask = drawBufferRes.mask;
-        auto& brush = drawBufferRes.brush;
-
         ////////////
         // Shadow //
         ////////////
-        if (mask.enabled && associatedTabGroup.expired())
         {
-            auto& shadow = getAppearance().shadow;
+            auto& shadow = drawBufferRes.shadow();
 
-            mask.color = shadow.color;
-            mask.standardDeviation = shadow.standardDeviation;
+            if (shadow.enabled && associatedTabGroup.expired())
+            {
+                auto& setting = appearance().shadow;
 
-            mask.configEffectInput(resource_utils::shadowEffect());
+                shadow.color = setting.color;
+                shadow.standardDeviation = setting.standardDeviation;
 
-            auto offset = math_utils::offset(absolutePosition(), mask.offset);
+                shadow.configEffectInput(resource_utils::shadowEffect());
 
-            rndr->d2d1DeviceContext()->DrawImage
-            (
-            /* effect       */ resource_utils::shadowEffect(),
-            /* targetOffset */ offset
-            );
+                auto offset = math_utils::offset(absolutePosition(), shadow.offset);
+
+                rndr->d2d1DeviceContext()->DrawImage
+                (
+                /* effect       */ resource_utils::shadowEffect(),
+                /* targetOffset */ offset
+                );
+            }
         }
         /////////////
         // Content //
         /////////////
         {
+            auto& mask = drawBufferRes.mask();
+            auto& brush = drawBufferRes.brush;
+
             float maskOpacity = {};
             if (associatedTabGroup.expired())
             {
                 maskOpacity = mask.opacity;
             }
-            else maskOpacity = getAppearance().maskOpacityAboveTabGroup;
+            else maskOpacity = appearance().maskOpacityAboveTabGroup;
 
             brush->SetOpacity(maskOpacity);
 
@@ -774,7 +801,7 @@ namespace d14engine::uikit
         // Outline //
         /////////////
         {
-            auto& stroke = getAppearance().stroke;
+            auto& stroke = appearance().stroke;
 
             resource_utils::solidColorBrush()->SetColor(stroke.color);
             resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
@@ -803,8 +830,16 @@ namespace d14engine::uikit
     {
         ResizablePanel::onSizeHelper(e);
 
-        drawBufferRes.loadMask();
+        /////////////////////////////
+        // Reload Cached Resources //
+        /////////////////////////////
+
+        drawBufferRes.loadShadowMask();
         drawBufferRes.loadBrush();
+
+        /////////////////////////////
+        // Update Children Objects //
+        /////////////////////////////
 
         m_caption->transform(captionTitleSelfcoordRect());
         if (m_content) m_content->transform(clientAreaSelfcoordRect());
@@ -814,7 +849,11 @@ namespace d14engine::uikit
     {
         ResizablePanel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
+
+        /////////////////////////////
+        // Reload Cached Resources //
+        /////////////////////////////
 
         decorativeBarRes.loadBrush();
     }
@@ -886,8 +925,6 @@ namespace d14engine::uikit
                 moveTopmost();
             }
         }
-        auto& p = e.cursorPoint;
-
         if (e.state.leftDown() || e.state.leftDblclk())
         {
             if (!isPerformSpecialOperation())

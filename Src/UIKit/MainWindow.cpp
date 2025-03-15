@@ -24,13 +24,13 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        drawBuffer.mask.enabled = false;
+        drawBufferRes.shadow().enabled = false;
 
         // Try to adapt the fluent design of Windows 11.
         if (!setCornerState(Round) || !setBorderColor(DefaultColor))
         {
             // Fall back to the accent border for Windows 10.
-            getAppearance().stroke.opacity = 1.0f;
+            appearance().stroke.opacity = 1.0f;
         }
         draggingTarget = DraggingTarget::RootWindow;
 

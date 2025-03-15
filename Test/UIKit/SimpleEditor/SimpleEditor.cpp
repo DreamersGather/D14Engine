@@ -31,7 +31,7 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
             ui_mainWindow->moveTopmost();
-            ui_mainWindow->isMaximizeEnabled = false;
+            ui_mainWindow->maximizeButtonEnabled = false;
 
             ui_mainWindow->caption()->transform(300.0f, 0.0f, 376.0f, 32.0f);
         }
@@ -137,7 +137,7 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
                     L"Editable", L"✓"), math_utils::heightOnlyRect(40.0f)
                 )
             });
-            ui_inputContextMenu->childrenItems().back()->isInstant = false;
+            ui_inputContextMenu->items().back()->isInstant = false;
 
             ui_inputContextMenu->constrainedRectangle = { 0.0f, 0.0f, 800.0f, 600.0f };
 
@@ -222,7 +222,7 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
             {
                 if (!wk_mainBodyView.expired())
                 {
-                    wk_mainBodyView.lock()->setViewportOffsetDirect(offset);
+                    wk_mainBodyView.lock()->setViewportOffset(offset);
                 }
             };
             ui_inputContextMenu->f_onChangeActivity =

@@ -24,7 +24,7 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        _D14_SET_APPEARANCE_GETTER(ViewItem)
+        _D14_SET_APPEARANCE_PROPERTY(ViewItem)
 
         //////////////////////
         // Cached Resources //
@@ -32,7 +32,7 @@ namespace d14engine::uikit
 
         using MasterPtr = cpp_lang_utils::EnableMasterPtr<ViewItem>;
 
-        struct DrawBuffer : MasterPtr
+        struct DrawBufferRes : MasterPtr
         {
             using MasterPtr::MasterPtr;
 

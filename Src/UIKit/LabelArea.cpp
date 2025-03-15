@@ -36,7 +36,7 @@ namespace d14engine::uikit
         (
             (int)range.count, 0, std::max((int)m_text.size() - (int)m_hiliteRange.offset, 0)
         );
-        getAppearance().indicator.visibility = (m_hiliteRange.count == 0);
+        appearance().indicator.visibility = (m_hiliteRange.count == 0);
 
         m_hiliteRangeData = hitTestTextRange(
             (UINT32)m_hiliteRange.offset, (UINT32)m_hiliteRange.count, 0.0f, 0.0f);
@@ -77,7 +77,7 @@ namespace d14engine::uikit
 
     void LabelArea::onRendererUpdateObject2DHelper(Renderer* rndr)
     {
-        auto& animSetting = getAppearance().indicator.animation;
+        auto& animSetting = appearance().indicator.animation;
 
         auto deltaSecs = (float)rndr->timer()->deltaSecs();
         float blinkPeriod = animSetting.periodInSecs.blink;
@@ -95,7 +95,7 @@ namespace d14engine::uikit
 
     void LabelArea::drawHiliteRange(Renderer* rndr)
     {
-        auto& setting = getAppearance().hiliteRange;
+        auto& setting = appearance().hiliteRange;
 
         for (auto& rect : m_hiliteRangeData.metrics)
         {
@@ -138,7 +138,7 @@ namespace d14engine::uikit
 
     void LabelArea::drawIndicator(Renderer* rndr)
     {
-        auto& setting = getAppearance().indicator;
+        auto& setting = appearance().indicator;
 
         if (setting.visibility && m_showIndicator)
         {
@@ -182,7 +182,7 @@ namespace d14engine::uikit
     {
         Label::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 
     void LabelArea::onGetFocusHelper()

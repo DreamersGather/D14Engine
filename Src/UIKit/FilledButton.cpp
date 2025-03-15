@@ -29,6 +29,6 @@ namespace d14engine::uikit
     {
         Button::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(FlatButton::getAppearance(), style.name);
+        appearance().changeTheme(FlatButton::appearance(), style.name);
     }
 }

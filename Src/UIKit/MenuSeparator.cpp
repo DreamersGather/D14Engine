@@ -17,7 +17,7 @@ namespace d14engine::uikit
 
     void MenuSeparator::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        auto& bkgn = getAppearance().background;
+        auto& bkgn = appearance().background;
 
         resource_utils::solidColorBrush()->SetColor(bkgn.color);
         resource_utils::solidColorBrush()->SetOpacity(bkgn.opacity);
@@ -29,7 +29,7 @@ namespace d14engine::uikit
         /* point0      */ math_utils::leftCenter(bkgnRect),
         /* point1      */ math_utils::rightCenter(bkgnRect),
         /* brush       */ resource_utils::solidColorBrush(),
-        /* strokeWidth */ getAppearance().strokeWidth
+        /* strokeWidth */ appearance().strokeWidth
         );
     }
 
@@ -37,6 +37,6 @@ namespace d14engine::uikit
     {
         MenuItem::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(ViewItem::getAppearance(), style.name);
+        appearance().changeTheme(ViewItem::appearance(), style.name);
     }
 }

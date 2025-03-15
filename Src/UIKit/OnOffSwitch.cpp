@@ -88,7 +88,7 @@ namespace d14engine::uikit
 
     D2D1_RECT_F OnOffSwitch::handleAbsoluteRect() const
     {
-        auto& geoSetting = getAppearance().handle.geometry[m_state.index()];
+        auto& geoSetting = appearance().handle.geometry[m_state.index()];
 
         float leftOffset =
             m_animationTargetState != State::ActiveFlag::Finished ?
@@ -105,12 +105,12 @@ namespace d14engine::uikit
     void OnOffSwitch::onRendererUpdateObject2DHelper(Renderer* rndr)
     {
         auto deltaSecs = (float)rndr->timer()->deltaSecs();
-        auto& animSetting = getAppearance().handle.animation;
+        auto& animSetting = appearance().handle.animation;
 
         if (animSetting.enabled && m_animationTargetState != State::ActiveFlag::Finished)
         {
-            auto& geoSettingOn = getAppearance().handle.geometry[(size_t)State::Flag::OnDown];
-            auto& geoSettingOff = getAppearance().handle.geometry[(size_t)State::Flag::OffDown];
+            auto& geoSettingOn = appearance().handle.geometry[(size_t)State::Flag::OnDown];
+            auto& geoSettingOff = appearance().handle.geometry[(size_t)State::Flag::OffDown];
 
             float leftOffsetOn = geoSettingOn.getLeftOffset(width());
             float leftOffsetOff = geoSettingOff.getLeftOffset(width());
@@ -154,7 +154,7 @@ namespace d14engine::uikit
 
     void OnOffSwitch::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        auto& setting = getAppearance().main[m_state.index()];
+        auto& setting = appearance().main[m_state.index()];
 
         ////////////////
         // Background //
@@ -169,8 +169,8 @@ namespace d14engine::uikit
         // Handle //
         ////////////
 
-        auto& geoSetting = getAppearance().handle.geometry[m_state.index()];
-        auto& bkgnSetting = getAppearance().handle.background[m_state.index()];
+        auto& geoSetting = appearance().handle.geometry[m_state.index()];
+        auto& bkgnSetting = appearance().handle.background[m_state.index()];
 
         resource_utils::solidColorBrush()->SetColor(bkgnSetting.color);
         resource_utils::solidColorBrush()->SetOpacity(bkgnSetting.opacity);
@@ -208,7 +208,7 @@ namespace d14engine::uikit
     {
         ClickablePanel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 
     void OnOffSwitch::onMouseEnterHelper(MouseMoveEvent& e)
@@ -242,7 +242,7 @@ namespace d14engine::uikit
 
             auto targetState = m_stateDetail.on() ? Off : On;
 
-            getAppearance().handle.animation.enabled ?
+            appearance().handle.animation.enabled ?
                 setOnOffWithAnim(targetState) : setOnOff(targetState);
         }
     }

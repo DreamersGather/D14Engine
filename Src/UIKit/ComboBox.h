@@ -26,7 +26,7 @@ namespace d14engine::uikit
 
         void loadArrowIconStrokeStyle();
 
-        _D14_SET_APPEARANCE_GETTER(ComboBox)
+        _D14_SET_APPEARANCE_PROPERTY(ComboBox)
 
     public:
         void onSelectedChange(IconLabel* content);

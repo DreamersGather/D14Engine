@@ -17,7 +17,7 @@ namespace d14engine::uikit
             float roundRadius = 12.0f,
             const D2D1_RECT_F& rect = { 0.0f, 0.0f, 48.0f, 24.0f });
 
-        _D14_SET_APPEARANCE_GETTER(OnOffSwitch)
+        _D14_SET_APPEARANCE_PROPERTY(OnOffSwitch)
 
         void setEnabled(bool value) override;
 

@@ -24,11 +24,12 @@ namespace d14engine::uikit
         brush(brush),
         bitmap(bitmap)
     {
-        // Since we do not know anything about the priority context of the
-        // new UI object, it is a good idea to move to the bottom at first.
+        THROW_IF_NULL(Application::g_app);
 
-        ISortable<IDrawObject2D>::m_priority = INT_MIN;
-        ISortable<Panel>::m_priority = INT_MAX;
+        // Since we do not know anything about the priority context of the
+        // new UI object, it is a good idea to move to the middle at first.
+        ISortable<IDrawObject2D>::m_priority = 0;
+        ISortable<Panel>::m_priority = 0;
 
         updateAbsoluteRect();
     }
@@ -40,10 +41,10 @@ namespace d14engine::uikit
 
     void Panel::onInitializeFinish()
     {
-        THROW_IF_NULL(Application::g_app);
+        auto& app = Application::g_app;
 
-        onChangeThemeStyleHelper(Application::g_app->themeStyle());
-        onChangeLangLocaleHelper(Application::g_app->langLocale());
+        onChangeThemeStyleHelper(app->themeStyle());
+        onChangeLangLocaleHelper(app->langLocale());
     }
 
     bool Panel::release()

@@ -38,7 +38,7 @@ namespace d14engine::uikit
     {
         RawTextInput::onRendererUpdateObject2DHelper(rndr);
 
-        auto& animSetting = getAppearance().bottomLine.animation;
+        auto& animSetting = appearance().bottomLine.animation;
 
         auto deltaSecs = (float)rndr->timer()->deltaSecs();
         float totalDistance = width() - 2.0f * roundRadiusX;
@@ -53,8 +53,8 @@ namespace d14engine::uikit
 
     void TextInput::onRendererDrawD2d1LayerHelper(Renderer* rndr)
     {
-        auto& srcSetting = getAppearance().main[(size_t)m_state];
-        auto& dstSetting = Label::getAppearance();
+        auto& srcSetting = appearance().main[(size_t)m_state];
+        auto& dstSetting = Label::appearance();
 
         dstSetting.background = srcSetting.background;
         dstSetting.stroke = srcSetting.stroke;
@@ -68,8 +68,8 @@ namespace d14engine::uikit
         // Static Bottom Line //
         ////////////////////////
 
-        auto& srcBtlnSetting = getAppearance().bottomLine;
-        auto& dstSetting = RawTextInput::getAppearance();
+        auto& srcBtlnSetting = appearance().bottomLine;
+        auto& dstSetting = RawTextInput::appearance();
 
         dstSetting.bottomLine.bottomOffset = srcBtlnSetting.bottomOffset;
         dstSetting.bottomLine.background = srcBtlnSetting.background.Static[(size_t)m_state];
@@ -111,7 +111,7 @@ namespace d14engine::uikit
     {
         RawTextInput::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 
     void TextInput::onGetFocusHelper()
@@ -122,7 +122,7 @@ namespace d14engine::uikit
 
         m_state = State::Active;
 
-        if (!getAppearance().bottomLine.animation.enabled)
+        if (!appearance().bottomLine.animation.enabled)
         {
             m_dynamicBottomLineLength = width() - 2.0f * roundRadiusX;
         }

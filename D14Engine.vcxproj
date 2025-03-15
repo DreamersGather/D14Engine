@@ -910,6 +910,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\UIKit\SliderBase.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Src\Common\ResourcePack.cpp" />
     <ClCompile Include="Src\Editor\HOME.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
@@ -1065,7 +1071,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Test\UIKit\ColorfulCube\ColorfulCube.cpp" />
+    <ClCompile Include="Test\UIKit\SimpleEditor\SimpleEditor.cpp" />
     <None Include=".editorconfig" />
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
@@ -2096,6 +2102,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\UIKit\SliderBase.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Src\Common\CppLangUtils\EnumMagic.h" />
     <ClInclude Include="Src\Common\CppLangUtils\IndexIterator.h" />
     <ClInclude Include="Src\Common\CppLangUtils\EnableMasterPtr.h" />

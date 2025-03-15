@@ -28,7 +28,7 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        _D14_SET_APPEARANCE_GETTER(Window)
+        _D14_SET_APPEARANCE_PROPERTY(Window)
 
         //////////////////////
         // Cached Resources //
@@ -40,8 +40,11 @@ namespace d14engine::uikit
         {
             using MasterPtr::MasterPtr;
 
-            ShadowMask mask = {};
-            void loadMask();
+            ShadowMask shadowMask = {};
+            void loadShadowMask();
+
+            MaskObject& mask();
+            ShadowMask& shadow();
 
             ComPtr<ID2D1BitmapBrush1> brush = {};
             void loadBrush();

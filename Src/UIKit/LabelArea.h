@@ -13,7 +13,7 @@ namespace d14engine::uikit
     {
         LabelArea(WstrParam text = {}, const D2D_RECT_F& rect = {});
 
-        _D14_SET_APPEARANCE_GETTER(LabelArea)
+        _D14_SET_APPEARANCE_PROPERTY(LabelArea)
 
     protected:
         size_t m_hiliteRangeOrigin = 0;

@@ -23,7 +23,7 @@ namespace d14engine::uikit
         D2D1_SIZE_F extendedSize(const D2D1_SIZE_F& rawSize) const;
         D2D1_SIZE_F narrowedSize(const D2D1_SIZE_F& rawSize) const;
 
-        _D14_SET_APPEARANCE_GETTER(PopupMenu)
+        _D14_SET_APPEARANCE_PROPERTY(PopupMenu)
 
     public:
         void onChangeActivity(bool value);

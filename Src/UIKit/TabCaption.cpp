@@ -73,7 +73,7 @@ namespace d14engine::uikit
     {
         auto selfRect = selfCoordRect();
 
-        auto& title = getAppearance().title;
+        auto& title = appearance().title;
         D2D1_POINT_2F offset =
         {
             title.leftPadding, -title.rightPadding
@@ -85,7 +85,7 @@ namespace d14engine::uikit
     {
         auto rightTop = math_utils::rightTop(m_absoluteRect);
 
-        auto& buttonGeo = getAppearance().closeX.button.geometry;
+        auto& buttonGeo = appearance().closeX.button.geometry;
         D2D1_POINT_2F buttonOffset =
         {
             buttonGeo.rightOffset,
@@ -98,7 +98,7 @@ namespace d14engine::uikit
 
     D2D1_RECT_F TabCaption::closeIconAbsoluteRect() const
     {
-        auto& iconGeo = getAppearance().closeX.icon.geometry;
+        auto& iconGeo = appearance().closeX.icon.geometry;
 
         auto iconLeftTop = math_utils::offset
         (
@@ -112,7 +112,7 @@ namespace d14engine::uikit
         return math_utils::rect
         (
             closeButtonAbsolutePosition(),
-            getAppearance().closeX.button.geometry.size
+            appearance().closeX.button.geometry.size
         );
     }
 
@@ -133,7 +133,7 @@ namespace d14engine::uikit
             // Close Button //
             //////////////////
 
-            auto& buttonSetting = getAppearance().closeX.button;
+            auto& buttonSetting = appearance().closeX.button;
             auto& buttonBackground = buttonSetting.background[stateIndex];
 
             resource_utils::solidColorBrush()->SetColor(buttonBackground.color);
@@ -155,7 +155,7 @@ namespace d14engine::uikit
             // Close Icon //
             ////////////////
 
-            auto& iconSetting = getAppearance().closeX.icon;
+            auto& iconSetting = appearance().closeX.icon;
             auto& iconBackground = iconSetting.background[stateIndex];
 
             resource_utils::solidColorBrush()->SetColor(iconBackground.color);
@@ -196,7 +196,7 @@ namespace d14engine::uikit
     {
         Panel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 
     void TabCaption::onMouseMoveHelper(MouseMoveEvent& e)

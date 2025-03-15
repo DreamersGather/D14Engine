@@ -11,7 +11,7 @@ namespace d14engine::uikit
     {
         Label(WstrParam text = {}, const D2D_RECT_F& rect = {});
 
-        _D14_SET_APPEARANCE_GETTER(Label)
+        _D14_SET_APPEARANCE_PROPERTY(Label)
 
         static Wstring defaultTextFormatName;
 

@@ -16,6 +16,6 @@ namespace d14engine::uikit::appearance
 
             static ThemeDataMap g_themeData;
         }
-        appearance = {};
+        appearanceData = {};
     };
 }

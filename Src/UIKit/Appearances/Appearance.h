@@ -26,14 +26,14 @@ namespace d14engine::uikit::appearance
         virtual void changeTheme(WstrParam themeName) = 0;
     };
 
-#define _D14_SET_APPEARANCE_GETTER(Type_Name) \
-    appearance::Type_Name::Appearance& getAppearance() \
+#define _D14_SET_APPEARANCE_PROPERTY(Type_Name) \
+    appearance::Type_Name::Appearance& appearance() \
     { \
-        return appearance::Type_Name::appearance; \
+        return appearance::Type_Name::appearanceData; \
     } \
-    const appearance::Type_Name::Appearance& getAppearance() const \
+    const appearance::Type_Name::Appearance& appearance() const \
     { \
-        return appearance::Type_Name::appearance; \
+        return appearance::Type_Name::appearanceData; \
     }
 
 #define _D14_SET_THEME_DATA_MAP_DECL \

@@ -55,7 +55,7 @@ namespace d14engine::uikit
         D2D1_RECT_F cardBarExtendedAbsoluteRect() const;
         D2D1_RECT_F cardBarExtendedCardBarAbsoluteRect() const;
 
-        _D14_SET_APPEARANCE_GETTER(TabGroup)
+        _D14_SET_APPEARANCE_PROPERTY(TabGroup)
 
         float minimalWidth() const override;
 

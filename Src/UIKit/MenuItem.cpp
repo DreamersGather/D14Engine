@@ -62,7 +62,7 @@ namespace d14engine::uikit
 
         if (m_associatedMenu)
         {
-            auto& setting = getAppearance().arrow;
+            auto& setting = appearance().arrow;
 
             resource_utils::solidColorBrush()->SetColor(setting.background.color);
             resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
@@ -91,7 +91,7 @@ namespace d14engine::uikit
     {
         ViewItem::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(ViewItem::getAppearance(), style.name);
+        appearance().changeTheme(ViewItem::appearance(), style.name);
     }
 
     void MenuItem::onMouseButtonHelper(MouseButtonEvent& e)

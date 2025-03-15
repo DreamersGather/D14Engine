@@ -16,6 +16,6 @@ namespace d14engine::uikit::appearance
 
             _D14_REF_THEME_DATA_MAP_DECL(FlatButton)
         }
-        appearance = {};
+        appearanceData = {};
     };
 }

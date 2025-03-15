@@ -83,7 +83,7 @@ namespace d14engine::uikit
         // Background //
         ////////////////
 
-        auto& bkgn = getAppearance().background;
+        auto& bkgn = appearance().background;
 
         resource_utils::solidColorBrush()->SetColor(bkgn.color);
         resource_utils::solidColorBrush()->SetOpacity(bkgn.opacity);
@@ -94,10 +94,10 @@ namespace d14engine::uikit
         // Content //
         /////////////
 
-        auto& foreground = getAppearance().foreground;
+        auto& foreground = appearance().foreground;
 
         m_content->icon.bitmap.opacity = foreground.opacity;
-        m_content->label()->getAppearance().foreground = foreground;
+        m_content->label()->appearance().foreground = foreground;
 
         if (m_content->isD2d1ObjectVisible())
         {
@@ -108,7 +108,7 @@ namespace d14engine::uikit
         // Outline //
         /////////////
 
-        auto& stroke = getAppearance().stroke;
+        auto& stroke = appearance().stroke;
 
         resource_utils::solidColorBrush()->SetColor(stroke.color);
         resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
@@ -147,7 +147,7 @@ namespace d14engine::uikit
     {
         ClickablePanel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 
     void Button::onMouseEnterHelper(MouseMoveEvent& e)

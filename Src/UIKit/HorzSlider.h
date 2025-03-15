@@ -8,15 +8,35 @@ namespace d14engine::uikit
 {
     struct HorzSlider : Slider
     {
-        using Slider::Slider;
+        HorzSlider(
+            const D2D1_RECT_F& rect = {},
+            float value = 0.0f,
+            float minValue = 0.0f,
+            float maxValue = 100.0f);
 
-        void loadValueLabelMaskBitmap() override;
-
-        D2D1_RECT_F thumbAreaRect(const D2D1_RECT_F& flatRect) const override;
+        /////////////////////////
+        // Interface Overrides //
+        /////////////////////////
 
     protected:
-        D2D1_POINT_2F valueToGeometryOffset(float value) const override;
-        float geometryOffsetToValue(const D2D1_POINT_2F& offset) const override;
+        //------------------------------------------------------------------
+        // Panel
+        //------------------------------------------------------------------
+
+        void onSizeHelper(SizeEvent& e) override;
+
+        //------------------------------------------------------------------
+        // SliderBase
+        //------------------------------------------------------------------
+
+        D2D1_POINT_2F valueToOffset(float value) const override;
+        float offsetToValue(const D2D1_POINT_2F& offset) const override;
+
+        //------------------------------------------------------------------
+        // Slider
+        //------------------------------------------------------------------
+
+        D2D1_RECT_F thumbAreaRect(const D2D1_RECT_F& flatRect) const override;
 
         D2D1_RECT_F valueLabelMainRectInShadow() const override;
 

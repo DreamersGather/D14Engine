@@ -51,7 +51,7 @@ namespace d14engine::uikit
             float roundRadius = 0.0f,
             const D2D1_RECT_F& rect = {});
 
-        _D14_SET_APPEARANCE_GETTER(ToggleButton)
+        _D14_SET_APPEARANCE_PROPERTY(ToggleButton)
 
     public:
         constexpr static auto Activated = StatefulObject::State::ActiveFlag::Activated;

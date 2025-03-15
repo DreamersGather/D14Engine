@@ -52,7 +52,7 @@ namespace d14engine::uikit
         TabGroup* tg = m_master;
         THROW_IF_NULL(tg);
 
-        auto& setting = tg->getAppearance().tabBar.card.main[(size_t)CardState::Active];
+        auto& setting = tg->appearance().tabBar.card.main[(size_t)CardState::Active];
 
         mask.loadBitmap(setting.geometry.size);
     }
@@ -67,7 +67,7 @@ namespace d14engine::uikit
         auto factory = Application::g_app->dx12Renderer()->d2d1Factory();
         THROW_IF_FAILED(factory->CreatePathGeometry(&pathGeo));
 
-        auto& setting = tg->getAppearance().tabBar.card.main[(size_t)CardState::Active];
+        auto& setting = tg->appearance().tabBar.card.main[(size_t)CardState::Active];
 
         float cardWidth = setting.geometry.size.width;
         float cardHeight = setting.geometry.size.height;
@@ -146,7 +146,7 @@ namespace d14engine::uikit
         TabGroup* tg = m_master;
         THROW_IF_NULL(tg);
 
-        auto& setting = tg->getAppearance().tabBar.moreCards.control.button;
+        auto& setting = tg->appearance().tabBar.moreCards.control.button;
 
         mask.loadBitmap(setting.geometry.size);
     }
@@ -164,7 +164,7 @@ namespace d14engine::uikit
         ComPtr<ID2D1GeometrySink> geoSink = {};
         THROW_IF_FAILED(pathGeo->Open(&geoSink));
         {
-            auto& setting = tg->getAppearance().tabBar.moreCards.control.icon;
+            auto& setting = tg->appearance().tabBar.moreCards.control.icon;
             auto& triangleVertices = setting.geometry.bottomTriangle.points;
 
             geoSink->BeginFigure(triangleVertices[0], D2D1_FIGURE_BEGIN_FILLED);
@@ -180,12 +180,12 @@ namespace d14engine::uikit
     {
         return math_utils::increaseTop(
             m_absoluteRect,
-            -getAppearance().tabBar.geometry.height);
+            -appearance().tabBar.geometry.height);
     }
 
     D2D1_RECT_F TabGroup::cardBarExtendedCardBarAbsoluteRect() const
     {
-        auto& setting = getAppearance().tabBar.geometry;
+        auto& setting = appearance().tabBar.geometry;
 
         float top = m_absoluteRect.top - setting.height;
         return math_utils::rect(
@@ -195,7 +195,7 @@ namespace d14engine::uikit
 
     float TabGroup::minimalWidth() const
     {
-        float minWidth = getAppearance().tabBar.geometry.rightPadding;
+        float minWidth = appearance().tabBar.geometry.rightPadding;
 
         if (m_activeCardTabIndex.valid())
         {
@@ -212,7 +212,7 @@ namespace d14engine::uikit
              tabIndex < m_candidateTabCount; ++tabIndex)
         {
             auto state = getCardState(tabIndex);
-            auto& setting = getAppearance().tabBar.card.main[(size_t)state];
+            auto& setting = appearance().tabBar.card.main[(size_t)state];
 
             cardLength += setting.geometry.size.width;
             if (cardLength > offset) return tabIndex;
@@ -507,12 +507,12 @@ do { \
         m_candidateTabCount = m_tabs.size();
 
         float cardLength = 0.0f;
-        float maxCardLegnth = width() - getAppearance().tabBar.geometry.rightPadding;
+        float maxCardLegnth = width() - appearance().tabBar.geometry.rightPadding;
 
         for (TabIndex tabIndex = { &m_tabs, 0 }; tabIndex.valid(); ++tabIndex)
         {
             auto state = getCardState(tabIndex);
-            auto& setting = getAppearance().tabBar.card.main[(size_t)state];
+            auto& setting = appearance().tabBar.card.main[(size_t)state];
 
             float temporaryLength = cardLength + setting.geometry.size.width;
             if (temporaryLength > maxCardLegnth)
@@ -556,10 +556,10 @@ do { \
         }
         m_previewPanel->clearAllItems();
 
-        auto& cardSetting = getAppearance().tabBar.card;
-        auto& prvwSrc = getAppearance().tabBar.moreCards.previewPanel;
+        auto& cardSetting = appearance().tabBar.card;
+        auto& prvwSrc = appearance().tabBar.moreCards.previewPanel;
 
-        auto& prvwDst = m_previewPanel->getAppearance();
+        auto& prvwDst = m_previewPanel->appearance();
         // LoadShadowBitmap will be called when resizing the preview-panel.
         prvwDst.geometry = prvwSrc.geometry;
         prvwDst.shadow.offset = prvwSrc.shadow.offset;
@@ -599,7 +599,7 @@ do { \
 
     D2D1_RECT_F TabGroup::cardBarAbsoluteRect() const
     {
-        auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Dormant];
+        auto& setting = appearance().tabBar.card.main[(size_t)CardState::Dormant];
         return
         {
             m_absoluteRect.left,
@@ -617,7 +617,7 @@ do { \
     D2D1_RECT_F TabGroup::cardCaptionAbsoluteRect(TabIndexParam tabIndex) const
     {
         auto state = getCardState(tabIndex);
-        float roundRaidus = getAppearance().tabBar.card.main[(size_t)state].geometry.roundRadius;
+        float roundRaidus = appearance().tabBar.card.main[(size_t)state].geometry.roundRadius;
 
         if (state == CardState::Active) // Clip margins.
         {
@@ -631,7 +631,7 @@ do { \
 
     D2D1_RECT_F TabGroup::separatorAbsoluteRect(TabIndexParam tabIndex) const
     {
-        auto& setting = getAppearance().tabBar.separator.geometry;
+        auto& setting = appearance().tabBar.separator.geometry;
 
         return math_utils::rect(math_utils::offset(
             math_utils::rightTop(cardAbsoluteRect(tabIndex)), setting.offset), setting.size);
@@ -639,7 +639,7 @@ do { \
 
     D2D1_RECT_F TabGroup::moreCardsButtonAbsoluteRect() const
     {
-        auto& setting = getAppearance().tabBar.moreCards.control.button.geometry;
+        auto& setting = appearance().tabBar.moreCards.control.button.geometry;
 
         return math_utils::rect(math_utils::offset(
             math_utils::rightTop(cardBarAbsoluteRect()), setting.offset), setting.size);
@@ -738,7 +738,7 @@ do { \
 
                 activeCard.mask.beginDraw(rndr->d2d1DeviceContext());
                 {
-                    auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Active];
+                    auto& setting = appearance().tabBar.card.main[(size_t)CardState::Active];
 
                     resource_utils::solidColorBrush()->SetColor(setting.background.color);
                     resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
@@ -758,7 +758,7 @@ do { \
                 moreCards.mask.beginDraw(rndr->d2d1DeviceContext());
                 {
                     auto state = getMoreCardsButtonState();
-                    auto& setting = getAppearance().tabBar.moreCards.control;
+                    auto& setting = appearance().tabBar.moreCards.control;
 
                     //-------------------------------------------------------------------------
                     // Button
@@ -812,7 +812,7 @@ do { \
         // Card-Bar Panel //
         ////////////////////
         {
-            auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Dormant];
+            auto& setting = appearance().tabBar.card.main[(size_t)CardState::Dormant];
 
             resource_utils::solidColorBrush()->SetColor(setting.background.color);
             resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
@@ -837,7 +837,7 @@ do { \
         {
             if (m_hoverCardTabIndex != m_activeCardTabIndex)
             {
-                auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Hover];
+                auto& setting = appearance().tabBar.card.main[(size_t)CardState::Hover];
 
                 resource_utils::solidColorBrush()->SetColor(setting.background.color);
                 resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
@@ -865,7 +865,7 @@ do { \
             // Shadow
             //-------------------------------------------------------------------------
 
-            activeCard.mask.color = getAppearance().tabBar.card.activeShadowColor;
+            activeCard.mask.color = appearance().tabBar.card.activeShadowColor;
 
             activeCard.mask.configEffectInput(resource_utils::shadowEffect());
 
@@ -880,7 +880,7 @@ do { \
             // Entity
             //-------------------------------------------------------------------------
 
-            auto& setting = getAppearance().tabBar.card.main[(size_t)CardState::Active];
+            auto& setting = appearance().tabBar.card.main[(size_t)CardState::Active];
 
             rndr->d2d1DeviceContext()->DrawBitmap
             (
@@ -894,7 +894,7 @@ do { \
         // Background //
         ////////////////
         {
-            auto& background = getAppearance().background;
+            auto& background = appearance().background;
 
             resource_utils::solidColorBrush()->SetColor(background.color);
             resource_utils::solidColorBrush()->SetOpacity(background.opacity);
@@ -935,7 +935,7 @@ do { \
                 {
                     if (tabIndex != m_candidateTabCount - 1)
                     {
-                        auto& setting = getAppearance().tabBar.separator;
+                        auto& setting = appearance().tabBar.separator;
 
                         resource_utils::solidColorBrush()->SetColor(setting.background.color);
                         resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
@@ -966,7 +966,7 @@ do { \
 
         if (isAssociatedWindowDraggedAbove())
         {
-            auto& maskSetting = getAppearance().maskWhenBelowDragWindow;
+            auto& maskSetting = appearance().maskWhenBelowDragWindow;
 
             resource_utils::solidColorBrush()->SetColor(maskSetting.color);
             resource_utils::solidColorBrush()->SetOpacity(maskSetting.opacity);
@@ -985,8 +985,8 @@ do { \
         // Outline //
         /////////////
 
-        resource_utils::solidColorBrush()->SetColor(getAppearance().stroke.color);
-        resource_utils::solidColorBrush()->SetOpacity(getAppearance().stroke.opacity);
+        resource_utils::solidColorBrush()->SetColor(appearance().stroke.color);
+        resource_utils::solidColorBrush()->SetOpacity(appearance().stroke.opacity);
 
         // In general, the round-radius of the tab-group is 0, so we can draw
         // left, right and bottom lines separately to hide the topmost border.
@@ -996,7 +996,7 @@ do { \
         float selfWidth = width();
         float selfHeight = height();
 
-        auto& stroke = getAppearance().stroke;
+        auto& stroke = appearance().stroke;
 
         auto point00 = math_utils::offset(leftTop, { stroke.width * 0.5f, 0.0f });
         auto point01 = math_utils::offset(point00, { 0.0f, selfHeight });
@@ -1069,7 +1069,7 @@ do { \
     {
         ResizablePanel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
 
         for (auto& tab : m_tabs)
         {

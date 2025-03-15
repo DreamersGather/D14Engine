@@ -11,7 +11,7 @@ namespace d14engine::uikit
     {
         explicit MenuSeparator(const D2D1_RECT_F& rect = {});
 
-        _D14_SET_APPEARANCE_GETTER(MenuSeparator)
+        _D14_SET_APPEARANCE_PROPERTY(MenuSeparator)
 
     protected:
         // IDrawObject2D

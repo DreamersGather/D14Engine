@@ -121,7 +121,7 @@ namespace d14engine::uikit
 
     void CheckBox::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        auto& setting = getAppearance().button[m_state.index()];
+        auto& setting = appearance().button[m_state.index()];
 
         ////////////////
         // Background //
@@ -138,8 +138,8 @@ namespace d14engine::uikit
 
         if (m_state.activeFlag == Intermediate)
         {
-            auto& geoSetting = getAppearance().icon.geometry.intermediate;
-            auto& iconBackground = getAppearance().icon.background[m_state.index()];
+            auto& geoSetting = appearance().icon.geometry.intermediate;
+            auto& iconBackground = appearance().icon.background[m_state.index()];
 
             resource_utils::solidColorBrush()->SetColor(iconBackground.color);
             resource_utils::solidColorBrush()->SetOpacity(iconBackground.opacity);
@@ -152,8 +152,8 @@ namespace d14engine::uikit
         }
         else if (m_state.activeFlag == Checked)
         {
-            auto& geoSetting = getAppearance().icon.geometry.checked;
-            auto& iconBackground = getAppearance().icon.background[m_state.index()];
+            auto& geoSetting = appearance().icon.geometry.checked;
+            auto& iconBackground = appearance().icon.background[m_state.index()];
 
             resource_utils::solidColorBrush()->SetColor(iconBackground.color);
             resource_utils::solidColorBrush()->SetOpacity(iconBackground.opacity);
@@ -200,7 +200,7 @@ namespace d14engine::uikit
     {
         ClickablePanel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 
     void CheckBox::onMouseEnterHelper(MouseMoveEvent& e)

@@ -11,7 +11,7 @@ namespace d14engine::uikit
     {
         using RawTextInput::RawTextInput;
 
-        _D14_SET_APPEARANCE_GETTER(TextInput)
+        _D14_SET_APPEARANCE_PROPERTY(TextInput)
 
         void setEnabled(bool value) override;
 

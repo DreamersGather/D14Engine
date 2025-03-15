@@ -24,8 +24,6 @@ namespace d14engine::uikit
         contentMask(size()),
         m_content(content)
     {
-        m_takeOverChildrenDrawing = true;
-
         setResizable(false);
     }
 
@@ -194,7 +192,7 @@ namespace d14engine::uikit
 
     D2D1_RECT_F ScrollView::horzBarSelfcoordRect(ScrollBarState state) const
     {
-        auto& setting = getAppearance();
+        auto& setting = appearance();
         auto& geoSetting = setting.scrollBar[(size_t)state].geometry;
 
         auto selfSize = getSelfSize();
@@ -217,8 +215,8 @@ namespace d14engine::uikit
 
     D2D1_RECT_F ScrollView::vertBarSelfcoordRect(ScrollBarState state) const
     {
-        auto& setting = getAppearance();
-        auto& geoSetting = getAppearance().scrollBar[(size_t)state].geometry;
+        auto& setting = appearance();
+        auto& geoSetting = appearance().scrollBar[(size_t)state].geometry;
 
         auto selfSize = getSelfSize();
         auto contentSize = getContentSize();
@@ -253,7 +251,7 @@ namespace d14engine::uikit
             // The rendering result depends on the target background color,
             // so you must set an opaque background (better a value >= 0.5).
             //--------------------------------------------------------------
-            auto& bkgn = getAppearance().background;
+            auto& bkgn = appearance().background;
 
             contentMask.color = bkgn.color;
             contentMask.color.a = bkgn.opacity;
@@ -276,7 +274,7 @@ namespace d14engine::uikit
         // Background //
         ////////////////
 
-        auto& bkgn = getAppearance().background;
+        auto& bkgn = appearance().background;
 
         resource_utils::solidColorBrush()->SetColor(bkgn.color);
         resource_utils::solidColorBrush()->SetOpacity(bkgn.opacity);
@@ -301,7 +299,7 @@ namespace d14engine::uikit
         // Outline //
         /////////////
 
-        auto& stroke = getAppearance().stroke;
+        auto& stroke = appearance().stroke;
 
         resource_utils::solidColorBrush()->SetColor(stroke.color);
         resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
@@ -326,7 +324,7 @@ namespace d14engine::uikit
         if (isHorzBarEnabled)
         {
             auto state = getHorzBarState(m_isHorzBarHover, m_isHorzBarDown);
-            auto& setting = getAppearance().scrollBar[(size_t)state];
+            auto& setting = appearance().scrollBar[(size_t)state];
 
             resource_utils::solidColorBrush()->SetColor(setting.background.color);
             resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
@@ -349,7 +347,7 @@ namespace d14engine::uikit
         if (isVertBarEnabled)
         {
             auto state = getVertBarState(m_isVertBarHover, m_isVertBarDown);
-            auto& setting = getAppearance().scrollBar[(size_t)state];
+            auto& setting = appearance().scrollBar[(size_t)state];
 
             resource_utils::solidColorBrush()->SetColor(setting.background.color);
             resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
@@ -389,7 +387,7 @@ namespace d14engine::uikit
     {
         ResizablePanel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 
     void ScrollView::onMouseMoveHelper(MouseMoveEvent& e)

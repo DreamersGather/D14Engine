@@ -20,7 +20,7 @@ namespace d14engine::uikit
 
         void onInitializeFinish() override;
 
-        _D14_SET_APPEARANCE_GETTER(TabCaption)
+        _D14_SET_APPEARANCE_PROPERTY(TabCaption)
 
         void setEnabled(bool value) override;
 

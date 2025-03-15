@@ -26,7 +26,7 @@ namespace d14engine::uikit
 
             setResizable(false);
         }
-        _D14_SET_APPEARANCE_GETTER(Layout)
+        _D14_SET_APPEARANCE_PROPERTY(Layout)
 
     protected:
         using ElementGeometryInfoMap = std::unordered_map<SharedPtr<Panel>, GeometryInfo_T>;
@@ -90,8 +90,8 @@ namespace d14engine::uikit
             // Background //
             ////////////////
 
-            resource_utils::solidColorBrush()->SetColor(getAppearance().background.color);
-            resource_utils::solidColorBrush()->SetOpacity(getAppearance().background.opacity);
+            resource_utils::solidColorBrush()->SetColor(appearance().background.color);
+            resource_utils::solidColorBrush()->SetOpacity(appearance().background.opacity);
 
             Panel::drawBackground(rndr);
         }
@@ -104,10 +104,10 @@ namespace d14engine::uikit
             // Outline //
             /////////////
 
-            resource_utils::solidColorBrush()->SetColor(getAppearance().stroke.color);
-            resource_utils::solidColorBrush()->SetOpacity(getAppearance().stroke.opacity);
+            resource_utils::solidColorBrush()->SetColor(appearance().stroke.color);
+            resource_utils::solidColorBrush()->SetOpacity(appearance().stroke.opacity);
 
-            float strokeWidth = getAppearance().stroke.width;
+            float strokeWidth = appearance().stroke.width;
 
             auto frame = math_utils::inner(m_absoluteRect, strokeWidth);
             D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
@@ -138,7 +138,7 @@ namespace d14engine::uikit
         {
             ResizablePanel::onChangeThemeStyleHelper(style);
 
-            getAppearance().changeTheme(style.name);
+            appearance().changeTheme(style.name);
         }
     };
 }

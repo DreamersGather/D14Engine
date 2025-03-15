@@ -6,8 +6,6 @@
 #include "Common/MathUtils/2D.h"
 #include "Common/RuntimeError.h"
 
-#include "Renderer/Renderer.h"
-
 #include "UIKit/IconLabel.h"
 #include "UIKit/ResourceUtils.h"
 
@@ -24,6 +22,10 @@ namespace d14engine::uikit
     {
         m_takeOverChildrenDrawing = true;
 
+        ///////////////////////////
+        // Load Cached Resources //
+        ///////////////////////////
+
         drawBufferRes.loadMask();
     }
 
@@ -38,12 +40,16 @@ namespace d14engine::uikit
     {
         Panel::onInitializeFinish();
 
+        ///////////////////////////
+        // Init Children Objects //
+        ///////////////////////////
+
         addUIObject(m_content);
 
         if (m_content) m_content->transform(selfCoordRect());
     }
 
-    void ViewItem::DrawBuffer::loadMask()
+    void ViewItem::DrawBufferRes::loadMask()
     {
         ViewItem* vitem = m_master;
         THROW_IF_NULL(vitem);
@@ -166,7 +172,7 @@ namespace d14engine::uikit
         {
             m_content->onRendererDrawD2d1Layer(rndr);
 
-            auto& setting = getAppearance().main[(size_t)(m_enabled ? state : State::Idle)];
+            auto& setting = appearance().main[(size_t)(m_enabled ? state : State::Idle)];
 
             auto& mask = drawBufferRes.mask;
             auto& background = setting.background;
@@ -197,7 +203,7 @@ namespace d14engine::uikit
 
     void ViewItem::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
     {
-        auto& setting = getAppearance().main[(size_t)(m_enabled ? state : State::Idle)];
+        auto& setting = appearance().main[(size_t)(m_enabled ? state : State::Idle)];
 
         ////////////////
         // Background //
@@ -213,6 +219,7 @@ namespace d14engine::uikit
         /////////////
         // Content //
         /////////////
+
         if (m_content && m_content->isD2d1ObjectVisible())
         {
             auto& mask = drawBufferRes.mask;
@@ -267,7 +274,15 @@ namespace d14engine::uikit
     {
         Panel::onSizeHelper(e);
 
+        /////////////////////////////
+        // Reload Cached Resources //
+        /////////////////////////////
+
         drawBufferRes.loadMask();
+
+        /////////////////////////////
+        // Update Children Objects //
+        /////////////////////////////
 
         if (m_content) m_content->transform(selfCoordRect());
     }
@@ -276,6 +291,6 @@ namespace d14engine::uikit
     {
         Panel::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 }

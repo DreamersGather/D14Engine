@@ -462,7 +462,7 @@ namespace d14engine::uikit
 
         if (!m_childrenItems.empty() && !m_parentView.expired())
         {
-            auto& arrowSetting = getAppearance().arrow;
+            auto& arrowSetting = appearance().arrow;
             auto& arrowGeometry = arrowSetting.geometry[StatefulObject::m_state.index()];;
             auto& arrowBackground = m_enabled ? arrowSetting.background : arrowSetting.secondaryBackground;
 
@@ -501,7 +501,7 @@ namespace d14engine::uikit
     {
         ViewItem::onChangeThemeStyleHelper(style);
 
-        getAppearance().changeTheme(style.name);
+        appearance().changeTheme(style.name);
     }
 
     void TreeViewItem::onMouseButtonHelper(MouseButtonEvent& e)
