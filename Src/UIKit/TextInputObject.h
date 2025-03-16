@@ -15,26 +15,26 @@ namespace d14engine::uikit
             return std::nullopt;
         }
 
-        void OnInputString(WstrParam str)
+        void OnInputString(WstrRefer str)
         {
             onInputStringHelper(str);
 
             if (f_onInputString) f_onInputString(this, str);
         }
 
-        Function<void(TextInputObject*, WstrParam)> f_onInputString = {};
+        Function<void(TextInputObject*, WstrRefer)> f_onInputString = {};
 
-        void onTextChange(WstrParam text)
+        void onTextChange(WstrRefer text)
         {
             onTextChangeHelper(text);
 
             if (f_onTextChange) f_onTextChange(this, text);
         }
 
-        Function<void(TextInputObject*, WstrParam)> f_onTextChange = {};
+        Function<void(TextInputObject*, WstrRefer)> f_onTextChange = {};
 
     protected:
-        virtual void onInputStringHelper(WstrParam str) { }
-        virtual void onTextChangeHelper(WstrParam text) { }
+        virtual void onInputStringHelper(WstrRefer str) { }
+        virtual void onTextChangeHelper(WstrRefer text) { }
     };
 }

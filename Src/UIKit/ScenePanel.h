@@ -43,7 +43,7 @@ namespace d14engine::uikit
 
         // Uses the max supported MSAA quality level if quality is empty.
         // Returns whether the target MSAA setting is enabled successfully.
-        bool setMultiSample(UINT count, OptParam<UINT> quality = {});
+        bool setMultiSample(UINT count, OptRefer<UINT> quality = {});
 
     protected:
         XMVECTORF32 m_clearColor = Colors::Black;

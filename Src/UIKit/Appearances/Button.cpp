@@ -22,7 +22,7 @@ namespace d14engine::uikit::appearance
         }
     }
 
-    void Button::Appearance::changeTheme(WstrParam themeName)
+    void Button::Appearance::changeTheme(WstrRefer themeName)
     {
         _D14_FIND_THEME_DATA(themeName);
 

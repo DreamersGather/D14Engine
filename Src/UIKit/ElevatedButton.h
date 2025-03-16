@@ -11,12 +11,12 @@ namespace d14engine::uikit
     struct ElevatedButton : appearance::ElevatedButton, FilledButton
     {
         ElevatedButton(
-            ShrdPtrParam<IconLabel> content,
+            ShrdPtrRefer<IconLabel> content,
             float roundRadius = 0.0f,
             const D2D1_RECT_F& rect = {});
 
         ElevatedButton(
-            WstrParam text = L"Button",
+            WstrRefer text = L"Button",
             float roundRadius = 0.0f,
             const D2D1_RECT_F& rect = {});
 

@@ -46,7 +46,7 @@ namespace d14engine::uikit
         };
     }
 
-    Cursor::IconSeries Cursor::loadBasicIconSeries(WstrParam themeName)
+    Cursor::IconSeries Cursor::loadBasicIconSeries(WstrRefer themeName)
     {
         THROW_IF_NULL(Application::g_app);
 
@@ -108,7 +108,7 @@ do { \
         return icons;
     }
 
-    Cursor::DynamicIcon Cursor::loadBasicIconFrames(WstrParam framesPath)
+    Cursor::DynamicIcon Cursor::loadBasicIconFrames(WstrRefer framesPath)
     {
         DynamicIcon icon = {};
 
@@ -119,7 +119,7 @@ do { \
         animation_utils::BitmapSequence::FramePackage frames = {};
 
         file_system_utils::foreachFileInDir
-        (framesPath, L"*.png", [&](WstrParam path)
+        (framesPath, L"*.png", [&](WstrRefer path)
         {
             auto name = file_system_utils::extractFilePrefix(
                         file_system_utils::extractFileName(path));
@@ -149,7 +149,7 @@ do { \
         return icon;
     }
 
-    void Cursor::registerIcon(WstrParam themeName, StaticIconIndex index, const StaticIcon& icon)
+    void Cursor::registerIcon(WstrRefer themeName, StaticIconIndex index, const StaticIcon& icon)
     {
         auto categoryItor = m_classifiedBasicIcons.find(themeName);
         if (categoryItor != m_classifiedBasicIcons.end())
@@ -159,17 +159,17 @@ do { \
         else (m_classifiedBasicIcons[themeName] = {}).staticIcons[(size_t)index] = icon;
     }
 
-    void Cursor::registerIcon(WstrParam name, const StaticIcon& icon)
+    void Cursor::registerIcon(WstrRefer name, const StaticIcon& icon)
     {
         m_customIcons.staticIcons[name] = icon;
     }
 
-    void Cursor::unregisterStaticIcon(WstrParam name)
+    void Cursor::unregisterStaticIcon(WstrRefer name)
     {
         m_customIcons.staticIcons.erase(name);
     }
 
-    void Cursor::registerIcon(WstrParam themeName, DynamicIconIndex index, const DynamicIcon& icon)
+    void Cursor::registerIcon(WstrRefer themeName, DynamicIconIndex index, const DynamicIcon& icon)
     {
         auto categoryItor = m_classifiedBasicIcons.find(themeName);
         if (categoryItor != m_classifiedBasicIcons.end())
@@ -179,12 +179,12 @@ do { \
         else (m_classifiedBasicIcons[themeName] = {}).dynamicIcons[(size_t)index] = icon;
     }
 
-    void Cursor::registerIcon(WstrParam name, const DynamicIcon& icon)
+    void Cursor::registerIcon(WstrRefer name, const DynamicIcon& icon)
     {
         m_customIcons.dynamicIcons[name] = icon;
     }
 
-    void Cursor::unregisterDynamicIcon(WstrParam name)
+    void Cursor::unregisterDynamicIcon(WstrRefer name)
     {
         m_customIcons.dynamicIcons.erase(name);
     }
@@ -202,7 +202,7 @@ do { \
         }
     }
 
-    void Cursor::setStaticIcon(WstrParam name)
+    void Cursor::setStaticIcon(WstrRefer name)
     {
         m_selectedIconID.emplace<g_staticIconSeat>(name);
     }
@@ -220,7 +220,7 @@ do { \
         }
     }
 
-    void Cursor::setDynamicIcon(WstrParam name)
+    void Cursor::setDynamicIcon(WstrRefer name)
     {
         m_selectedIconID.emplace<g_dynamicIconSeat>(name);
     }

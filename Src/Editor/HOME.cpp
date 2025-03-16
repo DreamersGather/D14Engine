@@ -87,7 +87,7 @@ D14_SET_APP_ENTRY(mainEditor)
                 w->f_onClose = [](Window* w) { w->release(); };
             };
         }
-        auto appendTabPage = [&](WstrParam title)
+        auto appendTabPage = [&](WstrRefer title)
         {
             auto ui_caption = makeUIObject<TabCaption>(title);
             auto ui_content = makeUIObject<ConstraintLayout>();

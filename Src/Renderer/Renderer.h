@@ -607,7 +607,7 @@ namespace d14engine::renderer
 #pragma region Render Pass Implementation
 
     public:
-        void resetCmdList(OptParam<ID3D12CommandAllocator*> alloc = {});
+        void resetCmdList(OptRefer<ID3D12CommandAllocator*> alloc = {});
         void submitCmdList();
         void flushCmdQueue();
 

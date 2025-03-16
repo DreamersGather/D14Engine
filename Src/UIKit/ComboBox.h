@@ -46,7 +46,7 @@ namespace d14engine::uikit
         void setSelected(size_t indexInDropDownMenu);
 
         const SharedPtr<PopupMenu>& dropDownMenu() const;
-        void setDropDownMenu(ShrdPtrParam<PopupMenu> menu);
+        void setDropDownMenu(ShrdPtrRefer<PopupMenu> menu);
 
     public:
         Optional<D2D1_POINT_2F> menuOffset = {};

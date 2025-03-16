@@ -28,12 +28,12 @@ namespace d14engine::uikit
         virtual void onTextContentOffsetChangeHelper(const D2D1_POINT_2F& offset);
 
     protected:
-        Optional<Wstring> preprocessInputStr(WstrParam in) override;
+        Optional<Wstring> preprocessInputStr(WstrRefer in) override;
 
     public:
         bool editable = true;
 
-        void setText(WstrParam text) override;
+        void setText(WstrRefer text) override;
 
     protected:
         MaskObject m_visibleTextMask = {};
@@ -73,7 +73,7 @@ namespace d14engine::uikit
         virtual void performCommandCtrlV();
 
     public:
-        void changeCandidateText(WstrParam str);
+        void changeCandidateText(WstrRefer str);
 
     protected:
         // IDrawObject2D
@@ -94,6 +94,6 @@ namespace d14engine::uikit
         Optional<COMPOSITIONFORM> getCompositionForm() const override;
 
     protected:
-        void onInputStringHelper(WstrParam str) override;
+        void onInputStringHelper(WstrRefer str) override;
     };
 }

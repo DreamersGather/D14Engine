@@ -15,13 +15,13 @@ namespace d14engine::uikit
     struct Window : appearance::Window, DraggablePanel, ResizablePanel
     {
         Window(
-            ShrdPtrParam<IconLabel> caption,
+            ShrdPtrRefer<IconLabel> caption,
             const D2D1_RECT_F& rect = {},
             float captionPanelHeight = 32.0f,
             float decorativeBarHeight = 4.0f);
 
         Window(
-            WstrParam title = L"Untitled",
+            WstrRefer title = L"Untitled",
             const D2D1_RECT_F& rect = {},
             float captionPanelHeight = 32.0f,
             float decorativeBarHeight = 4.0f);
@@ -107,7 +107,7 @@ namespace d14engine::uikit
 
     public:
         const SharedPtr<IconLabel>& caption() const;
-        void setCaption(ShrdPtrParam<IconLabel> caption);
+        void setCaption(ShrdPtrRefer<IconLabel> caption);
 
         template<typename T = Panel>
         WeakPtr<T> content() const
@@ -115,7 +115,7 @@ namespace d14engine::uikit
             if constexpr (std::is_same_v<T, Panel>) return m_content;
             else return std::dynamic_pointer_cast<T>(m_content);
         }
-        void setContent(ShrdPtrParam<Panel> uiobj);
+        void setContent(ShrdPtrRefer<Panel> uiobj);
 
         //------------------------------------------------------------------
         // Drawing Properties
@@ -290,8 +290,8 @@ namespace d14engine::uikit
         TabGroupSet m_registeredTabGroups = {};
 
     public:
-        void registerTabGroup(WeakPtrParam<TabGroup> tg);
-        void unregisterTabGroup(WeakPtrParam<TabGroup> tg);
+        void registerTabGroup(WeakPtrRefer<TabGroup> tg);
+        void unregisterTabGroup(WeakPtrRefer<TabGroup> tg);
 
     public:
         Function<void(Window*, TabGroup*)> f_onTriggerTabDemoting = {};
@@ -343,7 +343,7 @@ namespace d14engine::uikit
         // Panel
         //------------------------------------------------------------------
 
-        bool releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj) override;
+        bool releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj) override;
 
         void onSizeHelper(SizeEvent& e) override;
 

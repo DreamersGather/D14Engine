@@ -121,7 +121,7 @@ namespace d14engine::uikit::appearance
         }
     }
 
-    void TabGroup::Appearance::changeTheme(WstrParam themeName)
+    void TabGroup::Appearance::changeTheme(WstrRefer themeName)
     {
         maskWhenBelowDragWindow =
         {

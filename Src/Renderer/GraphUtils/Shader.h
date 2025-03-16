@@ -8,8 +8,8 @@ namespace d14engine::renderer::graph_utils
     {
         void initialize();
 
-        ComPtr<IDxcBlob> load(WstrParam fileName);
-        void save(WstrParam fileName, IDxcBlob* blob);
+        ComPtr<IDxcBlob> load(WstrRefer fileName);
+        void save(WstrRefer fileName, IDxcBlob* blob);
 
         ///////////////////
         // HLSL Compiler //
@@ -32,7 +32,7 @@ namespace d14engine::renderer::graph_utils
             Wstring pdbOutPath = {};
         };
         ComPtr<IDxcBlob> compile(
-            WstrParam hlslFileName,
+            WstrRefer hlslFileName,
             const CompileOption& option);
 
         ////////////////////
@@ -64,7 +64,7 @@ namespace d14engine::renderer::graph_utils
 
         // path = Renderer::CreateInfo::shaderPath()
         void loadDefaultObject(
-            WstrParam path, WstrParam name,
+            WstrRefer path, WstrRefer name,
             StreamOption option, Package& shaders);
     }
 }

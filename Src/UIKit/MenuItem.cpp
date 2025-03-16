@@ -20,7 +20,7 @@ namespace d14engine::uikit
         return m_associatedMenu;
     }
 
-    void MenuItem::setAssociatedMenu(ShrdPtrParam<PopupMenu> menu)
+    void MenuItem::setAssociatedMenu(ShrdPtrRefer<PopupMenu> menu)
     {
         // cpp_lang_utils::isMostDerivedEqual treats 2 empty objects as equal,
         // so check "menu" here to make sure the associated menu can be reset.

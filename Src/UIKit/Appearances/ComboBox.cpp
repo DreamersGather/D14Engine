@@ -170,7 +170,7 @@ namespace d14engine::uikit::appearance
         }
     }
 
-    void ComboBox::Appearance::changeTheme(Master& m, WstrParam themeName)
+    void ComboBox::Appearance::changeTheme(Master& m, WstrRefer themeName)
     {
         _D14_FIND_THEME_DATA(themeName);
 

@@ -125,7 +125,7 @@ namespace d14engine::uikit
         return m_dropDownMenu;
     }
 
-    void ComboBox::setDropDownMenu(ShrdPtrParam<PopupMenu> menu)
+    void ComboBox::setDropDownMenu(ShrdPtrRefer<PopupMenu> menu)
     {
         if (menu && !cpp_lang_utils::isMostDerivedEqual(menu, m_dropDownMenu))
         {

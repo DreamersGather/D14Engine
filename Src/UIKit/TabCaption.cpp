@@ -16,11 +16,11 @@ using namespace d14engine::renderer;
 
 namespace d14engine::uikit
 {
-    TabCaption::TabCaption(ShrdPtrParam<IconLabel> title)
+    TabCaption::TabCaption(ShrdPtrRefer<IconLabel> title)
         :
         m_title(title) { }
 
-    TabCaption::TabCaption(WstrParam text)
+    TabCaption::TabCaption(WstrRefer text)
         :
         TabCaption(IconLabel::compactLayout(text)) { }
 
@@ -51,7 +51,7 @@ namespace d14engine::uikit
         return m_title;
     }
 
-    void TabCaption::setTitle(ShrdPtrParam<IconLabel> title)
+    void TabCaption::setTitle(ShrdPtrRefer<IconLabel> title)
     {
         if (title && !cpp_lang_utils::isMostDerivedEqual(title, m_title))
         {

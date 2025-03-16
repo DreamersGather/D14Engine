@@ -18,7 +18,7 @@ using namespace d14engine::renderer;
 namespace d14engine::uikit
 {
     TreeViewItem::TreeViewItem(
-        ShrdPtrParam<Panel> content,
+        ShrdPtrRefer<Panel> content,
         const D2D1_RECT_F& rect)
         :
         ViewItem(content, rect)
@@ -30,7 +30,7 @@ namespace d14engine::uikit
         m_layout = makeUIObject<ConstraintLayout>();
     }
 
-    TreeViewItem::TreeViewItem(WstrParam text, const D2D1_RECT_F& rect)
+    TreeViewItem::TreeViewItem(WstrRefer text, const D2D1_RECT_F& rect)
         : TreeViewItem(IconLabel::compactLayout(text), rect) { }
 
 
@@ -98,7 +98,7 @@ namespace d14engine::uikit
         else return *m_layout->children().begin();
     }
 
-    void TreeViewItem::setContent(ShrdPtrParam<Panel> content)
+    void TreeViewItem::setContent(ShrdPtrRefer<Panel> content)
     {
         auto originalContent = TreeViewItem::content().lock();
         if (content && !cpp_lang_utils::isMostDerivedEqual(content, originalContent))

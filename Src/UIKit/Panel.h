@@ -65,9 +65,9 @@ namespace d14engine::uikit
 
         Function<void(Panel*)> f_onRelease = {};
 
-        bool releaseUIObject(ShrdPtrParam<Panel> uiobj);
+        bool releaseUIObject(ShrdPtrRefer<Panel> uiobj);
 
-        Function<bool(Panel*, ShrdPtrParam<Panel>)> f_onReleaseUIObject = {};
+        Function<bool(Panel*, ShrdPtrRefer<Panel>)> f_onReleaseUIObject = {};
 
     public:
         bool isD2d1ObjectVisible() const override;
@@ -209,9 +209,9 @@ namespace d14engine::uikit
 
         Function<void(Panel*, const ThemeStyle&)> f_onChangeThemeStyle = {};
 
-        void onChangeLangLocale(WstrParam codeName);
+        void onChangeLangLocale(WstrRefer codeName);
 
-        Function<void(Panel*, WstrParam)> f_onChangeLangLocale = {};
+        Function<void(Panel*, WstrRefer)> f_onChangeLangLocale = {};
 
         void onGetFocus();
 
@@ -253,7 +253,7 @@ namespace d14engine::uikit
 
     protected:
         virtual bool isHitHelper(const Event::Point& p) const;
-        virtual bool releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj);
+        virtual bool releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj);
 
         // Introduce onXxxHelper to solve the inheritance conflicts of
         // the "override", "before" and "after" event callback lambdas.
@@ -273,7 +273,7 @@ namespace d14engine::uikit
         virtual void onMoveHelper(MoveEvent& e);
         virtual void onParentMoveHelper(MoveEvent& e);
         virtual void onChangeThemeStyleHelper(const ThemeStyle& style);
-        virtual void onChangeLangLocaleHelper(WstrParam codeName);
+        virtual void onChangeLangLocaleHelper(WstrRefer codeName);
         virtual void onGetFocusHelper();
         virtual void onLoseFocusHelper();
         virtual void onMouseEnterHelper(MouseMoveEvent& e);
@@ -446,15 +446,15 @@ namespace d14engine::uikit
         void unpinApplicationEvents();
 
         const WeakPtr<Panel>& parent() const;
-        void setParent(ShrdPtrParam<Panel> uiobj);
+        void setParent(ShrdPtrRefer<Panel> uiobj);
 
         const ChildObjectSet& children() const;
 
-        void addUIObject(ShrdPtrParam<Panel> uiobj);
-        void removeUIObject(ShrdPtrParam<Panel> uiobj);
+        void addUIObject(ShrdPtrRefer<Panel> uiobj);
+        void removeUIObject(ShrdPtrRefer<Panel> uiobj);
 
-        void pinUIObject(ShrdPtrParam<Panel> uiobj);
-        void unpinUIObject(ShrdPtrParam<Panel> uiobj);
+        void pinUIObject(ShrdPtrRefer<Panel> uiobj);
+        void unpinUIObject(ShrdPtrRefer<Panel> uiobj);
 
         void clearAddedUIObjects();
         void clearPinnedUIObjects();
@@ -486,7 +486,7 @@ namespace d14engine::uikit
 
     template<typename T, typename... Types>
     SharedPtr<T> makeManagedUIObject
-    (ShrdPtrParam<Panel> parent, Types&& ...args)
+    (ShrdPtrRefer<Panel> parent, Types&& ...args)
     {
         auto uiobj = makeUIObject<T>(args...);
         parent->addUIObject(uiobj);

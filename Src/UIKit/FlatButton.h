@@ -9,12 +9,12 @@ namespace d14engine::uikit
     struct FlatButton : appearance::FlatButton, Button
     {
         FlatButton(
-            ShrdPtrParam<IconLabel> content,
+            ShrdPtrRefer<IconLabel> content,
             float roundRadius = 0.0f,
             const D2D1_RECT_F& rect = {});
 
         FlatButton(
-            WstrParam text = L"Button",
+            WstrRefer text = L"Button",
             float roundRadius = 0.0f,
             const D2D1_RECT_F& rect = {});
 

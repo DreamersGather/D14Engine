@@ -33,10 +33,10 @@ namespace d14engine::uikit
 
         ElementGeometryInfoMap m_elemGeoInfos = {};
 
-        virtual void updateElement(ShrdPtrParam<Panel> elem, const GeometryInfo_T& geoInfo) = 0;
+        virtual void updateElement(ShrdPtrRefer<Panel> elem, const GeometryInfo_T& geoInfo) = 0;
 
     public:
-        void addElement(ShrdPtrParam<Panel> elem, const GeometryInfo_T& geoInfo)
+        void addElement(ShrdPtrRefer<Panel> elem, const GeometryInfo_T& geoInfo)
         {
             if (!elem) return;
             addUIObject(elem);
@@ -45,7 +45,7 @@ namespace d14engine::uikit
             updateElement(elem, geoInfo);
         }
 
-        void removeElement(ShrdPtrParam<Panel> elem)
+        void removeElement(ShrdPtrRefer<Panel> elem)
         {
             m_elemGeoInfos.erase(elem);
             removeUIObject(elem);
@@ -62,7 +62,7 @@ namespace d14engine::uikit
             if (elemItor != m_elemGeoInfos.end()) updateElement(elemItor->first, elemItor->second);
         }
 
-        void updateElement(ShrdPtrParam<Panel> elem)
+        void updateElement(ShrdPtrRefer<Panel> elem)
         {
             updateElement(m_elemGeoInfos.find(elem));
         }
@@ -75,7 +75,7 @@ namespace d14engine::uikit
             }
         }
 
-        Optional<typename ElementGeometryInfoMap::iterator> findElement(ShrdPtrParam<Panel> elem)
+        Optional<typename ElementGeometryInfoMap::iterator> findElement(ShrdPtrRefer<Panel> elem)
         {
             auto elemItor = m_elemGeoInfos.find(elem);
             if (elemItor != m_elemGeoInfos.end()) return elemItor;
@@ -121,7 +121,7 @@ namespace d14engine::uikit
         }
 
         // Panel
-        bool releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj) override
+        bool releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj) override
         {
             removeElement(uiobj);
             return true;

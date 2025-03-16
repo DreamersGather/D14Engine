@@ -76,8 +76,8 @@ namespace d14engine::uikit
     protected:
         static BasicIconThemeMap loadBasicIcons();
 
-        static IconSeries loadBasicIconSeries(WstrParam themeName);
-        static DynamicIcon loadBasicIconFrames(WstrParam framesPath);
+        static IconSeries loadBasicIconSeries(WstrRefer themeName);
+        static DynamicIcon loadBasicIconFrames(WstrRefer framesPath);
 
     protected:
         BasicIconThemeMap m_classifiedBasicIcons = {};
@@ -96,15 +96,15 @@ namespace d14engine::uikit
         m_customIcons = {};
 
     public:
-        void registerIcon(WstrParam themeName, StaticIconIndex index, const StaticIcon& icon);
+        void registerIcon(WstrRefer themeName, StaticIconIndex index, const StaticIcon& icon);
 
-        void registerIcon(WstrParam name, const StaticIcon& icon);
-        void unregisterStaticIcon(WstrParam name);
+        void registerIcon(WstrRefer name, const StaticIcon& icon);
+        void unregisterStaticIcon(WstrRefer name);
 
-        void registerIcon(WstrParam themeName, DynamicIconIndex index, const DynamicIcon& icon);
+        void registerIcon(WstrRefer themeName, DynamicIconIndex index, const DynamicIcon& icon);
 
-        void registerIcon(WstrParam name, const DynamicIcon& icon);
-        void unregisterDynamicIcon(WstrParam name);
+        void registerIcon(WstrRefer name, const DynamicIcon& icon);
+        void unregisterDynamicIcon(WstrRefer name);
 
     protected:
         template<typename T>
@@ -128,10 +128,10 @@ namespace d14engine::uikit
         // and you may need to manually adapt it in the onChangeThemeStyle.
 
         void setIcon(StaticIconIndex index);
-        void setStaticIcon(WstrParam name);
+        void setStaticIcon(WstrRefer name);
 
         void setIcon(DynamicIconIndex index);
-        void setDynamicIcon(WstrParam name);
+        void setDynamicIcon(WstrRefer name);
 
     public:
         enum class IconSource { System, UIKit };

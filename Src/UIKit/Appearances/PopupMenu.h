@@ -13,7 +13,7 @@ namespace d14engine::uikit::appearance
         {
             static void initialize();
 
-            void changeTheme(WstrParam themeName) override;
+            void changeTheme(WstrRefer themeName) override;
 
             struct Geometry
             {

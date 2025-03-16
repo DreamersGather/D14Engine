@@ -67,7 +67,7 @@ namespace d14engine::uikit
         using Layout::updateElement;
 
     protected:
-        void updateElement(ShrdPtrParam<Panel> elem, const GeometryInfo& geoInfo) override;
+        void updateElement(ShrdPtrRefer<Panel> elem, const GeometryInfo& geoInfo) override;
 
     protected:
         // Panel

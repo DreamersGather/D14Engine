@@ -14,7 +14,7 @@ using namespace d14engine::renderer;
 namespace d14engine::uikit
 {
     ViewItem::ViewItem(
-        ShrdPtrParam<Panel> content,
+        ShrdPtrRefer<Panel> content,
         const D2D1_RECT_F& rect)
         :
         Panel(rect, resource_utils::solidColorBrush()),
@@ -29,7 +29,7 @@ namespace d14engine::uikit
         drawBufferRes.loadMask();
     }
 
-    ViewItem::ViewItem(WstrParam text, const D2D1_RECT_F& rect)
+    ViewItem::ViewItem(WstrRefer text, const D2D1_RECT_F& rect)
         :
         ViewItem(IconLabel::uniformLayout(text), rect)
     {
@@ -62,7 +62,7 @@ namespace d14engine::uikit
         return m_content;
     }
 
-    void ViewItem::setContent(ShrdPtrParam<Panel> content)
+    void ViewItem::setContent(ShrdPtrRefer<Panel> content)
     {
         if (!cpp_lang_utils::isMostDerivedEqual(content, m_content))
         {
@@ -263,7 +263,7 @@ namespace d14engine::uikit
         return math_utils::isOverlappedExcludingBottom(p, m_absoluteRect);
     }
 
-    bool ViewItem::releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj)
+    bool ViewItem::releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj)
     {
         if (cpp_lang_utils::isMostDerivedEqual(m_content, uiobj)) m_content.reset();
 

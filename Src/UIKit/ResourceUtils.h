@@ -46,7 +46,7 @@ namespace d14engine::uikit::resource_utils
     // in the application's global resource set (g_textFormats) with the specified name.
     // Therefore, the next time the same text format is needed, it can be directly queried
     // and obtained through textFormats(), eliminating the repeated loading of font data.
-    ComPtr<IDWriteTextFormat> loadTextFormat(WstrParam name, const TextFormatDetail& detail);
+    ComPtr<IDWriteTextFormat> loadTextFormat(WstrRefer name, const TextFormatDetail& detail);
 
     void loadBasicTextFormats();
 
@@ -70,7 +70,7 @@ namespace d14engine::uikit::resource_utils
 
     Optional<Wstring> getClipboardText(HWND hWndNewOwner = nullptr);
 
-    void setClipboardText(WstrParam content, HWND hWndNewOwner = nullptr);
+    void setClipboardText(WstrRefer content, HWND hWndNewOwner = nullptr);
 
 #pragma endregion
 

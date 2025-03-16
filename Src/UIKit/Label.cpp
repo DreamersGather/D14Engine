@@ -12,7 +12,7 @@ using namespace d14engine::renderer;
 
 namespace d14engine::uikit
 {
-    Label::Label(WstrParam text, const D2D_RECT_F& rect)
+    Label::Label(WstrRefer text, const D2D_RECT_F& rect)
         :
         Panel(rect, resource_utils::solidColorBrush()),
         m_text(text)
@@ -34,7 +34,7 @@ namespace d14engine::uikit
 
     Wstring Label::defaultTextFormatName = L"Default/16";
 
-    Optional<Wstring> Label::preprocessInputStr(WstrParam in)
+    Optional<Wstring> Label::preprocessInputStr(WstrRefer in)
     {
         return std::nullopt;
     }
@@ -44,7 +44,7 @@ namespace d14engine::uikit
         return m_text;
     }
 
-    void Label::setText(WstrParam text)
+    void Label::setText(WstrRefer text)
     {
         auto out = preprocessInputStr(text);
         if (out.has_value())
@@ -63,7 +63,7 @@ namespace d14engine::uikit
         updateTextOverhangMetrics();
     }
 
-    void Label::insertTextFragment(WstrParam fragment, size_t offset)
+    void Label::insertTextFragment(WstrRefer fragment, size_t offset)
     {
         auto out = preprocessInputStr(fragment);
         if (out.has_value())
@@ -76,7 +76,7 @@ namespace d14engine::uikit
         updateTextOverhangMetrics();
     }
 
-    void Label::appendTextFragment(WstrParam fragment)
+    void Label::appendTextFragment(WstrRefer fragment)
     {
         auto out = preprocessInputStr(fragment);
         if (out.has_value())
@@ -100,7 +100,7 @@ namespace d14engine::uikit
         updateTextOverhangMetrics();
     }
 
-    void Label::copyTextStyle(Label* source, OptParam<WstringView> text)
+    void Label::copyTextStyle(Label* source, OptRefer<WstringView> text)
     {
         if (source)
         {

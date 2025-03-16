@@ -15,7 +15,7 @@ using namespace d14engine::renderer;
 namespace d14engine::uikit
 {
     MainWindow::MainWindow(
-        ShrdPtrParam<IconLabel> caption,
+        ShrdPtrRefer<IconLabel> caption,
         float captionPanelHeight,
         float decorativeBarHeight)
         :
@@ -49,7 +49,7 @@ namespace d14engine::uikit
     }
 
     MainWindow::MainWindow(
-        WstrParam title,
+        WstrRefer title,
         float captionPanelHeight,
         float decorativeBarHeight)
         :

@@ -9,5 +9,5 @@ namespace d14engine
         void * data = {};
         size_t size = {};
     };
-    ResourcePack loadResource(WstrParam name, WstrParam type);
+    ResourcePack loadResource(WstrRefer name, WstrRefer type);
 }

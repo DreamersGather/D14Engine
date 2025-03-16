@@ -18,9 +18,9 @@ namespace d14engine::uikit
     {
         friend TreeView;
 
-        TreeViewItem(ShrdPtrParam<Panel> content, const D2D1_RECT_F& rect = {});
+        TreeViewItem(ShrdPtrRefer<Panel> content, const D2D1_RECT_F& rect = {});
 
-        TreeViewItem(WstrParam text = L"ViewItem", const D2D1_RECT_F& rect = {});
+        TreeViewItem(WstrRefer text = L"ViewItem", const D2D1_RECT_F& rect = {});
 
         using ChildItemList = std::list<SharedPtr<TreeViewItem>>;
 
@@ -49,7 +49,7 @@ namespace d14engine::uikit
             else return std::dynamic_pointer_cast<T>(content().lock());
         }
         WeakPtr<Panel> content() const;
-        void setContent(ShrdPtrParam<Panel> content);
+        void setContent(ShrdPtrRefer<Panel> content);
 
     protected:
         WeakPtr<TreeView> m_parentView = {};
@@ -75,7 +75,7 @@ namespace d14engine::uikit
         {
             friend TreeViewItem;
 
-            ChildItemImpl(ShrdPtrParam<TreeViewItem> rhs)
+            ChildItemImpl(ShrdPtrRefer<TreeViewItem> rhs)
                 : ptr(rhs), m_unfoldedHeight(rhs->height()) { }
 
             SharedPtr<TreeViewItem> ptr = {};

@@ -24,7 +24,7 @@ namespace d14engine::uikit::appearance
         }
     }
 
-    void Layout::Appearance::changeTheme(WstrParam themeName)
+    void Layout::Appearance::changeTheme(WstrRefer themeName)
     {
         _D14_FIND_THEME_DATA(themeName);
 

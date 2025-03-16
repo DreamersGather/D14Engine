@@ -204,7 +204,7 @@ namespace d14engine::uikit::appearance
         }
     }
 
-    void CheckBox::Appearance::changeTheme(WstrParam themeName)
+    void CheckBox::Appearance::changeTheme(WstrRefer themeName)
     {
         _D14_FIND_THEME_DATA(themeName);
 

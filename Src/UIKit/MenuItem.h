@@ -31,7 +31,7 @@ namespace d14engine::uikit
         const WeakPtr<PopupMenu>& parentMenu() const;
 
         WeakPtr<PopupMenu> associatedMenu() const;
-        void setAssociatedMenu(ShrdPtrParam<PopupMenu> menu);
+        void setAssociatedMenu(ShrdPtrRefer<PopupMenu> menu);
 
     public:
         // Controls whether to close parent-menus immediately after clicking.

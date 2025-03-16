@@ -9,7 +9,7 @@ namespace d14engine::uikit::appearance
         g_themeData = { { L"Light", {} }, { L"Dark", {} } };
     }
 
-    void ResizablePanel::Appearance::changeTheme(WstrParam themeName)
+    void ResizablePanel::Appearance::changeTheme(WstrRefer themeName)
     {
         _D14_FIND_THEME_DATA(themeName);
 

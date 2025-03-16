@@ -89,7 +89,7 @@ namespace d14engine::uikit::resource_utils
     }
 
     ComPtr<IDWriteTextFormat> loadTextFormat
-    (WstrParam name, const TextFormatDetail& detail)
+    (WstrRefer name, const TextFormatDetail& detail)
     {
         THROW_IF_NULL(Application::g_app);
 
@@ -198,7 +198,7 @@ namespace d14engine::uikit::resource_utils
         return content;
     }
 
-    void setClipboardText(WstrParam content, HWND hWndNewOwner)
+    void setClipboardText(WstrRefer content, HWND hWndNewOwner)
     {
         if (OpenClipboard(hWndNewOwner))
         {

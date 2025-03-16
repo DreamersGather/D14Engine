@@ -12,7 +12,7 @@ namespace d14engine::uikit
     struct IconLabel : Panel
     {
         IconLabel(
-            WstrParam labelText = {},
+            WstrRefer labelText = {},
             BmpObjParam iconBitmap = {},
             const D2D1_RECT_F& rect = {});
 
@@ -35,7 +35,7 @@ namespace d14engine::uikit
 
     public:
         const SharedPtr<Label>& label() const;
-        void setLabel(ShrdPtrParam<Label> label);
+        void setLabel(ShrdPtrRefer<Label> label);
 
     public:
         void updateLayout();
@@ -47,35 +47,35 @@ namespace d14engine::uikit
 
     public:
         static SharedPtr<IconLabel> uniformLayout(
-            WstrParam labelText = {},
+            WstrRefer labelText = {},
             BmpObjParam iconBitmap = {},
             const D2D1_RECT_F& rect = {});
 
         static SharedPtr<IconLabel> compactLayout(
-            WstrParam labelText = {},
+            WstrRefer labelText = {},
             BmpObjParam iconBitmap = {},
             float iconHeadPadding = 0.0f,
             float iconTailPadding = 0.0f,
             const D2D1_RECT_F& rect = {});
 
         static SharedPtr<IconLabel> iconExpandedLayout(
-            WstrParam labelText = {},
+            WstrRefer labelText = {},
             BmpObjParam iconBitmap = {},
             const D2D1_RECT_F& rect = {});
 
         static SharedPtr<IconLabel> labelExpandedLayout(
-            WstrParam labelText = {},
+            WstrRefer labelText = {},
             BmpObjParam iconBitmap = {},
             const D2D1_RECT_F& rect = {});
 
         static SharedPtr<IconLabel> comboBoxLayout(
-            WstrParam labelText = {},
+            WstrRefer labelText = {},
             BmpObjParam iconBitmap = {},
             const D2D1_RECT_F& rect = {});
 
     protected:
         void onSizeHelper(SizeEvent& e) override;
-        bool releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj) override;
+        bool releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj) override;
         void onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr) override;
     };
 }

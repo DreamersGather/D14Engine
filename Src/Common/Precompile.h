@@ -29,47 +29,47 @@ namespace d14engine
     template<typename T>
     using Function = std::function<T>;
     template<typename T>
-    using FuncParam = const Function<T>&;
+    using FuncRefer = const Function<T>&;
 
     template<typename T>
     using Optional = std::optional<T>;
     template<typename T>
-    using OptParam = const Optional<T>&;
+    using OptRefer = const Optional<T>&;
 
     template<typename T>
     using SharedPtr = std::shared_ptr<T>;
     template<typename T>
-    using ShrdPtrParam = const SharedPtr<T>&;
+    using ShrdPtrRefer = const SharedPtr<T>&;
 
     using String = std::string;
-    using StrParam = const String&;
+    using StrRefer = const String&;
 
     using StringView = std::string_view;
-    using StrViewParam = const StringView&;
+    using StrViewRefer = const StringView&;
 
     using Thread = std::thread;
-    using ThreadParam = const std::thread&;
+    using ThreadRefer = const std::thread&;
 
     template<typename T>
     using UniquePtr = std::unique_ptr<T>;
     template<typename T>
-    using UniqPtrParam = const UniquePtr<T>&;
+    using UniqPtrRefer = const UniquePtr<T>&;
 
     template<typename... Types>
     using Variant = std::variant<Types...>;
     template<typename... Types>
-    using VarParam = const Variant<Types...>&;
+    using VarRefer = const Variant<Types...>&;
 
     template<typename T>
     using WeakPtr = std::weak_ptr<T>;
     template<typename T>
-    using WeakPtrParam = const WeakPtr<T>&;
+    using WeakPtrRefer = const WeakPtr<T>&;
 
     using Wstring = std::wstring;
-    using WstrParam = const Wstring&;
+    using WstrRefer = const Wstring&;
 
     using WstringView = std::wstring_view;
-    using WstrViewParam = const WstringView&;
+    using WstrViewRefer = const WstringView&;
 }
 
 ///////////////////////////

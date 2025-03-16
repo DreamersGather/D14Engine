@@ -46,7 +46,7 @@ D14_SET_APP_ENTRY(mainTestWindow)
         {
             ui_mainWindow->setContent(ui_scenePanel);
 
-            ui_scenePanel->f_onChangeTheme = [](Panel* p, WstrParam themeName)
+            ui_scenePanel->f_onChangeTheme = [](Panel* p, WstrRefer themeName)
             {
                 auto sp = (ScenePanel*)p;
                 if (themeName == L"Light") sp->setClearColor(Colors::White);

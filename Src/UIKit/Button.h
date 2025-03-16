@@ -12,12 +12,12 @@ namespace d14engine::uikit
     struct Button : appearance::Button, ClickablePanel
     {
         Button(
-            ShrdPtrParam<IconLabel> content,
+            ShrdPtrRefer<IconLabel> content,
             float roundRadius = 0.0f,
             const D2D1_RECT_F& rect = {});
 
         Button(
-            WstrParam text = L"Button",
+            WstrRefer text = L"Button",
             float roundRadius = 0.0f,
             const D2D1_RECT_F& rect = {});
 
@@ -34,7 +34,7 @@ namespace d14engine::uikit
 
     public:
         const SharedPtr<IconLabel>& content() const;
-        void setContent(ShrdPtrParam<IconLabel> content);
+        void setContent(ShrdPtrRefer<IconLabel> content);
 
     protected:
         State m_state = State::Idle;
@@ -46,7 +46,7 @@ namespace d14engine::uikit
         // Panel
         bool isHitHelper(const uikit::Event::Point& p) const override;
 
-        bool releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj) override;
+        bool releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj) override;
 
         void onSizeHelper(SizeEvent& e) override;
 

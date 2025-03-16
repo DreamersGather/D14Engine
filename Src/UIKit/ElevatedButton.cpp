@@ -14,7 +14,7 @@ using namespace d14engine::renderer;
 namespace d14engine::uikit
 {
     ElevatedButton::ElevatedButton(
-        ShrdPtrParam<IconLabel> content,
+        ShrdPtrRefer<IconLabel> content,
         float roundRadius,
         const D2D1_RECT_F& rect)
         :
@@ -23,7 +23,7 @@ namespace d14engine::uikit
         shadow(size()) { }
 
     ElevatedButton::ElevatedButton(
-        WstrParam text,
+        WstrRefer text,
         float roundRadius,
         const D2D1_RECT_F& rect)
         :

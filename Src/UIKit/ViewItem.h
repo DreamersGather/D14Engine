@@ -18,9 +18,9 @@ namespace d14engine::uikit
         template<typename>
         friend struct WaterfallView;
 
-        ViewItem(ShrdPtrParam<Panel> content, const D2D1_RECT_F& rect = {});
+        ViewItem(ShrdPtrRefer<Panel> content, const D2D1_RECT_F& rect = {});
 
-        ViewItem(WstrParam text = L"ViewItem", const D2D1_RECT_F& rect = {});
+        ViewItem(WstrRefer text = L"ViewItem", const D2D1_RECT_F& rect = {});
 
         void onInitializeFinish() override;
 
@@ -60,7 +60,7 @@ namespace d14engine::uikit
             else return std::dynamic_pointer_cast<T>(content().lock());
         }
         WeakPtr<Panel> content() const;
-        void setContent(ShrdPtrParam<Panel> content);
+        void setContent(ShrdPtrRefer<Panel> content);
 
         ///////////////////////
         // Interaction Logic //
@@ -115,7 +115,7 @@ namespace d14engine::uikit
 
         bool isHitHelper(const Event::Point& p) const override;
 
-        bool releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj) override;
+        bool releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj) override;
 
         void onSizeHelper(SizeEvent& e) override;
 

@@ -51,7 +51,7 @@ namespace d14engine::uikit
     protected:
         WeakPtr<MenuItem> m_associatedItem = {};
 
-        friend void MenuItem::setAssociatedMenu(ShrdPtrParam<PopupMenu> menu);
+        friend void MenuItem::setAssociatedMenu(ShrdPtrRefer<PopupMenu> menu);
 
     public:
         const WeakPtr<MenuItem>& associatedItem() const;

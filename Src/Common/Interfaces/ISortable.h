@@ -64,7 +64,7 @@ namespace d14engine
 
         struct ShrdAscending
         {
-            bool operator()(ShrdPtrParam<ISortable<T>> lhs, ShrdPtrParam<ISortable<T>> rhs) const
+            bool operator()(ShrdPtrRefer<ISortable<T>> lhs, ShrdPtrRefer<ISortable<T>> rhs) const
             {
                 return RawAscending()(*lhs.get(), *rhs.get());
             }
@@ -79,7 +79,7 @@ namespace d14engine
 
         struct WeakAscending
         {
-            bool operator()(WeakPtrParam<ISortable<T>> lhs, WeakPtrParam<ISortable<T>> rhs) const
+            bool operator()(WeakPtrRefer<ISortable<T>> lhs, WeakPtrRefer<ISortable<T>> rhs) const
             {
                 // The order of comparison here is significant:
                 //
@@ -125,7 +125,7 @@ namespace d14engine
         // indicates whether to handle the remainings.
         static void foreach(
             WeakPrioritySet& cont,
-            FuncParam<bool(ShrdPtrParam<T>)> func)
+            FuncRefer<bool(ShrdPtrRefer<T>)> func)
         {
             bool continueDeliver = true;
 

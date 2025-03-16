@@ -12,7 +12,7 @@ namespace d14engine::uikit
 {
     MenuSeparator::MenuSeparator(const D2D1_RECT_F& rect)
         :
-        MenuItem((ShrdPtrParam<Panel>)nullptr, rect) { isTriggerItem = false; }
+        MenuItem((ShrdPtrRefer<Panel>)nullptr, rect) { isTriggerItem = false; }
 
 
     void MenuSeparator::onRendererDrawD2d1ObjectHelper(Renderer* rndr)

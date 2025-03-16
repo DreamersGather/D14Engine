@@ -9,8 +9,8 @@ namespace d14engine::uikit
     struct IconLabel2 : IconLabel
     {
         IconLabel2(
-            WstrParam labelText = {},
-            WstrParam label2Text = {},
+            WstrRefer labelText = {},
+            WstrRefer label2Text = {},
             BmpObjParam iconBitmap = {},
             const D2D1_RECT_F& rect = {});
 
@@ -23,19 +23,19 @@ namespace d14engine::uikit
 
     public:
         const SharedPtr<Label>& label2() const;
-        void setLabel2(ShrdPtrParam<Label> label);
+        void setLabel2(ShrdPtrRefer<Label> label);
 
     public:
         static SharedPtr<IconLabel2> menuItemLayout(
-            WstrParam labelText = {},
-            WstrParam hotkeyText = {},
+            WstrRefer labelText = {},
+            WstrRefer hotkeyText = {},
             BmpObjParam iconBitmap = {},
             float textHeadPadding = 30.0f,
             float hotkeyTailPadding = 30.0f,
             const D2D1_RECT_F& rect = {});
 
     protected:
-        bool releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj) override;
+        bool releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj) override;
         void onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr) override;
     };
 }

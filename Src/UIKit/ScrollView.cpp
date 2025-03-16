@@ -16,7 +16,7 @@ using namespace d14engine::renderer;
 namespace d14engine::uikit
 {
     ScrollView::ScrollView(
-        ShrdPtrParam<Panel> content,
+        ShrdPtrRefer<Panel> content,
         const D2D1_RECT_F& rect)
         :
         Panel(rect, resource_utils::solidColorBrush()),
@@ -85,7 +85,7 @@ namespace d14engine::uikit
         else return { 0.0f, 0.0f };
     }
 
-    void ScrollView::setContent(ShrdPtrParam<Panel> content)
+    void ScrollView::setContent(ShrdPtrRefer<Panel> content)
     {
         if (!cpp_lang_utils::isMostDerivedEqual(content, m_content))
         {
@@ -366,7 +366,7 @@ namespace d14engine::uikit
         ResizablePanel::drawD2d1ObjectPosterior(rndr);
     }
 
-    bool ScrollView::releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj)
+    bool ScrollView::releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj)
     {
         if (cpp_lang_utils::isMostDerivedEqual(m_content, uiobj)) m_content.reset();
 

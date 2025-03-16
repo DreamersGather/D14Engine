@@ -14,7 +14,7 @@ using namespace d14engine::renderer;
 
 namespace d14engine::uikit
 {
-    LabelArea::LabelArea(WstrParam text, const D2D_RECT_F& rect)
+    LabelArea::LabelArea(WstrRefer text, const D2D_RECT_F& rect)
         :
         Label(text, rect)
     {

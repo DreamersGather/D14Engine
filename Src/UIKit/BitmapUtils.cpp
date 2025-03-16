@@ -16,7 +16,7 @@ using namespace d14engine::renderer;
 
 namespace d14engine::uikit::bitmap_utils
 {
-    void saveBitmap(ID2D1Bitmap1* bitmap, WstrParam imagePath, const GUID& format)
+    void saveBitmap(ID2D1Bitmap1* bitmap, WstrRefer imagePath, const GUID& format)
     {
         THROW_IF_NULL(Application::g_app);
 
@@ -117,7 +117,7 @@ namespace d14engine::uikit::bitmap_utils
         return bitmap;
     }
 
-    ComPtr<ID2D1Bitmap1> loadBitmap(WstrParam imagePath, D2D1_BITMAP_OPTIONS options)
+    ComPtr<ID2D1Bitmap1> loadBitmap(WstrRefer imagePath, D2D1_BITMAP_OPTIONS options)
     {
         THROW_IF_NULL(Application::g_app);
 
@@ -142,7 +142,7 @@ namespace d14engine::uikit::bitmap_utils
         return bitmap;
     }
 
-    ComPtr<ID2D1Bitmap1> loadPackedBitmap(WstrParam resName, WstrParam resType, D2D1_BITMAP_OPTIONS options)
+    ComPtr<ID2D1Bitmap1> loadPackedBitmap(WstrRefer resName, WstrRefer resType, D2D1_BITMAP_OPTIONS options)
     {
         THROW_IF_NULL(Application::g_app);
 

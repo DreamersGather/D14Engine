@@ -11,7 +11,7 @@ namespace d14engine::uikit
 {
     struct LabelArea : appearance::LabelArea, Label
     {
-        LabelArea(WstrParam text = {}, const D2D_RECT_F& rect = {});
+        LabelArea(WstrRefer text = {}, const D2D_RECT_F& rect = {});
 
         _D14_SET_APPEARANCE_PROPERTY(LabelArea)
 

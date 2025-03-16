@@ -17,7 +17,7 @@ using namespace d14engine::renderer;
 namespace d14engine::uikit
 {
     Window::Window(
-        ShrdPtrParam<IconLabel> caption,
+        ShrdPtrRefer<IconLabel> caption,
         const D2D1_RECT_F& rect,
         float captionPanelHeight,
         float decorativeBarHeight)
@@ -44,7 +44,7 @@ namespace d14engine::uikit
     }
 
     Window::Window(
-        WstrParam title,
+        WstrRefer title,
         const D2D1_RECT_F& rect,
         float captionPanelHeight,
         float decorativeBarHeight)
@@ -190,7 +190,7 @@ namespace d14engine::uikit
         return m_caption;
     }
 
-    void Window::setCaption(ShrdPtrParam<IconLabel> caption)
+    void Window::setCaption(ShrdPtrRefer<IconLabel> caption)
     {
         if (caption && !cpp_lang_utils::isMostDerivedEqual(caption, m_caption))
         {
@@ -203,7 +203,7 @@ namespace d14engine::uikit
         }
     }
 
-    void Window::setContent(ShrdPtrParam<Panel> uiobj)
+    void Window::setContent(ShrdPtrRefer<Panel> uiobj)
     {
         if (!cpp_lang_utils::isMostDerivedEqual(uiobj, m_content))
         {
@@ -434,12 +434,12 @@ namespace d14engine::uikit
         resource_utils::solidColorBrush()->SetOpacity(background.opacity);
     }
 
-    void Window::registerTabGroup(WeakPtrParam<TabGroup> tg)
+    void Window::registerTabGroup(WeakPtrRefer<TabGroup> tg)
     {
         m_registeredTabGroups.insert(tg);
     }
 
-    void Window::unregisterTabGroup(WeakPtrParam<TabGroup> tg)
+    void Window::unregisterTabGroup(WeakPtrRefer<TabGroup> tg)
     {
         m_registeredTabGroups.erase(tg);
     }
@@ -819,7 +819,7 @@ namespace d14engine::uikit
         ResizablePanel::drawD2d1ObjectPosterior(rndr);
     }
 
-    bool Window::releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj)
+    bool Window::releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj)
     {
         if (cpp_lang_utils::isMostDerivedEqual(uiobj, m_caption)) return false;
 

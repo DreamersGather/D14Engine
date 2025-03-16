@@ -14,7 +14,7 @@ using namespace d14engine::renderer;
 namespace d14engine::uikit
 {
     Button::Button(
-        ShrdPtrParam<IconLabel> content,
+        ShrdPtrRefer<IconLabel> content,
         float roundRadius,
         const D2D1_RECT_F& rect)
         :
@@ -28,7 +28,7 @@ namespace d14engine::uikit
     }
 
     Button::Button(
-        WstrParam text,
+        WstrRefer text,
         float roundRadius,
         const D2D1_RECT_F& rect)
         :
@@ -64,7 +64,7 @@ namespace d14engine::uikit
         return m_content;
     }
 
-    void Button::setContent(ShrdPtrParam<IconLabel> content)
+    void Button::setContent(ShrdPtrRefer<IconLabel> content)
     {
         if (content && !cpp_lang_utils::isMostDerivedEqual(content, m_content))
         {
@@ -129,7 +129,7 @@ namespace d14engine::uikit
         return math_utils::isInside(p, m_absoluteRect);
     }
 
-    bool Button::releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj)
+    bool Button::releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj)
     {
         if (cpp_lang_utils::isMostDerivedEqual(m_content, uiobj)) return false;
 

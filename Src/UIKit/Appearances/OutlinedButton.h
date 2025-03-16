@@ -12,7 +12,7 @@ namespace d14engine::uikit::appearance
         {
             static void initialize();
 
-            void changeTheme(Master& m, WstrParam themeName) override;
+            void changeTheme(Master& m, WstrRefer themeName) override;
 
             _D14_REF_THEME_DATA_MAP_DECL(FlatButton)
         }

@@ -8,7 +8,7 @@
 namespace d14engine::uikit
 {
     ToggleButton::ToggleButton(
-        ShrdPtrParam<IconLabel> content,
+        ShrdPtrRefer<IconLabel> content,
         float roundRadius,
         const D2D1_RECT_F& rect)
         :
@@ -20,7 +20,7 @@ namespace d14engine::uikit
     }
 
     ToggleButton::ToggleButton(
-        WstrParam text,
+        WstrRefer text,
         float roundRadius,
         const D2D1_RECT_F& rect)
         :

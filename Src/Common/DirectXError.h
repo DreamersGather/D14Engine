@@ -10,7 +10,7 @@ namespace d14engine
     {
         HRESULT hr = E_FAIL;
 
-        DirectXError(HRESULT hr, WstrParam fileName, UINT lineNumber);
+        DirectXError(HRESULT hr, WstrRefer fileName, UINT lineNumber);
     };
 }
 

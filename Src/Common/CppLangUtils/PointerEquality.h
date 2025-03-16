@@ -17,7 +17,7 @@ namespace d14engine::cpp_lang_utils
     }
 
     template<typename T, typename U>
-    bool isMostDerivedEqual(ShrdPtrParam<T> lhs, ShrdPtrParam<U> rhs)
+    bool isMostDerivedEqual(ShrdPtrRefer<T> lhs, ShrdPtrRefer<U> rhs)
     {
         return std::dynamic_pointer_cast<const void>(lhs) == std::dynamic_pointer_cast<const void>(rhs);
     }

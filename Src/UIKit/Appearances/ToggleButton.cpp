@@ -166,7 +166,7 @@ namespace d14engine::uikit::appearance
         }
     }
 
-    void ToggleButton::Appearance::changeTheme(WstrParam themeName)
+    void ToggleButton::Appearance::changeTheme(WstrRefer themeName)
     {
         _D14_FIND_THEME_DATA(themeName);
 

@@ -9,7 +9,7 @@ namespace d14engine::uikit
 {
     struct Label : appearance::Label, Panel
     {
-        Label(WstrParam text = {}, const D2D_RECT_F& rect = {});
+        Label(WstrRefer text = {}, const D2D_RECT_F& rect = {});
 
         _D14_SET_APPEARANCE_PROPERTY(Label)
 
@@ -19,22 +19,22 @@ namespace d14engine::uikit
         Wstring m_text = {};
 
         // input-str ---> preprocess ---> output-str ---> set-text
-        virtual Optional<Wstring> preprocessInputStr(WstrParam in);
+        virtual Optional<Wstring> preprocessInputStr(WstrRefer in);
 
     public:
         const Wstring& text() const;
-        virtual void setText(WstrParam text);
+        virtual void setText(WstrRefer text);
 
         void setTextFormat(IDWriteTextFormat* textFormat);
 
-        void insertTextFragment(WstrParam fragment, size_t offset);
-        void appendTextFragment(WstrParam fragment);
+        void insertTextFragment(WstrRefer fragment, size_t offset);
+        void appendTextFragment(WstrRefer fragment);
 
         struct CharacterRange { size_t offset, count; };
 
         void eraseTextFragment(const CharacterRange& range);
 
-        void copyTextStyle(Label* source, OptParam<WstringView> text = {});
+        void copyTextStyle(Label* source, OptRefer<WstringView> text = {});
 
     protected:
         ComPtr<IDWriteTextLayout> m_textLayout = {};

@@ -23,7 +23,7 @@ namespace d14engine::uikit::appearance
                     color.a == rhs.color.a;
             }
         };
-        virtual void changeTheme(WstrParam themeName) = 0;
+        virtual void changeTheme(WstrRefer themeName) = 0;
     };
 
 #define _D14_SET_APPEARANCE_PROPERTY(Type_Name) \
@@ -75,7 +75,7 @@ namespace d14engine::uikit::appearance
         static_assert(std::is_base_of_v<Appearance, Master>,
             "AppearanceProxy::Master must inherit from Appearance");
 
-        virtual void changeTheme(Master& m, WstrParam themeName) = 0;
+        virtual void changeTheme(Master& m, WstrRefer themeName) = 0;
     };
 
 #pragma endregion

@@ -78,7 +78,7 @@ namespace d14engine::uikit::appearance
         }
     }
 
-    void Slider::Appearance::changeTheme(WstrParam themeName)
+    void Slider::Appearance::changeTheme(WstrRefer themeName)
     {
         bar.filled.background =
         {

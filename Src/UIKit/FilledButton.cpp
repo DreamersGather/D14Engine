@@ -8,7 +8,7 @@
 namespace d14engine::uikit
 {
     FilledButton::FilledButton(
-        ShrdPtrParam<IconLabel> content,
+        ShrdPtrRefer<IconLabel> content,
         float roundRadius,
         const D2D1_RECT_F& rect)
         :
@@ -16,7 +16,7 @@ namespace d14engine::uikit
         FlatButton(content, roundRadius, rect) { }
 
     FilledButton::FilledButton(
-        WstrParam text,
+        WstrRefer text,
         float roundRadius,
         const D2D1_RECT_F& rect)
         :

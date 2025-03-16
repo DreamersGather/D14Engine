@@ -78,7 +78,7 @@ namespace d14engine::uikit
         return isReleased;
     }
 
-    bool Panel::releaseUIObject(ShrdPtrParam<Panel> uiobj)
+    bool Panel::releaseUIObject(ShrdPtrRefer<Panel> uiobj)
     {
         THROW_IF_NULL(Application::g_app);
 
@@ -262,7 +262,7 @@ namespace d14engine::uikit
         if (f_onChangeThemeStyle) f_onChangeThemeStyle(this, style);
     }
 
-    void Panel::onChangeLangLocale(WstrParam codeName)
+    void Panel::onChangeLangLocale(WstrRefer codeName)
     {
         onChangeLangLocaleHelper(codeName);
 
@@ -338,7 +338,7 @@ namespace d14engine::uikit
         return math_utils::isOverlapped(p, m_absoluteRect);
     }
 
-    bool Panel::releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj)
+    bool Panel::releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj)
     {
         removeUIObject(uiobj);
         return true;
@@ -389,7 +389,7 @@ namespace d14engine::uikit
         }
     }
 
-    void Panel::onChangeLangLocaleHelper(WstrParam codeName)
+    void Panel::onChangeLangLocaleHelper(WstrRefer codeName)
     {
         if (m_skipChangeChildrenLangLocale) return;
 
@@ -466,7 +466,7 @@ namespace d14engine::uikit
         }
         else // trigger multiple mouse-enter-leave events
         {
-            ISortable<Panel>::foreach(currHitChildren, [&](ShrdPtrParam<Panel> child)
+            ISortable<Panel>::foreach(currHitChildren, [&](ShrdPtrRefer<Panel> child)
             {
                 // Moved in just now, trigger onMouseEnter event.
                 if (m_hitChildren.find(child) == m_hitChildren.end())
@@ -479,7 +479,7 @@ namespace d14engine::uikit
                 }
                 return true;
             });
-            ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrParam<Panel> child)
+            ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrRefer<Panel> child)
             {
                 // Moved out just now, trigger onMouseLeave event.
                 if (currHitChildren.find(child) == currHitChildren.end())
@@ -495,7 +495,7 @@ namespace d14engine::uikit
         }
         m_hitChildren = std::move(currHitChildren);
 
-        ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrParam<Panel> child)
+        ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrRefer<Panel> child)
         {
             if (child->appEventReactability.mouse.move)
             {
@@ -505,7 +505,7 @@ namespace d14engine::uikit
         });
         updateDiffPinnedUIObjects();
 
-        ISortable<Panel>::foreach(m_diffPinnedChildren, [&](ShrdPtrParam<Panel> child)
+        ISortable<Panel>::foreach(m_diffPinnedChildren, [&](ShrdPtrRefer<Panel> child)
         {
             if (child->appEventReactability.mouse.move)
             {
@@ -519,7 +519,7 @@ namespace d14engine::uikit
     {
         if (forceTriggerChildrenMouseLeaveEvent)
         {
-            ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrParam<Panel> child)
+            ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrRefer<Panel> child)
             {
                 if (child->appEventReactability.mouse.leave)
                 {
@@ -534,7 +534,7 @@ namespace d14engine::uikit
 
     void Panel::onMouseButtonHelper(MouseButtonEvent& e)
     {
-        ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrParam<Panel> child)
+        ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrRefer<Panel> child)
         {
             if (child->appEventReactability.mouse.button)
             {
@@ -547,7 +547,7 @@ namespace d14engine::uikit
             }
             return child->appEventTransparency.mouse.button;
         });
-        ISortable<Panel>::foreach(m_diffPinnedChildren, [&](ShrdPtrParam<Panel> child)
+        ISortable<Panel>::foreach(m_diffPinnedChildren, [&](ShrdPtrRefer<Panel> child)
         {
             if (child->appEventReactability.mouse.button)
             {
@@ -559,7 +559,7 @@ namespace d14engine::uikit
 
     void Panel::onMouseWheelHelper(MouseWheelEvent& e)
     {
-        ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrParam<Panel> child)
+        ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrRefer<Panel> child)
         {
             if (child->appEventReactability.mouse.wheel)
             {
@@ -567,7 +567,7 @@ namespace d14engine::uikit
             }
             return child->appEventTransparency.mouse.wheel;
         });
-        ISortable<Panel>::foreach(m_diffPinnedChildren, [&](ShrdPtrParam<Panel> child)
+        ISortable<Panel>::foreach(m_diffPinnedChildren, [&](ShrdPtrRefer<Panel> child)
         {
             if (child->appEventReactability.mouse.wheel)
             {
@@ -579,7 +579,7 @@ namespace d14engine::uikit
 
     void Panel::onKeyboardHelper(KeyboardEvent& e)
     {
-        ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrParam<Panel> child)
+        ISortable<Panel>::foreach(m_hitChildren, [&](ShrdPtrRefer<Panel> child)
         {
             if (child->appEventReactability.keyboard)
             {
@@ -587,7 +587,7 @@ namespace d14engine::uikit
             }
             return child->appEventTransparency.keyboard;
         });
-        ISortable<Panel>::foreach(m_diffPinnedChildren, [&](ShrdPtrParam<Panel> child)
+        ISortable<Panel>::foreach(m_diffPinnedChildren, [&](ShrdPtrRefer<Panel> child)
         {
             if (child->appEventReactability.keyboard)
             {
@@ -1098,7 +1098,7 @@ namespace d14engine::uikit
         return m_parent;
     }
 
-    void Panel::setParent(ShrdPtrParam<Panel> uiobj)
+    void Panel::setParent(ShrdPtrRefer<Panel> uiobj)
     {
         if (!uiobj)
         {
@@ -1130,7 +1130,7 @@ namespace d14engine::uikit
         return m_children;
     }
 
-    void Panel::addUIObject(ShrdPtrParam<Panel> uiobj)
+    void Panel::addUIObject(ShrdPtrRefer<Panel> uiobj)
     {
         if (!uiobj) return;
         if (m_children.find(uiobj) != m_children.end()) return;
@@ -1160,7 +1160,7 @@ namespace d14engine::uikit
             math_utils::minus(absolutePosition()));
     }
 
-    void Panel::removeUIObject(ShrdPtrParam<Panel> uiobj)
+    void Panel::removeUIObject(ShrdPtrRefer<Panel> uiobj)
     {
         if (!uiobj) return;
         if (m_children.find(uiobj) != m_children.end())
@@ -1172,7 +1172,7 @@ namespace d14engine::uikit
         m_drawObjects2D.erase(uiobj);
     }
 
-    void Panel::pinUIObject(ShrdPtrParam<Panel> uiobj)
+    void Panel::pinUIObject(ShrdPtrRefer<Panel> uiobj)
     {
         if (!uiobj) return;
         m_pinnedChildren.insert(uiobj);
@@ -1180,7 +1180,7 @@ namespace d14engine::uikit
         updateDiffPinnedUIObjectsLater();
     }
 
-    void Panel::unpinUIObject(ShrdPtrParam<Panel> uiobj)
+    void Panel::unpinUIObject(ShrdPtrRefer<Panel> uiobj)
     {
         m_pinnedChildren.erase(uiobj);
 

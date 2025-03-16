@@ -11,8 +11,8 @@
 namespace d14engine::uikit
 {
     IconLabel2::IconLabel2(
-        WstrParam labelText,
-        WstrParam label2Text,
+        WstrRefer labelText,
+        WstrRefer label2Text,
         BmpObjParam iconBitmap,
         const D2D1_RECT_F& rect)
         :
@@ -42,7 +42,7 @@ namespace d14engine::uikit
         return m_label2;
     }
 
-    void IconLabel2::setLabel2(ShrdPtrParam<Label> label)
+    void IconLabel2::setLabel2(ShrdPtrRefer<Label> label)
     {
         if (label && !cpp_lang_utils::isMostDerivedEqual(label, m_label2))
         {
@@ -56,8 +56,8 @@ namespace d14engine::uikit
     }
 
     SharedPtr<IconLabel2> IconLabel2::menuItemLayout(
-        WstrParam labelText,
-        WstrParam hotkeyText,
+        WstrRefer labelText,
+        WstrRefer hotkeyText,
         BmpObjParam iconBitmap,
         float textHeadPadding,
         float hotkeyTailPadding,
@@ -103,7 +103,7 @@ namespace d14engine::uikit
         return iconLabel;
     }
 
-    bool IconLabel2::releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj)
+    bool IconLabel2::releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj)
     {
         if (cpp_lang_utils::isMostDerivedEqual(uiobj, m_label2)) return false;
 

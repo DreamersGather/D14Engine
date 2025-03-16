@@ -16,7 +16,7 @@ namespace d14engine::renderer::graph_utils
 
         ComPtr<IWICBitmapLock> map(IWICBitmapSource* source, DWORD flgas = WICBitmapLockRead, Optional<WICRect> rect = {});
 
-        ComPtr<IWICBitmapSource> load(WstrParam imagePath, REFWICPixelFormatGUID format = GUID_WICPixelFormat32bppPRGBA);
+        ComPtr<IWICBitmapSource> load(WstrRefer imagePath, REFWICPixelFormatGUID format = GUID_WICPixelFormat32bppPRGBA);
 
         ComPtr<IWICBitmapSource> load(IStream* imageStream, REFWICPixelFormatGUID format = GUID_WICPixelFormat32bppPRGBA);
     }

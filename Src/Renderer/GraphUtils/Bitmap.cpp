@@ -57,7 +57,7 @@ namespace d14engine::renderer::graph_utils
             return lock;
         }
 
-        ComPtr<IWICBitmapSource> load(WstrParam imagePath, REFWICPixelFormatGUID format)
+        ComPtr<IWICBitmapSource> load(WstrRefer imagePath, REFWICPixelFormatGUID format)
         {
             ComPtr<IWICBitmapDecoder> decoder = {};
             THROW_IF_FAILED(g_factory->CreateDecoderFromFilename

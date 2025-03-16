@@ -16,7 +16,7 @@ using namespace d14engine::renderer;
 namespace d14engine::uikit
 {
     IconLabel::IconLabel(
-        WstrParam labelText,
+        WstrRefer labelText,
         BmpObjParam iconBitmap,
         const D2D1_RECT_F& rect)
         :
@@ -51,7 +51,7 @@ namespace d14engine::uikit
         return m_label;
     }
 
-    void IconLabel::setLabel(ShrdPtrParam<Label> label)
+    void IconLabel::setLabel(ShrdPtrRefer<Label> label)
     {
         if (label && !cpp_lang_utils::isMostDerivedEqual(label, m_label))
         {
@@ -79,7 +79,7 @@ namespace d14engine::uikit
     }
 
     SharedPtr<IconLabel> IconLabel::uniformLayout(
-        WstrParam labelText,
+        WstrRefer labelText,
         BmpObjParam iconBitmap,
         const D2D1_RECT_F& rect)
     {
@@ -138,7 +138,7 @@ namespace d14engine::uikit
     }
 
     SharedPtr<IconLabel> IconLabel::compactLayout(
-        WstrParam labelText,
+        WstrRefer labelText,
         BmpObjParam iconBitmap,
         float iconHeadPadding,
         float iconTailPadding,
@@ -184,7 +184,7 @@ namespace d14engine::uikit
     }
 
     SharedPtr<IconLabel> IconLabel::iconExpandedLayout(
-        WstrParam labelText,
+        WstrRefer labelText,
         BmpObjParam iconBitmap,
         const D2D1_RECT_F& rect)
     {
@@ -228,7 +228,7 @@ namespace d14engine::uikit
     }
 
     SharedPtr<IconLabel> IconLabel::labelExpandedLayout(
-        WstrParam labelText,
+        WstrRefer labelText,
         BmpObjParam iconBitmap,
         const D2D1_RECT_F& rect)
     {
@@ -273,7 +273,7 @@ namespace d14engine::uikit
     }
 
     SharedPtr<IconLabel> IconLabel::comboBoxLayout(
-        WstrParam labelText,
+        WstrRefer labelText,
         BmpObjParam iconBitmap,
         const D2D1_RECT_F& rect)
     {
@@ -287,7 +287,7 @@ namespace d14engine::uikit
         updateLayout();
     }
 
-    bool IconLabel::releaseUIObjectHelper(ShrdPtrParam<Panel> uiobj)
+    bool IconLabel::releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj)
     {
         if (cpp_lang_utils::isMostDerivedEqual(uiobj, m_label)) return false;
 

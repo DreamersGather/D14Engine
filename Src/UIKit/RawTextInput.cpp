@@ -56,7 +56,7 @@ namespace d14engine::uikit
         // This method intentionally left blank.
     }
 
-    Optional<Wstring> RawTextInput::preprocessInputStr(WstrParam in)
+    Optional<Wstring> RawTextInput::preprocessInputStr(WstrRefer in)
     {
         if (multiline) return std::nullopt;
 
@@ -69,7 +69,7 @@ namespace d14engine::uikit
         return in.substr(0, lineBreakPos);
     }
 
-    void RawTextInput::setText(WstrParam text)
+    void RawTextInput::setText(WstrRefer text)
     {
         if (text != m_text)
         {
@@ -217,7 +217,7 @@ namespace d14engine::uikit
         }
     }
 
-    void RawTextInput::changeCandidateText(WstrParam str)
+    void RawTextInput::changeCandidateText(WstrRefer str)
     {
         if (m_hiliteRange.count > 0)
         {
@@ -548,7 +548,7 @@ namespace d14engine::uikit
         return form;
     }
 
-    void RawTextInput::onInputStringHelper(WstrParam str)
+    void RawTextInput::onInputStringHelper(WstrRefer str)
     {
         TextInputObject::onInputStringHelper(str);
 

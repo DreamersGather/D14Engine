@@ -19,14 +19,14 @@ namespace d14engine::renderer::graph_utils
             THROW_IF_FAILED(g_utils->CreateDefaultIncludeHandler(&g_defaultIncludeHandler));
         }
 
-        ComPtr<IDxcBlob> load(WstrParam fileName)
+        ComPtr<IDxcBlob> load(WstrRefer fileName)
         {
             ComPtr<IDxcBlobEncoding> cso = {};
             THROW_IF_FAILED(g_utils->LoadFile(fileName.c_str(), nullptr, &cso));
             return cso; // no encoding for binary data
         }
 
-        void save(WstrParam fileName, IDxcBlob* blob)
+        void save(WstrRefer fileName, IDxcBlob* blob)
         {
             auto hFile = CreateFile
             (
@@ -53,7 +53,7 @@ namespace d14engine::renderer::graph_utils
             THROW_IF_FALSE(CloseHandle(hFile));
         }
 
-        ComPtr<IDxcBlob> compile(WstrParam hlslFileName, const CompileOption& option)
+        ComPtr<IDxcBlob> compile(WstrRefer hlslFileName, const CompileOption& option)
         {
             /////////////////
             // Load Source //
@@ -166,7 +166,7 @@ namespace d14engine::renderer::graph_utils
 
         Object::Object(const CompileOption& option) : option(option) {}
 
-        void loadDefaultObject(WstrParam path, WstrParam name, StreamOption option, Package& shaders)
+        void loadDefaultObject(WstrRefer path, WstrRefer name, StreamOption option, Package& shaders)
         {
             if (option.in.has_value())
             {

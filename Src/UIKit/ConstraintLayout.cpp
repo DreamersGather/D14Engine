@@ -9,7 +9,7 @@ namespace d14engine::uikit
         Panel(rect, resource_utils::solidColorBrush()),
         Layout(rect) { }
 
-    void ConstraintLayout::updateElement(ShrdPtrParam<Panel> elem, const GeometryInfo& geoInfo)
+    void ConstraintLayout::updateElement(ShrdPtrRefer<Panel> elem, const GeometryInfo& geoInfo)
     {
         D2D1_RECT_F rect = elem->relativeRect();
 

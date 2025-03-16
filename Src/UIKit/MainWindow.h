@@ -10,12 +10,12 @@ namespace d14engine::uikit
     struct MainWindow : Window
     {
         MainWindow(
-            ShrdPtrParam<IconLabel> caption,
+            ShrdPtrRefer<IconLabel> caption,
             float captionPanelHeight = 32.0f,
             float decorativeBarHeight = 4.0f);
 
         MainWindow(
-            WstrParam title = L"Untitled",
+            WstrRefer title = L"Untitled",
             float captionPanelHeight = 32.0f,
             float decorativeBarHeight = 4.0f);
 

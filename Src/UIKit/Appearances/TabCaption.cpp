@@ -74,7 +74,7 @@ namespace d14engine::uikit::appearance
         }
     }
 
-    void TabCaption::Appearance::changeTheme(WstrParam themeName)
+    void TabCaption::Appearance::changeTheme(WstrRefer themeName)
     {
         _D14_FIND_THEME_DATA(themeName);
 

@@ -4,6 +4,6 @@
 
 namespace d14engine
 {
-    DirectXError::DirectXError(HRESULT hr, WstrParam fileName, UINT lineNumber)
+    DirectXError::DirectXError(HRESULT hr, WstrRefer fileName, UINT lineNumber)
         : RuntimeError(fileName, lineNumber), hr(hr) { m_descText = _com_error(hr).ErrorMessage(); }
 }

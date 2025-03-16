@@ -81,7 +81,7 @@ namespace d14engine::uikit
         void initMiscComponents();
 
     public:
-        int run(FuncParam<void(Application* app)> onLaunch = {});
+        int run(FuncRefer<void(Application* app)> onLaunch = {});
 
         void exit(); // The exit code is returned by calling run.
 
@@ -190,11 +190,11 @@ namespace d14engine::uikit
 
         const UIObjectSet& uiObjects() const;
 
-        void addUIObject(ShrdPtrParam<Panel> uiobj);
-        void removeUIObject(ShrdPtrParam<Panel> uiobj);
+        void addUIObject(ShrdPtrRefer<Panel> uiobj);
+        void removeUIObject(ShrdPtrRefer<Panel> uiobj);
 
-        void pinUIObject(ShrdPtrParam<Panel> uiobj);
-        void unpinUIObject(ShrdPtrParam<Panel> uiobj);
+        void pinUIObject(ShrdPtrRefer<Panel> uiobj);
+        void unpinUIObject(ShrdPtrRefer<Panel> uiobj);
 
         void clearAddedUIObjects();
         void clearPinnedUIObjects();
@@ -215,11 +215,22 @@ namespace d14engine::uikit
         void updateDiffPinnedUIObjectsLater();
 
     private:
+        struct FocusedUIObject
+        {
+            WeakPtr<Panel> mouse = {};
+            WeakPtr<Panel> keyboard = {};
+        }
+        m_focusedUIObject = {};
+
+    public:
+
+
+    private:
         WeakPtr<Panel> m_currFocusedUIObject = {};
 
     public:
         WeakPtr<Panel> currFocusedUIObject() const;
-        void focusUIObject(ShrdPtrParam<Panel> uiobj);
+        void focusUIObject(ShrdPtrRefer<Panel> uiobj);
 
     private:
         SharedPtr<Cursor> m_cursor = {};
@@ -262,12 +273,12 @@ namespace d14engine::uikit
 
     public:
         const Wstring& langLocale() const;
-        void setLangLocale(WstrParam codeName);
+        void setLangLocale(WstrRefer codeName);
 
     private:
         WeakPtr<TextInputObject> m_focusedTextInputObject = {};
 
-        void broadcastInputStringEvent(WstrParam content);
+        void broadcastInputStringEvent(WstrRefer content);
 
     public:
         bool skipHandleNextFocusChangeEvent = false;
@@ -341,7 +352,7 @@ namespace d14engine::uikit
         DiffPinnedUpdateCandidateSet m_diffPinnedUpdateCandidates = {};
 
     public:
-        void pushDiffPinnedUpdateCandidate(ShrdPtrParam<Panel> uiobj);
+        void pushDiffPinnedUpdateCandidate(ShrdPtrRefer<Panel> uiobj);
 
         //---------------------------------------------------------
         // Multi-threading

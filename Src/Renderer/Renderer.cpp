@@ -1830,7 +1830,7 @@ check_result:
         m_renderTarget.Reset();
     }
 
-    void Renderer::resetCmdList(OptParam<ID3D12CommandAllocator*> alloc)
+    void Renderer::resetCmdList(OptRefer<ID3D12CommandAllocator*> alloc)
     {
         auto cmdAlloc = alloc.has_value() ? alloc.value() : m_cmdAlloc.Get();
         THROW_IF_FAILED(cmdAlloc->Reset());

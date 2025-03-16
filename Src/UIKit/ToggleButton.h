@@ -42,12 +42,12 @@ namespace d14engine::uikit
         StatefulObject<ToggleButtonState, ToggleButtonStateChangeEvent>
     {
         ToggleButton(
-            ShrdPtrParam<IconLabel> content,
+            ShrdPtrRefer<IconLabel> content,
             float roundRadius = 0.0f,
             const D2D1_RECT_F& rect = {});
 
         ToggleButton(
-            WstrParam text = L"Button",
+            WstrRefer text = L"Button",
             float roundRadius = 0.0f,
             const D2D1_RECT_F& rect = {});
 
