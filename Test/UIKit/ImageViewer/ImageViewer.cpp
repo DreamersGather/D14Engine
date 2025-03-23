@@ -35,7 +35,7 @@ using namespace d14engine::uikit;
 D14_SET_APP_ENTRY(mainImageViewer)
 {
     srand((unsigned int)time(0));
-    
+
     Application::CreateInfo info =
     {
         .windowSize = { 800, 600 }

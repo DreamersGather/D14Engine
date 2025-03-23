@@ -127,7 +127,7 @@ namespace d14engine::uikit
         // Special note: Do NOT use size()/position() methods here,
         // as their results are based on m_rect instead of m_absoluteRect.
         // Since it is m_absoluteRect that needs to be updated here,
-        // it is better to directly extract its data with math_utils. 
+        // it is better to directly extract its data with math_utils.
 
         auto originalSize = math_utils::size(m_absoluteRect);
         auto originalPosition = math_utils::leftTop(m_absoluteRect);
