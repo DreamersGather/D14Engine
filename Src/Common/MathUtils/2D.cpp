@@ -131,14 +131,14 @@ namespace d14engine::math_utils
         return { point.x + offset.first, point.y + offset.second };
     }
 
-    D2D1_RECT_F rect(float left, float top, float width, float height)
+    D2D1_RECT_F rect(float x, float y, float width, float height)
     {
-        return { left, top, left + width, top + height };
+        return { x, y, x + width, y + height };
     }
 
-    D2D1_RECT_F rect(const D2D1_POINT_2F& leftTop, const D2D1_SIZE_F& size)
+    D2D1_RECT_F rect(const D2D1_POINT_2F& point, const D2D1_SIZE_F& size)
     {
-        return rect(leftTop.x, leftTop.y, size.width, size.height);
+        return rect(point.x, point.y, size.width, size.height);
     }
 
     D2D1_RECT_F ceilf(const D2D1_RECT_F& rect)

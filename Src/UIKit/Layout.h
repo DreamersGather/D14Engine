@@ -22,8 +22,6 @@ namespace d14engine::uikit
             Panel(rect, resource_utils::solidColorBrush()),
             ResizablePanel(rect, resource_utils::solidColorBrush())
         {
-            appEventReactability.focus.get = false;
-
             setResizable(false);
         }
         _D14_SET_APPEARANCE_PROPERTY(Layout)

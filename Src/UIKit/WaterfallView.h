@@ -3,11 +3,13 @@
 #include "Common/Precompile.h"
 
 #include "Common/CppLangUtils/IndexIterator.h"
+#include "Common/RuntimeError.h"
 
 // Do NOT remove this header for code tidy
 // as the template deduction relies on it.
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 
+#include "UIKit/Application.h"
 #include "UIKit/ConstraintLayout.h"
 #include "UIKit/ScrollView.h"
 #include "UIKit/ViewItem.h"
@@ -25,7 +27,7 @@ namespace d14engine::uikit
             Panel(rect, resource_utils::solidColorBrush()),
             ScrollView(makeUIObject<ConstraintLayout>(), rect)
         {
-            appEventReactability.focus.get = true;
+            // Here left blank intentionally.
         }
 
         void onInitializeFinish() override
@@ -52,7 +54,7 @@ namespace d14engine::uikit
             };
             m_layout->f_onParentSize = [](Panel* p, SizeEvent& e)
             {
-                p->resize(e.size.width, p->height());
+                p->setSize(e.size.width, p->height());
             };
         }
 
@@ -112,7 +114,7 @@ namespace d14engine::uikit
                 }
                 offset += item->height();
             }
-            m_layout->resize(width(), offset);
+            m_layout->setSize(width(), offset);
         }
 
     protected:
@@ -139,7 +141,7 @@ namespace d14engine::uikit
             {
                 height += item->height();
             }
-            m_layout->resize(width(), m_layout->height() + height);
+            m_layout->setSize(width(), m_layout->height() + height);
 
             auto itemIndex = ItemIndex::begin(&m_items);
 
@@ -222,7 +224,7 @@ do { \
                 {
                     height += (*itemIndex)->height();
                 }
-                m_layout->resize(width(), m_layout->height() - height);
+                m_layout->setSize(width(), m_layout->height() - height);
 
                 auto itemIndex = ItemIndex::begin(&m_items);
 
@@ -322,7 +324,7 @@ do { \
         virtual void clearAllItems()
         {
             m_layout->clearAllElements();
-            m_layout->resize(m_layout->width(), 0.0f);
+            m_layout->setSize(m_layout->width(), 0.0f);
 
             m_items.clear();
 
@@ -419,36 +421,64 @@ do { \
 
         void triggerExtendedSelect(ItemIndexParam itemIndex)
         {
-            if (KeyboardEvent::CTRL())
+            //////////
+            // Ctrl //
+            //////////
+
+            if (KeyboardEvent::CTRL() && !KeyboardEvent::SHIFT())
             {
                 triggerMultipleSelect(itemIndex);
             }
-            else if (KeyboardEvent::SHIFT())
+            ///////////
+            // Shift //
+            ///////////
+
+            else if (!KeyboardEvent::CTRL() && KeyboardEvent::SHIFT())
             {
-                if (!m_selectedItemIndices.empty())
+                for (auto& index : m_selectedItemIndices)
                 {
-                    for (auto& index : m_selectedItemIndices)
-                    {
-                        (*index)->triggerUnchkStateTrans();
-                    }
-                    m_selectedItemIndices.clear();
-
-                    auto range = std::minmax(itemIndex, m_extendedSelectItemIndex);
-                    for (auto index = range.first; index <= range.second; ++index)
-                    {
-                        (*index)->triggerCheckStateTrans();
-
-                        if (index != itemIndex)
-                        {
-                            // Highlight only the last selected item.
-                            (*index)->triggerLeaveStateTrans();
-                        }
-                        m_selectedItemIndices.insert(index);
-                    }
-                    m_lastSelectedItemIndex = itemIndex;
+                    (*index)->triggerUnchkStateTrans();
                 }
-                else triggerSingleSelect(itemIndex);
+                m_selectedItemIndices.clear();
+
+                auto range = std::minmax(itemIndex, m_extendedSelectItemIndex);
+                for (auto index = range.first; index <= range.second; ++index)
+                {
+                    (*index)->triggerCheckStateTrans();
+
+                    if (index != itemIndex)
+                    {
+                        // Highlight only the last selected item.
+                        (*index)->triggerLeaveStateTrans();
+                    }
+                    m_selectedItemIndices.insert(index);
+                }
+                m_lastSelectedItemIndex = itemIndex;
             }
+            //////////////////
+            // Ctrl + Shift //
+            //////////////////
+
+            else if (KeyboardEvent::CTRL() && KeyboardEvent::SHIFT())
+            {
+                auto range = std::minmax(itemIndex, m_extendedSelectItemIndex);
+                for (auto index = range.first; index <= range.second; ++index)
+                {
+                    (*index)->triggerCheckStateTrans();
+
+                    if (index != itemIndex)
+                    {
+                        // Highlight only the last selected item.
+                        (*index)->triggerLeaveStateTrans();
+                    }
+                    m_selectedItemIndices.insert(index);
+                }
+                m_lastSelectedItemIndex = itemIndex;
+            }
+            //////////////
+            // Fallback //
+            //////////////
+
             else triggerSingleSelect(itemIndex);
         }
 
@@ -523,9 +553,9 @@ do { \
         // Panel
         //------------------------------------------------------------------
 
-        void onGetFocusHelper() override
+        void onGetKeyboardFocusHelper() override
         {
-            ScrollView::onGetFocusHelper();
+            ScrollView::onGetKeyboardFocusHelper();
 
             for (auto& itemIndex : m_selectedItemIndices)
             {
@@ -533,9 +563,9 @@ do { \
             }
         }
 
-        void onLoseFocusHelper() override
+        void onLoseKeyboardFocusHelper() override
         {
-            ScrollView::onLoseFocusHelper();
+            ScrollView::onLoseKeyboardFocusHelper();
 
             for (auto& itemIndex : m_selectedItemIndices)
             {
@@ -580,11 +610,17 @@ do { \
         {
             ScrollView::onMouseButtonHelper(e);
 
+            THROW_IF_NULL(Application::g_app);
+
             auto& p = e.cursorPoint;
             auto relative = absoluteToSelfCoord(p);
 
             if (e.state.leftDown())
             {
+                Application::g_app->focusUIObject
+                (
+                    Application::FocusType::Keyboard, shared_from_this()
+                );
                 // In case trigger by mistake when controlling the scroll bars.
                 auto itemIndex = isControllingScrollBars() ? ItemIndex{} :
                     viewportOffsetToItemIndex(m_viewportOffset.y + relative.y);

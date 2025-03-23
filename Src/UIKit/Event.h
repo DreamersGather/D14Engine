@@ -111,8 +111,6 @@ namespace d14engine::uikit
             bool middleDblclk() const;
         }
         state = {};
-
-        WeakPtr<Panel> focused = {};
     };
 
     struct MouseWheelEvent : MouseEvent

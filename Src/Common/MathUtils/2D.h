@@ -113,8 +113,8 @@ namespace d14engine::math_utils
     {
         return { -FLT_MAX, -FLT_MAX, FLT_MAX, FLT_MAX };
     }
-    D2D1_RECT_F rect(float left, float top, float width, float height);
-    D2D1_RECT_F rect(const D2D1_POINT_2F& leftTop, const D2D1_SIZE_F& size);
+    D2D1_RECT_F rect(float x, float y, float width, float height);
+    D2D1_RECT_F rect(const D2D1_POINT_2F& point, const D2D1_SIZE_F& size);
 
     D2D1_RECT_F ceilf(const D2D1_RECT_F& rect);
     D2D1_RECT_F floorf(const D2D1_RECT_F& rect);

@@ -40,7 +40,7 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
-            ui_mainWindow->moveTopmost();
+            ui_mainWindow->bringToFront();
             ui_mainWindow->maximizeButtonEnabled = false;
 
             ui_mainWindow->caption()->transform(300.0f, 0.0f, 376.0f, 32.0f);
@@ -48,11 +48,11 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
         auto ui_darkModeLabel = makeRootUIObject<Label>(L"Dark Mode");
         auto ui_darkModeSwitch = makeRootUIObject<OnOffSwitch>();
         {
-            ui_darkModeLabel->moveTopmost();
+            ui_darkModeLabel->bringToFront();
             ui_darkModeLabel->transform(10.0f, 0.0f, 120.0f, 32.0f);
 
-            ui_darkModeSwitch->moveTopmost();
-            ui_darkModeSwitch->move(130.0f, 4.0f);
+            ui_darkModeSwitch->bringToFront();
+            ui_darkModeSwitch->setPosition(130.0f, 4.0f);
 
             if (app->themeStyle().name == L"Light")
             {
@@ -76,7 +76,7 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
         }
         auto ui_screenshot = makeRootUIObject<OutlinedButton>(L"Screenshot");
         {
-            ui_screenshot->moveTopmost();
+            ui_screenshot->bringToFront();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
             ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
@@ -101,11 +101,11 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
         auto ui_stickBoy = makeUIObject<FrameAnimPanel>();
         auto wk_stickBoy = (WeakPtr<FrameAnimPanel>)ui_stickBoy;
         {
-            ui_stickBoy->resize(256.0f, 256.0f);
+            ui_stickBoy->setSize(256.0f, 256.0f);
 
             Wstring assetsPath = L"Test/UIKit/PixelAnimation/stick_boy/";
 
-            file_system_utils::foreachFileInDir(assetsPath, L"*.png", [&](WstrParam& path)
+            file_system_utils::foreachFileInDir(assetsPath, L"*.png", [&](WstrRefer& path)
             {
                 auto name = file_system_utils::extractFilePrefix(
                             file_system_utils::extractFileName(path));
@@ -140,7 +140,7 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
             for (int i = 0; i < frames.size(); ++i)
             {
                 auto ui_stickBoyFrame = makeUIObject<Panel>();
-                ui_stickBoyFrame->resize(256.0f, 256.0f);
+                ui_stickBoyFrame->setSize(256.0f, 256.0f);
                 ui_stickBoyFrame->bitmap = frames[i].data;
                 auto& interpMode = ui_stickBoyFrame->bitmapProperty.interpolationMode;
                 interpMode = D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR;
@@ -168,11 +168,11 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
         auto ui_animCtrlButton = makeUIObject<ToggleButton>(L"Start Anim");
         auto wk_animCtrlButton = (WeakPtr<ToggleButton>)ui_animCtrlButton;
         {
-            ui_fpsLabel->resize(250.0f, 50.0f);
+            ui_fpsLabel->setSize(250.0f, 50.0f);
 
             ui_animCtrlButton->roundRadiusX =
             ui_animCtrlButton->roundRadiusY = 8.0f;
-            ui_animCtrlButton->resize(250.0f, 50.0f);
+            ui_animCtrlButton->setSize(250.0f, 50.0f);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -226,7 +226,7 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
         auto ui_timeSpanInput = makeUIObject<RawTextBox>(5.0f, math_utils::sizeOnlyRect({ 120.0f, 42.0f }));
         auto wk_timeSpanInput = (WeakPtr<RawTextBox>)ui_timeSpanInput;
         {
-            ui_timeSpanLabel->resize(250.0f, 50.0f);
+            ui_timeSpanLabel->setSize(250.0f, 50.0f);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -234,7 +234,6 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
             geoInfo1.axis.y = { 2, 1 };
             ui_sideLayout->addElement(ui_timeSpanLabel, geoInfo1);
 
-            ui_timeSpanInput->moveTopmost();
             ui_timeSpanInput->setText(L"0.06 s");
             ui_timeSpanInput->setVisibleTextRect({ 5.0f, 8.0f, 115.0f, 34.0f });
 
@@ -244,7 +243,9 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
             geoInfo2.axis.y = { 2, 1 };
             ui_sideLayout->addElement(ui_timeSpanInput, geoInfo2);
 
-            ui_timeSpanInput->f_onLoseFocus = [=](Panel* p)
+            ui_timeSpanInput->bringToFront();
+
+            ui_timeSpanInput->f_onLoseKeyboardFocus = [=](Panel* p)
             {
                 if (!wk_stickBoy.expired())
                 {
@@ -295,7 +296,7 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
         auto ui_frameSizeSlider = makeUIObject<HorzSlider>();
         auto wk_frameSizeSlider = (WeakPtr<HorzSlider>)ui_frameSizeSlider;
         {
-            ui_frameSizeLabel->resize(250.0f, 50.0f);
+            ui_frameSizeLabel->setSize(250.0f, 50.0f);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -303,7 +304,7 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
             geoInfo1.axis.y = { 3, 1 };
             ui_sideLayout->addElement(ui_frameSizeLabel, geoInfo1);
 
-            ui_frameSizeSlider->resize(250.0f, 50.0f);
+            ui_frameSizeSlider->setSize(250.0f, 50.0f);
 
             ui_frameSizeSlider->setMinValue(64.0f);
             ui_frameSizeSlider->setMaxValue(512.0f);
@@ -312,8 +313,8 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
             ui_frameSizeSlider->stepMode = Slider::StepMode::Discrete;
             ui_frameSizeSlider->stepInterval = 16.0f;
 
-            auto& valueLabelAppear = ui_frameSizeSlider->getAppearance().valueLabel;
-            valueLabelAppear.isResident = true;
+            auto& valueLabelAppear = ui_frameSizeSlider->appearance().valueLabel;
+            valueLabelAppear.resident = true;
 
             GridLayout::GeometryInfo geoInfo2 = {};
             geoInfo2.isFixedSize = true;
@@ -335,7 +336,7 @@ D14_SET_APP_ENTRY(mainPixelAnimation)
                             auto itor = layout->children().begin();
                             if (itor != layout->children().end())
                             {
-                                (*itor)->resize(value, value);
+                                (*itor)->setSize(value, value);
                                 layout->updateAllElements();
                             }
                         }

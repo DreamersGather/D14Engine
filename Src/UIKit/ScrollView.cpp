@@ -2,7 +2,7 @@
 
 #include "UIKit/ScrollView.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 #include "Common/MathUtils/2D.h"
 #include "Common/RuntimeError.h"
 
@@ -31,9 +31,9 @@ namespace d14engine::uikit
     {
         ResizablePanel::onInitializeFinish();
 
-        addUIObject(m_content);
+        registerUIEvents(m_content);
 
-        if (m_content) m_content->move(0.0f, 0.0f);
+        if (m_content) m_content->setPosition(0.0f, 0.0f);
     }
 
     void ScrollView::onStartThumbScrolling(const D2D1_POINT_2F& offset)
@@ -59,17 +59,27 @@ namespace d14engine::uikit
 
     void ScrollView::onStartThumbScrollingHelper(const D2D1_POINT_2F& offset)
     {
-        forceGlobalExclusiveFocusing = true;
+        THROW_IF_NULL(Application::g_app);
+
+        enableChildrenMouseMoveEvent = false;
+
+        auto focus = Application::FocusType::Mouse;
+        Application::g_app->focusUIObject(focus, shared_from_this());
     }
 
     void ScrollView::onEndThumbScrollingHelper(const D2D1_POINT_2F& offset)
     {
-        forceGlobalExclusiveFocusing = false;
+        THROW_IF_NULL(Application::g_app);
+
+        enableChildrenMouseMoveEvent = true;
+
+        auto focus = Application::FocusType::Mouse;
+        Application::g_app->focusUIObject(focus, nullptr);
     }
 
     void ScrollView::onViewportOffsetChangeHelper(const D2D1_POINT_2F& offset)
     {
-        if (m_content) m_content->move(-offset.x, -offset.y);
+        if (m_content) m_content->setPosition(-offset.x, -offset.y);
     }
 
     D2D1_SIZE_F ScrollView::getSelfSize() const
@@ -94,7 +104,7 @@ namespace d14engine::uikit
             m_content = content;
             addUIObject(m_content);
 
-            if (m_content) m_content->move(0.0f, 0.0f);
+            if (m_content) m_content->setPosition(0.0f, 0.0f);
 
             m_viewportOffset = { 0.0f, 0.0f };
         }
@@ -411,15 +421,11 @@ namespace d14engine::uikit
 
             if (m_isHorzBarDown)
             {
-                m_skipDeliverNextMouseMoveEventToChildren = true;
-
                 setViewportOffset(math_utils::offset(m_originalViewportOffset,
                     { std::round((p.x - m_horzBarHoldOffset) * horzRatio), 0.0f }));
             }
             if (m_isVertBarDown)
             {
-                m_skipDeliverNextMouseMoveEventToChildren = true;
-
                 setViewportOffset(math_utils::offset(m_originalViewportOffset,
                     { 0.0f, std::round((p.y - m_vertBarHoldOffset) * vertRatio) }));
             }
@@ -442,14 +448,13 @@ namespace d14engine::uikit
 
             m_isVertBarHover = math_utils::isOverlapped(p, rect);
         }
-        m_skipUpdateChildrenHitStateInMouseMoveEvent = isControllingScrollBars();
     }
 
     void ScrollView::onMouseLeaveHelper(MouseMoveEvent& e)
     {
         ResizablePanel::onMouseLeaveHelper(e);
 
-        if (!forceGlobalExclusiveFocusing)
+        if (!holdMouseFocus())
         {
             m_isHorzBarHover = m_isHorzBarDown =
             m_isVertBarHover = m_isVertBarDown = false;

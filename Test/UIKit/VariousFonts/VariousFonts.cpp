@@ -35,25 +35,21 @@ D14_SET_APP_ENTRY(mainVariousFonts)
     };
     return Application(info).run([](Application* app)
     {
-        auto textDrawMode = app->dx12Renderer()->getDefaultTextRenderingMode();
-        textDrawMode.renderingMode = DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC;
-        app->dx12Renderer()->setTextRenderingMode(textDrawMode);
-
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
-            ui_mainWindow->moveTopmost();
-            ui_mainWindow->isMaximizeEnabled = false;
+            ui_mainWindow->bringToFront();
+            ui_mainWindow->maximizeButtonEnabled = false;
 
             ui_mainWindow->caption()->transform(300.0f, 0.0f, 376.0f, 32.0f);
         }
         auto ui_darkModeLabel = makeRootUIObject<Label>(L"Dark Mode");
         auto ui_darkModeSwitch = makeRootUIObject<OnOffSwitch>();
         {
-            ui_darkModeLabel->moveTopmost();
+            ui_darkModeLabel->bringToFront();
             ui_darkModeLabel->transform(10.0f, 0.0f, 120.0f, 32.0f);
 
-            ui_darkModeSwitch->moveTopmost();
-            ui_darkModeSwitch->move(130.0f, 4.0f);
+            ui_darkModeSwitch->bringToFront();
+            ui_darkModeSwitch->setPosition(130.0f, 4.0f);
 
             if (app->themeStyle().name == L"Light")
             {
@@ -77,7 +73,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
         }
         auto ui_screenshot = makeRootUIObject<OutlinedButton>(L"Screenshot");
         {
-            ui_screenshot->moveTopmost();
+            ui_screenshot->bringToFront();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
             ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
@@ -99,7 +95,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             ui_textViewer->transform(0.0f, 50.0f, 800.0f, 300.0f);
 
 #define SET_CARD_SIZE(State, Width, Height) \
-    ui_textViewer->getAppearance().tabBar.card.main \
+    ui_textViewer->appearance().tabBar.card.main \
     [(size_t)TabGroup::CardState::State].geometry.size = { Width, Height }
 
             SET_CARD_SIZE(Dormant, 250.0f, 32.0f);
@@ -107,10 +103,10 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             SET_CARD_SIZE(Active, 266.0f, 40.0f);
 
 #undef SET_CARD_SIZE
-            ui_textViewer->activeCard.loadMaskBitmap();
+            ui_textViewer->activeCard.loadMask();
             ui_textViewer->activeCard.loadPathGeo();
 
-            auto& barAppear = ui_textViewer->getAppearance().tabBar;
+            auto& barAppear = ui_textViewer->appearance().tabBar;
 
             barAppear.geometry.height = 40.0f;
             barAppear.separator.geometry.size.height = 24.0f;
@@ -118,20 +114,20 @@ D14_SET_APP_ENTRY(mainVariousFonts)
         }
         Wstring excerptDir = L"Test/UIKit/VariousFonts/";
 
-        auto getFileSize = [](WstrParam filePath) -> size_t
+        auto getFileSize = [](WstrRefer filePath) -> size_t
         {
             struct _stat fileinfo;
             _wstat(filePath.c_str(), &fileinfo);
             return fileinfo.st_size;
         };
-        file_system_utils::foreachFileInDir(excerptDir, L"*.txt", [&](WstrParam filePath)
+        file_system_utils::foreachFileInDir(excerptDir, L"*.txt", [&](WstrRefer filePath)
         {
             auto fileName = file_system_utils::extractFileName(filePath);
             auto filePrefix = file_system_utils::extractFilePrefix(fileName);
 
             auto ui_caption = makeUIObject<TabCaption>(filePrefix);
 
-            ui_caption->getAppearance().title.rightPadding = 12.0f;
+            ui_caption->appearance().title.rightPadding = 12.0f;
 
             ui_caption->closable = false;
             ui_caption->title()->label()->setTextFormat(D14_FONT(L"Default/14"));
@@ -156,7 +152,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             THROW_IF_FAILED(ui_block->textLayout()->SetWordWrapping(DWRITE_WORD_WRAPPING_WRAP));
 
             auto ui_wrapper = makeUIObject<ConstraintLayout>();
-            ui_wrapper->resize(800.0f, ui_block->textMetrics().height + 100.0f);
+            ui_wrapper->setSize(800.0f, ui_block->textMetrics().height + 100.0f);
 
             ConstraintLayout::GeometryInfo geoInfo = {};
 
@@ -173,27 +169,27 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             auto ui_content = makeUIObject<ScrollView>(ui_wrapper);
 
             // Set opaque background to support rendering ClearType text.
-            ui_content->getAppearance().background.opacity = 1.0f;
+            ui_content->appearance().background.opacity = 1.0f;
 
             // Keep the hilite range when scrolling view with mouse button.
-            ui_content->f_onStartThumbScrolling = [=]
-            (ScrollView* sv, const D2D1_POINT_2F& offset)
-            {
-                if (!wk_block.expired())
-                {
-                    wk_block.lock()->keepHiliteRange = true;
-                }
-            };
-            ui_content->f_onEndThumbScrolling = [=]
-            (ScrollView* sv, const D2D1_POINT_2F& offset)
-            {
-                if (!wk_block.expired())
-                {
-                    auto sh_block = wk_block.lock();
-                    app->focusUIObject(sh_block);
-                    sh_block->keepHiliteRange = false;
-                }
-            };
+            //ui_content->f_onStartThumbScrolling = [=]
+            //(ScrollView* sv, const D2D1_POINT_2F& offset)
+            //{
+            //    if (!wk_block.expired())
+            //    {
+            //        wk_block.lock()->keepHiliteRange = true;
+            //    }
+            //};
+            //ui_content->f_onEndThumbScrolling = [=]
+            //(ScrollView* sv, const D2D1_POINT_2F& offset)
+            //{
+            //    if (!wk_block.expired())
+            //    {
+            //        auto sh_block = wk_block.lock();
+            //        app->focusUIObject(sh_block);
+            //        sh_block->keepHiliteRange = false;
+            //    }
+            //};
             ui_textViewer->appendTab({ ui_caption, ui_content });
             return false;
         });
@@ -263,13 +259,13 @@ D14_SET_APP_ENTRY(mainVariousFonts)
         auto ui_controlPanel = makeManagedUIObject<GridLayout>(ui_clientArea);
         {
             ui_controlPanel->transform(0.0f, 374.0f, 800.0f, 190.0f);
-            ui_controlPanel->getAppearance().background.opacity = 1.0f;
+            ui_controlPanel->appearance().background.opacity = 1.0f;
             ui_controlPanel->setCellCount(10, 2);
         }
         auto ui_fontNameSelector = makeUIObject<ComboBox>(5.0f);
         auto wk_fontNameSelector = (WeakPtr<ComboBox>)ui_fontNameSelector;
         {
-            ui_fontNameSelector->resize(240.0f, 40.0f);
+            ui_fontNameSelector->setSize(240.0f, 40.0f);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -299,7 +295,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             }
             auto& dropDownMenu = ui_fontNameSelector->dropDownMenu();
 
-            dropDownMenu->resize(dropDownMenu->width(), 240.0f);
+            dropDownMenu->setSize(dropDownMenu->width(), 240.0f);
             dropDownMenu->appendItem(fontNameItems);
 
             ui_fontNameSelector->menuOffset = { 0.0f, -240.0f };
@@ -307,7 +303,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
         }
         auto ui_textAntialiasModeSelector = makeUIObject<ComboBox>(5.0f);
         {
-            ui_textAntialiasModeSelector->resize(160.0f, 40.0f);
+            ui_textAntialiasModeSelector->setSize(160.0f, 40.0f);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -337,7 +333,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             }
             auto& dropDownMenu = ui_textAntialiasModeSelector->dropDownMenu();
 
-            dropDownMenu->resize(dropDownMenu->width(), 120.0f);
+            dropDownMenu->setSize(dropDownMenu->width(), 120.0f);
             dropDownMenu->appendItem(strModeItems);
 
             ui_textAntialiasModeSelector->setSelected(0);
@@ -355,7 +351,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
         auto ui_fontSizeSlider = makeUIObject<HorzSlider>();
         auto wk_fontSizeSlider = (WeakPtr<HorzSlider>)ui_fontSizeSlider;
         {
-            ui_fontSizeSlider->resize(210.0f, 40.0f);
+            ui_fontSizeSlider->setSize(210.0f, 40.0f);
 
             ui_fontSizeSlider->setMinValue(11.0f);
             ui_fontSizeSlider->setMaxValue(32.0f);
@@ -364,12 +360,12 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             ui_fontSizeSlider->stepMode = Slider::StepMode::Discrete;
             ui_fontSizeSlider->stepInterval = 1.0f;
 
-            auto& valueLabelAppear = ui_fontSizeSlider->getAppearance().valueLabel;
+            auto& valueLabelAppear = ui_fontSizeSlider->appearance().valueLabel;
             valueLabelAppear.offset = 14.0f;
             valueLabelAppear.mainRect.geometry.size = { 100.0f, 40.0f };
-            ui_fontSizeSlider->loadValueLabelMaskBitmap();
-            ui_fontSizeSlider->loadSideTrianglePathGeo();
-            valueLabelAppear.isResident = true;
+            ui_fontSizeSlider->valueLabelRes.loadShadowMask();
+            ui_fontSizeSlider->sideTriangleRes.loadPathGeo();
+            valueLabelAppear.resident = true;
 
             ui_fontSizeSlider->valueLabel()->setTextFormat(D14_FONT(L"Default/16"));
 
@@ -391,7 +387,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
         auto ui_fontWeightSelector = makeUIObject<HorzSlider>();
         auto wk_fontWeightSelector = (WeakPtr<HorzSlider>)ui_fontWeightSelector;
         {
-            ui_fontWeightSelector->resize(180.0f, 40.0f);
+            ui_fontWeightSelector->setSize(180.0f, 40.0f);
 
             ui_fontWeightSelector->setMinValue(0.0f);
             ui_fontWeightSelector->setMaxValue(4.0f);
@@ -400,12 +396,12 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             ui_fontWeightSelector->stepMode = Slider::StepMode::Discrete;
             ui_fontWeightSelector->stepInterval = 1.0f;
 
-            auto& valueLabelAppear = ui_fontWeightSelector->getAppearance().valueLabel;
+            auto& valueLabelAppear = ui_fontWeightSelector->appearance().valueLabel;
             valueLabelAppear.offset = 14.0f;
             valueLabelAppear.mainRect.geometry.size = { 120.0f, 40.0f };
-            ui_fontWeightSelector->loadValueLabelMaskBitmap();
-            ui_fontWeightSelector->loadSideTrianglePathGeo();
-            valueLabelAppear.isResident = true;
+            ui_fontWeightSelector->valueLabelRes.loadShadowMask();
+            ui_fontWeightSelector->sideTriangleRes.loadPathGeo();
+            valueLabelAppear.resident = true;
 
             ui_fontWeightSelector->valueLabel()->setTextFormat(D14_FONT(L"Default/16"));
 
@@ -431,9 +427,9 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             if (!wk_textViewer.expired())
             {
                 auto sh_textViewer = wk_textViewer.lock();
-                if (sh_textViewer->currActiveCardTabIndex().valid())
+                if (sh_textViewer->activeCardTabIndex().valid())
                 {
-                    auto& tabItor = sh_textViewer->currActiveCardTabIndex().iterator;
+                    auto& tabItor = sh_textViewer->activeCardTabIndex().iterator;
 
                     if (tabItor->content->children().empty()) return;
                     auto layout = tabItor->content->children().begin();
@@ -446,7 +442,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
                     {
                         tblock->setTextFormat(textFormat);
                     }
-                    (*layout)->resize(800.0f, tblock->textMetrics().height + 100.0f);
+                    (*layout)->setSize(800.0f, tblock->textMetrics().height + 100.0f);
 
                     // Update the viewport offset of the scroll view to fix display bug.
                     auto content = std::dynamic_pointer_cast<ScrollView>(tabItor->content);

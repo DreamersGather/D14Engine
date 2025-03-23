@@ -35,7 +35,7 @@ using namespace d14engine::uikit;
 D14_SET_APP_ENTRY(mainImageViewer)
 {
     srand((unsigned int)time(0));
-
+    
     Application::CreateInfo info =
     {
         .windowSize = { 800, 600 }
@@ -44,19 +44,19 @@ D14_SET_APP_ENTRY(mainImageViewer)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
-            ui_mainWindow->moveTopmost();
-            ui_mainWindow->isMaximizeEnabled = false;
+            ui_mainWindow->bringToFront();
+            ui_mainWindow->maximizeButtonEnabled = false;
 
             ui_mainWindow->caption()->transform(300.0f, 0.0f, 376.0f, 32.0f);
         }
         auto ui_darkModeLabel = makeRootUIObject<Label>(L"Dark Mode");
         auto ui_darkModeSwitch = makeRootUIObject<OnOffSwitch>();
         {
-            ui_darkModeLabel->moveTopmost();
+            ui_darkModeLabel->bringToFront();
             ui_darkModeLabel->transform(10.0f, 0.0f, 120.0f, 32.0f);
 
-            ui_darkModeSwitch->moveTopmost();
-            ui_darkModeSwitch->move(130.0f, 4.0f);
+            ui_darkModeSwitch->bringToFront();
+            ui_darkModeSwitch->setPosition(130.0f, 4.0f);
 
             if (app->themeStyle().name == L"Light")
             {
@@ -80,7 +80,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         }
         auto ui_screenshot = makeRootUIObject<OutlinedButton>(L"Screenshot");
         {
-            ui_screenshot->moveTopmost();
+            ui_screenshot->bringToFront();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
             ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
@@ -118,7 +118,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         {
             ui_sideLayout->setUIObjectPriority(1);
             ui_sideLayout->transform(500.0f, 0.0f, 300.0f, 564.0f);
-            ui_sideLayout->getAppearance().background.opacity = 1.0f;
+            ui_sideLayout->appearance().background.opacity = 1.0f;
             ui_sideLayout->setCellCount(5, 8);
         }
         auto ui_checkBox = makeUIObject<CheckBox>();
@@ -152,7 +152,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         Wstring assetsPath = L"Test/UIKit/ImageViewer/";
 
         std::vector<std::pair<Wstring, ComPtr<ID2D1Bitmap1>>> images;
-        file_system_utils::foreachFileInDir(assetsPath, L"*.png", [&](WstrParam filePath)
+        file_system_utils::foreachFileInDir(assetsPath, L"*.png", [&](WstrRefer filePath)
         {
             auto fileName = file_system_utils::extractFileName(filePath);
             auto filePrefix = file_system_utils::extractFilePrefix(fileName);
@@ -163,7 +163,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         {
             ui_insertButton->roundRadiusX = ui_insertButton->roundRadiusY = 8.0f;
             if (images.empty()) ui_insertButton->setEnabled(false);
-            ui_insertButton->resize(250.0f, 50.0f);
+            ui_insertButton->setSize(250.0f, 50.0f);
 
             GridLayout::GeometryInfo geoInfo = {};
             geoInfo.isFixedSize = true;
@@ -203,7 +203,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
                             };
                             if (afsz.width >= 50.0f && afsz.height >= 50.0f)
                             {
-                                sh_content->resize(afsz);
+                                sh_content->setSize(afsz);
                             }
                             auto sv = dynamic_cast<ScrollView*>(p);
                             if (sv != nullptr)
@@ -252,7 +252,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         auto ui_removeButton = makeUIObject<FilledButton>(L"Remove specified range");
         {
             ui_removeButton->roundRadiusX = ui_removeButton->roundRadiusY = 8.0f;
-            ui_removeButton->resize(250.0f, 50.0f);
+            ui_removeButton->setSize(250.0f, 50.0f);
 
             GridLayout::GeometryInfo geoInfo = {};
             geoInfo.isFixedSize = true;
@@ -294,7 +294,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
             geoInfo.axis.y = { 4, 1 };
             ui_sideLayout->addElement(ui_titleEditor, geoInfo);
 
-            ui_titleEditor->f_onTextChange = [=](RawTextBox::TextInputObject* obj, WstrParam text)
+            ui_titleEditor->f_onTextChange = [=](RawTextBox::TextInputObject* obj, WstrRefer text)
             {
                 if (!wk_tabGroup.expired())
                 {
@@ -436,15 +436,14 @@ D14_SET_APP_ENTRY(mainImageViewer)
                         CheckBox::Unchecked);
                 }
             };
-            ui_tabGroup->f_onTriggerTabPromoting = [](TabGroup* tg, Window* w)
+            ui_tabGroup->f_onTriggerTabPromoting = [app](TabGroup* tg, Window* w)
             {
-                w->registerDrawObjects();
-                w->registerApplicationEvents();
+                app->addUIObject(w->shared_from_this());
 
-                w->moveTopmost();
+                w->bringToFront();
 
-                w->isMinimizeEnabled = false;
-                w->isMaximizeEnabled = false;
+                w->minimizeButtonEnabled = false;
+                w->maximizeButtonEnabled = false;
 
                 w->f_onClose = [](Window* w) { w->release(); };
             };

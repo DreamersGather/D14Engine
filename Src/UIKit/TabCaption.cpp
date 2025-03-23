@@ -2,7 +2,7 @@
 
 #include "UIKit/TabCaption.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 #include "Common/MathUtils/2D.h"
 #include "Common/RuntimeError.h"
 

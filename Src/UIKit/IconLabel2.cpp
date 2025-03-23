@@ -2,7 +2,7 @@
 
 #include "UIKit/IconLabel2.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 #include "Common/DirectXError.h"
 #include "Common/MathUtils/2D.h"
 

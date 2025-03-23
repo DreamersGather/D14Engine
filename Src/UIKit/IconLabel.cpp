@@ -2,7 +2,7 @@
 
 #include "UIKit/IconLabel.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 #include "Common/DirectXError.h"
 #include "Common/MathUtils/2D.h"
 
@@ -22,8 +22,6 @@ namespace d14engine::uikit
         :
         Panel(rect, resource_utils::solidColorBrush())
     {
-        m_takeOverChildrenDrawing = true;
-
         icon.rect = selfCoordRect();
         icon.bitmap = iconBitmap;
 
@@ -34,7 +32,7 @@ namespace d14engine::uikit
     {
         Panel::onInitializeFinish();
 
-        addUIObject(m_label);
+        registerUIEvents(m_label);
 
         m_label->transform(selfCoordRect());
     }
@@ -55,10 +53,10 @@ namespace d14engine::uikit
     {
         if (label && !cpp_lang_utils::isMostDerivedEqual(label, m_label))
         {
-            removeUIObject(m_label);
+            unregisterUIEvents(m_label);
 
             m_label = label;
-            addUIObject(m_label);
+            registerUIEvents(m_label);
 
             m_label->transform(selfCoordRect());
         }

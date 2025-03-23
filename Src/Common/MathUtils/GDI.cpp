@@ -4,14 +4,14 @@
 
 namespace d14engine::math_utils
 {
-    RECT rect(LONG left, LONG top, LONG width, LONG height)
+    RECT rect(LONG x, LONG y, LONG width, LONG height)
     {
-        return { left, top, left + width, top + height };
+        return { x, y, x + width, y + height };
     }
 
-    RECT rect(const POINT& leftTop, const SIZE& size)
+    RECT rect(const POINT& point, const SIZE& size)
     {
-        return rect(leftTop.x, leftTop.y, size.cx, size.cy);
+        return rect(point.x, point.y, size.cx, size.cy);
     }
 
     LONG width(const RECT& rect)

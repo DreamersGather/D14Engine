@@ -18,7 +18,7 @@ namespace d14engine::uikit
         :
         Label(text, rect)
     {
-        appEventReactability.focus.get = true;
+        // Here left blank intentionally.
     }
 
     const Label::CharacterRange& LabelArea::hiliteRange() const
@@ -86,7 +86,7 @@ namespace d14engine::uikit
         // Blink Indicator //
         /////////////////////
 
-        if (isFocused() && (m_indicatorBlinkElapsedSecs += deltaSecs) >= blinkPeriod)
+        if (holdKeyboardFocus() && (m_indicatorBlinkElapsedSecs += deltaSecs) >= blinkPeriod)
         {
             m_showIndicator = !m_showIndicator;
             m_indicatorBlinkElapsedSecs = 0.0f;
@@ -185,9 +185,9 @@ namespace d14engine::uikit
         appearance().changeTheme(style.name);
     }
 
-    void LabelArea::onGetFocusHelper()
+    void LabelArea::onGetKeyboardFocusHelper()
     {
-        Label::onGetFocusHelper();
+        Label::onGetKeyboardFocusHelper();
 
         m_showIndicator = true;
         m_indicatorBlinkElapsedSecs = 0.0f;
@@ -195,9 +195,9 @@ namespace d14engine::uikit
         increaseAnimationCount();
     }
 
-    void LabelArea::onLoseFocusHelper()
+    void LabelArea::onLoseKeyboardFocusHelper()
     {
-        Label::onLoseFocusHelper();
+        Label::onLoseKeyboardFocusHelper();
 
         if (!keepHiliteRange)
         {
@@ -221,7 +221,7 @@ namespace d14engine::uikit
 
         Application::g_app->cursor()->setIcon(Cursor::Text);
 
-        if (isFocused() && e.buttonState.leftPressed)
+        if (holdKeyboardFocus() && e.buttonState.leftPressed)
         {
             m_showIndicator = true;
             m_indicatorBlinkElapsedSecs = 0.0f;
@@ -241,10 +241,14 @@ namespace d14engine::uikit
     {
         Label::onMouseButtonHelper(e);
 
+        THROW_IF_NULL(Application::g_app);
+
         if (e.state.leftDown() || e.state.leftDblclk())
         {
-            forceGlobalExclusiveFocusing = true;
-
+            Application::g_app->focusUIObject
+            (
+                Application::FocusType::Keyboard, shared_from_this()
+            );
             m_showIndicator = true;
             m_indicatorBlinkElapsedSecs = 0.0f;
 
@@ -254,17 +258,13 @@ namespace d14engine::uikit
 
             setIndicatorPosition(m_hiliteRangeOrigin);
         }
-        else if (e.state.leftUp())
-        {
-            forceGlobalExclusiveFocusing = false;
-        }
     }
 
     void LabelArea::onKeyboardHelper(KeyboardEvent& e)
     {
         Label::onKeyboardHelper(e);
 
-        if (isFocused() && e.state.pressed() && e.CTRL())
+        if (holdKeyboardFocus() && e.state.pressed() && e.CTRL())
         {
             switch (e.vkey)
             {

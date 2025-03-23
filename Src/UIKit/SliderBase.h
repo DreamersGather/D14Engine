@@ -35,8 +35,8 @@ namespace d14engine::uikit
         // Protected Helpers
         //------------------------------------------------------------------
     protected:
-        void onStartSlidingHelper(float value);
-        void onEndSlidingHelper(float value);
+        virtual void onStartSlidingHelper(float value);
+        virtual void onEndSlidingHelper(float value);
 
         ///////////////////////
         // Interaction Logic //
@@ -77,7 +77,7 @@ namespace d14engine::uikit
         //------------------------------------------------------------------
     public:
         // If true, a mouse-double-click will also trigger the sliding event.
-        bool captureDoubleClick = false;
+        bool captureDoubleClick = true;
 
         /////////////////////////
         // Interface Overrides //

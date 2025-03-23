@@ -2,7 +2,7 @@
 
 #include "UIKit/MenuItem.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 
 #include "UIKit/PopupMenu.h"
 
@@ -44,9 +44,9 @@ namespace d14engine::uikit
         {
             if (m_associatedMenu->isHorzConstraintMeet(m_absoluteRect.right))
             {
-                m_associatedMenu->move(m_absoluteRect.right, m_absoluteRect.top);
+                m_associatedMenu->setPosition(m_absoluteRect.right, m_absoluteRect.top);
             }
-            else m_associatedMenu->move(m_absoluteRect.left - m_associatedMenu->width(), m_absoluteRect.top);
+            else m_associatedMenu->setPosition(m_absoluteRect.left - m_associatedMenu->width(), m_absoluteRect.top);
 
             m_associatedMenu->setActivated(true);
         }

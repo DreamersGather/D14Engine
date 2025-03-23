@@ -109,12 +109,12 @@ namespace d14engine::uikit
         if (m_backgroundTriggerPanel)
         {
             m_backgroundTriggerPanel->setPrivateEnabled(value);
-            if (value) m_backgroundTriggerPanel->moveTopmost();
+            if (value) m_backgroundTriggerPanel->bringToFront();
         }
         if (value)
         {
             // Place the menu above the bkgn-trigger-panel.
-            moveTopmost();
+            bringToFront();
         }
         else if (m_lastHoverItemIndex.valid())
         {
@@ -169,7 +169,7 @@ namespace d14engine::uikit
         }
         expectedOffset.y = std::max(expectedOffset.y, constrainedRectangle.top);
 
-        move(math_utils::increaseY(expectedOffset, appearance().geometry.extension));
+        setPosition(math_utils::increaseY(expectedOffset, appearance().geometry.extension));
         setActivated(true); // Note a vast menu could still overflow in both directions.
     }
 

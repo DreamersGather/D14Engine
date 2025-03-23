@@ -2,7 +2,7 @@
 
 #include "Renderer/Renderer.h"
 
-#include "Common/CppLangUtils/FinalAction.h"
+#include "Common/CppLangUtils/FinallySemantic.h"
 #include "Common/DirectXError.h"
 #include "Common/MathUtils/GDI.h"
 

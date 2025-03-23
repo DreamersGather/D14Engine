@@ -36,37 +36,33 @@ using namespace d14engine::uikit;
 
 D14_SET_APP_ENTRY(mainButtonFamily)
 {
-    Application::CreateInfo info = {};
-    if (argc >= 2 && lstrcmp(argv[1], L"HighDPI") == 0)
+    Application::CreateInfo info =
     {
-        info.dpi = 192.0f;
-    }
-    else info.dpi = 96.0f;
-    info.windowSize = { 800, 600 };
-
-    return Application(info).run([&](Application* app)
+        .windowSize = { 800, 600 }
+    };
+    return Application(info).run([](Application* app)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
-            ui_mainWindow->moveTopmost();
-            ui_mainWindow->isMaximizeEnabled = false;
+            ui_mainWindow->bringToFront();
+            ui_mainWindow->maximizeButtonEnabled = false;
 
             ui_mainWindow->caption()->transform(300.0f, 0.0f, 376.0f, 32.0f);
         }
         auto ui_darkModeLabel = makeRootUIObject<Label>(L"Dark Mode");
         auto ui_darkModeSwitch = makeRootUIObject<OnOffSwitch>();
         {
-            ui_darkModeLabel->moveTopmost();
+            ui_darkModeLabel->bringToFront();
             ui_darkModeLabel->transform(10.0f, 0.0f, 120.0f, 32.0f);
 
-            ui_darkModeSwitch->moveTopmost();
-            ui_darkModeSwitch->move(130.0f, 4.0f);
+            ui_darkModeSwitch->bringToFront();
+            ui_darkModeSwitch->setPosition(130.0f, 4.0f);
 
             if (app->themeStyle().name == L"Light")
             {
-                ui_darkModeSwitch->setOnOffState(OnOffSwitch::OFF);
+                ui_darkModeSwitch->setOnOffState(OnOffSwitch::Off);
             }
-            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::ON);
+            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::On);
 
             app->f_onSystemThemeStyleChange = [app]
             (const Application::ThemeStyle& style)
@@ -84,28 +80,28 @@ D14_SET_APP_ENTRY(mainButtonFamily)
         }
         auto ui_screenshot = makeRootUIObject<OutlinedButton>(L"Screenshot");
         {
-            ui_screenshot->moveTopmost();
+            ui_screenshot->bringToFront();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
-            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
             ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = app->screenshot();
+                auto image = app->windowshot();
                 CreateDirectory(L"Screenshots", nullptr);
                 bitmap_utils::saveBitmap(image.Get(), D14_SCREENSHOT_PATH);
             };
         }
         auto ui_centerLayout = makeUIObject<GridLayout>();
         {
-            ui_centerLayout->getAppearance().background.opacity = 1.0f;
+            ui_centerLayout->appearance().background.opacity = 1.0f;
             ui_centerLayout->setCellCount(2, 3);
 
-            ui_mainWindow->setCenterUIObject(ui_centerLayout);
+            ui_mainWindow->setContent(ui_centerLayout);
         }
         auto ui_button = makeUIObject<Button>(L"Click to change count");
         {
-            ui_button->resize(200.0f, 50.0f);
+            ui_button->setSize(200.0f, 50.0f);
 
             GridLayout::GeometryInfo geoInfo = {};
             geoInfo.isFixedSize = true;
@@ -151,7 +147,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
         }
         auto ui_toggleButton = makeUIObject<ToggleButton>(L"Play Animation");
         {
-            ui_toggleButton->resize(200.0f, 50.0f);
+            ui_toggleButton->setSize(200.0f, 50.0f);
 
             GridLayout::GeometryInfo geoInfo = {};
             geoInfo.isFixedSize = true;
@@ -219,7 +215,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
         auto ui_filledButton = makeUIObject<FilledButton>(L"Random X-radius");
         auto ui_xRadLabel = makeManagedUIObject<Label>(ui_centerLayout);
         {
-            ui_flatButton->resize(200.0f, 50.0f);
+            ui_flatButton->setSize(200.0f, 50.0f);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -227,7 +223,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
             geoInfo1.axis.y = { 1, 1 };
             ui_centerLayout->addElement(ui_flatButton, geoInfo1);
 
-            ui_filledButton->resize(200.0f, 50.0f);
+            ui_filledButton->setSize(200.0f, 50.0f);
 
             GridLayout::GeometryInfo geoInfo2 = {};
             geoInfo2.isFixedSize = true;
@@ -243,7 +239,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
         auto ui_elevatedButton = makeUIObject<ElevatedButton>(L"Random Y-radius");
         auto ui_yRadLabel = makeManagedUIObject<Label>(ui_centerLayout);
         {
-            ui_outlinedButton->resize(200.0f, 50.0f);
+            ui_outlinedButton->setSize(200.0f, 50.0f);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -251,7 +247,7 @@ D14_SET_APP_ENTRY(mainButtonFamily)
             geoInfo1.axis.y = { 1, 1 };
             ui_centerLayout->addElement(ui_outlinedButton, geoInfo1);
 
-            ui_elevatedButton->resize(200.0f, 50.0f);
+            ui_elevatedButton->setSize(200.0f, 50.0f);
 
             GridLayout::GeometryInfo geoInfo2 = {};
             geoInfo2.isFixedSize = true;

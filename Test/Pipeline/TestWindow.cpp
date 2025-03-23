@@ -56,7 +56,7 @@ D14_SET_APP_ENTRY(mainTestWindow)
         }
         auto ui_fpsLabel = makeManagedUIObject<Label>(ui_scenePanel, L"FPS: ");
         {
-            ui_fpsLabel->move(10.0f, 10.0f);
+            ui_fpsLabel->setPosition(10.0f, 10.0f);
             ui_fpsLabel->hardAlignment.vert = Label::VertAlignment::Top;
 
             ui_fpsLabel->f_onRendererUpdateObject2DAfter = [](Panel* p, Renderer* rndr)
@@ -75,7 +75,7 @@ D14_SET_APP_ENTRY(mainTestWindow)
         auto resText = L"Resolution: " + strw + L" x " + strh;
         auto ui_resLabel = makeManagedUIObject<Label>(ui_scenePanel, resText);
         {
-            ui_resLabel->move(10.0f, 20.0f + ui_fpsLabel->textAreaSize().height);
+            ui_resLabel->setPosition(10.0f, 20.0f + ui_fpsLabel->textAreaSize().height);
             ui_resLabel->hardAlignment.vert = Label::VertAlignment::Top;
 
             auto wk_resLabel = (WeakPtr<Label>)ui_resLabel;

@@ -1071,7 +1071,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RUIKit|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Test\UIKit\SimpleEditor\SimpleEditor.cpp" />
+    <ClCompile Include="Test\UIKit\ImageViewer\ImageViewer.cpp" />
     <None Include=".editorconfig" />
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
@@ -2102,6 +2102,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Common\CppLangUtils\EmptyBase.h" />
     <ClInclude Include="Src\UIKit\SliderBase.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RRndr|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DRndr|Win32'">true</ExcludedFromBuild>
@@ -2113,9 +2114,9 @@
     <ClInclude Include="Src\Common\CppLangUtils\EnableMasterPtr.h" />
     <ClInclude Include="Src\Common\CppLangUtils\NonCopyable.h" />
     <ClInclude Include="Src\Common\CppLangUtils\PasskeyIdiom.h" />
-    <ClInclude Include="Src\Common\CppLangUtils\PointerEquality.h" />
+    <ClInclude Include="Src\Common\CppLangUtils\PointerCompare.h" />
     <ClInclude Include="Src\Common\CppLangUtils\TypeTraits.h" />
-    <ClInclude Include="Src\Common\CppLangUtils\FinalAction.h" />
+    <ClInclude Include="Src\Common\CppLangUtils\FinallySemantic.h" />
     <ClInclude Include="Src\Common\DirectXError.h" />
     <ClInclude Include="Src\Common\MathUtils\Basic.h" />
     <ClInclude Include="Src\Common\MathUtils\2D.h" />

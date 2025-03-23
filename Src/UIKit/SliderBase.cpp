@@ -3,7 +3,9 @@
 #include "UIKit/SliderBase.h"
 
 #include "Common/MathUtils/Basic.h"
+#include "Common/RuntimeError.h"
 
+#include "UIKit/Application.h"
 #include "UIKit/ResourceUtils.h"
 
 using namespace d14engine::renderer;
@@ -18,8 +20,6 @@ namespace d14engine::uikit
         :
         Panel(rect, resource_utils::solidColorBrush())
     {
-        appEventReactability.focus.get = true;
-
         m_value = value;
         m_minValue = minValue;
         m_maxValue = maxValue;
@@ -41,12 +41,22 @@ namespace d14engine::uikit
 
     void SliderBase::onStartSlidingHelper(float value)
     {
-        forceGlobalExclusiveFocusing = true;
+        THROW_IF_NULL(Application::g_app);
+
+        Application::g_app->focusUIObject
+        (
+            Application::FocusType::Mouse, shared_from_this()
+        );
     }
 
     void SliderBase::onEndSlidingHelper(float value)
     {
-        forceGlobalExclusiveFocusing = false;
+        THROW_IF_NULL(Application::g_app);
+
+        Application::g_app->focusUIObject
+        (
+            Application::FocusType::Mouse, nullptr
+        );
     }
 
     bool SliderBase::setValue(float value)

@@ -23,16 +23,22 @@ namespace d14engine::uikit
         ISortable<IDrawObject2D>::m_priority = INT_MAX;
     }
 
-    void Cursor::registerDrawObjects()
+    void Cursor::onInitializeFinish()
     {
+        Panel::onInitializeFinish();
+
         THROW_IF_NULL(Application::g_app);
 
-        auto& uiCmdLayer = Application::g_app->uiCmdLayer();
-        if (std::holds_alternative<Renderer::CommandLayer::D2D1Target>(uiCmdLayer->drawTarget))
-        {
-            auto& drawobjs2d = std::get<Renderer::CommandLayer::D2D1Target>(uiCmdLayer->drawTarget);
-            drawobjs2d.insert(shared_from_this());
-        }
+        /////////////////////////
+        // Update Draw Objects //
+        /////////////////////////
+
+        Application::g_app->drawObjects().insert(shared_from_this());
+
+        ///////////////////////
+        // Update Priorities //
+        ///////////////////////
+
         // No need to update the topmost draw-object priority
         // since the cursor should always be displayed at the top.
     }

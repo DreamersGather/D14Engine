@@ -2,7 +2,7 @@
 
 #include "UIKit/TabGroup.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 #include "Common/DirectXError.h"
 
 #include "UIKit/Application.h"
@@ -20,8 +20,6 @@ namespace d14engine::uikit
         Panel(rect, resource_utils::solidColorBrush()),
         ResizablePanel(rect, resource_utils::solidColorBrush())
     {
-        m_takeOverChildrenDrawing = true;
-
         setResizable(false);
 
         transform(math_utils::adaptMaxSize(rect, minimalSize()));
@@ -305,11 +303,10 @@ namespace d14engine::uikit
     {
         if (!tab.caption || !tab.content) return;
 
-        addUIObject(tab.content);
+        registerUIEvents(tab.content);
 
         tab.caption->m_parentTabGroup = std::dynamic_pointer_cast<TabGroup>(shared_from_this());
 
-        tab.content->skipDrawPosteriorObjects = true;
         tab.content->setPrivateEnabled(false);
         tab.content->transform(selfCoordRect());
 
@@ -340,7 +337,7 @@ do { \
         updateCandidateTabInfo();
         if (tabIndex < m_candidateTabCount)
         {
-            addUIObject(tabItor->caption);
+            registerUIEvents(tabItor->caption);
         }
         else // not a candidate tab
         {
@@ -361,7 +358,7 @@ do { \
             // so using release here ensures that it is properly cleaned up.
             tabItor->caption->release();
 
-            removeUIObject(tabItor->content);
+            unregisterUIEvents(tabItor->content);
             tabItor->m_previewItem->release();
 
             tabItor->caption->m_parentTabGroup.reset();
@@ -530,7 +527,7 @@ do { \
             cardLength = temporaryLength;
 
             tabIndex->caption->release();
-            addUIObject(tabIndex->caption);
+            registerUIEvents(tabIndex->caption);
 
             // The tab-caption may be disabled when the preview-panel
             // calls updateItemIndexRangeActivity() to optimize performance.
@@ -548,7 +545,7 @@ do { \
         for ( ; tabIndex < m_candidateTabCount; ++tabIndex )
         {
             tabIndex->caption->release();
-            addUIObject(tabIndex->caption);
+            registerUIEvents(tabIndex->caption);
 
             // The tab-caption may be disabled when the preview-panel
             // calls updateItemIndexRangeActivity() to optimize performance.
@@ -586,11 +583,11 @@ do { \
         auto prvwSize = m_previewPanel->extendedSize({ prvwWidth, prvwHeight });
         if (prvwSize.height > height())
         {
-            m_previewPanel->resize(m_previewPanel->narrowedSize({ prvwSize.width, height() }));
+            m_previewPanel->setSize(m_previewPanel->narrowedSize({ prvwSize.width, height() }));
         }
-        else m_previewPanel->resize({ prvwWidth, prvwHeight });
+        else m_previewPanel->setSize({ prvwWidth, prvwHeight });
 
-        m_previewPanel->move(math_utils::offset(
+        m_previewPanel->setPosition(math_utils::offset(
             math_utils::rightTop(m_absoluteRect),
             math_utils::increaseX(prvwSrc.offset, -m_previewPanel->width())));
 
@@ -662,7 +659,6 @@ do { \
         );
         auto w = makeUIObject<Window>(tabIndex->caption->title(), rect);
 
-        tabIndex->content->skipDrawPosteriorObjects = false;
         tabIndex->content->setPrivateEnabled(true);
 
         w->setContent(tabIndex->content);
@@ -694,9 +690,10 @@ do { \
                 -Window::nonClientAreaMinimalWidth() * 0.5f,
                 -w->nonClientAreaHeight() * 0.5f
             };
-            w->move(math_utils::offset(e.cursorPoint, offset));
+            w->setPosition(math_utils::offset(e.cursorPoint, offset));
 
-            Application::g_app->focusUIObject(w);
+            auto focus = Application::FocusType::Mouse;
+            Application::g_app->focusUIObject(focus, w);
 
             MouseButtonEvent immediateMouseButton = {};
             immediateMouseButton.cursorPoint = e.cursorPoint;
@@ -1053,7 +1050,7 @@ do { \
 
         if (m_activeCardTabIndex.valid())
         {
-            m_activeCardTabIndex->content->resize(size());
+            m_activeCardTabIndex->content->setSize(size());
         }
         updateCandidateTabInfo();
     }

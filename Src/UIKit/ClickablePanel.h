@@ -39,14 +39,14 @@ namespace d14engine::uikit
         // with CS_DBLCLKS flag, UI objects can receive mouse-double-click
         // events in Panel::onMouseButton.
         //
-        // ClickablePanel::onMouseButtonPress is designed to only receive
-        // mouse-down events (no mouse-double-click), so if captureDoubleClick
-        // is false, ClickablePanel::onMouseButtonPress will not be triggered
-        // when double clicking the mouse button, otherwise every native
-        // mouse-double-click event will be translated into mouse-down before
-        // delivering to ClickablePanel::onMouseButtonPress.
+        // ClickablePanel::onMouseButtonPress is designed to be configurable
+        // to capture a mouse-double-click as mouse-button-pressed:
+        // if captureDoubleClick is true, ClickablePanel::onMouseButtonPress
+        // will also be triggered when double clicking the mouse button,
+        // otherwise every native mouse-double-click event will be discarded
+        // before delivering to ClickablePanel::onMouseButtonPress.
 
-        bool captureDoubleClick = false;
+        bool captureDoubleClick = true;
 
     protected:
         // Since there is no capture mechanism in the UI event system, so the

@@ -2,13 +2,12 @@
 
 #include "UIKit/Application.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 #include "Common/DirectXError.h"
 #include "Common/MathUtils/GDI.h"
 
 #include "Renderer/TickTimer.h"
 
-#include "UIKit/Appearances/Appearance.h"
 #include "UIKit/BitmapUtils.h"
 #include "UIKit/ColorUtils.h"
 #include "UIKit/Cursor.h"
@@ -31,7 +30,7 @@ namespace d14engine::uikit
         ///////////////////
 
         // Place this setting at the very beginning to ensure that the MessageBox
-        // with relevant information for initialization errors also supports HiDPI.
+        // with relevant information of initialization errors also supports HiDPI.
         SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
         //////////////////
@@ -53,7 +52,6 @@ namespace d14engine::uikit
             // Special note: AddDllDirectory only accepts absolute paths!
             THROW_IF_NULL(AddDllDirectory((exePath + libPath).c_str()));
         }
-
         ////////////////////
         // Initialization //
         ////////////////////
@@ -63,6 +61,19 @@ namespace d14engine::uikit
         initDirectX12Renderer();
 
         initMiscComponents();
+    }
+
+    Application::~Application()
+    {
+        // After exiting the program, the application is destroyed at first,
+        // and other objects are destroyed subsequently, in which situation
+        // the program will crash if their dtors use the global application
+        // pointer (i.e. g_app) to clear the maintained resources.
+        //
+        // Set g_app to nullptr after the application destroyed to help the
+        // objects decide whether there's need to do the clearing.
+
+        g_app = nullptr;
     }
 
     void Application::initWin32Window()
@@ -178,14 +189,11 @@ namespace d14engine::uikit
         // UI Render Pass //
         ////////////////////
 
-        using UICmdLayer = Renderer::CommandLayer;
-        using UITarget = UICmdLayer::D2D1Target;
-
         auto device = m_renderer->d3d12Device();
-        m_uiCmdLayer = std::make_shared<UICmdLayer>(device);
+        m_uiCmdLayer = std::make_shared<UICommandLayer>(device);
         {
             m_uiCmdLayer->setPriority(g_uiCmdLayerPriority);
-            m_uiCmdLayer->drawTarget.emplace<UITarget>();
+            m_uiCmdLayer->drawTarget.emplace<UIDrawTarget>();
         }
         m_renderer->cmdLayers.insert(m_uiCmdLayer);
     }
@@ -207,9 +215,6 @@ namespace d14engine::uikit
         resource_utils::initialize();
 
         m_cursor = makeUIObject<Cursor>();
-
-        // The built-in cursor does not need to receive any UI events.
-        m_cursor->registerDrawObjects();
         m_cursor->setPrivateVisible(false);
     }
 
@@ -258,6 +263,11 @@ namespace d14engine::uikit
     void Application::exit()
     {
         SendMessage(m_win32Window, WM_DESTROY, 0, 0);
+    }
+
+    HWND Application::win32Window() const
+    {
+        return m_win32Window;
     }
 
     LRESULT CALLBACK Application::fnWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -397,81 +407,81 @@ namespace d14engine::uikit
         }
         case WM_MOUSEMOVE:
         {
-            if (app == nullptr ||
-                app->m_isHandlingSensitiveUIEvent)
+            if (app == nullptr || app->m_isHandlingSensitiveUIEvent)
             {
-                return 0;
+                return 0; // Only one sensitive UI event can be handled at a time.
             }
             app->m_isHandlingSensitiveUIEvent = true;
 
-            auto rawCursorPoint =
-            platform_utils::restoredByDpi(POINT
-            {
-                GET_X_LPARAM(lParam),
-                GET_Y_LPARAM(lParam)
-            });
             D2D1_POINT_2F cursorPoint =
             {
-                (float)rawCursorPoint.x,
-                (float)rawCursorPoint.y
+                (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam)
             };
+            cursorPoint = platform_utils::restoredByDpi(cursorPoint);
+
             if (!app->isTriggerDraggingWin32Window)
             {
-                app->m_cursor->move(cursorPoint.x, cursorPoint.y);
+                // The cursor position may jitter When dragging the Win32 window.
+                app->m_cursor->setPosition(cursorPoint.x, cursorPoint.y);
             }
             app->m_cursor->setIcon(Cursor::Arrow);
 
             MouseMoveEvent e = {};
-
-            e.cursorPoint = cursorPoint;
-
-            e.buttonState.leftPressed = wParam & MK_LBUTTON;
-            e.buttonState.middlePressed = wParam & MK_MBUTTON;
-            e.buttonState.rightPressed = wParam & MK_RBUTTON;
-
-            e.keyState.ALT = wParam & MK_ALT;
-            e.keyState.CTRL = wParam & MK_CONTROL;
-            e.keyState.SHIFT = wParam & MK_SHIFT;
-
-            e.lastCursorPoint = app->m_lastCursorPoint;
-            app->m_lastCursorPoint = e.cursorPoint;
-
-            if (!app->m_currFocusedUIObject.expired() &&
-                app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)
             {
-                app->m_currFocusedUIObject.lock()->onMouseMove(e);
+                e.cursorPoint = cursorPoint;
 
-                ISortable<Panel>::foreach(app->m_pinnedUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
+                e.buttonState.leftPressed = wParam & MK_LBUTTON;
+                e.buttonState.middlePressed = wParam & MK_MBUTTON;
+                e.buttonState.rightPressed = wParam & MK_RBUTTON;
+
+                e.keyState.ALT = wParam & MK_ALT;
+                e.keyState.CTRL = wParam & MK_CONTROL;
+                e.keyState.SHIFT = wParam & MK_SHIFT;
+
+                e.lastCursorPoint = app->m_lastCursorPoint;
+                app->m_lastCursorPoint = e.cursorPoint;
+            }
+            //------------------------------------------------------------------
+            // START: Mouse-Move Event
+            //------------------------------------------------------------------
+
+            ISortable<Panel>::foreach(app->m_pinnedUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
+            {
+                if (uiobj->appEventReactability.mouse.move)
                 {
-                    if (uiobj->appEventReactability.mouse.move)
-                    {
-                        uiobj->onMouseMove(e);
-                    }
-                    return uiobj->appEventTransparency.mouse.move;
-                });
+                    uiobj->onMouseMove(e);
+                }
+                return uiobj->appEventTransparency.mouse.move;
+            });
+            auto& mouseFocused = app->m_focusedUIObjects[(size_t)FocusType::Mouse];
+
+            if (!mouseFocused.expired())
+            {
+                mouseFocused.lock()->onMouseMove(e);
             }
             else // Deliver mouse-move event normally.
             {
-                UIObjectTempSet currHitUIObjects = {};
+                UIObjectTempSet hitUIObjects = {};
+
                 for (auto& uiobj : app->m_uiObjects)
                 {
                     if (uiobj->appEventReactability.hitTest && uiobj->isHit(cursorPoint))
                     {
-                        currHitUIObjects.insert(uiobj);
+                        hitUIObjects.insert(uiobj);
                     }
                 }
                 if (app->forceSingleMouseEnterLeaveEvent)
                 {
                     WeakPtr<Panel> enterCandidate = {}, leaveCandidate = {};
-                    if (!currHitUIObjects.empty())
+                    if (!hitUIObjects.empty())
                     {
-                        enterCandidate = *currHitUIObjects.begin();
+                        enterCandidate = *hitUIObjects.begin();
                     }
                     if (!app->m_hitUIObjects.empty())
                     {
                         leaveCandidate = *app->m_hitUIObjects.begin();
                     }
-                    if (!cpp_lang_utils::isMostDerivedEqual(enterCandidate.lock(), leaveCandidate.lock()))
+                    if (!cpp_lang_utils::isMostDerivedEqual(enterCandidate, leaveCandidate))
                     {
                         if (!enterCandidate.expired())
                         {
@@ -493,7 +503,7 @@ namespace d14engine::uikit
                 }
                 else // trigger multiple mouse-enter-leave events
                 {
-                    ISortable<Panel>::foreach(currHitUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
+                    ISortable<Panel>::foreach(hitUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
                     {
                         // Moved in just now, trigger mouse-enter event.
                         if (app->m_hitUIObjects.find(uiobj) == app->m_hitUIObjects.end())
@@ -509,7 +519,7 @@ namespace d14engine::uikit
                     ISortable<Panel>::foreach(app->m_hitUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
                     {
                         // Moved out just now, trigger mouse-leave event.
-                        if (currHitUIObjects.find(uiobj) == currHitUIObjects.end())
+                        if (hitUIObjects.find(uiobj) == hitUIObjects.end())
                         {
                             if (uiobj->appEventReactability.mouse.leave)
                             {
@@ -520,7 +530,7 @@ namespace d14engine::uikit
                         return true;
                     });
                 }
-                app->m_hitUIObjects = std::move(currHitUIObjects);
+                app->m_hitUIObjects = std::move(hitUIObjects);
 
                 ISortable<Panel>::foreach(app->m_hitUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
                 {
@@ -530,24 +540,10 @@ namespace d14engine::uikit
                     }
                     return uiobj->appEventTransparency.mouse.move;
                 });
-                app->updateDiffPinnedUIObjects();
-
-                ISortable<Panel>::foreach(app->m_diffPinnedUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
-                {
-                    if (uiobj->appEventReactability.mouse.move)
-                    {
-                        uiobj->onMouseMove(e);
-                    }
-                    return uiobj->appEventTransparency.mouse.move;
-                });
             }
-            TRACKMOUSEEVENT tme =
-            {
-                .cbSize    = sizeof(tme),
-                .dwFlags   = TME_LEAVE,
-                .hwndTrack = hwnd
-            };
-            TrackMouseEvent(&tme);
+            //------------------------------------------------------------------
+            // END: Mouse-Move Event
+            //------------------------------------------------------------------
 
             // The cursor will be hidden if moves out of the Win32 window,
             // so we need to show it explicitly in every mouse-move event.
@@ -557,6 +553,9 @@ namespace d14engine::uikit
             {
                 app->m_cursor->setSystemIcon();
             }
+            TRACKMOUSEEVENT tme = { sizeof(tme), TME_LEAVE, hwnd, 0 };
+            TrackMouseEvent(&tme); // This is required for WM_MOUSELEAVE.
+
             InvalidateRect(hwnd, nullptr, FALSE);
 
             app->m_isHandlingSensitiveUIEvent = false;
@@ -564,10 +563,9 @@ namespace d14engine::uikit
         }
         case WM_MOUSELEAVE:
         {
-            if (app == nullptr ||
-                app->m_isHandlingSensitiveUIEvent)
+            if (app == nullptr || app->m_isHandlingSensitiveUIEvent)
             {
-                return 0;
+                return 0; // Only one sensitive UI event can be handled at a time.
             }
             app->m_isHandlingSensitiveUIEvent = true;
 
@@ -578,18 +576,23 @@ namespace d14engine::uikit
             cursorPoint = platform_utils::restoredByDpi(cursorPoint);
 
             MouseMoveEvent e = {};
-            e.cursorPoint =
             {
-                (float)cursorPoint.x,
-                (float)cursorPoint.y
-            };
-            e.lastCursorPoint = app->m_lastCursorPoint;
-            app->m_lastCursorPoint = e.cursorPoint;
+                e.cursorPoint =
+                {
+                    (float)cursorPoint.x, (float)cursorPoint.y
+                };
+                e.lastCursorPoint = app->m_lastCursorPoint;
+                app->m_lastCursorPoint = e.cursorPoint;
+            }
+            //------------------------------------------------------------------
+            // START: Mouse-Leave Event
+            //------------------------------------------------------------------
 
-            if (!app->m_currFocusedUIObject.expired() &&
-                app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)
+            auto& mouseFocused = app->m_focusedUIObjects[(size_t)FocusType::Mouse];
+
+            if (!mouseFocused.expired())
             {
-                app->m_currFocusedUIObject.lock()->onMouseLeave(e);
+                mouseFocused.lock()->onMouseLeave(e);
             }
             else // Deliver mouse-leave event normally.
             {
@@ -603,6 +606,10 @@ namespace d14engine::uikit
                 });
                 app->m_hitUIObjects.clear();
             }
+            //------------------------------------------------------------------
+            // END: Mouse-Leave Event
+            //------------------------------------------------------------------
+
             app->m_cursor->setPrivateVisible(false);
 
             InvalidateRect(hwnd, nullptr, FALSE);
@@ -611,57 +618,57 @@ namespace d14engine::uikit
             return 0;
         }
         case WM_LBUTTONDOWN:
-        case WM_LBUTTONUP:
         case WM_LBUTTONDBLCLK:
         case WM_RBUTTONDOWN:
-        case WM_RBUTTONUP:
         case WM_RBUTTONDBLCLK:
         case WM_MBUTTONDOWN:
-        case WM_MBUTTONUP:
         case WM_MBUTTONDBLCLK:
         {
-            if (app == nullptr ||
-                app->m_isHandlingSensitiveUIEvent)
+            SetCapture(hwnd);
+            goto handle_mouse_button_event;
+        }
+        case WM_LBUTTONUP:
+        case WM_RBUTTONUP:
+        case WM_MBUTTONUP:
+        {
+            ReleaseCapture();
+            goto handle_mouse_button_event;
+        }
+        handle_mouse_button_event:
+        {
+            if (app == nullptr || app->m_isHandlingSensitiveUIEvent)
             {
-                return 0;
+                return 0; // Only one sensitive UI event can be handled at a time.
             }
             app->m_isHandlingSensitiveUIEvent = true;
 
-            if (message == WM_LBUTTONDOWN ||
-                message == WM_RBUTTONDOWN ||
-                message == WM_MBUTTONDOWN)
-            {
-                SetCapture(hwnd);
-            }
-            else ReleaseCapture();
-
-            auto cursorPoint =
-            platform_utils::restoredByDpi(POINT
-            {
-                GET_X_LPARAM(lParam),
-                GET_Y_LPARAM(lParam)
-            });
             MouseButtonEvent e = {};
-            e.cursorPoint =
             {
-                (float)cursorPoint.x,
-                (float)cursorPoint.y
-            };
-            e.state.flag = MouseButtonEvent::State::g_flagMap.at(message);
-
-            if (!app->m_currFocusedUIObject.expired() &&
-                app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)
-            {
-                app->m_currFocusedUIObject.lock()->onMouseButton(e);
-
-                ISortable<Panel>::foreach(app->m_pinnedUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
+                D2D1_POINT_2F cursorPoint =
                 {
-                    if (uiobj->appEventReactability.mouse.button)
-                    {
-                        uiobj->onMouseButton(e);
-                    }
-                    return uiobj->appEventTransparency.mouse.button;
-                });
+                    (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam)
+                };
+                e.cursorPoint = platform_utils::restoredByDpi(cursorPoint);
+
+                e.state.flag = MouseButtonEvent::State::g_flagMap.at(message);
+            }
+            //------------------------------------------------------------------
+            // START: Mouse-Button Event
+            //------------------------------------------------------------------
+
+            ISortable<Panel>::foreach(app->m_pinnedUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
+            {
+                if (uiobj->appEventReactability.mouse.button)
+                {
+                    uiobj->onMouseButton(e);
+                }
+                return uiobj->appEventTransparency.mouse.button;
+            });
+            auto& mouseFocused = app->m_focusedUIObjects[(size_t)FocusType::Mouse];
+
+            if (!mouseFocused.expired())
+            {
+                mouseFocused.lock()->onMouseButton(e);
             }
             else // Deliver mouse-button event normally.
             {
@@ -669,33 +676,16 @@ namespace d14engine::uikit
                 {
                     if (uiobj->appEventReactability.mouse.button)
                     {
-                        if (uiobj->appEventReactability.focus.get &&
-                            (e.state.leftDown() || e.state.leftDblclk()))
-                        {
-                            e.focused = uiobj;
-                        }
                         uiobj->onMouseButton(e);
                     }
                     return uiobj->appEventTransparency.mouse.button;
                 });
-                ISortable<Panel>::foreach(app->m_diffPinnedUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
-                {
-                    if (uiobj->appEventReactability.mouse.button)
-                    {
-                        uiobj->onMouseButton(e);
-                    }
-                    return uiobj->appEventTransparency.mouse.button;
-                });
-                if (app->skipHandleNextFocusChangeEvent)
-                {
-                    app->skipHandleNextFocusChangeEvent = false;
-                }
-                else if (e.state.leftDown() || e.state.leftDblclk())
-                {
-                    app->focusUIObject(e.focused.lock());
-                }
                 app->handleImmediateMouseMoveEventCallback();
             }
+            //------------------------------------------------------------------
+            // END: Mouse-Button Event
+            //------------------------------------------------------------------
+
             InvalidateRect(hwnd, nullptr, FALSE);
 
             app->m_isHandlingSensitiveUIEvent = false;
@@ -703,53 +693,54 @@ namespace d14engine::uikit
         }
         case WM_MOUSEWHEEL:
         {
-            if (app == nullptr ||
-                app->m_isHandlingSensitiveUIEvent)
+            if (app == nullptr || app->m_isHandlingSensitiveUIEvent)
             {
-                return 0;
+                return 0; // Only one sensitive UI event can be handled at a time.
             }
             app->m_isHandlingSensitiveUIEvent = true;
 
             POINT cursorPoint =
             {
-                GET_X_LPARAM(lParam),
-                GET_Y_LPARAM(lParam)
+                GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)
             };
             ScreenToClient(hwnd, &cursorPoint);
 
             cursorPoint = platform_utils::restoredByDpi(cursorPoint);
 
             MouseWheelEvent e = {};
-
-            e.cursorPoint =
             {
-                (float)cursorPoint.x,
-                (float)cursorPoint.y
-            };
-            auto lowParam = LOWORD(wParam);
-
-            e.buttonState.leftPressed = lowParam & MK_LBUTTON;
-            e.buttonState.middlePressed = lowParam & MK_MBUTTON;
-            e.buttonState.rightPressed = lowParam & MK_RBUTTON;
-
-            e.keyState.CTRL = lowParam & MK_CONTROL;
-            e.keyState.SHIFT = lowParam & MK_SHIFT;
-
-            e.deltaCount = GET_Y_LPARAM(wParam) / WHEEL_DELTA;
-
-            if (!app->m_currFocusedUIObject.expired() &&
-                app->m_currFocusedUIObject.lock()->forceGlobalExclusiveFocusing)
-            {
-                app->m_currFocusedUIObject.lock()->onMouseWheel(e);
-
-                ISortable<Panel>::foreach(app->m_pinnedUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
+                e.cursorPoint =
                 {
-                    if (uiobj->appEventReactability.mouse.wheel)
-                    {
-                        uiobj->onMouseWheel(e);
-                    }
-                    return uiobj->appEventTransparency.mouse.wheel;
-                });
+                    (float)cursorPoint.x, (float)cursorPoint.y
+                };
+                auto lowParam = LOWORD(wParam);
+
+                e.buttonState.leftPressed = lowParam & MK_LBUTTON;
+                e.buttonState.middlePressed = lowParam & MK_MBUTTON;
+                e.buttonState.rightPressed = lowParam & MK_RBUTTON;
+
+                e.keyState.CTRL = lowParam & MK_CONTROL;
+                e.keyState.SHIFT = lowParam & MK_SHIFT;
+
+                e.deltaCount = GET_Y_LPARAM(wParam) / WHEEL_DELTA;
+            }
+            //------------------------------------------------------------------
+            // START: Mouse-Wheel Event
+            //------------------------------------------------------------------
+
+            ISortable<Panel>::foreach(app->m_pinnedUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
+            {
+                if (uiobj->appEventReactability.mouse.wheel)
+                {
+                    uiobj->onMouseWheel(e);
+                }
+                return uiobj->appEventTransparency.mouse.wheel;
+            });
+            auto& mouseFocused = app->m_focusedUIObjects[(size_t)FocusType::Mouse];
+
+            if (!mouseFocused.expired())
+            {
+                mouseFocused.lock()->onMouseWheel(e);
             }
             else // Deliver mouse-wheel event normally.
             {
@@ -761,16 +752,12 @@ namespace d14engine::uikit
                     }
                     return uiobj->appEventTransparency.mouse.wheel;
                 });
-                ISortable<Panel>::foreach(app->m_diffPinnedUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
-                {
-                    if (uiobj->appEventReactability.mouse.wheel)
-                    {
-                        uiobj->onMouseWheel(e);
-                    }
-                    return uiobj->appEventTransparency.mouse.wheel;
-                });
                 app->handleImmediateMouseMoveEventCallback();
             }
+            //------------------------------------------------------------------
+            // END: Mouse-Wheel Event
+            //------------------------------------------------------------------
+
             InvalidateRect(hwnd, nullptr, FALSE);
 
             app->m_isHandlingSensitiveUIEvent = false;
@@ -781,35 +768,39 @@ namespace d14engine::uikit
         case WM_KEYUP:
         case WM_SYSKEYUP:
         {
-            if (app == nullptr ||
-                app->m_isHandlingSensitiveUIEvent)
+            if (app == nullptr || app->m_isHandlingSensitiveUIEvent)
             {
-                return 0;
+                return 0; // Only one sensitive UI event can be handled at a time.
             }
             app->m_isHandlingSensitiveUIEvent = true;
 
             KeyboardEvent e = {};
-
-            e.vkey = wParam;
-
-            if (message == WM_KEYDOWN || message == WM_SYSKEYDOWN)
             {
-                e.state.flag = KeyboardEvent::State::Flag::Pressed;
-            }
-            else e.state.flag = KeyboardEvent::State::Flag::Released;
+                e.vkey = wParam;
 
-            if (!app->m_currFocusedUIObject.expired())
-            {
-                app->m_currFocusedUIObject.lock()->onKeyboard(e);
-
-                ISortable<Panel>::foreach(app->m_pinnedUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
+                if (message == WM_KEYDOWN || message == WM_SYSKEYDOWN)
                 {
-                    if (uiobj->appEventReactability.keyboard)
-                    {
-                        uiobj->onKeyboard(e);
-                    }
-                    return uiobj->appEventTransparency.keyboard;
-                });
+                    e.state.flag = KeyboardEvent::State::Flag::Pressed;
+                }
+                else e.state.flag = KeyboardEvent::State::Flag::Released;
+            }
+            //------------------------------------------------------------------
+            // START: Keyboard Event
+            //------------------------------------------------------------------
+
+            ISortable<Panel>::foreach(app->m_pinnedUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
+            {
+                if (uiobj->appEventReactability.keyboard)
+                {
+                    uiobj->onKeyboard(e);
+                }
+                return uiobj->appEventTransparency.keyboard;
+            });
+            auto& keyboardFocused = app->m_focusedUIObjects[(size_t)FocusType::Keyboard];
+
+            if (!keyboardFocused.expired())
+            {
+                keyboardFocused.lock()->onKeyboard(e);
             }
             else // Deliver keyboard event normally.
             {
@@ -821,111 +812,99 @@ namespace d14engine::uikit
                     }
                     return uiobj->appEventTransparency.keyboard;
                 });
-                ISortable<Panel>::foreach(app->m_diffPinnedUIObjects, [&](ShrdPtrRefer<Panel> uiobj)
-                {
-                    if (uiobj->appEventReactability.keyboard)
-                    {
-                        uiobj->onKeyboard(e);
-                    }
-                    return uiobj->appEventTransparency.keyboard;
-                });
                 app->handleImmediateMouseMoveEventCallback();
             }
+            //------------------------------------------------------------------
+            // END: Keyboard Event
+            //------------------------------------------------------------------
+
             InvalidateRect(hwnd, nullptr, FALSE);
 
             app->m_isHandlingSensitiveUIEvent = false;
             return 0;
         }
+#define HANDLE_TEXT_INPUT_OBJECT_START(Name) \
+if (app != nullptr) \
+{ \
+    auto tiobj = app->getFocusedTextInputObject(); \
+    if (!tiobj.expired()) \
+    { \
+        auto Name = tiobj.lock(); \
+
+#define HANDLE_TEXT_INPUT_OBJECT_END \
+    } \
+}
         case WM_CHAR:
         {
-            if (app != nullptr)
-            {
-                app->broadcastInputStringEvent({ (WCHAR*)&wParam, 1 });
-                InvalidateRect(hwnd, nullptr, FALSE);
-            }
+            HANDLE_TEXT_INPUT_OBJECT_START(ptiobj)
+
+            ptiobj->OnInputString({ (WCHAR*)&wParam, 1 });
+            InvalidateRect(hwnd, nullptr, FALSE);
+
+            HANDLE_TEXT_INPUT_OBJECT_END
             return 0;
         }
         case WM_IME_STARTCOMPOSITION:
         {
-            if (app && !app->m_focusedTextInputObject.expired())
-            {
-                auto himc = ImmGetContext(hwnd);
-                if (himc)
-                {
-                    auto tobj = app->m_focusedTextInputObject.lock();
+            HANDLE_TEXT_INPUT_OBJECT_START(ptiobj)
 
-                    auto font = tobj->getCompositionFont();
-                    if (font.has_value())
-                    {
-                        ImmSetCompositionFont(himc, &font.value());
-                    }
-                    auto form = tobj->getCompositionForm();
-                    if (form.has_value())
-                    {
-                        ImmSetCompositionWindow(himc, &form.value());
-                    }
+            auto himc = ImmGetContext(hwnd);
+            if (himc != nullptr)
+            {
+                auto font = ptiobj->getCompositionFont();
+                if (font.has_value())
+                {
+                    ImmSetCompositionFont(himc, &font.value());
                 }
-                ImmReleaseContext(hwnd, himc);
+                auto form = ptiobj->getCompositionForm();
+                if (form.has_value())
+                {
+                    ImmSetCompositionWindow(himc, &form.value());
+                }
             }
+            ImmReleaseContext(hwnd, himc);
+
+            HANDLE_TEXT_INPUT_OBJECT_END
+
             return DefWindowProc(hwnd, message, wParam, lParam);
         }
         case WM_IME_COMPOSITION:
         {
             if (lParam & GCS_RESULTSTR)
             {
+                HANDLE_TEXT_INPUT_OBJECT_START(ptiobj)
+
                 auto himc = ImmGetContext(hwnd);
-                if (himc)
+                if (himc != nullptr)
                 {
                     auto nSize = ImmGetCompositionString(himc, GCS_RESULTSTR, nullptr, 0);
                     if (nSize > 0)
                     {
                         // The null-terminated needs an extra character space.
                         auto hLocal = LocalAlloc(LPTR, nSize + sizeof(WCHAR));
-                        if (hLocal)
+                        if (hLocal != nullptr)
                         {
                             ImmGetCompositionString(himc, GCS_RESULTSTR, hLocal, nSize);
-
-                            if (app != nullptr)
-                            {
-                                app->broadcastInputStringEvent((WCHAR*)hLocal);
-                                InvalidateRect(hwnd, nullptr, FALSE);
-                            }
-                            LocalFree(hLocal);
+                            ptiobj->OnInputString((WCHAR*)hLocal);
+                            InvalidateRect(hwnd, nullptr, FALSE);
                         }
+                        LocalFree(hLocal);
                     }
                 }
                 ImmReleaseContext(hwnd, himc);
+
+                HANDLE_TEXT_INPUT_OBJECT_END
 
                 // Prevent from receiving WM_CHAR with the result string since it has been handled above.
                 lParam &= ~(GCS_RESULTCLAUSE | GCS_RESULTREADCLAUSE | GCS_RESULTREADSTR | GCS_RESULTSTR);
             }
             return DefWindowProc(hwnd, message, wParam, lParam);
         }
+#undef HANDLE_TEXT_INPUT_OBJECT_START
+#undef HANDLE_TEXT_INPUT_OBJECT_END
+
         case (UINT)CustomMessage::AwakeGetMessage:
         {
-            return 0;
-        }
-        case (UINT)CustomMessage::UpdateRootDiffPinnedUIObjects:
-        {
-            if (app != nullptr)
-            {
-                app->updateDiffPinnedUIObjects();
-            }
-            return 0;
-        }
-        case (UINT)CustomMessage::UpdateMiscDiffPinnedUIObjects:
-        {
-            if (app != nullptr)
-            {
-                for (auto& uiobj : app->m_diffPinnedUpdateCandidates)
-                {
-                    if (!uiobj.expired())
-                    {
-                        uiobj.lock()->updateDiffPinnedUIObjects();
-                    }
-                }
-                app->m_diffPinnedUpdateCandidates.clear();
-            }
             return 0;
         }
         case (UINT)CustomMessage::HandleThreadEvent:
@@ -962,11 +941,6 @@ namespace d14engine::uikit
             return win32WindowSettings.sizingFrame.f_NCHITTEST(pt);
         }
         return defWin32NCHITTESTMessageHandler(pt);
-    }
-
-    HWND Application::win32Window() const
-    {
-        return m_win32Window;
     }
 
     LRESULT Application::defWin32NCHITTESTMessageHandler(const POINT& pt)
@@ -1037,32 +1011,93 @@ namespace d14engine::uikit
         return m_renderer.get();
     }
 
+    Application::UIDrawTarget& Application::drawObjects()
+    {
+        // m_uiCmdLayer->drawTarget is guaranteed to be a UIDrawTarget.
+        return std::get<UIDrawTarget>(m_uiCmdLayer->drawTarget);
+    }
+
+    const SharedPtr<Renderer::CommandLayer>& Application::uiCmdLayer() const
+    {
+        return m_uiCmdLayer;
+    }
+
+    void Application::registerDrawObject(ShrdPtrRefer<Panel> uiobj)
+    {
+        if (uiobj == nullptr) return;
+        if (drawObjects().find(uiobj) != drawObjects().end()) return;
+
+        /////////////////////////
+        // Update Draw Objects //
+        /////////////////////////
+
+        drawObjects().insert(uiobj);
+
+        ///////////////////////
+        // Update Priorities //
+        ///////////////////////
+
+        m_frontPriorities.drawObject = std::max
+        (
+            m_frontPriorities.drawObject,
+            uiobj->drawObjectPriority()
+        );
+        m_backPriorities.drawObject = std::min
+        (
+            m_backPriorities.drawObject,
+            uiobj->drawObjectPriority()
+        );
+    }
+
+    void Application::unregisterDrawObject(ShrdPtrRefer<Panel> uiobj)
+    {
+        if (uiobj == nullptr) return;
+
+        /////////////////////////
+        // Update Draw Objects //
+        /////////////////////////
+
+        drawObjects().erase(uiobj);
+
+        ///////////////////////
+        // Update Priorities //
+        ///////////////////////
+
+        // There is no need to update the priorities here,
+        // as newly registered objects will automatically
+        // adapt to the existing priorities.
+    }
+
 #pragma warning(push)
 // wrappedBuffer is guaranteed to be valid when composition=False
 #pragma warning(disable : 26815)
 
     ComPtr<ID2D1Bitmap1> Application::windowshot() const
     {
-        //-------------------------------------------------------------------------
-        // (composition=True)
-        // renderTarget is the first back buffer of composition swapChain,
-        // which internally performs synchronization, so direct copying is fine.
-        //-------------------------------------------------------------------------
-        // (composition=False)
-        // renderTarget is a D2D1Bitmap created from wrappedBuffer (D3D11Resource),
-        // which is created from sceneBuffer (D3D12Resource) through D3D11On12Device,
-        // so it is necessary to synchronize them between D3D12 and D3D11.
-        //-------------------------------------------------------------------------
-        // Acquire Wrapped Resource
-        //-------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+// (composition=True)
+// renderTarget is the first back buffer of the composition swapChain,
+// which internally performs synchronization, so direct copying is fine.
+//--------------------------------------------------------------------------
+// (composition=False)
+// renderTarget is a D2D1Bitmap created from wrappedBuffer (D3D11Resource),
+// which is created from sceneBuffer (D3D12Resource) through D3D11On12Device,
+// so it is necessary to synchronize D3D12 and D3D11.
+//--------------------------------------------------------------------------
+
+        /////////////
+        // Acquire //
+        /////////////
+
         if (!m_renderer->composition())
         {
             auto wrapped = m_renderer->wrappedBuffer().value();
             m_renderer->d3d11On12Device()->AcquireWrappedResources(&wrapped, 1);
         }
-        //-------------------------------------------------------------------------
-        // Create/Copy Windowshot
-        //-------------------------------------------------------------------------
+        /////////////
+        // Copying //
+        /////////////
+
         auto src = m_renderer->renderTarget();
         auto pixSize = src->GetPixelSize();
 
@@ -1072,9 +1107,10 @@ namespace d14engine::uikit
         D2D1_RECT_U srcRect = { 0, 0, pixSize.width, pixSize.height };
         THROW_IF_FAILED(dst->CopyFromBitmap(&dstPoint, src, &srcRect));
 
-        //-------------------------------------------------------------------------
-        // Release Wrapped Resource
-        //-------------------------------------------------------------------------
+        /////////////
+        // Release //
+        /////////////
+
         if (!m_renderer->composition())
         {
             auto wrapped = m_renderer->wrappedBuffer().value();
@@ -1125,132 +1161,177 @@ namespace d14engine::uikit
         }
     }
 
-    const Application::TopmostPriority& Application::topmostPriority() const
-    {
-        return m_topmostPriority;
-    }
-
-    void Application::moveRootObjectTopmost(Panel* uiobj)
-    {
-        uiobj->setD2d1ObjectPriority(++m_topmostPriority.d2d1Object);
-        uiobj->setUIObjectPriority(--m_topmostPriority.uiObject);
-    }
-
-    const SharedPtr<Renderer::CommandLayer>& Application::uiCmdLayer() const
-    {
-        return m_uiCmdLayer;
-    }
-
     const Application::UIObjectSet& Application::uiObjects() const
     {
         return m_uiObjects;
     }
 
-    void Application::addUIObject(ShrdPtrRefer<Panel> uiobj)
+    void Application::registerUIEvents(ShrdPtrRefer<Panel> uiobj)
     {
         if (uiobj == nullptr) return;
+        if (m_uiObjects.find(uiobj) != m_uiObjects.end()) return;
+
+        ///////////////////////
+        // Update UI Objects //
+        ///////////////////////
+
         m_uiObjects.insert(uiobj);
 
-        m_topmostPriority.uiObject = std::min
+        ///////////////////////
+        // Update Priorities //
+        ///////////////////////
+
+        m_frontPriorities.uiObject = std::min
         (
-            m_topmostPriority.uiObject,
-            uiobj->ISortable<Panel>::m_priority
+            m_frontPriorities.uiObject,
+            uiobj->uiObjectPriority()
         );
+        m_backPriorities.uiObject = std::max
+        (
+            m_backPriorities.uiObject,
+            uiobj->uiObjectPriority()
+        );
+    }
+
+    void Application::unregisterUIEvents(ShrdPtrRefer<Panel> uiobj)
+    {
+        if (uiobj == nullptr) return;
+
+        ///////////////////////
+        // Update UI Objects //
+        ///////////////////////
+
+        m_uiObjects.erase(uiobj);
+
+        ///////////////////////
+        // Update Priorities //
+        ///////////////////////
+
+        // There is no need to update the priorities here,
+        // as newly registered objects will automatically
+        // adapt to the existing priorities.
+    }
+
+    void Application::addUIObject(ShrdPtrRefer<Panel> uiobj)
+    {
+        registerDrawObject(uiobj);
+        registerUIEvents(uiobj);
     }
 
     void Application::removeUIObject(ShrdPtrRefer<Panel> uiobj)
     {
-        m_uiObjects.erase(uiobj);
+        unregisterDrawObject(uiobj);
+        unregisterUIEvents(uiobj);
+    }
+
+    void Application::clearAddedUIObjects()
+    {
+        drawObjects().clear();
+        m_uiObjects.clear();
+
+        m_frontPriorities = {};
+        m_backPriorities = {};
     }
 
     void Application::pinUIObject(ShrdPtrRefer<Panel> uiobj)
     {
         if (uiobj == nullptr) return;
         m_pinnedUIObjects.insert(uiobj);
-
-        updateDiffPinnedUIObjectsLater();
     }
 
     void Application::unpinUIObject(ShrdPtrRefer<Panel> uiobj)
     {
+        if (uiobj == nullptr) return;
         m_pinnedUIObjects.erase(uiobj);
-
-        updateDiffPinnedUIObjectsLater();
-    }
-
-    void Application::clearAddedUIObjects()
-    {
-        m_uiObjects.clear();
     }
 
     void Application::clearPinnedUIObjects()
     {
         m_pinnedUIObjects.clear();
-
-        updateDiffPinnedUIObjectsLater();
     }
 
-    void Application::updateDiffPinnedUIObjects()
+    void Application::focusUIObject(FocusType focus, ShrdPtrRefer<Panel> uiobj)
     {
-        m_diffPinnedUIObjects.clear();
+        auto& focused = m_focusedUIObjects[(size_t)focus];
+        if (cpp_lang_utils::isMostDerivedEqual(uiobj, focused.lock())) return;
 
-        auto& _Cont1 = m_pinnedUIObjects;
-        auto& _Cont2 = m_hitUIObjects;
-        auto& _Cont3 = m_diffPinnedUIObjects;
-
-        auto _Dest = std::inserter
-        (
-        /* _Cont  */ _Cont3,
-        /* _Where */ _Cont3.begin()
-        );
-        auto _Pred = ISortable<Panel>::WeakAscending();
-
-        std::set_difference
-        (
-        /* _First1 */ _Cont1.begin(),
-        /* _Last1  */ _Cont1.end(),
-        /* _First2 */ _Cont2.begin(),
-        /* _Last2  */ _Cont2.end(),
-        /* _Dest   */ _Dest,
-        /* _Pred   */ _Pred
-        );
-        // can not deduce _Pred automatically
-    }
-
-    void Application::updateDiffPinnedUIObjectsLater()
-    {
-        postCustomMessage(CustomMessage::UpdateRootDiffPinnedUIObjects);
-    }
-
-    WeakPtr<Panel> Application::currFocusedUIObject() const
-    {
-        return m_currFocusedUIObject;
-    }
-
-    void Application::focusUIObject(ShrdPtrRefer<Panel> uiobj)
-    {
-        if (!cpp_lang_utils::isMostDerivedEqual(m_currFocusedUIObject.lock(), uiobj))
+        switch (focus)
         {
-            if (!m_currFocusedUIObject.expired())
+        case FocusType::Mouse:
+        {
+            if (!focused.expired())
             {
-                auto fcobj = m_currFocusedUIObject.lock();
-                if (!fcobj->appEventReactability.focus.lose)
-                {
-                    return;
-                }
-                m_currFocusedUIObject.reset();
-                m_focusedTextInputObject.reset();
-
-                fcobj->onLoseFocus();
+                focused.lock()->onLoseMouseFocus();
             }
-            if (uiobj && uiobj->appEventReactability.focus.get)
+            focused = uiobj;
+
+            if (!focused.expired())
             {
-                m_currFocusedUIObject = uiobj;
-                m_focusedTextInputObject = std::dynamic_pointer_cast<TextInputObject>(uiobj);
-
-                uiobj->onGetFocus();
+                focused.lock()->onGetMouseFocus();
             }
+            break;
         }
+        case FocusType::Keyboard:
+        {
+            if (!focused.expired())
+            {
+                focused.lock()->onLoseKeyboardFocus();
+            }
+            focused = uiobj;
+
+            if (!focused.expired())
+            {
+                focused.lock()->onGetKeyboardFocus();
+            }
+            break;
+        }
+        default: break;
+        }
+    }
+
+    void Application::handleImmediateMouseMoveEventCallback()
+    {
+        if (sendNextImmediateMouseMoveEvent)
+        {
+            sendNextImmediateMouseMoveEvent = false;
+
+            POINT cursorPoint = {};
+            GetCursorPos(&cursorPoint);
+            ScreenToClient(m_win32Window, &cursorPoint);
+
+            WPARAM wParam = 0;
+            LPARAM lParam = MAKELPARAM(cursorPoint.x, cursorPoint.y);
+
+            PostMessage(m_win32Window, WM_MOUSEMOVE, wParam, lParam);
+        }
+    }
+
+    WeakPtr<TextInputObject> Application::getFocusedTextInputObject() const
+    {
+        auto& uiobj = m_focusedUIObjects[(size_t)FocusType::Keyboard];
+        return std::dynamic_pointer_cast<TextInputObject>(uiobj.lock());
+    }
+
+    const Application::PriorityGroup& Application::frontPriorities() const
+    {
+        return m_frontPriorities;
+    }
+
+    const Application::PriorityGroup& Application::backPriorities() const
+    {
+        return m_backPriorities;
+    }
+
+    void Application::bringRootObjectToFront(Panel* uiobj)
+    {
+        uiobj->setDrawObjectPriority(++m_frontPriorities.drawObject);
+        uiobj->setUIObjectPriority(--m_frontPriorities.uiObject);
+    }
+
+    void Application::sendRootObjectToBack(Panel* uiobj)
+    {
+        uiobj->setDrawObjectPriority(--m_backPriorities.drawObject);
+        uiobj->setUIObjectPriority(++m_backPriorities.uiObject);
     }
 
     Cursor* Application::cursor() const
@@ -1323,7 +1404,10 @@ namespace d14engine::uikit
         }
         for (auto& uiobj : m_uiObjects)
         {
-            uiobj->onChangeThemeStyle(style);
+            if (uiobj->enableChangeThemeStyleUpdate)
+            {
+                uiobj->onChangeThemeStyle(style);
+            }
         }
         m_themeStyle = style;
     }
@@ -1337,41 +1421,17 @@ namespace d14engine::uikit
     {
         for (auto& uiobj : m_uiObjects)
         {
-            uiobj->onChangeLangLocale(codeName);
+            if (uiobj->enableChangeLangLocaleUpdate)
+            {
+                uiobj->onChangeLangLocale(codeName);
+            }
         }
         m_langLocale = codeName;
-    }
-
-    void Application::broadcastInputStringEvent(WstrRefer content)
-    {
-        if (!m_focusedTextInputObject.expired())
-        {
-            m_focusedTextInputObject.lock()->OnInputString(content);
-        }
-    }
-
-    void Application::handleImmediateMouseMoveEventCallback()
-    {
-        if (sendNextImmediateMouseMoveEvent)
-        {
-            sendNextImmediateMouseMoveEvent = false;
-
-            POINT cursorPoint = {};
-            GetCursorPos(&cursorPoint);
-            ScreenToClient(m_win32Window, &cursorPoint);
-
-            PostMessage(m_win32Window, WM_MOUSEMOVE, 0, MAKELPARAM(cursorPoint.x, cursorPoint.y));
-        }
     }
 
     void Application::postCustomMessage(CustomMessage message, WPARAM wParam, LPARAM lParam)
     {
         PostMessage(m_win32Window, (UINT)message, wParam, lParam);
-    }
-
-    void Application::pushDiffPinnedUpdateCandidate(ShrdPtrRefer<Panel> uiobj)
-    {
-        m_diffPinnedUpdateCandidates.insert(uiobj);
     }
 
     void Application::registerThreadCallback(ThreadEventID id, ThreadCallbackParam callback)

@@ -39,7 +39,7 @@ namespace d14engine::uikit
         (const SIZE& pixSize)
         {
             auto dipSize = platform_utils::restoredByDpi(pixSize);
-            resize((float)dipSize.cx, (float)dipSize.cy);
+            setSize((float)dipSize.cx, (float)dipSize.cy);
         };
         callback.f_onRestoreFromMinimized = [this]
         {
@@ -70,7 +70,7 @@ namespace d14engine::uikit
         auto pixSize = math_utils::size(wndrect);
         auto dipSize = platform_utils::restoredByDpi(pixSize);
 
-        resize((float)dipSize.cx, (float)dipSize.cy);
+        setSize((float)dipSize.cx, (float)dipSize.cy);
     }
 
     MainWindow::CornerState MainWindow::cornerState() const
@@ -198,7 +198,7 @@ namespace d14engine::uikit
         auto pixSize = math_utils::size(wndrect);
         auto dipSize = platform_utils::restoredByDpi(pixSize);
 
-        resize((float)dipSize.cx, (float)dipSize.cy);
+        setSize((float)dipSize.cx, (float)dipSize.cy);
 
         ShowWindow(hwnd, SW_NORMAL);
     }
@@ -232,7 +232,7 @@ namespace d14engine::uikit
         auto pixSize = math_utils::size(wndrect);
         auto dipSize = platform_utils::restoredByDpi(pixSize);
 
-        resize((float)dipSize.cx, (float)dipSize.cy);
+        setSize((float)dipSize.cx, (float)dipSize.cy);
 
         ShowWindow(hwnd, SW_MAXIMIZE);
     }

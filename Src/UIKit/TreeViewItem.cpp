@@ -2,7 +2,7 @@
 
 #include "UIKit/TreeViewItem.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 #include "Common/DirectXError.h"
 #include "Common/MathUtils/2D.h"
 
@@ -126,7 +126,7 @@ namespace d14engine::uikit
 
         if (ptr->m_stateDetail.ancestorUnfolded())
         {
-            ptr->resize(ptr->width(), m_unfoldedHeight);
+            ptr->setSize(ptr->width(), m_unfoldedHeight);
         }
     }
 
@@ -177,7 +177,7 @@ namespace d14engine::uikit
 
             if (item->m_stateDetail.ancestorFolded())
             {
-                item->resize(item->width(), 0.0f);
+                item->setSize(item->width(), 0.0f);
                 item->notifyHideChildrenItems();
             }
         }
@@ -277,7 +277,7 @@ namespace d14engine::uikit
     {
         for (auto& item : m_childrenItems)
         {
-            item.ptr->resize(item.ptr->width(), 0.0f);
+            item.ptr->setSize(item.ptr->width(), 0.0f);
             item.ptr->m_stateDetail.ancestorFlag = FOLDED;
 
             item.ptr->notifyHideChildrenItems();
@@ -294,7 +294,7 @@ namespace d14engine::uikit
     {
         for (auto& item : m_childrenItems)
         {
-            item.ptr->resize(item.ptr->width(), item.m_unfoldedHeight);
+            item.ptr->setSize(item.ptr->width(), item.m_unfoldedHeight);
             item.ptr->m_stateDetail.ancestorFlag = UNFOLDED;
 
             if (item.ptr->m_stateDetail.folded())

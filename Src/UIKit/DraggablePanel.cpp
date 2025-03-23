@@ -16,7 +16,7 @@ namespace d14engine::uikit
         :
         Panel(rect, brush, bitmap)
     {
-        appEventReactability.focus.get = true;
+        // Here left blank intentionally.
     }
 
     void DraggablePanel::onStartDragging()
@@ -48,9 +48,14 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        forceGlobalExclusiveFocusing = true;
-
         auto& app = Application::g_app;
+
+        enableChildrenMouseMoveEvent = false;
+
+        app->focusUIObject
+        (
+            Application::FocusType::Mouse, shared_from_this()
+        );
         if (draggingTarget == RootWindow)
         {
             app->isTriggerDraggingWin32Window = true;
@@ -62,9 +67,14 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        forceGlobalExclusiveFocusing = false;
-
         auto& app = Application::g_app;
+
+        enableChildrenMouseMoveEvent = true;
+
+        app->focusUIObject
+        (
+            Application::FocusType::Mouse, nullptr
+        );
         if (draggingTarget == RootWindow)
         {
             app->isTriggerDraggingWin32Window = false;
@@ -102,8 +112,6 @@ namespace d14engine::uikit
 
         if (m_isDragging)
         {
-            m_skipDeliverNextMouseMoveEventToChildren = true;
-
             switch (draggingTarget)
             {
             case SelfObject:
@@ -113,7 +121,7 @@ namespace d14engine::uikit
                     auto& point = std::get<SelfPoint>(m_draggingPoint);
 
                     auto relative = absoluteToRelative(p);
-                    move(relative.x - point.x, relative.y - point.y);
+                    setPosition(relative.x - point.x, relative.y - point.y);
                 }
                 break;
             }

@@ -2,7 +2,7 @@
 
 #include "UIKit/Button.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 #include "Common/MathUtils/2D.h"
 
 #include "UIKit/IconLabel.h"
@@ -22,8 +22,6 @@ namespace d14engine::uikit
         ClickablePanel(rect, resource_utils::solidColorBrush()),
         m_content(content)
     {
-        m_takeOverChildrenDrawing = true;
-
         roundRadiusX = roundRadiusY = roundRadius;
     }
 
@@ -45,7 +43,7 @@ namespace d14engine::uikit
         {
             m_content = IconLabel::uniformLayout();
         }
-        addUIObject(m_content);
+        registerUIEvents(m_content);
 
         m_content->transform(selfCoordRect());
     }
@@ -68,10 +66,10 @@ namespace d14engine::uikit
     {
         if (content && !cpp_lang_utils::isMostDerivedEqual(content, m_content))
         {
-            removeUIObject(m_content);
+            unregisterUIEvents(m_content);
 
             m_content = content;
-            addUIObject(m_content);
+            registerUIEvents(m_content);
 
             m_content->transform(selfCoordRect());
         }

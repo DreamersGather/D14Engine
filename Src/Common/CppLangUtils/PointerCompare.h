@@ -13,12 +13,19 @@ namespace d14engine::cpp_lang_utils
     template<typename T, typename U>
     bool isMostDerivedEqual(T* lhs, U* rhs)
     {
-        return dynamic_cast<const void*>(lhs) == dynamic_cast<const void*>(rhs);
+        using VoidPtr = const void*;
+        return dynamic_cast<VoidPtr>(lhs) == dynamic_cast<VoidPtr>(rhs);
     }
 
     template<typename T, typename U>
     bool isMostDerivedEqual(ShrdPtrRefer<T> lhs, ShrdPtrRefer<U> rhs)
     {
-        return std::dynamic_pointer_cast<const void>(lhs) == std::dynamic_pointer_cast<const void>(rhs);
+        return isMostDerivedEqual(lhs.get(), rhs.get());
+    }
+
+    template<typename T, typename U>
+    bool isMostDerivedEqual(WeakPtrRefer<T> lhs, WeakPtrRefer<U> rhs)
+    {
+        return isMostDerivedEqual(lhs.lock(), rhs.lock());
     }
 }

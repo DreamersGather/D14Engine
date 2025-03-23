@@ -35,7 +35,7 @@ D14_SET_APP_ENTRY(mainListTreeView)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
-            ui_mainWindow->moveTopmost();
+            ui_mainWindow->bringToFront();
             ui_mainWindow->maximizeButtonEnabled = false;
 
             ui_mainWindow->caption()->transform(300.0f, 0.0f, 376.0f, 32.0f);
@@ -43,11 +43,11 @@ D14_SET_APP_ENTRY(mainListTreeView)
         auto ui_darkModeLabel = makeRootUIObject<Label>(L"Dark Mode");
         auto ui_darkModeSwitch = makeRootUIObject<OnOffSwitch>();
         {
-            ui_darkModeLabel->moveTopmost();
+            ui_darkModeLabel->bringToFront();
             ui_darkModeLabel->transform(10.0f, 0.0f, 120.0f, 32.0f);
 
-            ui_darkModeSwitch->moveTopmost();
-            ui_darkModeSwitch->move(130.0f, 4.0f);
+            ui_darkModeSwitch->bringToFront();
+            ui_darkModeSwitch->setPosition(130.0f, 4.0f);
 
             if (app->themeStyle().name == L"Light")
             {
@@ -71,7 +71,7 @@ D14_SET_APP_ENTRY(mainListTreeView)
         }
         auto ui_screenshot = makeRootUIObject<OutlinedButton>(L"Screenshot");
         {
-            ui_screenshot->moveTopmost();
+            ui_screenshot->bringToFront();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
             ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
@@ -91,8 +91,8 @@ D14_SET_APP_ENTRY(mainListTreeView)
         {
             ui_listView->transform(0.0f, 0.0f, 400.0f, 282.0f);
 
-            ui_listView->getAppearance().background.opacity = 1.0f;
-            ui_listView->getAppearance().stroke.opacity = 1.0f;
+            ui_listView->appearance().background.opacity = 1.0f;
+            ui_listView->appearance().stroke.opacity = 1.0f;
 
             // Populate list-view items.
             ListView::ItemList ui_listViewItemList = {};
@@ -107,8 +107,8 @@ D14_SET_APP_ENTRY(mainListTreeView)
         {
             ui_treeView->transform(0.0f, 282.0f, 400.0f, 282.0f);
 
-            ui_treeView->getAppearance().background.opacity = 1.0f;
-            ui_treeView->getAppearance().stroke.opacity = 1.0f;
+            ui_treeView->appearance().background.opacity = 1.0f;
+            ui_treeView->appearance().stroke.opacity = 1.0f;
 
             // Populate tree-view items.
             TreeView::ItemList ui_treeViewItemList1 = {};
@@ -450,7 +450,7 @@ D14_SET_APP_ENTRY(mainListTreeView)
             geoInfo1.spacing.bottom = 6.0f;
             ui_sideLayout->addElement(ui_label, geoInfo1);
 
-            ui_slider->moveTopmost();
+            ui_slider->bringToFront();
             ui_slider->setMinValue(30.0f);
             ui_slider->setMaxValue(90.0f);
             ui_slider->setValue(30.0f);
@@ -477,7 +477,7 @@ D14_SET_APP_ENTRY(mainListTreeView)
                     for (auto& selected : sh_listView->selectedItemIndices())
                     {
                         auto& item = *selected.iterator;
-                        item->resize(item->width(), value);
+                        item->setSize(item->width(), value);
                     }
                     sh_listView->updateItemConstraints();
                     sh_listView->updateItemIndexRangeActivity();
@@ -492,7 +492,7 @@ D14_SET_APP_ENTRY(mainListTreeView)
                         {
                             item->peekItemImpl()->setUnfoldedHeight(value);
                         }
-                        else item->resize(item->width(), value);
+                        else item->setSize(item->width(), value);
                     }
                     sh_treeView->updateItemConstraints();
                     sh_treeView->updateItemIndexRangeActivity();

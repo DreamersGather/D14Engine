@@ -358,7 +358,7 @@
     <ClCompile Include="Src\UIKit\SliderBase.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Test\UIKit\SimpleEditor\SimpleEditor.cpp">
+    <ClCompile Include="Test\UIKit\ImageViewer\ImageViewer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -411,7 +411,7 @@
     <ClInclude Include="Src\Common\CppLangUtils\TypeTraits.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Common\CppLangUtils\FinalAction.h">
+    <ClInclude Include="Src\Common\CppLangUtils\FinallySemantic.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\Common\CppLangUtils\IndexIterator.h">
@@ -630,7 +630,7 @@
     <ClInclude Include="Src\UIKit\AnimationUtils\MotionFunctions.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Common\CppLangUtils\PointerEquality.h">
+    <ClInclude Include="Src\Common\CppLangUtils\PointerCompare.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\UIKit\MenuItem.h">
@@ -790,6 +790,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Src\UIKit\SliderBase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\CppLangUtils\EmptyBase.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

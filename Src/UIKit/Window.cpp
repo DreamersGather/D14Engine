@@ -2,7 +2,7 @@
 
 #include "UIKit/Window.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 #include "Common/DirectXError.h"
 #include "Common/MathUtils/2D.h"
 
@@ -29,8 +29,6 @@ namespace d14engine::uikit
         m_captionPanelHeight(captionPanelHeight),
         m_decorativeBarHeight(decorativeBarHeight)
     {
-        m_takeOverChildrenDrawing = true;
-
         transform(math_utils::adaptMaxSize(rect, minimalSize()));
 
         ///////////////////////////
@@ -67,7 +65,7 @@ namespace d14engine::uikit
         {
             m_caption = IconLabel::labelExpandedLayout(L"Untitled");
         }
-        addUIObject(m_caption);
+        registerUIEvents(m_caption);
 
         m_caption->transform(captionTitleSelfcoordRect());
     }
@@ -194,10 +192,10 @@ namespace d14engine::uikit
     {
         if (caption && !cpp_lang_utils::isMostDerivedEqual(caption, m_caption))
         {
-            removeUIObject(m_caption);
+            unregisterUIEvents(m_caption);
 
             m_caption = caption;
-            addUIObject(m_caption);
+            registerUIEvents(m_caption);
 
             m_caption->transform(captionTitleSelfcoordRect());
         }
@@ -207,10 +205,10 @@ namespace d14engine::uikit
     {
         if (!cpp_lang_utils::isMostDerivedEqual(uiobj, m_content))
         {
-            removeUIObject(m_content);
+            unregisterUIEvents(m_content);
 
             m_content = uiobj;
-            addUIObject(m_content);
+            registerUIEvents(m_content);
 
             if (m_content) m_content->transform(clientAreaSelfcoordRect());
         }
@@ -380,9 +378,9 @@ namespace d14engine::uikit
 
     void Window::setDisplayState(DisplayState state)
     {
-        if (state != m_displayState)
+        if (m_displayState != state)
         {
-            switch (state = m_displayState)
+            switch (m_displayState = state)
             {
             case Normal: onRestore(); break;
             case Minimized: onMinimize(); break;
@@ -521,10 +519,27 @@ namespace d14engine::uikit
         return nonClientAreaHeight();
     }
 
+    void Window::onRendererUpdateObject2DHelper(Renderer* rndr)
+    {
+        Panel::onRendererUpdateObject2DHelper(rndr);
+
+        m_caption->onRendererUpdateObject2D(rndr);
+        if (m_content)
+        {
+            m_content->onRendererUpdateObject2D(rndr);
+        }
+    }
+
     void Window::onRendererDrawD2d1LayerHelper(Renderer* rndr)
     {
         Panel::drawChildrenLayers(rndr);
-
+        {
+            m_caption->onRendererDrawD2d1Layer(rndr);
+            if (m_content)
+            {
+                m_content->onRendererDrawD2d1Layer(rndr);
+            }
+        }
         auto& mask = drawBufferRes.mask();
 
         auto maskDrawTrans = D2D1::Matrix3x2F::Translation
@@ -562,11 +577,8 @@ namespace d14engine::uikit
                     /* rect  */ captionPanelAbsoluteRect(),
                     /* brush */ resource_utils::solidColorBrush()
                     );
+                    m_caption->onRendererDrawD2d1Object(rndr);
                 }
-                //------------------------------------------------------------------
-                // The caption title will be drawn as a child.
-                //------------------------------------------------------------------
-
                 //------------------------------------------------------------------
                 // Decorative Bar
                 //------------------------------------------------------------------
@@ -693,7 +705,7 @@ namespace d14engine::uikit
                 //------------------------------------------------------------------
                 // Close Button
                 //------------------------------------------------------------------
-                
+
                 if (button3Enabled)
                 {
                     auto state = getButton3State(m_isButton3Hover, m_isButton3Down);
@@ -732,6 +744,14 @@ namespace d14engine::uikit
                     }
                 }
             }
+            /////////////
+            // Content //
+            /////////////
+
+            if (m_content)
+            {
+                m_content->onRendererDrawD2d1Object(rndr);
+            }
             //////////////
             // Children //
             //////////////
@@ -768,9 +788,9 @@ namespace d14engine::uikit
                 );
             }
         }
-        /////////////
-        // Content //
-        /////////////
+        ////////////
+        // Entity //
+        ////////////
         {
             auto& mask = drawBufferRes.mask();
             auto& brush = drawBufferRes.brush;
@@ -787,6 +807,10 @@ namespace d14engine::uikit
             auto mode = mask.getInterpolationMode();
             brush->SetInterpolationMode1(mode);
 
+            brush->SetTransform(D2D1::Matrix3x2F::Translation
+            (
+                m_absoluteRect.left, m_absoluteRect.top
+            ));
             rndr->d2d1DeviceContext()->FillRoundedRectangle
             (
             /* roundedRect */ { m_absoluteRect, roundRadiusX, roundRadiusY },
@@ -922,7 +946,7 @@ namespace d14engine::uikit
                 e.state.rightDown() ||
                 e.state.middleDown())
             {
-                moveTopmost();
+                bringToFront();
             }
         }
         if (e.state.leftDown() || e.state.leftDblclk())

@@ -30,7 +30,7 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
-            ui_mainWindow->moveTopmost();
+            ui_mainWindow->bringToFront();
             ui_mainWindow->maximizeButtonEnabled = false;
 
             ui_mainWindow->caption()->transform(300.0f, 0.0f, 376.0f, 32.0f);
@@ -38,11 +38,11 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
         auto ui_darkModeLabel = makeRootUIObject<Label>(L"Dark Mode");
         auto ui_darkModeSwitch = makeRootUIObject<OnOffSwitch>();
         {
-            ui_darkModeLabel->moveTopmost();
+            ui_darkModeLabel->bringToFront();
             ui_darkModeLabel->transform(10.0f, 0.0f, 120.0f, 32.0f);
 
-            ui_darkModeSwitch->moveTopmost();
-            ui_darkModeSwitch->move(130.0f, 4.0f);
+            ui_darkModeSwitch->bringToFront();
+            ui_darkModeSwitch->setPosition(130.0f, 4.0f);
 
             if (app->themeStyle().name == L"Light")
             {
@@ -66,7 +66,7 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
         }
         auto ui_screenshot = makeRootUIObject<OutlinedButton>(L"Screenshot");
         {
-            ui_screenshot->moveTopmost();
+            ui_screenshot->bringToFront();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
             ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
@@ -184,7 +184,7 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
 
             ui_mainBodyInput->f_onParentSize = [](Panel* p, SizeEvent& e)
             {
-                p->resize({ e.size.width + 10.0f, e.size.height + 16.0f });
+                p->setSize({ e.size.width + 10.0f, e.size.height + 16.0f });
             };
             ui_mainBodyInput->setVisibleTextRect({ 5.0f, 8.0f, 755.0f, 450.0f });
             ui_mainBodyInput->placeholder()->setText(L"Main body");
@@ -223,19 +223,6 @@ D14_SET_APP_ENTRY(mainSimpleEditor)
                 if (!wk_mainBodyView.expired())
                 {
                     wk_mainBodyView.lock()->setViewportOffset(offset);
-                }
-            };
-            ui_inputContextMenu->f_onChangeActivity =
-            [
-                wk_mainBodyInput = (WeakPtr<TextEditor>)ui_mainBodyInput
-            ]
-            (PopupMenu* menu, bool value)
-            {
-                if (!wk_mainBodyInput.expired())
-                {
-                    // Make sure the text-editor is always focused when using the menu.
-                    Application::g_app->skipHandleNextFocusChangeEvent = true;
-                    wk_mainBodyInput.lock()->appEventReactability.focus.lose = !value;
                 }
             };
             ui_inputContextMenu->f_onTriggerMenuItem =

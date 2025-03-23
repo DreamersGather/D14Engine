@@ -2,6 +2,8 @@
 
 #include "Common/Precompile.h"
 
+#include "Common/CppLangUtils/EnumMagic.h"
+
 #include "Renderer/Renderer.h"
 
 #include "UIKit/Appearances/Appearance.h"
@@ -14,6 +16,7 @@ namespace d14engine::uikit
 
     struct Application : cpp_lang_utils::NonCopyable
     {
+        friend Cursor;
         friend Panel;
 
         struct CreateInfo
@@ -60,18 +63,14 @@ namespace d14engine::uikit
 
         explicit Application(const CreateInfo& info = {});
 
-        // After exiting the program, the application is destroyed at first,
-        // and other objects are destroyed subsequently, in which situation
-        // the program will crash if their dtors use the global application
-        // pointer (i.e. g_app) to clear the maintained resources.
-        //
-        // Set g_app to nullptr after the application destroyed to help the
-        // objects decide whether there's need to do the clearing.
-
-        virtual ~Application() { g_app = nullptr; }
+        virtual ~Application();
 
         // This field stores the original create-info passed in the ctor.
         const CreateInfo createInfo = {};
+
+        ////////////////////
+        // Initialization //
+        ////////////////////
 
     private:
         void initWin32Window();
@@ -85,21 +84,26 @@ namespace d14engine::uikit
 
         void exit(); // The exit code is returned by calling run.
 
-        /////////////////////////////////
-        // Win32 Window & Message Loop //
-        /////////////////////////////////
-
-    private:
-        static LRESULT CALLBACK fnWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+        //////////////////
+        // Win32 Window //
+        //////////////////
 
     private:
         HWND m_win32Window = {};
 
-        LRESULT handleWin32NCHITTESTMessage(const POINT& pt);
-
     public:
         HWND win32Window() const;
 
+        //------------------------------------------------------------------
+        // Window Process
+        //------------------------------------------------------------------
+    private:
+        static LRESULT CALLBACK fnWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+        //------------------------------------------------------------------
+        // Window Settings
+        //------------------------------------------------------------------
+    public:
         struct Win32WindowSettings
         {
             struct Callback
@@ -124,24 +128,59 @@ namespace d14engine::uikit
         }
         win32WindowSettings = {};
 
+        //------------------------------------------------------------------
+        // NCHITTEST Handler
+        //------------------------------------------------------------------
+    private:
+        LRESULT handleWin32NCHITTESTMessage(const POINT& pt);
+
+    public:
         LRESULT defWin32NCHITTESTMessageHandler(const POINT& pt);
 
-        ///////////////////////////////
-        // Renderer & UI Object Tree //
-        ///////////////////////////////
+        ///////////////////
+        // DX12 Renderer //
+        ///////////////////
 
     private:
-        UniquePtr<renderer::Renderer> m_renderer = {};
+        using Renderer = renderer::Renderer;
+
+        UniquePtr<Renderer> m_renderer = {};
 
     public:
-        renderer::Renderer* dx12Renderer() const;
+        Renderer* dx12Renderer() const;
+
+        //------------------------------------------------------------------
+        // UI Command Layer
+        //------------------------------------------------------------------
+    public:
+        using UICommandLayer = Renderer::CommandLayer;
+        using UIDrawTarget = UICommandLayer::D2D1Target;
+
+    private:
+        SharedPtr<UICommandLayer> m_uiCmdLayer = {};
+
+        UIDrawTarget& drawObjects(); // D2D1Target of m_uiCmdLayer
 
     public:
+        constexpr static int g_uiCmdLayerPriority = 200;
+
+        const SharedPtr<UICommandLayer>& uiCmdLayer() const;
+
+        void registerDrawObject(ShrdPtrRefer<Panel> uiobj);
+        void unregisterDrawObject(ShrdPtrRefer<Panel> uiobj);
+
+        //------------------------------------------------------------------
+        // Resource Capture
+        //------------------------------------------------------------------
+    public:
+        ComPtr<ID2D1Bitmap1> windowshot() const;
+
         // This is valid only when the DXGI duplication is enabled.
         Optional<ComPtr<ID2D1Bitmap1>> screenshot() const;
 
-        ComPtr<ID2D1Bitmap1> windowshot() const;
-
+        //------------------------------------------------------------------
+        // Animation Control
+        //------------------------------------------------------------------
     private:
         // Indicates how many UI objects are playing animations.
         UINT m_animationCount = 0;
@@ -152,22 +191,11 @@ namespace d14engine::uikit
         void increaseAnimationCount();
         void decreaseAnimationCount();
 
-    private:
-        struct TopmostPriority
-        {
-            int d2d1Object = INT_MIN;
-            int uiObject = INT_MAX;
-        }
-        m_topmostPriority = {};
-
-    public:
-        const TopmostPriority& topmostPriority() const;
-
-        void moveRootObjectTopmost(Panel* uiobj);
+        ////////////////////
+        // UI Object Tree //
+        ////////////////////
 
     private:
-        SharedPtr<renderer::Renderer::CommandLayer> m_uiCmdLayer = {};
-
         using UIObjectSet = ISortable<Panel>::ShrdPrioritySet;
 
         UIObjectSet m_uiObjects = {};
@@ -176,116 +204,53 @@ namespace d14engine::uikit
 
         UIObjectTempSet m_hitUIObjects = {};
 
-        // The pinned UI objects keep receiving UI events while not hitting.
-        //
-        // Introduce the diff-pinned UI objects to avoid the hit UI objects
-        // receiving the same event repeatedly (Diff-pinned = Hit - Pinned).
+        // The pinned UI objects keep receiving all UI events even not hit.
+        // Tips: This can be used to implement a global hotspot mechanism,
+        // such as a shortcut key manager or a background auxiliary object.
 
-        UIObjectTempSet m_pinnedUIObjects = {}, m_diffPinnedUIObjects = {};
+        UIObjectTempSet m_pinnedUIObjects = {};
 
     public:
-        constexpr static int g_uiCmdLayerPriority = 200;
-
-        const SharedPtr<renderer::Renderer::CommandLayer>& uiCmdLayer() const;
-
         const UIObjectSet& uiObjects() const;
+
+        void registerUIEvents(ShrdPtrRefer<Panel> uiobj);
+        void unregisterUIEvents(ShrdPtrRefer<Panel> uiobj);
 
         void addUIObject(ShrdPtrRefer<Panel> uiobj);
         void removeUIObject(ShrdPtrRefer<Panel> uiobj);
 
+        void clearAddedUIObjects();
+
         void pinUIObject(ShrdPtrRefer<Panel> uiobj);
         void unpinUIObject(ShrdPtrRefer<Panel> uiobj);
 
-        void clearAddedUIObjects();
         void clearPinnedUIObjects();
 
-        // Affects the maximum number of mouse-enter/leave events.
-        // In each event handling of message loop, the window process:
-        // (True) only checks the highest-priority UI object.
-        // (False) traverses and checks all candidate UI objects.
-        bool forceSingleMouseEnterLeaveEvent = true;
+    public:
+        //------------------------------------------------------------------
+        // A focused UI object will exclusively handle all related events:
+        //------------------------------------------------------------------
+        // 1) Mouse:
+        //    a) Dragging or resizing a panel
+        //    b) Dragging a scrollbar to move content
+        //    c) Dragging a slider to adjust value
+        //
+        //------------------------------------------------------------------
+        // 2) Keyboard:
+        //    a) Typing text in a text-input object
+        //    b) Navigating through a waterfall view
+        //
+        //------------------------------------------------------------------
+
+        enum class FocusType { Mouse, Keyboard };
 
     private:
-        void updateDiffPinnedUIObjects();
+        using FocusedTempMap = cpp_lang_utils::EnumMap<FocusType, WeakPtr<Panel>>;
 
-        // Updating the diff-pinned UI objects while handling UI events may cause
-        // undefined behavior (e.g. modifying a std container while iterating it).
-        // To solve this problem, we are determined to send a custom Win32 message
-        // that notifies the actual updating during next Win32 message delivering.
-        void updateDiffPinnedUIObjectsLater();
-
-    private:
-        struct FocusedUIObject
-        {
-            WeakPtr<Panel> mouse = {};
-            WeakPtr<Panel> keyboard = {};
-        }
-        m_focusedUIObject = {};
+        FocusedTempMap m_focusedUIObjects = {};
 
     public:
-
-
-    private:
-        WeakPtr<Panel> m_currFocusedUIObject = {};
-
-    public:
-        WeakPtr<Panel> currFocusedUIObject() const;
-        void focusUIObject(ShrdPtrRefer<Panel> uiobj);
-
-    private:
-        SharedPtr<Cursor> m_cursor = {};
-
-        D2D1_POINT_2F m_lastCursorPoint = {};
-
-    public:
-        Cursor* cursor() const;
-
-        const D2D1_POINT_2F& lastCursorPoint() const;
-
-        // Note that the access level is public, so any object can modify this.
-        // Therefore, this is merely a flag indicating that a dragging might occur.
-        // If this is set, the window process may skip updating cursor's position,
-        // as the cursor should be fixed relative to the window during a dragging.
-        // Generally, only DraggablePanel and its inheritors may modify this flag.
-        bool isTriggerDraggingWin32Window = false;
-
-    public:
-        using ThemeStyle = appearance::Appearance::ThemeStyle;
-
-    private:
-        static Wstring querySystemThemeName();
-        static D2D1_COLOR_F querySystemThemeColor();
-
-    public:
-        static ThemeStyle querySystemThemeStyle();
-
-    private:
-        ThemeStyle m_themeStyle = {};
-
-    public:
-        const ThemeStyle& themeStyle() const;
-        void setThemeStyle(const ThemeStyle& style);
-
-        Function<void(const ThemeStyle&)> f_onSystemThemeStyleChange = {};
-
-    private:
-        Wstring m_langLocale = L"en-us";
-
-    public:
-        const Wstring& langLocale() const;
-        void setLangLocale(WstrRefer codeName);
-
-    private:
-        WeakPtr<TextInputObject> m_focusedTextInputObject = {};
-
-        void broadcastInputStringEvent(WstrRefer content);
-
-    public:
-        bool skipHandleNextFocusChangeEvent = false;
-
-        // Set this to True to notify the window process to
-        // post a new message of immediate mouse-move event.
-        bool sendNextImmediateMouseMoveEvent = false;
+        void focusUIObject(FocusType focus, ShrdPtrRefer<Panel> uiobj);
 
     private:
         // The UI objects are maintained with a std::set, and the UI event
@@ -307,15 +272,125 @@ namespace d14engine::uikit
 
         bool m_isHandlingSensitiveUIEvent = false;
 
+    public:
+        // Set this to True to notify the window process to post a message
+        // for immediate mouse-move after processing all mouse-move events.
+        bool sendNextImmediateMouseMoveEvent = false;
+
+    private:
         // If sendNextImmediateMouseMoveEvent is set in the previous update,
         // this helps post a new message of immediate mouse-move event,
         // which is useful for keeping the related UI objects up to date.
         void handleImmediateMouseMoveEventCallback();
 
-        //////////////////////////////
-        // Additional Functionality //
-        //////////////////////////////
+    public:
+        // Affects the max number of mouse-enter/leave events in each update.
+        // During each event handling of the message loop, the window-process:
+        // (True) only checks the highest-priority UI object.
+        // (False) traverses and checks all candidate UI objects.
+        bool forceSingleMouseEnterLeaveEvent = true;
 
+    private:
+        WeakPtr<TextInputObject> getFocusedTextInputObject() const;
+
+        ///////////////////
+        // Priority Data //
+        ///////////////////
+
+    private:
+        // When adding new UI objects, these priority attributes are updated.
+        // When we need to move a specific UI object to the front or back,
+        // these priority attributes can be refered for the related settings.
+
+        struct PriorityGroup
+        {
+            int drawObject = 0; // Set higher to draw above others.
+            int uiObject = 0; // Set lower to get UI event first.
+        };
+        PriorityGroup m_frontPriorities = {};
+        PriorityGroup m_backPriorities = {};
+
+    public:
+        // It is worth noting that these priority attributes does not accurately
+        // represent the current priority status of the UI object collection;
+        // in other words, the priority of the topmost UI object is not necessarily
+        // equal to frontPriority. To obtain the priority of the topmost UI object,
+        // directly use (*uiObjects().begin/rbegin())->d2d1/uiObjectPriority().
+
+        const PriorityGroup& frontPriorities() const;
+        const PriorityGroup& backPriorities() const;
+
+        void bringRootObjectToFront(Panel* uiobj);
+        void sendRootObjectToBack(Panel* uiobj);
+
+        ///////////////////////
+        // Global UI Objects //
+        ///////////////////////
+
+        //------------------------------------------------------------------
+        // Cursor
+        //------------------------------------------------------------------
+    private:
+        SharedPtr<Cursor> m_cursor = {};
+
+        D2D1_POINT_2F m_lastCursorPoint = {};
+
+    public:
+        Cursor* cursor() const;
+
+        const D2D1_POINT_2F& lastCursorPoint() const;
+
+        // Note that the access level is public, so any object can modify this.
+        // Therefore, this is merely a flag indicating that a dragging might occur.
+        // If this is set, the window process may skip updating cursor's position,
+        // as the cursor should be fixed relative to the window during a dragging.
+        // Generally, only DraggablePanel and its inheritors may modify this flag.
+        bool isTriggerDraggingWin32Window = false;
+
+        ///////////////////
+        // Miscellaneous //
+        ///////////////////
+
+        //------------------------------------------------------------------
+        // Theme Style
+        //------------------------------------------------------------------
+    public:
+        using ThemeStyle = appearance::Appearance::ThemeStyle;
+
+    private:
+        static Wstring querySystemThemeName();
+        static D2D1_COLOR_F querySystemThemeColor();
+
+    public:
+        static ThemeStyle querySystemThemeStyle();
+
+    private:
+        ThemeStyle m_themeStyle = {};
+
+    public:
+        const ThemeStyle& themeStyle() const;
+        void setThemeStyle(const ThemeStyle& style);
+
+        Function<void(const ThemeStyle&)> f_onSystemThemeStyleChange = {};
+
+        //------------------------------------------------------------------
+        // Language & Locale
+        //------------------------------------------------------------------
+    private:
+        // A lang-locale code from ISO-693 list (e.g. "en-us" and "zh-cn" etc.).
+        Wstring m_langLocale = L"en-us";
+
+    public:
+        WstrRefer langLocale() const;
+        void setLangLocale(WstrRefer codeName);
+
+        ///////////////////////
+        // Custom Extensions //
+        ///////////////////////
+
+        //------------------------------------------------------------------
+        // Custom Messages
+        //------------------------------------------------------------------
     public:
         enum class CustomMessage
         {
@@ -328,39 +403,19 @@ namespace d14engine::uikit
             // this ensures running the update-draw loop.
             AwakeGetMessage,
 
-            // Used to help update diff-pinned UI object set.
-            UpdateRootDiffPinnedUIObjects,
-            UpdateMiscDiffPinnedUIObjects,
-
             // Used to implement non-blocking callbacks
             // for events triggered within other threads.
             HandleThreadEvent
         };
         void postCustomMessage(CustomMessage message, WPARAM wParam = 0, LPARAM lParam = 0);
 
-        //---------------------------------------------------------
-        // Diff-Pinned UI Objects
-        //---------------------------------------------------------
-        // Similar to updateDiffPinnedUIObjectsLater,
-        // we also need an "indirection" for non-root UI objects.
-        //---------------------------------------------------------
-
-    private:
-        using DiffPinnedUpdateCandidateSet =
-            std::set<WeakPtr<Panel>, std::owner_less<WeakPtr<Panel>>>;
-
-        DiffPinnedUpdateCandidateSet m_diffPinnedUpdateCandidates = {};
-
-    public:
-        void pushDiffPinnedUpdateCandidate(ShrdPtrRefer<Panel> uiobj);
-
-        //---------------------------------------------------------
+        //------------------------------------------------------------------
         // Multi-threading
-        //---------------------------------------------------------
+        //------------------------------------------------------------------
         // Calling triggerThreadEvent in a child thread will
         // trigger the callback set by registerThreadCallback
         // in the main UI thread (associated via the ThreadEventID).
-        //---------------------------------------------------------
+        //------------------------------------------------------------------
         // auto app = Application::g_app;
         // Application::ThreadID id = 14;
         //
@@ -377,8 +432,7 @@ namespace d14engine::uikit
         // {
         //     assert(data == 2);
         // }
-        //---------------------------------------------------------
-
+        //------------------------------------------------------------------
     public:
 #ifdef _WIN64
         using ThreadEventID = UINT64; // matches WPARAM

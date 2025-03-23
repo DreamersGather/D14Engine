@@ -20,7 +20,12 @@ namespace d14engine::uikit
         :
         SliderBase(rect, value, minValue, maxValue)
     {
-        m_takeOverChildrenDrawing = true;
+        // Here left blank intentionally.
+    }
+
+    void Slider::onInitializeFinish()
+    {
+        Panel::onInitializeFinish();
 
         ///////////////////////////
         // Load Cached Resources //
@@ -29,18 +34,15 @@ namespace d14engine::uikit
         handleRes.loadShadow();
 
         sideTriangleRes.loadPathGeo();
-    }
-
-    void Slider::onInitializeFinish()
-    {
-        Panel::onInitializeFinish();
 
         ///////////////////////////
         // Init Children Objects //
         ///////////////////////////
 
-        m_valueLabel = makeManagedUIObject<Label>(shared_from_this());
+        m_valueLabel = makeUIObject<Label>();
         {
+            registerUIEvents(m_valueLabel);
+
             m_valueLabel->setPrivateVisible(false);
             m_valueLabel->setPrivateEnabled(false);
 
@@ -385,5 +387,21 @@ namespace d14engine::uikit
         ss << std::fixed << std::setprecision(precision) << value;
 
         m_valueLabel->setText(ss.str());
+    }
+
+    void Slider::onStartSlidingHelper(float value)
+    {
+        SliderBase::onStartSlidingHelper(value);
+
+        m_valueLabel->setPrivateVisible(true);
+        m_valueLabel->setPrivateEnabled(true);
+    }
+
+    void Slider::onEndSlidingHelper(float value)
+    {
+        SliderBase::onEndSlidingHelper(value);
+
+        m_valueLabel->setPrivateVisible(false);
+        m_valueLabel->setPrivateEnabled(false);
     }
 }

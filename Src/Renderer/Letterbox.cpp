@@ -218,7 +218,7 @@ namespace d14engine::renderer
 
 #pragma warning(push)
 // The specific resource components of the renderer
-// are gauranteed to be valid when composition=False.
+// are guaranteed to be valid when composition=False.
 #pragma warning(disable : 26815)
 
     void Letterbox::copySceneToBackBuffer()

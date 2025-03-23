@@ -333,11 +333,13 @@ namespace d14engine::uikit
         // IDrawObject2D
         //------------------------------------------------------------------
 
-        void onRendererDrawD2d1LayerHelper(renderer::Renderer* rndr) override;
+        void onRendererUpdateObject2DHelper(Renderer* rndr) override;
 
-        void onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr) override;
+        void onRendererDrawD2d1LayerHelper(Renderer* rndr) override;
 
-        void drawD2d1ObjectPosterior(renderer::Renderer* rndr) override;
+        void onRendererDrawD2d1ObjectHelper(Renderer* rndr) override;
+
+        void drawD2d1ObjectPosterior(Renderer* rndr) override;
 
         //------------------------------------------------------------------
         // Panel

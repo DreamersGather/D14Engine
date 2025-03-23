@@ -63,9 +63,9 @@ namespace d14engine::uikit
         // Panel
         void onChangeThemeStyleHelper(const ThemeStyle& style) override;
 
-        void onGetFocusHelper() override;
+        void onGetKeyboardFocusHelper() override;
 
-        void onLoseFocusHelper() override;
+        void onLoseKeyboardFocusHelper() override;
 
         void onMouseMoveHelper(MouseMoveEvent& e) override;
 

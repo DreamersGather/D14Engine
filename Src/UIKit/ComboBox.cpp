@@ -2,7 +2,7 @@
 
 #include "UIKit/ComboBox.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 #include "Common/DirectXError.h"
 #include "Common/MathUtils/2D.h"
 
@@ -43,8 +43,8 @@ namespace d14engine::uikit
 
         loadArrowIconStrokeStyle();
 
-        m_dropDownMenu->resize(width(), m_dropDownMenu->height());
-        m_dropDownMenu->move(m_absoluteRect.left, m_absoluteRect.bottom);
+        m_dropDownMenu->setSize(width(), m_dropDownMenu->height());
+        m_dropDownMenu->setPosition(m_absoluteRect.left, m_absoluteRect.bottom);
     }
 
     void ComboBox::loadArrowIconStrokeStyle()
@@ -175,7 +175,7 @@ namespace d14engine::uikit
     {
         FlatButton::onSizeHelper(e);
 
-        m_dropDownMenu->resize(e.size.width, m_dropDownMenu->height());
+        m_dropDownMenu->setSize(e.size.width, m_dropDownMenu->height());
     }
 
     void ComboBox::onChangeThemeStyleHelper(const ThemeStyle& style)
@@ -194,9 +194,9 @@ namespace d14engine::uikit
             if (!menuOffset.has_value())
             {
                 auto offsetY = m_selected.expired() ? 0.0f : -m_selected.lock()->position().y;
-                m_dropDownMenu->move(math_utils::offset(absolutePosition(), { 0.0f, offsetY }));
+                m_dropDownMenu->setPosition(math_utils::offset(absolutePosition(), { 0.0f, offsetY }));
             }
-            else m_dropDownMenu->move(selfCoordToAbsolute(menuOffset.value()));
+            else m_dropDownMenu->setPosition(selfCoordToAbsolute(menuOffset.value()));
 
             m_dropDownMenu->setActivated(true);
         }

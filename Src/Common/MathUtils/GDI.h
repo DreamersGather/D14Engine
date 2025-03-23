@@ -4,8 +4,8 @@
 
 namespace d14engine::math_utils
 {
-    RECT rect(LONG left, LONG top, LONG width, LONG height);
-    RECT rect(const POINT& leftTop, const SIZE& size);
+    RECT rect(LONG x, LONG y, LONG width, LONG height);
+    RECT rect(const POINT& point, const SIZE& size);
 
     LONG width(const RECT& rect);
     LONG height(const RECT& rect);

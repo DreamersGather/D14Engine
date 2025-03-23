@@ -49,13 +49,13 @@ D14_SET_APP_ENTRY(mainColorfulCube)
     {
         .windowSize = { 1000, 600 }
     };
-    return Application(info).run([&](Application* app)
+    return Application(info).run([](Application* app)
     {
         app->increaseAnimationCount(); // enable renderer updating
 
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
-            ui_mainWindow->moveTopmost();
+            ui_mainWindow->bringToFront();
             ui_mainWindow->maximizeButtonEnabled = false;
 
             ui_mainWindow->caption()->transform(300.0f, 0.0f, 376.0f, 32.0f);
@@ -63,11 +63,11 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         auto ui_darkModeLabel = makeRootUIObject<Label>(L"Dark Mode");
         auto ui_darkModeSwitch = makeRootUIObject<OnOffSwitch>();
         {
-            ui_darkModeLabel->moveTopmost();
+            ui_darkModeLabel->bringToFront();
             ui_darkModeLabel->transform(10.0f, 0.0f, 120.0f, 32.0f);
 
-            ui_darkModeSwitch->moveTopmost();
-            ui_darkModeSwitch->move(130.0f, 4.0f);
+            ui_darkModeSwitch->bringToFront();
+            ui_darkModeSwitch->setPosition(130.0f, 4.0f);
 
             if (app->themeStyle().name == L"Light")
             {
@@ -91,7 +91,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         }
         auto ui_screenshot = makeRootUIObject<OutlinedButton>(L"Screenshot");
         {
-            ui_screenshot->moveTopmost();
+            ui_screenshot->bringToFront();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
             ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
@@ -127,7 +127,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         }
         auto ui_fpsLabel = makeManagedUIObject<Label>(ui_scenePanel);
         {
-            ui_fpsLabel->move(10.0f, 10.0f);
+            ui_fpsLabel->setPosition(10.0f, 10.0f);
             ui_fpsLabel->hardAlignment.vert = Label::VertAlignment::Top;
 
             ui_fpsLabel->f_onRendererUpdateObject2DAfter = [](Panel* p, Renderer* rndr)
@@ -540,7 +540,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
                     if (e.vkey == VK_TAB && e.state.pressed() && !wk_next.expired())
                     {
                         auto sh_target = e.SHIFT() ? wk_prev.lock() : wk_next.lock();
-                        app->focusUIObject(sh_target);
+                        app->focusUIObject(Application::FocusType::Keyboard, sh_target);
 
                         auto sh_input = std::dynamic_pointer_cast<RawTextBox>(sh_target);
                         if (sh_input != nullptr)
@@ -562,7 +562,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             ui_sideLayout->addElement(ui_cameraTitle, geoInfo);
         }
         FocusGroup cameraDataFocusGroup = {};
-        auto createCameraDataEditor = [&](WstrParam name, size_t offsetY, wchar_t which, OptParam<XMFLOAT3> invalid)
+        auto createCameraDataEditor = [&](WstrRefer name, size_t offsetY, wchar_t which, OptRefer<XMFLOAT3> invalid)
         {
             auto ui_cameraData = makeUIObject<Label>(name);
             {
@@ -622,7 +622,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             {
                 auto ui_cameraData_ = makeUIObject<RawTextBox>(5.0f);
                 {
-                    ui_cameraData_->resize(100.0f, 40.0f);
+                    ui_cameraData_->setSize(100.0f, 40.0f);
 
                     auto syncCameraDataComponent =
                     [=, wk_camera = (WeakPtr<Camera>)camera]
@@ -674,7 +674,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
                             syncCameraDataComponent((RawTextBox*)p, component);
                         }
                     };
-                    ui_cameraData_->f_onLoseFocus = [=](Panel* p)
+                    ui_cameraData_->f_onLoseKeyboardFocus = [=](Panel* p)
                     {
                         updateCameraData((RawTextBox*)p, component);
                     };
@@ -710,7 +710,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             ui_sideLayout->addElement(ui_objectTitle, geoInfo);
         }
         FocusGroup objectDataFocusGroup = {};
-        auto createObjectDataEditor = [&](WstrParam name, size_t offsetY, size_t index, OptParam<XMFLOAT3> invalid)
+        auto createObjectDataEditor = [&](WstrRefer name, size_t offsetY, size_t index, OptRefer<XMFLOAT3> invalid)
         {
             auto ui_objectData = makeUIObject<Label>(name);
             {
@@ -788,7 +788,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
             {
                 auto ui_objectData_ = makeUIObject<RawTextBox>(5.0f);
                 {
-                    ui_objectData_->resize(100.0f, 40.0f);
+                    ui_objectData_->setSize(100.0f, 40.0f);
 
                     XMFLOAT3* pData = nullptr;
                     if (index < objectGeometry->size())
@@ -819,7 +819,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
                     geoInfo.axis.y = { offsetY, 1 };
                     ui_sideLayout->addElement(ui_objectData_, geoInfo);
 
-                    ui_objectData_->f_onLoseFocus = [=](Panel* p)
+                    ui_objectData_->f_onLoseKeyboardFocus = [=](Panel* p)
                     {
                         updateObjectData((RawTextBox*)p, component);
                     };

@@ -2,7 +2,7 @@
 
 #include "UIKit/ViewItem.h"
 
-#include "Common/CppLangUtils/PointerEquality.h"
+#include "Common/CppLangUtils/PointerCompare.h"
 #include "Common/MathUtils/2D.h"
 #include "Common/RuntimeError.h"
 
@@ -20,8 +20,6 @@ namespace d14engine::uikit
         Panel(rect, resource_utils::solidColorBrush()),
         m_content(content)
     {
-        m_takeOverChildrenDrawing = true;
-
         ///////////////////////////
         // Load Cached Resources //
         ///////////////////////////
@@ -44,7 +42,7 @@ namespace d14engine::uikit
         // Init Children Objects //
         ///////////////////////////
 
-        addUIObject(m_content);
+        registerUIEvents(m_content);
 
         if (m_content) m_content->transform(selfCoordRect());
     }
@@ -66,10 +64,10 @@ namespace d14engine::uikit
     {
         if (!cpp_lang_utils::isMostDerivedEqual(content, m_content))
         {
-            removeUIObject(m_content);
+            unregisterUIEvents(m_content);
 
             m_content = content;
-            addUIObject(m_content);
+            registerUIEvents(m_content);
 
             if (m_content) m_content->transform(selfCoordRect());
         }

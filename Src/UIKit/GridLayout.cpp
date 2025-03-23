@@ -104,7 +104,7 @@ namespace d14engine::uikit
             float offsetX = m_horzMargin + (width - elem->width()) * 0.5f;
             float offsetY = m_vertMargin + (height - elem->height()) * 0.5f;
 
-            elem->move
+            elem->setPosition
             (
                 std::round(geoInfo.axis.x.offset * m_horzCellDelta + offsetX),
                 std::round(geoInfo.axis.y.offset * m_vertCellDelta + offsetY)

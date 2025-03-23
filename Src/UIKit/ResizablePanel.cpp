@@ -20,7 +20,7 @@ namespace d14engine::uikit
         :
         Panel(rect, brush, bitmap)
     {
-        appEventReactability.focus.get = true;
+        // Here left blank intentionally.
     }
 
     void ResizablePanel::onInitializeFinish()
@@ -42,6 +42,8 @@ namespace d14engine::uikit
         /* endCap   */ D2D1_CAP_STYLE_ROUND,
         /* dashCap  */ D2D1_CAP_STYLE_ROUND
         );
+        prop.dashStyle = D2D1_DASH_STYLE_DASH;
+
         auto& style = strokeStyle;
 
         THROW_IF_FAILED(factory->CreateStrokeStyle
@@ -81,12 +83,22 @@ namespace d14engine::uikit
 
     void ResizablePanel::onStartResizingHelper()
     {
-        forceGlobalExclusiveFocusing = true;
+        THROW_IF_NULL(Application::g_app);
+
+        enableChildrenMouseMoveEvent = false;
+
+        auto focus = Application::FocusType::Mouse;
+        Application::g_app->focusUIObject(focus, shared_from_this());
     }
 
     void ResizablePanel::onEndResizingHelper()
     {
-        forceGlobalExclusiveFocusing = false;
+        THROW_IF_NULL(Application::g_app);
+
+        enableChildrenMouseMoveEvent = true;
+
+        auto focus = Application::FocusType::Mouse;
+        Application::g_app->focusUIObject(focus, nullptr);
     }
 
     void ResizablePanel::setResizable(bool value)
@@ -504,11 +516,7 @@ namespace d14engine::uikit
                 Application::g_app->cursor()->setIcon(Cursor::VertSize);
             }
         }
-        if (isSizing())
-        {
-            m_skipDeliverNextMouseMoveEventToChildren = true;
-            if (enableDynamicSizing) transform(m_sizingRect);
-        }
+        if (isSizing() && enableDynamicSizing) transform(m_sizingRect);
     }
 
     void ResizablePanel::onMouseLeaveHelper(MouseMoveEvent& e)
@@ -520,7 +528,7 @@ namespace d14engine::uikit
 
     void ResizablePanel::onMouseLeaveWrapper(MouseMoveEvent& e)
     {
-        if (!forceGlobalExclusiveFocusing)
+        if (!holdMouseFocus())
         {
             m_isLeftHover = m_isTopHover =
             m_isRightHover = m_isBottomHover = false;

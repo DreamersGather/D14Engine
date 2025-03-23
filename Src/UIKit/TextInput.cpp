@@ -26,9 +26,10 @@ namespace d14engine::uikit
         }
         else // lose focus when disabled
         {
-            if (isFocused())
+            if (holdKeyboardFocus())
             {
-                Application::g_app->focusUIObject(nullptr);
+                auto focus = Application::FocusType::Keyboard;
+                Application::g_app->focusUIObject(focus, nullptr);
             }
             m_state = State::Disabled;
         }
@@ -43,7 +44,7 @@ namespace d14engine::uikit
         auto deltaSecs = (float)rndr->timer()->deltaSecs();
         float totalDistance = width() - 2.0f * roundRadiusX;
 
-        if (isFocused() && animSetting.enabled && totalDistance > 0.0f)
+        if (holdKeyboardFocus() && animSetting.enabled && totalDistance > 0.0f)
         {
             m_dynamicBottomLineLength = animation_utils::motionAccelUniformDecel
                 (m_dynamicBottomLineLength, deltaSecs, totalDistance,
@@ -107,16 +108,9 @@ namespace d14engine::uikit
         }
     }
 
-    void TextInput::onChangeThemeStyleHelper(const ThemeStyle& style)
+    void TextInput::onGetKeyboardFocusHelper()
     {
-        RawTextInput::onChangeThemeStyleHelper(style);
-
-        appearance().changeTheme(style.name);
-    }
-
-    void TextInput::onGetFocusHelper()
-    {
-        RawTextInput::onGetFocusHelper();
+        RawTextInput::onGetKeyboardFocusHelper();
 
         increaseAnimationCount();
 
@@ -128,9 +122,9 @@ namespace d14engine::uikit
         }
     }
 
-    void TextInput::onLoseFocusHelper()
+    void TextInput::onLoseKeyboardFocusHelper()
     {
-        RawTextInput::onLoseFocusHelper();
+        RawTextInput::onLoseKeyboardFocusHelper();
 
         decreaseAnimationCount();
 
@@ -157,5 +151,23 @@ namespace d14engine::uikit
         {
             m_state = State::Idle;
         }
+    }
+
+    void TextInput::onMouseButtonHelper(MouseButtonEvent& e)
+    {
+        RawTextInput::onMouseButtonHelper(e);
+
+        if (e.state.leftDown())
+        {
+            auto focus = Application::FocusType::Keyboard;
+            Application::g_app->focusUIObject(focus, shared_from_this());
+        }
+    }
+
+    void TextInput::onChangeThemeStyleHelper(const ThemeStyle& style)
+    {
+        RawTextInput::onChangeThemeStyleHelper(style);
+
+        appearance().changeTheme(style.name);
     }
 }

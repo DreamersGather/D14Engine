@@ -23,15 +23,15 @@ namespace d14engine::uikit
     {
         roundRadiusX = roundRadiusY = roundRadius;
 
-        m_takeOverChildrenDrawing = true;
-        m_skipChangeChildrenThemeStyle = true;
-
         m_placeholder = makeUIObject<Label>();
+        m_placeholder->enableChangeThemeStyleUpdate = false;
     }
 
     void RawTextInput::onInitializeFinish()
     {
         LabelArea::onInitializeFinish();
+
+        registerUIEvents(m_placeholder);
 
         if (multiline)
         {
@@ -258,7 +258,7 @@ namespace d14engine::uikit
             {
                 auto placeholderTrans = D2D1::Matrix3x2F::Translation
                 (
-                    - m_visibleTextRect.left, - m_visibleTextRect.top
+                    -m_placeholder->absoluteX(), -m_placeholder->absoluteY()
                 );
                 rndr->d2d1DeviceContext()->SetTransform(placeholderTrans);
 
@@ -379,7 +379,7 @@ namespace d14engine::uikit
 
         THROW_IF_NULL(Application::g_app);
 
-        if (isFocused() && e.state.pressed())
+        if (holdKeyboardFocus() && e.state.pressed())
         {
             switch (e.vkey)
             {
@@ -422,7 +422,8 @@ namespace d14engine::uikit
             }
             case VK_ESCAPE:
             {
-                Application::g_app->focusUIObject(nullptr);
+                auto focus = Application::FocusType::Keyboard;
+                Application::g_app->focusUIObject(focus, nullptr);
                 return; // Prevent the indicator from blinking when deactivating.
             }
             case VK_END:

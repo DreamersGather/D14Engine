@@ -121,5 +121,13 @@ namespace d14engine::uikit
         //------------------------------------------------------------------
 
         void onValueChangeHelper(float value) override;
+
+        //------------------------------------------------------------------
+        // SliderBase
+        //------------------------------------------------------------------
+
+        void onStartSlidingHelper(float value) override;
+
+        void onEndSlidingHelper(float value) override;
     };
 }

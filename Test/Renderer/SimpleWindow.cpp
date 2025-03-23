@@ -19,7 +19,7 @@ int wmain(int argc, wchar_t* argv[])
     try // D14Engine - SimpleWindow @ Renderer
     {
         // Place this setting at the very beginning to ensure that the MessageBox
-        // with relevant information for initialization errors also supports HiDPI.
+        // with relevant information of initialization errors also supports HiDPI.
         SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
         Wstring exePath(MAX_PATH, 0);

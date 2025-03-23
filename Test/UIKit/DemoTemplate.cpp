@@ -20,39 +20,33 @@ using namespace d14engine::uikit;
 
 D14_SET_APP_ENTRY(mainDemoTemplate)
 {
-    Application::CreateInfo info = {};
-    if (argc >= 2 && lstrcmp(argv[1], L"HighDPI") == 0)
+    Application::CreateInfo info =
     {
-        info.dpi = 192.0f;
-    }
-    else info.dpi = 96.0f;
-    info.win32WindowRect = { 0, 0, 800, 600 };
-
-    BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC;
-
-    return Application(argc, argv, info).run([&](Application* app)
+        .windowSize = { 800, 600 }
+    };
+    return Application(info).run([](Application* app)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(D14_MAINWINDOW_TITLE);
         {
-            ui_mainWindow->moveTopmost();
-            ui_mainWindow->isMaximizeEnabled = false;
+            ui_mainWindow->bringToFront();
+            ui_mainWindow->maximizeButtonEnabled = false;
 
             ui_mainWindow->caption()->transform(300.0f, 0.0f, 376.0f, 32.0f);
         }
         auto ui_darkModeLabel = makeRootUIObject<Label>(L"Dark Mode");
         auto ui_darkModeSwitch = makeRootUIObject<OnOffSwitch>();
         {
-            ui_darkModeLabel->moveTopmost();
+            ui_darkModeLabel->bringToFront();
             ui_darkModeLabel->transform(10.0f, 0.0f, 120.0f, 32.0f);
 
-            ui_darkModeSwitch->moveTopmost();
-            ui_darkModeSwitch->move(130.0f, 4.0f);
+            ui_darkModeSwitch->bringToFront();
+            ui_darkModeSwitch->setPosition(130.0f, 4.0f);
 
-            if (app->themeStyle().mode == L"Light")
+            if (app->themeStyle().name == L"Light")
             {
-                ui_darkModeSwitch->setOnOffState(OnOffSwitch::OFF);
+                ui_darkModeSwitch->setOnOffState(OnOffSwitch::Off);
             }
-            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::ON);
+            else ui_darkModeSwitch->setOnOffState(OnOffSwitch::On);
 
             app->f_onSystemThemeStyleChange = [app]
             (const Application::ThemeStyle& style)
@@ -63,21 +57,21 @@ D14_SET_APP_ENTRY(mainDemoTemplate)
             (OnOffSwitch::StatefulObject* obj, OnOffSwitch::StatefulObject::Event& e)
             {
                 Application::ThemeStyle style = app->themeStyle();
-                if (e.on()) style.mode = L"Dark";
-                else if (e.off()) style.mode = L"Light";
+                if (e.on()) style.name = L"Dark";
+                else if (e.off()) style.name = L"Light";
                 app->setThemeStyle(style);
             };
         }
         auto ui_screenshot = makeRootUIObject<OutlinedButton>(L"Screenshot");
         {
-            ui_screenshot->moveTopmost();
+            ui_screenshot->bringToFront();
             ui_screenshot->transform(200.0f, 4.0f, 100.0f, 24.0f);
-            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/Normal/12"));
+            ui_screenshot->content()->label()->setTextFormat(D14_FONT(L"Default/12"));
 
             ui_screenshot->f_onMouseButtonRelease = [app]
             (ClickablePanel* clkp, ClickablePanel::Event& e)
             {
-                auto image = app->screenshot();
+                auto image = app->windowshot();
                 CreateDirectory(L"Screenshots", nullptr);
                 bitmap_utils::saveBitmap(image.Get(), D14_SCREENSHOT_PATH);
             };

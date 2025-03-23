@@ -59,23 +59,23 @@ namespace d14engine::uikit
         Event be = {};
         be.cursorPoint = e.cursorPoint;
 
-        bool leftDown = e.state.leftDown() || (captureDoubleClick && e.state.leftDblclk());
-        bool rightDown = e.state.rightDown() || (captureDoubleClick && e.state.rightDblclk());
-        bool middleDown = e.state.middleDown() || (captureDoubleClick && e.state.middleDblclk());
+        bool leftPressed = e.state.leftDown() || (captureDoubleClick && e.state.leftDblclk());
+        bool rightPressed = e.state.rightDown() || (captureDoubleClick && e.state.rightDblclk());
+        bool middlePressed = e.state.middleDown() || (captureDoubleClick && e.state.middleDblclk());
 
-        if (leftDown || rightDown || middleDown)
+        if (leftPressed || rightPressed || middlePressed)
         {
-            if (leftDown)
+            if (leftPressed)
             {
                 m_hasLeftPressed = true;
                 be.flag = Event::Flag::Left;
             }
-            else if (rightDown)
+            else if (rightPressed)
             {
                 m_hasRightPressed = true;
                 be.flag = Event::Flag::Right;
             }
-            else if (middleDown)
+            else if (middlePressed)
             {
                 m_hasMiddlePressed = true;
                 be.flag = Event::Flag::Middle;
