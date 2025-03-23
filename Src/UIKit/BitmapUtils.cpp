@@ -7,7 +7,6 @@
 #include "Common/ResourcePack.h"
 
 #include "Renderer/GraphUtils/Bitmap.h"
-#include "Renderer/Renderer.h"
 
 #include "UIKit/Application.h"
 #include "UIKit/PlatformUtils.h"
