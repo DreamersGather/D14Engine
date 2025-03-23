@@ -240,7 +240,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
                         fontWeightArray[w] + L"/" +
                         std::to_wstring(fontSize);
 
-                    auto factory = app->dx12Renderer()->dwriteFactory();
+                    auto factory = app->renderer()->dwriteFactory();
                     THROW_IF_FAILED(factory->CreateTextFormat(
                         fontNameArray[n].c_str(),
                         nullptr,
@@ -345,7 +345,7 @@ D14_SET_APP_ENTRY(mainVariousFonts)
             ]
             (ComboBox* cb, IconLabel* content)
             {
-                app->dx12Renderer()->setTextAntialiasMode(strModeMap.at(content->label()->text()));
+                app->renderer()->setTextAntialiasMode(strModeMap.at(content->label()->text()));
             };
         }
         auto ui_fontSizeSlider = makeUIObject<HorzSlider>();

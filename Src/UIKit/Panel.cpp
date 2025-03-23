@@ -759,7 +759,7 @@ namespace d14engine::uikit
 
         auto& app = Application::g_app;
 
-        app->dx12Renderer()->waitGpuCommand();
+        app->renderer()->waitGpuCommand();
 
         bool isReleased = true;
 
@@ -793,7 +793,7 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        Application::g_app->dx12Renderer()->waitGpuCommand();
+        Application::g_app->renderer()->waitGpuCommand();
 
         if (f_onReleaseUIObject)
         {

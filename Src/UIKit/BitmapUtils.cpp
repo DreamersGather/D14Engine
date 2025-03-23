@@ -65,7 +65,7 @@ namespace d14engine::uikit::bitmap_utils
 
         THROW_IF_FAILED(factory->CreateImageEncoder
         (
-        /* pD2DDevice        */ Application::g_app->dx12Renderer()->d2d1Device(),
+        /* pD2DDevice        */ Application::g_app->renderer()->d2d1Device(),
         /* ppWICImageEncoder */ &imageEncoder
         ));
         auto pixSize = bitmap->GetPixelSize();
@@ -106,7 +106,7 @@ namespace d14engine::uikit::bitmap_utils
         ComPtr<ID2D1Bitmap1> bitmap = {};
         // Here we assume the pixel format is R8G8B8A8/B8G8R8A8 for simplicity,
         // so the pitch (byte count of each scanline) is set to (4 * width).
-        THROW_IF_FAILED(Application::g_app->dx12Renderer()->d2d1DeviceContext()->CreateBitmap
+        THROW_IF_FAILED(Application::g_app->renderer()->d2d1DeviceContext()->CreateBitmap
         (
         /* size             */ { width, height },
         /* sourceData       */ data,
@@ -133,7 +133,7 @@ namespace d14engine::uikit::bitmap_utils
         /* dpiY          */ dpi
         );
         ComPtr<ID2D1Bitmap1> bitmap = {};
-        THROW_IF_FAILED(Application::g_app->dx12Renderer()->d2d1DeviceContext()->CreateBitmapFromWicBitmap
+        THROW_IF_FAILED(Application::g_app->renderer()->d2d1DeviceContext()->CreateBitmapFromWicBitmap
         (
         /* wicBitmapSource  */ source.Get(),
         /* bitmapProperties */ props,
@@ -170,7 +170,7 @@ namespace d14engine::uikit::bitmap_utils
         /* dpiY          */ dpi
         );
         ComPtr<ID2D1Bitmap1> bitmap = {};
-        THROW_IF_FAILED(Application::g_app->dx12Renderer()->d2d1DeviceContext()->CreateBitmapFromWicBitmap
+        THROW_IF_FAILED(Application::g_app->renderer()->d2d1DeviceContext()->CreateBitmapFromWicBitmap
         (
         /* wicBitmapSource  */ source.Get(),
         /* bitmapProperties */ props,

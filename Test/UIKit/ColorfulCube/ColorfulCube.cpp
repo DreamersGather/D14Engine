@@ -142,7 +142,7 @@ D14_SET_APP_ENTRY(mainColorfulCube)
         }
         // Initialize necessary graphics structures of the colorful cube.
 
-        auto rndr = app->dx12Renderer();
+        auto rndr = app->renderer();
         auto device = rndr->d3d12Device();
         auto cmdList = rndr->cmdList();
 

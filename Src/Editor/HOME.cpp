@@ -31,7 +31,7 @@ D14_SET_APP_ENTRY(mainEditor)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(L"D14Engine - Editor");
         {
-            ui_mainWindow->moveTopmost();
+            ui_mainWindow->bringToFront();
 
             ui_mainWindow->setCaptionPanelHeight(40.0f);
             ui_mainWindow->setDecorativeBarHeight(2.0f);
@@ -79,7 +79,7 @@ D14_SET_APP_ENTRY(mainEditor)
                 w->registerDrawObjects();
                 w->registerApplicationEvents();
 
-                w->moveTopmost();
+                w->bringToFront();
 
                 w->button1Enabled = false;
                 w->button2Enabled = false;

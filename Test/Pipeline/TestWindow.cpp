@@ -33,7 +33,7 @@ D14_SET_APP_ENTRY(mainTestWindow)
 
     return Application(argc, argv, info).run([&](Application* app)
     {
-        app->dx12Renderer()->dxgiFactoryInfo().setting.setAllowTearing(true);
+        app->renderer()->dxgiFactoryInfo().setting.setAllowTearing(true);
 
         app->win32WindowSettings.geometry.minTrackSize = { 1280, 756 };
         app->win32WindowSettings.sizingFrame.frameWidth = 6;

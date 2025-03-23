@@ -25,7 +25,7 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto rndr = Application::g_app->dx12Renderer();
+        auto rndr = Application::g_app->renderer();
 
         auto pixSize = math_utils::roundu(
             platform_utils::scaledByDpi(size));

@@ -1,6 +1,5 @@
 ﻿#include "Common/Precompile.h"
 
-#include "Common/MathUtils/2D.h"
 #include "Common/MathUtils/GDI.h"
 
 #include "UIKit/AppEntry.h"
@@ -21,16 +20,10 @@ using namespace d14engine::uikit;
 
 D14_SET_APP_ENTRY(mainWidgetsGallery)
 {
-    Application::CreateInfo info = {};
-    if (argc >= 2 && lstrcmp(argv[1], L"HighDPI") == 0)
+    Application::CreateInfo info =
     {
-        info.dpi = 192.0f;
-    }
-    else info.dpi = 96.0f;
-    info.windowSize = { 1280, 720 };
-
-    BitmapObject::g_interpolationMode = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC;
-
+        .windowSize = { 1280, 720 }
+    };
     return Application(info).run([&](Application* app)
     {
         auto ui_mainWindow = makeRootUIObject<MainWindow>(L"D14Engine - WidgetsGallery @ UIKit");
@@ -38,11 +31,11 @@ D14_SET_APP_ENTRY(mainWidgetsGallery)
             ui_mainWindow->setCaptionPanelHeight(40.0f);
             ui_mainWindow->setDecorativeBarHeight(2.0f);
 
-            ui_mainWindow->moveTopmost();
+            ui_mainWindow->bringToFront();
         }
         auto ui_centerLayout = makeUIObject<ConstraintLayout>();
         {
-            ui_mainWindow->setCenterUIObject(ui_centerLayout);
+            ui_mainWindow->setContent(ui_centerLayout);
         }
         auto ui_tabGroup = makeUIObject<TabGroup>();
         {
@@ -57,7 +50,7 @@ D14_SET_APP_ENTRY(mainWidgetsGallery)
             ui_centerLayout->addElement(ui_tabGroup, geoInfo);
 
 #define SET_CARD_SIZE(State, Width, Height) \
-    ui_tabGroup->getAppearance().tabBar.card.main \
+    ui_tabGroup->appearance().tabBar.card.main \
     [(size_t)TabGroup::CardState::State].geometry.size = { Width, Height }
 
             SET_CARD_SIZE(Dormant, 250.0f,  32.0f);
@@ -65,16 +58,16 @@ D14_SET_APP_ENTRY(mainWidgetsGallery)
             SET_CARD_SIZE(Active,  266.0f,  40.0f);
 
 #undef SET_CARD_SIZE
-            ui_tabGroup->activeCard.loadMaskBitmap();
+            ui_tabGroup->activeCard.loadMask();
             ui_tabGroup->activeCard.loadPathGeo();
 
-            auto& barAppear = ui_tabGroup->getAppearance().tabBar;
+            auto& barAppear = ui_tabGroup->appearance().tabBar;
 
             barAppear.geometry.height = 40.0f;
             barAppear.separator.geometry.size.height = 24.0f;
             barAppear.moreCards.control.button.geometry.offset.y = 7.0f;
         }
-        auto appendTabPage = [&](WstrParam title)
+        auto appendTabPage = [&](WstrRefer title)
         {
             auto ui_caption = makeUIObject<TabCaption>(title);
             auto ui_content = makeUIObject<ConstraintLayout>();

@@ -41,7 +41,7 @@ void createGalleryTabPage(ConstraintLayout* page)
     auto ui_searcher = makeUIObject<Panel>();
     auto ui_searchBox = makeManagedUIObject<TextBox>(ui_searcher, 5.0f);
     {
-        ui_searcher->resize(302.0f, 40.0f);
+        ui_searcher->setSize(302.0f, 40.0f);
 
         ui_searcher->forceSingleMouseEnterLeaveEvent = false;
 
@@ -52,41 +52,19 @@ void createGalleryTabPage(ConstraintLayout* page)
 
         ui_searchBox->transform(ui_searcher->selfCoordRect());
 
-        ui_searchBox->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_searchBox->setTextFormat(D14_FONT(L"Default/14"));
         ui_searchBox->setVisibleTextRect({ 5.0f, 8.0f, 212.0f, 32.0f });
 
         auto& ui_hintLabel = ui_searchBox->placeholder();
         ui_hintLabel->setText(L"Search...");
-        ui_hintLabel->setTextFormat(D14_FONT(L"Default/Normal/14"));
+        ui_hintLabel->setTextFormat(D14_FONT(L"Default/14"));
         THROW_IF_FAILED(ui_hintLabel->textLayout()->SetFontStyle(DWRITE_FONT_STYLE_ITALIC, { 0, UINT32_MAX }));
 
-        auto keepSearchBoxFocus =
-        [
-            wk_searchBox = (WeakPtr<TextBox>)ui_searchBox
-        ]
-        (Panel* p, MouseMoveEvent& e)
-        {
-            if (!wk_searchBox.expired())
-            {
-                wk_searchBox.lock()->appEventReactability.focus.lose = false;
-            }
-        };
-        auto restoreSearchBoxFocus =
-        [
-            wk_searchBox = (WeakPtr<TextBox>)ui_searchBox
-        ]
-        (Panel* p, MouseMoveEvent& e)
-        {
-            if (!wk_searchBox.expired())
-            {
-                wk_searchBox.lock()->appEventReactability.focus.lose = true;
-            }
-        };
         auto ui_clearButton = makeManagedUIObject<FlatButton>(
             ui_searcher, IconLabel::iconExpandedLayout(), 5.0f);
 
         ui_clearButton->transform(224.0f, 8.0f, 30.0f, 24.0f);
-        ui_clearButton->moveAbovePeerObject(ui_searchBox.get());
+        ui_clearButton->reorderAbovePeerObject(ui_searchBox.get());
 
         auto clearIconLight = loadBitmap(L"SearchBox/Light/Clear.png");
         auto clearIconDark = loadBitmap(L"SearchBox/Dark/Clear.png");
@@ -101,8 +79,6 @@ void createGalleryTabPage(ConstraintLayout* page)
             content->icon.customSize = convert(content->icon.bitmap.data->GetPixelSize());
             content->updateLayout();
         };
-        ui_clearButton->f_onMouseEnter = keepSearchBoxFocus;
-        ui_clearButton->f_onMouseLeave = restoreSearchBoxFocus;
         ui_clearButton->f_onMouseButtonRelease =
         [
             wk_searchBox = (WeakPtr<TextBox>)ui_searchBox
@@ -121,7 +97,7 @@ void createGalleryTabPage(ConstraintLayout* page)
             ui_searcher, IconLabel::iconExpandedLayout(), 5.0f);
 
         ui_searchButton->transform(260.0f, 8.0f, 30.0f, 24.0f);
-        ui_searchButton->moveAbovePeerObject(ui_searchBox.get());
+        ui_searchButton->reorderAbovePeerObject(ui_searchBox.get());
 
         auto searchIconLight = loadBitmap(L"SearchBox/Light/Search.png");
         auto searchIconDark = loadBitmap(L"SearchBox/Dark/Search.png");
@@ -136,8 +112,6 @@ void createGalleryTabPage(ConstraintLayout* page)
             content->icon.customSize = convert(content->icon.bitmap.data->GetPixelSize());
             content->updateLayout();
         };
-        ui_searchButton->f_onMouseEnter = keepSearchBoxFocus;
-        ui_searchButton->f_onMouseLeave = restoreSearchBoxFocus;
         ui_searchButton->f_onMouseButtonRelease =
         [
             wk_searchBox = (WeakPtr<TextBox>)ui_searchBox
@@ -158,7 +132,7 @@ void createGalleryTabPage(ConstraintLayout* page)
     using CategoryPageMap = std::unordered_map<Wstring, SharedPtr<ConstraintLayout>>;
     auto categoryPages = std::make_shared<CategoryPageMap>();
     {
-        ui_sideCategory->deltaPixelsPerScroll.vert = 40.0f;
+        ui_sideCategory->deltaDipsPerScroll.vert = 40.0f;
 
         ui_sideCategory->selectMode = TreeView::SelectMode::Single;
 
@@ -199,7 +173,7 @@ void createGalleryTabPage(ConstraintLayout* page)
     }
     auto ui_contentLayout = makeUIObject<ConstraintLayout>();
     {
-        auto& appear = ui_contentLayout->getAppearance();
+        auto& appear = ui_contentLayout->appearance();
 
         appear.background.opacity = 1.0f;
         appear.stroke.width = 2.0f;
@@ -231,7 +205,7 @@ void createGalleryTabPage(ConstraintLayout* page)
     }
     auto ui_topTitle = makeUIObject<Label>(L"Guidance");
     {
-        ui_topTitle->setTextFormat(D14_FONT(L"Default/SemiBold/22"));
+        ui_topTitle->setTextFormat(D14_FONT(L"Default/22"));
         THROW_IF_FAILED(ui_topTitle->textLayout()->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR));
 
         ConstraintLayout::GeometryInfo geoInfo = {};
@@ -241,7 +215,7 @@ void createGalleryTabPage(ConstraintLayout* page)
     }
     auto ui_bottomView = makeUIObject<ScrollView>(categoryPages->at(L"Guidance"));
     {
-        ui_bottomView->deltaPixelsPerScroll.vert = 90.0f;
+        ui_bottomView->deltaDipsPerScroll.vert = 90.0f;
 
         ConstraintLayout::GeometryInfo geoInfo = {};
 
@@ -261,7 +235,7 @@ void createGalleryTabPage(ConstraintLayout* page)
             if (!content.expired())
             {
                 auto pContent = content.lock();
-                pContent->resize(e.size.width, pContent->height());
+                pContent->setSize(e.size.width, pContent->height());
             }
         };
     }
@@ -328,7 +302,7 @@ void createGalleryTabPage(ConstraintLayout* page)
                     if (!wk_bottomView.expired())
                     {
                         auto sh_bottomView = wk_bottomView.lock();
-                        pageItor->second->resize(sh_bottomView->width(), pageItor->second->height());
+                        pageItor->second->setSize(sh_bottomView->width(), pageItor->second->height());
                         sh_bottomView->setContent(pageItor->second);
                     }
                 }

@@ -14,9 +14,9 @@ SharedPtr<TreeViewItem> createTreeViewPage(ConstraintLayout* page)
 {
     // Initialize and populate the widget page with detailed content.
     {
-        page->resize(920.0f, 1000.0f);
+        page->setSize(920.0f, 1000.0f);
 
-        auto& appear = page->getAppearance();
+        auto& appear = page->appearance();
         appear.background.opacity = 1.0f;
 
         auto& light = appear.g_themeData.at(L"Light");

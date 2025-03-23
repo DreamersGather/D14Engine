@@ -11,7 +11,7 @@ d14engine::SharedPtr<d14engine::uikit::TreeViewItem> createPageTemplate
 D2D1_SIZE_F convert(const D2D1_SIZE_U& size);
 D2D1_SIZE_U convert(const D2D1_SIZE_F& size);
 
-d14engine::ComPtr<ID2D1Bitmap1> loadBitmap(d14engine::WstrParam bitmapPath);
+d14engine::ComPtr<ID2D1Bitmap1> loadBitmap(d14engine::WstrRefer bitmapPath);
 
 // Type: MASTER, SLAVER
 // Name: Category Name
@@ -34,12 +34,12 @@ auto item = makeUIObject<TreeViewItem>( \
     IconLabel::compactLayout(L#Name, {}, _ICON_PADDING_FOR_SIZE_##IconSize));
 
 #define _CONFIGURE_CATEGORY_ITEM_ARROW_MASTER \
-item->getAppearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Folded] = \
+item->appearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Folded] = \
 { \
     { { 16.0f, 12.0f }, { 24.0f, 20.0f } }, /* line 0 */ \
     { { 24.0f, 20.0f }, { 16.0f, 28.0f } }  /* line 1 */ \
 }; \
-item->getAppearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Unfolded] = \
+item->appearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Unfolded] = \
 { \
     { { 13.0f, 16.0f }, { 20.0f, 24.0f } }, /* line 0 */ \
     { { 20.0f, 24.0f }, { 27.0f, 16.0f } }  /* line 1 */ \
@@ -47,9 +47,9 @@ item->getAppearance().arrow.geometry[(size_t)TreeViewItemState::Flag::Unfolded] 
 #define _CONFIGURE_CATEGORY_ITEM_ARROW_SLAVER
 
 #define _CONFIGURE_CATEGORY_ITEM_CONTENT(Id) \
-item->resize(item->width(), 40.0f); \
+item->setSize(item->width(), 40.0f); \
 auto& label = item->getContent<IconLabel>().lock()->label(); \
-label->setTextFormat(D14_FONT(L"Default/Normal/14")); \
+label->setTextFormat(D14_FONT(L"Default/14")); \
 auto icon1 = loadBitmap(L"SideCategory/Light/" L#Id L".png"); \
 auto icon2 = loadBitmap(L"SideCategory/Dark/" L#Id L".png"); \
 item->f_onChangeThemeStyle = [=](Panel* p, const Panel::ThemeStyle& style) \

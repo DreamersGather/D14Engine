@@ -23,7 +23,7 @@ D2D1_SIZE_U convert(const D2D1_SIZE_F& size)
     return { (UINT32)size.width, (UINT32)size.height };
 }
 
-ComPtr<ID2D1Bitmap1> loadBitmap(WstrParam bitmapPath)
+ComPtr<ID2D1Bitmap1> loadBitmap(WstrRefer bitmapPath)
 {
     return bitmap_utils::loadBitmap(L"Test/UIKit/WidgetsGallery/Images/" + bitmapPath);
 }

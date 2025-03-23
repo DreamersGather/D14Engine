@@ -206,7 +206,7 @@ do { \
             ((m_textLayout != nullptr) ? m_textLayout->GetMaxHeight() : height());
 
         ComPtr<IDWriteTextLayout> textLayout = {};
-        THROW_IF_FAILED(Application::g_app->dx12Renderer()->dwriteFactory()->CreateTextLayout
+        THROW_IF_FAILED(Application::g_app->renderer()->dwriteFactory()->CreateTextLayout
         (
         /* string       */ string,
         /* stringLength */ stringLength,

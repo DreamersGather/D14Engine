@@ -63,7 +63,7 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto factory = Application::g_app->dx12Renderer()->d2d1Factory();
+        auto factory = Application::g_app->renderer()->d2d1Factory();
 
         auto prop = D2D1::StrokeStyleProperties
         (

@@ -23,7 +23,7 @@ namespace d14engine::uikit::resource_utils
 
         FontDetailSet fonts = {};
 
-        auto factory = Application::g_app->dx12Renderer()->dwriteFactory();
+        auto factory = Application::g_app->renderer()->dwriteFactory();
 
         /////////////////////
         // Font Collection //
@@ -93,7 +93,7 @@ namespace d14engine::uikit::resource_utils
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto factory = Application::g_app->dx12Renderer()->dwriteFactory();
+        auto factory = Application::g_app->renderer()->dwriteFactory();
 
         auto& textFormat = (g_textFormats[name] = nullptr);
 
@@ -144,7 +144,7 @@ namespace d14engine::uikit::resource_utils
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto context = Application::g_app->dx12Renderer()->d2d1DeviceContext();
+        auto context = Application::g_app->renderer()->d2d1DeviceContext();
 
         ///////////////////////
         // Solid Color Brush //
@@ -165,7 +165,7 @@ namespace d14engine::uikit::resource_utils
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto context = Application::g_app->dx12Renderer()->d2d1DeviceContext();
+        auto context = Application::g_app->renderer()->d2d1DeviceContext();
 
         ///////////////////
         // Shadow Effect //

@@ -27,7 +27,7 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto rndr = Application::g_app->dx12Renderer();
+        auto rndr = Application::g_app->renderer();
 
         ///////////////////////
         // Scene Render Pass //
@@ -63,7 +63,7 @@ namespace d14engine::uikit
 
         THROW_IF_NULL(Application::g_app);
 
-        auto rndr = Application::g_app->dx12Renderer();
+        auto rndr = Application::g_app->renderer();
 
         // The back/MSAA buffers share the same RTV heap. Literally 1 RTV seat
         // is enough as only 1 of them is used as render target at the same time:
@@ -180,7 +180,7 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto rndr = Application::g_app->dx12Renderer();
+        auto rndr = Application::g_app->renderer();
 
         rndr->cmdLayers.erase(m_cmdLayer);
         m_cmdLayer->setPriority(value);
@@ -206,7 +206,7 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto rndr = Application::g_app->dx12Renderer();
+        auto rndr = Application::g_app->renderer();
 
         if (count <= 1)
         {
@@ -240,7 +240,7 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto rndr = Application::g_app->dx12Renderer();
+        auto rndr = Application::g_app->renderer();
 
         rndr->beginGpuCommand();
 
@@ -291,7 +291,7 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto rndr = Application::g_app->dx12Renderer();
+        auto rndr = Application::g_app->renderer();
 
         ////////////////////////
         // Setup Texture Info //
@@ -363,7 +363,7 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto rndr = Application::g_app->dx12Renderer();
+        auto rndr = Application::g_app->renderer();
 
         ////////////////////////
         // Setup Texture Info //
@@ -414,7 +414,7 @@ namespace d14engine::uikit
     {
         THROW_IF_NULL(Application::g_app);
 
-        auto rndr = Application::g_app->dx12Renderer();
+        auto rndr = Application::g_app->renderer();
 
         ////////////////////
         // Wrapped Buffer //

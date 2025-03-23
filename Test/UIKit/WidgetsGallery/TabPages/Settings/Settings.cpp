@@ -60,7 +60,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     }
     auto ui_aboutButton = makeUIObject<FlatButton>(L"D14Engine repo @ GitHub", 5.0f);
     {
-        ui_aboutButton->resize(250.0f, 40.0f);
+        ui_aboutButton->setSize(250.0f, 40.0f);
 
         auto& ui_btnLabel = ui_aboutButton->content()->label();
         ui_btnLabel->setTextFormat(D14_FONT(L"Default/14"));
@@ -68,13 +68,13 @@ void createSettingsTabPage(ConstraintLayout* page)
 
         ui_aboutButton->f_onChangeThemeStyle = [=](Panel* p, const Panel::ThemeStyle& style)
         {
-            auto& appear = dynamic_cast<FlatButton*>(p)->getAppearance();
+            auto& appear = dynamic_cast<FlatButton*>(p)->appearance();
 
 #define BUTTON_FOREGROUND_COLOR(State_Name) \
     appear.main[(size_t)Button::State::State_Name].foreground.color
 
             BUTTON_FOREGROUND_COLOR(Idle) = BUTTON_FOREGROUND_COLOR(Hover) =
-            BUTTON_FOREGROUND_COLOR(Down) = appearance::g_colorGroup.primary;
+            BUTTON_FOREGROUND_COLOR(Down) = appearance::color1();
 
 #undef BUTTON_FOREGROUND_COLOR
         };
@@ -129,7 +129,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     }
     auto ui_contentLayout = makeUIObject<ConstraintLayout>();
     {
-        auto& appear = ui_contentLayout->getAppearance();
+        auto& appear = ui_contentLayout->appearance();
 
         appear.background.opacity = 1.0f;
         appear.stroke.width = 2.0f;
@@ -169,7 +169,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     }
     auto ui_bottomView = makeUIObject<ScrollView>();
     {
-        ui_bottomView->deltaPixelsPerScroll.vert = 90.0f;
+        ui_bottomView->deltaDipsPerScroll.vert = 90.0f;
 
         ConstraintLayout::GeometryInfo geoInfo = {};
 
@@ -189,15 +189,15 @@ void createSettingsTabPage(ConstraintLayout* page)
             if (!content.expired())
             {
                 auto pContent = content.lock();
-                pContent->resize(e.size.width, pContent->height());
+                pContent->setSize(e.size.width, pContent->height());
             }
         };
     }
     auto ui_settingsLayout = makeUIObject<ConstraintLayout>();
     {
-        ui_settingsLayout->resize(920.0f, 1000.0f);
+        ui_settingsLayout->setSize(920.0f, 1000.0f);
 
-        auto& appear = ui_settingsLayout->getAppearance();
+        auto& appear = ui_settingsLayout->appearance();
         appear.background.opacity = 1.0f;
 
         auto& light = appear.g_themeData.at(L"Light");
@@ -231,7 +231,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         auto ui_label = makeManagedUIObject<Label>(ui_autoThemeCheckBox, L"Use system setting");
         auto wk_label = (WeakPtr<Label>)ui_label;
 
-        ui_autoThemeCheckBox->moveAbovePeerObject(ui_label.get());
+        ui_autoThemeCheckBox->reorderAbovePeerObject(ui_label.get());
 
         ui_label->transform(34.0f, 0.0f, 0.0f, ui_autoThemeCheckBox->height());
         ui_label->setTextFormat(D14_FONT(L"Default/14"));
@@ -255,7 +255,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         auto ui_label = makeManagedUIObject<Label>(ui_darkModeSwitch, L"Dark mode");
         auto wk_label = (WeakPtr<Label>)ui_label;
 
-        ui_darkModeSwitch->moveAbovePeerObject(ui_label.get());
+        ui_darkModeSwitch->reorderAbovePeerObject(ui_label.get());
 
         ui_label->transform(63.0f, 0.0f, 0.0f, ui_darkModeSwitch->height());
         ui_label->setTextFormat(D14_FONT(L"Default/14"));
@@ -270,14 +270,13 @@ void createSettingsTabPage(ConstraintLayout* page)
 
         Application::g_app->f_onSystemThemeStyleChange = [=](const Application::ThemeStyle& style)
         {
-            if (!wk_autoThemeCheckBox.expired() && wk_autoThemeCheckBox.lock()->currState().checked())
+            if (!wk_autoThemeCheckBox.expired() && wk_autoThemeCheckBox.lock()->stateDetail().checked())
             {
                 if (!wk_darkModeSwitch.expired())
                 {
                     auto sh_darkModeSwitch = wk_darkModeSwitch.lock();
                     bool light = (style.name == L"Light");
-                    sh_darkModeSwitch->setOnOffState(light ? OnOffSwitch::OFF : OnOffSwitch::ON);
-                    sh_darkModeSwitch->forceUpdateCurrState();
+                    sh_darkModeSwitch->setOnOff(light ? OnOffSwitch::Off : OnOffSwitch::On);
                 }
             }
         };
@@ -297,7 +296,7 @@ void createSettingsTabPage(ConstraintLayout* page)
                     sh_darkModeSwitch->setEnabled(false);
                     auto style = Application::querySystemThemeStyle();
                     bool light = (style.name == L"Light");
-                    sh_darkModeSwitch->setOnOff(light ? OnOffSwitch::OFF : OnOffSwitch::ON);
+                    sh_darkModeSwitch->setOnOff(light ? OnOffSwitch::Off : OnOffSwitch::On);
                 }
                 if (!wk_label.expired()) wk_label.lock()->setEnabled(false);
             }
@@ -310,7 +309,7 @@ void createSettingsTabPage(ConstraintLayout* page)
             else if (e.off()) style.name = L"Light";
             Application::g_app->setThemeStyle(style);
         };
-        ui_autoThemeCheckBox->setChecked(CheckBox::CHECKED);
+        ui_autoThemeCheckBox->setChecked(CheckBox::Checked);
     }
     auto ui_antialiasModeLabel = makeUIObject<Label>(L"Antialias Mode");
     {
@@ -324,7 +323,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     }
     auto ui_2dAntialiasModeSelector = makeUIObject<ComboBox>(5.0f);
     {
-        ui_2dAntialiasModeSelector->resize(200.0f, 40.0f);
+        ui_2dAntialiasModeSelector->setSize(200.0f, 40.0f);
 
         ConstraintLayout::GeometryInfo geoInfo1 = {};
         geoInfo1.Left.ToLeft = 130.0f;
@@ -346,7 +345,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         }
         auto& dropDownMenu = ui_2dAntialiasModeSelector->dropDownMenu();
 
-        dropDownMenu->resize(dropDownMenu->width(), 80.0f);
+        dropDownMenu->setSize(dropDownMenu->width(), 80.0f);
         dropDownMenu->appendItem(strModeItems);
 
         using StrModeMap = std::unordered_map<Wstring, D2D1_ANTIALIAS_MODE>;
@@ -356,9 +355,9 @@ void createSettingsTabPage(ConstraintLayout* page)
         ]
         (ComboBox* cb, IconLabel* content)
         {
-            Application::g_app->dx12Renderer()->setAntialiasMode2D(strModeMap.at(content->label()->text()));
+            Application::g_app->renderer()->setAntialiasMode2D(strModeMap.at(content->label()->text()));
         };
-        ui_2dAntialiasModeSelector->setCurrSelected(1);
+        ui_2dAntialiasModeSelector->setSelected(1);
 
         auto ui_label = makeUIObject<Label>(L"2D", math_utils::heightOnlyRect(40.0f));
 
@@ -383,7 +382,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     using TextAntialiasModeMenuItemMap = std::unordered_map<Wstring, WeakPtr<MenuItem>>;
     TextAntialiasModeMenuItemMap textAntialiasModeMenuItems = {};
     {
-        ui_textAntialiasModeSelector->resize(200.0f, 40.0f);
+        ui_textAntialiasModeSelector->setSize(200.0f, 40.0f);
 
         ConstraintLayout::GeometryInfo geoInfo1 = {};
         geoInfo1.Left.ToLeft = 130.0f;
@@ -403,10 +402,10 @@ void createSettingsTabPage(ConstraintLayout* page)
         }
         auto& dropDownMenu = ui_textAntialiasModeSelector->dropDownMenu();
 
-        dropDownMenu->resize(dropDownMenu->width(), 160.0f);
+        dropDownMenu->setSize(dropDownMenu->width(), 160.0f);
         dropDownMenu->appendItem(strModeItems);
 
-        ui_textAntialiasModeSelector->setCurrSelected(0);
+        ui_textAntialiasModeSelector->setSelected(0);
 
         auto ui_label = makeUIObject<Label>(L"Text", math_utils::heightOnlyRect(40.0f));
 
@@ -428,16 +427,16 @@ void createSettingsTabPage(ConstraintLayout* page)
         geoInfo.Top.ToTop = 394.0f;
         ui_settingsLayout->addElement(ui_textRenderingModeLabel, geoInfo);
     }
-    auto defTextRenderingMode = Application::g_app->dx12Renderer()->getDefaultTextRenderingMode();
+    auto defTextRenderingMode = Application::g_app->renderer()->getDefaultTextRenderingMode();
 
     auto ui_gammaValueSlider = makeUIObject<HorzSlider>();
     auto wk_gammaValueSlider = (WeakPtr<HorzSlider>)ui_gammaValueSlider;
     {
-        ui_gammaValueSlider->resize(256.0f, 40.0f);
+        ui_gammaValueSlider->setSize(256.0f, 40.0f);
 
-        auto& appear = ui_gammaValueSlider->getAppearance();
+        auto& appear = ui_gammaValueSlider->appearance();
         appear.valueLabel.precision = 1;
-        appear.valueLabel.isResident = true;
+        appear.valueLabel.resident = true;
 
         ui_gammaValueSlider->setMinValue(0.1f);
         ui_gammaValueSlider->setMaxValue(9.9f);
@@ -464,11 +463,11 @@ void createSettingsTabPage(ConstraintLayout* page)
     auto ui_enhancedContrastSlider = makeUIObject<HorzSlider>();
     auto wk_enhancedContrastSlider = (WeakPtr<HorzSlider>)ui_enhancedContrastSlider;
     {
-        ui_enhancedContrastSlider->resize(256.0f, 40.0f);
+        ui_enhancedContrastSlider->setSize(256.0f, 40.0f);
 
-        auto& appear = ui_enhancedContrastSlider->getAppearance();
+        auto& appear = ui_enhancedContrastSlider->appearance();
         appear.valueLabel.precision = 1;
-        appear.valueLabel.isResident = true;
+        appear.valueLabel.resident = true;
 
         ui_enhancedContrastSlider->setMinValue(0.0f);
         ui_enhancedContrastSlider->setMaxValue(9.5f);
@@ -495,11 +494,11 @@ void createSettingsTabPage(ConstraintLayout* page)
     auto ui_clearTypeLevelSlider = makeUIObject<HorzSlider>();
     auto wk_clearTypeLevelSlider = (WeakPtr<HorzSlider>)ui_clearTypeLevelSlider;
     {
-        ui_clearTypeLevelSlider->resize(256.0f, 40.0f);
+        ui_clearTypeLevelSlider->setSize(256.0f, 40.0f);
 
-        auto& appear = ui_clearTypeLevelSlider->getAppearance();
+        auto& appear = ui_clearTypeLevelSlider->appearance();
         appear.valueLabel.precision = 1;
-        appear.valueLabel.isResident = true;
+        appear.valueLabel.resident = true;
 
         ui_clearTypeLevelSlider->setMinValue(0.0f);
         ui_clearTypeLevelSlider->setMaxValue(1.0f);
@@ -532,7 +531,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     auto ui_pixelGeometrySelector = makeUIObject<ComboBox>(5.0f);
     auto wk_pixelGeometrySelector = (WeakPtr<ComboBox>)ui_pixelGeometrySelector;
     {
-        ui_pixelGeometrySelector->resize(200.0f, 40.0f);
+        ui_pixelGeometrySelector->setSize(200.0f, 40.0f);
 
         ConstraintLayout::GeometryInfo geoInfo1 = {};
         geoInfo1.Left.ToLeft = 240.0f;
@@ -549,10 +548,10 @@ void createSettingsTabPage(ConstraintLayout* page)
         }
         auto& dropDownMenu = ui_pixelGeometrySelector->dropDownMenu();
 
-        dropDownMenu->resize(dropDownMenu->width(), 120.0f);
+        dropDownMenu->setSize(dropDownMenu->width(), 120.0f);
         dropDownMenu->appendItem(strModeItems);
 
-        ui_pixelGeometrySelector->setCurrSelected(1);
+        ui_pixelGeometrySelector->setSelected(1);
 
         auto ui_label = makeUIObject<Label>(L"Pixel geometry", math_utils::heightOnlyRect(40.0f));
 
@@ -580,7 +579,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     using RenderingModeMenuItemMap = std::unordered_map<Wstring, WeakPtr<MenuItem>>;
     RenderingModeMenuItemMap renderingModeMenuItems = {};
     {
-        ui_renderingModeSelector->resize(200.0f, 40.0f);
+        ui_renderingModeSelector->setSize(200.0f, 40.0f);
 
         ConstraintLayout::GeometryInfo geoInfo1 = {};
         geoInfo1.Left.ToLeft = 240.0f;
@@ -600,10 +599,10 @@ void createSettingsTabPage(ConstraintLayout* page)
         }
         auto& dropDownMenu = ui_renderingModeSelector->dropDownMenu();
 
-        dropDownMenu->resize(dropDownMenu->width(), 280.0f);
+        dropDownMenu->setSize(dropDownMenu->width(), 280.0f);
         dropDownMenu->appendItem(strModeItems);
 
-        ui_renderingModeSelector->setCurrSelected(0);
+        ui_renderingModeSelector->setSelected(0);
 
         auto ui_label = makeUIObject<Label>(L"Rendering mode", math_utils::heightOnlyRect(40.0f));
 
@@ -650,7 +649,7 @@ void createSettingsTabPage(ConstraintLayout* page)
             settings.pixelGeometry = pixelGeometryMap->at(pixelGeoStr);
             settings.renderingMode = renderingModeMap->at(rndrModeStr);
 
-            Application::g_app->dx12Renderer()->setTextRenderingMode(settings);
+            Application::g_app->renderer()->setTextRenderingMode(settings);
         }
     };
     ui_gammaValueSlider->f_onValueChange =
@@ -728,7 +727,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     ]
     (ComboBox* cb, IconLabel* content)
     {
-        Application::g_app->dx12Renderer()->setTextAntialiasMode(textAntialiasModeMap.at(content->label()->text()));
+        Application::g_app->renderer()->setTextAntialiasMode(textAntialiasModeMap.at(content->label()->text()));
 
         // Text Antialias Mode Conflict:
         //
@@ -774,8 +773,8 @@ void createSettingsTabPage(ConstraintLayout* page)
             updateConflictMenuItems({ L"Aliased"});
         }
     };
-    ui_textAntialiasModeSelector->setCurrSelected(2); // Antialias ClearType
-    ui_renderingModeSelector->setCurrSelected(5); // Natural Symmetric
+    ui_textAntialiasModeSelector->setSelected(2); // Antialias ClearType
+    ui_renderingModeSelector->setSelected(5); // Natural Symmetric
 
     auto ui_frameRateSettingLabel = makeUIObject<Label>(L"Frame Rate Setting");
     {
@@ -797,7 +796,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         auto ui_label = makeManagedUIObject<Label>(ui_fullSpeedRenderingSwitch, L"Full speed rendering");
         auto wk_label = (WeakPtr<Label>)ui_label;
 
-        ui_fullSpeedRenderingSwitch->moveAbovePeerObject(ui_label.get());
+        ui_fullSpeedRenderingSwitch->reorderAbovePeerObject(ui_label.get());
 
         ui_label->transform(63.0f, 0.0f, 0.0f, ui_darkModeSwitch->height());
         ui_label->setTextFormat(D14_FONT(L"Default/14"));
@@ -817,7 +816,7 @@ void createSettingsTabPage(ConstraintLayout* page)
     auto ui_realTimeFpsLabel = makeUIObject<Label>(L"Real-time FPS: None");
     auto wk_realTimeFpsLabel = (WeakPtr<Label>)ui_realTimeFpsLabel;
     {
-        ui_frameRateLimitLabel->resize(0.0f, 40.0f);
+        ui_frameRateLimitLabel->setSize(0.0f, 40.0f);
 
         ui_frameRateLimitLabel->setTextFormat(D14_FONT(L"Default/14"));
         ui_frameRateLimitLabel->hardAlignment.vert = Label::VertAlignment::Center;
@@ -827,7 +826,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         geoInfo1.Top.ToTop = 878.0f;
         ui_settingsLayout->addElement(ui_frameRateLimitLabel, geoInfo1);
 
-        ui_frameRateLimitInput->resize(80.0f, 40.0f);
+        ui_frameRateLimitInput->setSize(80.0f, 40.0f);
 
         ui_frameRateLimitInput->setTextFormat(D14_FONT(L"Default/14"));
         ui_frameRateLimitInput->setVisibleTextRect({ 5.0f, 8.0f, 75.0f, 32.0f });
@@ -839,7 +838,7 @@ void createSettingsTabPage(ConstraintLayout* page)
         geoInfo2.Top.ToTop = 878.0f;
         ui_settingsLayout->addElement(ui_frameRateLimitInput, geoInfo2);
 
-        ui_realTimeFpsLabel->resize(0.0f, 40.0f);
+        ui_realTimeFpsLabel->setSize(0.0f, 40.0f);
 
         ui_realTimeFpsLabel->setTextFormat(D14_FONT(L"Default/14"));
         ui_realTimeFpsLabel->hardAlignment.vert = Label::VertAlignment::Center;
@@ -863,7 +862,7 @@ void createSettingsTabPage(ConstraintLayout* page)
             if (e.on()) Application::g_app->increaseAnimationCount();
             else if (e.off()) Application::g_app->decreaseAnimationCount();
         };
-        ui_frameRateLimitInput->f_onLoseFocus = [](Panel* p)
+        ui_frameRateLimitInput->f_onLoseKeyboardFocus = [](Panel* p)
         {
             auto label = (Label*)p;
             int fpsLimit = _wtoi(label->text().c_str());
@@ -875,6 +874,5 @@ void createSettingsTabPage(ConstraintLayout* page)
         {
             if (p->enabled()) ((Label*)p)->setText(L"Real-time FPS: " + std::to_wstring(rndr->timer()->fps()));
         };
-        ui_fullSpeedRenderingSwitch->forceUpdateCurrState();
     }
 }

@@ -1006,7 +1006,7 @@ if (app != nullptr) \
         return HTCLIENT;
     }
 
-    Renderer* Application::dx12Renderer() const
+    Renderer* Application::renderer() const
     {
         return m_renderer.get();
     }

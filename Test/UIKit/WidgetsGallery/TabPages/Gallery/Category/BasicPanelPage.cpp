@@ -22,9 +22,9 @@ SharedPtr<TreeViewItem> createBasicPanelPage
     auto& ui_layout = (pages[L"Basic Panel"] = makeUIObject<ConstraintLayout>());
     {
         ui_layout->maximalWidthHint = 1200.0f;
-        ui_layout->resize(920.0f, 100.0f);
+        ui_layout->setSize(920.0f, 100.0f);
 
-        auto& appear = ui_layout->getAppearance();
+        auto& appear = ui_layout->appearance();
         appear.background.opacity = 1.0f;
 
         auto& light = appear.g_themeData.at(L"Light");
@@ -50,7 +50,7 @@ SharedPtr<TreeViewItem> createBasicPanelPage
 
         ConstraintLayout::GeometryInfo geoInfo = {};
 
-        ui_synopsisLabel->getAppearance().background = { D2D1::ColorF{ 0xff0000 }, 1.0f };
+        ui_synopsisLabel->appearance().background = { D2D1::ColorF{ 0xff0000 }, 1.0f };
 
         geoInfo.keepWidth = false;
         geoInfo.Left.ToLeft = 70.0f;

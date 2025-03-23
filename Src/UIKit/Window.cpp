@@ -93,7 +93,7 @@ namespace d14engine::uikit
         Window* w = m_master;
         THROW_IF_NULL(w);
 
-        auto rndr = Application::g_app->dx12Renderer();
+        auto rndr = Application::g_app->renderer();
         auto context = rndr->d2d1DeviceContext();
 
         THROW_IF_FAILED(context->CreateBitmapBrush
@@ -117,7 +117,7 @@ namespace d14engine::uikit
             { 0.5f, colors[1] },
             { 1.0f, colors[2] },
         };
-        auto rndr = Application::g_app->dx12Renderer();
+        auto rndr = Application::g_app->renderer();
         auto context = rndr->d2d1DeviceContext();
 
         ComPtr<ID2D1GradientStopCollection> collection = {};

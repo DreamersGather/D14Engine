@@ -18,9 +18,9 @@ SharedPtr<TreeViewItem> createGuidancePage
     auto& ui_layout = (pages[L"Guidance"] = makeUIObject<ConstraintLayout>());
     {
         ui_layout->maximalWidthHint = 1200.0f;
-        ui_layout->resize(920.0f, 400.0f);
+        ui_layout->setSize(920.0f, 400.0f);
 
-        auto& appear = ui_layout->getAppearance();
+        auto& appear = ui_layout->appearance();
         appear.background.opacity = 1.0f;
 
         auto& light = appear.g_themeData.at(L"Light");
@@ -55,7 +55,7 @@ SharedPtr<TreeViewItem> createGuidancePage
 
         ConstraintLayout::GeometryInfo geoInfo = {};
 
-        ui_synopsisLabel->getAppearance().background = { D2D1::ColorF{ 0xff0000 }, 1.0f };
+        ui_synopsisLabel->appearance().background = { D2D1::ColorF{ 0xff0000 }, 1.0f };
 
         geoInfo.keepWidth = false;
         geoInfo.Left.ToLeft = 70.0f;

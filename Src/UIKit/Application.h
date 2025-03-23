@@ -147,7 +147,7 @@ namespace d14engine::uikit
         UniquePtr<Renderer> m_renderer = {};
 
     public:
-        Renderer* dx12Renderer() const;
+        Renderer* renderer() const;
 
         //------------------------------------------------------------------
         // UI Command Layer
