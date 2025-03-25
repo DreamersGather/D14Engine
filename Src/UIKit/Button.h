@@ -21,14 +21,17 @@ namespace d14engine::uikit
             float roundRadius = 0.0f,
             const D2D1_RECT_F& rect = {});
 
-        enum class State { Idle, Hover, Down, Disabled };
-
         void onInitializeFinish() override;
 
         _D14_SET_APPEARANCE_PROPERTY(Button)
 
-        void setEnabled(bool value) override;
+        /////////////////////////
+        // Graphics Components //
+        /////////////////////////
 
+        //------------------------------------------------------------------
+        // Children Objects
+        //------------------------------------------------------------------
     protected:
         SharedPtr<IconLabel> m_content = {};
 
@@ -36,29 +39,68 @@ namespace d14engine::uikit
         const SharedPtr<IconLabel>& content() const;
         void setContent(ShrdPtrRefer<IconLabel> content);
 
+        ///////////////////////
+        // Interaction Logic //
+        ///////////////////////
+
+        //------------------------------------------------------------------
+        // State
+        //------------------------------------------------------------------
+    public:
+        enum class State
+        {
+            Idle,
+            Hover,
+            Down,
+            Disabled
+        };
+
     protected:
         State m_state = State::Idle;
 
-    protected:
-        // IDrawObject2D
-        void onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr) override;
+    public:
+        State state() const;
 
+        /////////////////////////
+        // Interface Overrides //
+        /////////////////////////
+
+    public:
+        //------------------------------------------------------------------
         // Panel
-        bool isHitHelper(const uikit::Event::Point& p) const override;
+        //------------------------------------------------------------------
+
+        void setEnabled(bool value) override;
+
+    protected:
+        //------------------------------------------------------------------
+        // IDrawObject2D
+        //------------------------------------------------------------------
+
+        void onRendererDrawD2d1ObjectHelper(Renderer* rndr) override;
+
+        //------------------------------------------------------------------
+        // Panel
+        //------------------------------------------------------------------
 
         bool releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj) override;
 
-        void onSizeHelper(SizeEvent& e) override;
+        bool isHitHelper(const uikit::Event::Point& p) const override;
 
-        void onChangeThemeStyleHelper(const ThemeStyle& style) override;
+        void onSizeHelper(SizeEvent& e) override;
 
         void onMouseEnterHelper(MouseMoveEvent& e) override;
 
         void onMouseLeaveHelper(MouseMoveEvent& e) override;
 
-        // ClickablePanel
-        void onMouseButtonPressHelper(ClickablePanel::Event& e) override;
+        void onChangeThemeStyleHelper(const ThemeStyle& style) override;
 
-        void onMouseButtonReleaseHelper(ClickablePanel::Event& e) override;
+        //------------------------------------------------------------------
+        // ClickablePanel
+        //------------------------------------------------------------------
+
+        void onMouseButtonPressHelper(Event& e) override;
+
+        void onMouseButtonReleaseHelper(Event& e) override;
     };
 }

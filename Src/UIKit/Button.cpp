@@ -33,28 +33,22 @@ namespace d14engine::uikit
         Button(
             IconLabel::uniformLayout(text),
             roundRadius,
-            rect) { }
+            rect)
+    {
+        // Here left blank intentionally.
+    }
 
     void Button::onInitializeFinish()
     {
         ClickablePanel::onInitializeFinish();
 
-        if (!m_content)
+        if (m_content == nullptr)
         {
             m_content = IconLabel::uniformLayout();
         }
-        registerUIEvents(m_content);
+        addUIObject(m_content);
 
         m_content->transform(selfCoordRect());
-    }
-
-    void Button::setEnabled(bool value)
-    {
-        Panel::setEnabled(value);
-
-        m_state = value ? State::Idle : State::Disabled;
-
-        m_content->setEnabled(value);
     }
 
     const SharedPtr<IconLabel>& Button::content() const
@@ -66,13 +60,27 @@ namespace d14engine::uikit
     {
         if (content && !cpp_lang_utils::isMostDerivedEqual(content, m_content))
         {
-            unregisterUIEvents(m_content);
+            removeUIObject(m_content);
 
             m_content = content;
-            registerUIEvents(m_content);
+            addUIObject(m_content);
 
             m_content->transform(selfCoordRect());
         }
+    }
+
+    Button::State Button::state() const
+    {
+        return m_state;
+    }
+
+    void Button::setEnabled(bool value)
+    {
+        Panel::setEnabled(value);
+
+        m_state = value ? State::Idle : State::Disabled;
+
+        m_content->setEnabled(value);
     }
 
     void Button::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
@@ -81,12 +89,12 @@ namespace d14engine::uikit
         // Background //
         ////////////////
 
-        auto& bkgn = appearance().background;
+        auto& background = appearance().background;
 
-        resource_utils::solidColorBrush()->SetColor(bkgn.color);
-        resource_utils::solidColorBrush()->SetOpacity(bkgn.opacity);
+        resource_utils::solidColorBrush()->SetColor(background.color);
+        resource_utils::solidColorBrush()->SetOpacity(background.opacity);
 
-        ClickablePanel::drawBackground(rndr);
+        drawBackground(rndr);
 
         /////////////
         // Content //
@@ -97,10 +105,7 @@ namespace d14engine::uikit
         m_content->icon.bitmap.opacity = foreground.opacity;
         m_content->label()->appearance().foreground = foreground;
 
-        if (m_content->isD2d1ObjectVisible())
-        {
-            m_content->onRendererDrawD2d1Object(rndr);
-        }
+        drawChildrenObjects(rndr);
 
         /////////////
         // Outline //
@@ -111,15 +116,22 @@ namespace d14engine::uikit
         resource_utils::solidColorBrush()->SetColor(stroke.color);
         resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
 
-        auto frame = math_utils::inner(m_absoluteRect, stroke.width);
-        D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
+        auto rect = math_utils::inner(m_absoluteRect, stroke.width);
+        D2D1_ROUNDED_RECT roundedRect = { rect, roundRadiusX, roundRadiusY };
 
         rndr->d2d1DeviceContext()->DrawRoundedRectangle
         (
-        /* roundedRect */ outlineRect,
+        /* roundedRect */ roundedRect,
         /* brush       */ resource_utils::solidColorBrush(),
         /* strokeWidth */ stroke.width
         );
+    }
+
+    bool Button::releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj)
+    {
+        if (cpp_lang_utils::isMostDerivedEqual(uiobj, m_content)) return false;
+
+        return ClickablePanel::releaseUIObjectHelper(uiobj);
     }
 
     bool Button::isHitHelper(const Event::Point& p) const
@@ -127,25 +139,11 @@ namespace d14engine::uikit
         return math_utils::isInside(p, m_absoluteRect);
     }
 
-    bool Button::releaseUIObjectHelper(ShrdPtrRefer<Panel> uiobj)
-    {
-        if (cpp_lang_utils::isMostDerivedEqual(m_content, uiobj)) return false;
-
-        return Panel::releaseUIObjectHelper(uiobj);
-    }
-
     void Button::onSizeHelper(SizeEvent& e)
     {
         ClickablePanel::onSizeHelper(e);
 
         m_content->transform(selfCoordRect());
-    }
-
-    void Button::onChangeThemeStyleHelper(const ThemeStyle& style)
-    {
-        ClickablePanel::onChangeThemeStyleHelper(style);
-
-        appearance().changeTheme(style.name);
     }
 
     void Button::onMouseEnterHelper(MouseMoveEvent& e)
@@ -160,6 +158,13 @@ namespace d14engine::uikit
         ClickablePanel::onMouseLeaveHelper(e);
 
         m_state = State::Idle;
+    }
+
+    void Button::onChangeThemeStyleHelper(const ThemeStyle& style)
+    {
+        ClickablePanel::onChangeThemeStyleHelper(style);
+
+        appearance().changeTheme(style.name);
     }
 
     void Button::onMouseButtonPressHelper(Event& e)
