@@ -44,22 +44,10 @@ namespace d14engine::uikit
         ///////////////////////
 
         //------------------------------------------------------------------
-        // State
+        // Button State
         //------------------------------------------------------------------
-    public:
-        enum class State
-        {
-            Idle,
-            Hover,
-            Down,
-            Disabled
-        };
-
     protected:
-        State m_state = State::Idle;
-
-    public:
-        State state() const;
+        ButtonState m_state = ButtonState::Idle;
 
         /////////////////////////
         // Interface Overrides //

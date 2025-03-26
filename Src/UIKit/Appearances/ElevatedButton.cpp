@@ -8,15 +8,15 @@ namespace d14engine::uikit::appearance
     {
         auto& light = (g_themeData[L"Light"] = {});
         {
-            light.shadow.color[(size_t)uikit::Button::State::Idle] =
-            light.shadow.color[(size_t)uikit::Button::State::Hover] =
+            light.shadow.color[(size_t)ButtonState::Idle] =
+            light.shadow.color[(size_t)ButtonState::Hover] =
             D2D1::ColorF
             {
                 0x808080, // rgb
                 1.0f // alpha
             };
-            light.shadow.color[(size_t)uikit::Button::State::Down] =
-            light.shadow.color[(size_t)uikit::Button::State::Disabled] =
+            light.shadow.color[(size_t)ButtonState::Down] =
+            light.shadow.color[(size_t)ButtonState::Disabled] =
             D2D1::ColorF
             {
                 0x000000, // rgb
@@ -25,15 +25,15 @@ namespace d14engine::uikit::appearance
         }
         auto& dark = (g_themeData[L"Dark"] = {});
         {
-            dark.shadow.color[(size_t)uikit::Button::State::Idle] =
-            dark.shadow.color[(size_t)uikit::Button::State::Hover] =
+            dark.shadow.color[(size_t)ButtonState::Idle] =
+            dark.shadow.color[(size_t)ButtonState::Hover] =
             D2D1::ColorF
             {
                 0x000000, // rgb
                 1.0f // alpha
             };
-            dark.shadow.color[(size_t)uikit::Button::State::Down] =
-            dark.shadow.color[(size_t)uikit::Button::State::Disabled] =
+            dark.shadow.color[(size_t)ButtonState::Down] =
+            dark.shadow.color[(size_t)ButtonState::Disabled] =
             D2D1::ColorF
             {
                 0x000000, // rgb

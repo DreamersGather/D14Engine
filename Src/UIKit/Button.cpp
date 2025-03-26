@@ -69,16 +69,11 @@ namespace d14engine::uikit
         }
     }
 
-    Button::State Button::state() const
-    {
-        return m_state;
-    }
-
     void Button::setEnabled(bool value)
     {
         Panel::setEnabled(value);
 
-        m_state = value ? State::Idle : State::Disabled;
+        m_state = value ? ButtonState::Idle : ButtonState::Disabled;
 
         m_content->setEnabled(value);
     }
@@ -150,14 +145,14 @@ namespace d14engine::uikit
     {
         ClickablePanel::onMouseEnterHelper(e);
 
-        m_state = State::Hover;
+        m_state = ButtonState::Hover;
     }
 
     void Button::onMouseLeaveHelper(MouseMoveEvent& e)
     {
         ClickablePanel::onMouseLeaveHelper(e);
 
-        m_state = State::Idle;
+        m_state = ButtonState::Idle;
     }
 
     void Button::onChangeThemeStyleHelper(const ThemeStyle& style)
@@ -171,13 +166,13 @@ namespace d14engine::uikit
     {
         ClickablePanel::onMouseButtonPressHelper(e);
 
-        if (e.left()) m_state = State::Down;
+        if (e.left()) m_state = ButtonState::Down;
     }
 
     void Button::onMouseButtonReleaseHelper(Event& e)
     {
         ClickablePanel::onMouseButtonReleaseHelper(e);
 
-        if (e.left()) m_state = State::Hover;
+        if (e.left()) m_state = ButtonState::Hover;
     }
 }

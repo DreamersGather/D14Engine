@@ -4,6 +4,8 @@
 
 #include "UIKit/Appearances/FlatButton.h"
 
+#include "UIKit/Button.h"
+
 namespace d14engine::uikit
 {
     struct FlatButton : appearance::FlatButton, Button

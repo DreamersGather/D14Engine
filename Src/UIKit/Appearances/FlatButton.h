@@ -4,8 +4,7 @@
 
 #include "Common/CppLangUtils/EnumMagic.h"
 
-#include "UIKit/Appearances/Appearance.h"
-#include "UIKit/Button.h"
+#include "UIKit/Appearances/Button.h"
 
 namespace d14engine::uikit::appearance
 {
@@ -18,7 +17,7 @@ namespace d14engine::uikit::appearance
             void changeTheme(WstrRefer themeName) override;
 
             constexpr static auto g_stateCount =
-                cpp_lang_utils::enumCount<uikit::Button::State>;
+                cpp_lang_utils::enumCount<ButtonState>;
 
             struct Main
             {

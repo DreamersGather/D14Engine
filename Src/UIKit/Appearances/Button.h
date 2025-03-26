@@ -6,6 +6,10 @@
 #include "UIKit/SolidStyle.h"
 #include "UIKit/StrokeStyle.h"
 
+namespace d14engine::uikit
+{
+    enum class ButtonState { Idle, Hover, Down, Disabled };
+}
 namespace d14engine::uikit::appearance
 {
     struct Button

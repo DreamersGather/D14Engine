@@ -58,7 +58,7 @@ namespace d14engine::uikit
         constexpr static auto Deactivated = StatefulObject::State::ActiveFlag::Deactivated;
 
         void setActivated(StatefulObject::State::ActiveFlag flag);
-        // Set the state directly without callback.
+        // Update the state without triggering the corresponding event.
         void setActivatedState(StatefulObject::State::ActiveFlag flag);
 
     protected:

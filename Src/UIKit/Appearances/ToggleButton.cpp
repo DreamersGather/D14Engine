@@ -8,7 +8,7 @@ namespace d14engine::uikit::appearance
     {
         auto& light = (g_themeData[L"Light"] = {});
         {
-            light.main[(size_t)uikit::Button::State::Idle] =
+            light.main[(size_t)ButtonState::Idle] =
             {
                 // foreground
                 {
@@ -27,7 +27,7 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            light.main[(size_t)uikit::Button::State::Hover] =
+            light.main[(size_t)ButtonState::Hover] =
             {
                 // foreground
                 {
@@ -46,7 +46,7 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            light.main[(size_t)uikit::Button::State::Down] =
+            light.main[(size_t)ButtonState::Down] =
             {
                 // foreground
                 {
@@ -65,7 +65,7 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            light.main[(size_t)uikit::Button::State::Disabled] =
+            light.main[(size_t)ButtonState::Disabled] =
             {
                 // foreground
                 {
@@ -87,7 +87,7 @@ namespace d14engine::uikit::appearance
         }
         auto& dark = (g_themeData[L"Dark"] = {});
         {
-            dark.main[(size_t)uikit::Button::State::Idle] =
+            dark.main[(size_t)ButtonState::Idle] =
             {
                 // foreground
                 {
@@ -106,7 +106,7 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            dark.main[(size_t)uikit::Button::State::Hover] =
+            dark.main[(size_t)ButtonState::Hover] =
             {
                 // foreground
                 {
@@ -125,7 +125,7 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            dark.main[(size_t)uikit::Button::State::Down] =
+            dark.main[(size_t)ButtonState::Down] =
             {
                 // foreground
                 {
@@ -144,7 +144,7 @@ namespace d14engine::uikit::appearance
                     0.0f // opacity
                 }
             };
-            dark.main[(size_t)uikit::Button::State::Disabled] =
+            dark.main[(size_t)ButtonState::Disabled] =
             {
                 // foreground
                 {
@@ -172,7 +172,7 @@ namespace d14engine::uikit::appearance
 
 #define UPDATE_BUTTON_COLOR(Btn_State, Btn_Color) \
 do { \
-    constexpr auto index = (size_t)uikit::Button::State::Btn_State; \
+    constexpr auto index = (size_t)ButtonState::Btn_State; \
     _ref.main[index].background.color = Btn_Color(); \
 } while (0)
         UPDATE_BUTTON_COLOR(Idle, color1);

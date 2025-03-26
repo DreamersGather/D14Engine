@@ -8,7 +8,7 @@ namespace d14engine::uikit::appearance
     {
         auto& light = (g_themeData[L"Light"] = {});
         {
-            light.main[(size_t)uikit::Button::State::Disabled] =
+            light.main[(size_t)ButtonState::Disabled] =
             {
                 // foreground
                 {
@@ -30,7 +30,7 @@ namespace d14engine::uikit::appearance
         }
         auto& dark = (g_themeData[L"Dark"] = {});
         {
-            dark.main[(size_t)uikit::Button::State::Disabled] =
+            dark.main[(size_t)ButtonState::Disabled] =
             {
                 // foreground
                 {
@@ -56,7 +56,7 @@ namespace d14engine::uikit::appearance
     {
         _D14_FIND_THEME_DATA(themeName);
 
-        _ref.main[(size_t)uikit::Button::State::Idle] =
+        _ref.main[(size_t)ButtonState::Idle] =
         {
             // foreground
             {
@@ -75,7 +75,7 @@ namespace d14engine::uikit::appearance
                 1.0f // opacity
             }
         };
-        _ref.main[(size_t)uikit::Button::State::Hover] =
+        _ref.main[(size_t)ButtonState::Hover] =
         {
             // foreground
             {
@@ -94,7 +94,7 @@ namespace d14engine::uikit::appearance
                 1.0f // opacity
             }
         };
-        _ref.main[(size_t)uikit::Button::State::Down] =
+        _ref.main[(size_t)ButtonState::Down] =
         {
             // foreground
             {
