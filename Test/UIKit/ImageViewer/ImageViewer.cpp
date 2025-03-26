@@ -123,7 +123,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         }
         auto ui_checkBox = makeUIObject<CheckBox>();
         {
-            ui_checkBox->setChecked(CheckBox::Checked);
+            ui_checkBox->setCheckState(CheckBox::Checked);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -305,7 +305,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         }
         auto ui_checkBox1 = makeUIObject<CheckBox>();
         {
-            ui_checkBox1->setCheckedState(CheckBox::Checked);
+            ui_checkBox1->setCheckStateSilently(CheckBox::Checked);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -333,7 +333,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         }
         auto ui_checkBox2 = makeUIObject<CheckBox>();
         {
-            ui_checkBox2->setCheckedState(CheckBox::Checked);
+            ui_checkBox2->setCheckStateSilently(CheckBox::Checked);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -361,7 +361,7 @@ D14_SET_APP_ENTRY(mainImageViewer)
         }
         auto ui_checkBox3 = makeUIObject<CheckBox>();
         {
-            ui_checkBox3->setCheckedState(CheckBox::Unchecked);
+            ui_checkBox3->setCheckStateSilently(CheckBox::Unchecked);
 
             GridLayout::GeometryInfo geoInfo1 = {};
             geoInfo1.isFixedSize = true;
@@ -404,33 +404,33 @@ D14_SET_APP_ENTRY(mainImageViewer)
                     wk_titleEditor.lock()->setText(index.valid() ?
                         index->caption->title()->label()->text() : L"");
                 }
-                // We should use setCheckedState instead of setChecked here:
+                // We should use setCheckStateSilently here:
                 //
-                // 1. setChecked:
+                // 1. setCheckState:
                 //
                 //    Change state && trigger related callback.
                 //
-                // 2. setCheckedState:
+                // 2. setCheckStateSilently:
                 //
                 //    Only change state, no callback triggered.
 
                 if (!wk_checkBox1.expired())
                 {
-                    wk_checkBox1.lock()->setCheckedState(
+                    wk_checkBox1.lock()->setCheckStateSilently(
                         index.valid() && index->caption->closable ?
                         CheckBox::Checked :
                         CheckBox::Unchecked);
                 }
                 if (!wk_checkBox2.expired())
                 {
-                    wk_checkBox2.lock()->setCheckedState(
+                    wk_checkBox2.lock()->setCheckStateSilently(
                         index.valid() && index->caption->draggable ?
                         CheckBox::Checked :
                         CheckBox::Unchecked);
                 }
                 if (!wk_checkBox3.expired())
                 {
-                    wk_checkBox3.lock()->setCheckedState(
+                    wk_checkBox3.lock()->setCheckStateSilently(
                         index.valid() && index->caption->promotable ?
                         CheckBox::Checked :
                         CheckBox::Unchecked);

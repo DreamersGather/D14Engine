@@ -13,57 +13,109 @@ namespace d14engine::uikit
         appearance::CheckBox, ClickablePanel,
         StatefulObject<CheckBoxState, CheckBoxStateChangeEvent>
     {
+        enum class CheckMode { Binary, TriState };
+
+        constexpr static auto Binary = CheckMode::Binary;
+        constexpr static auto TriState = CheckMode::TriState;
+
         CheckBox(
-            bool isTripleState = false,
+            CheckMode mode = Binary,
             float roundRadius = 4.0f,
             const D2D1_RECT_F& rect = { 0.0f, 0.0f, 24.0f, 24.0f });
 
         void onInitializeFinish() override;
 
-        struct CheckedIcon
-        {
-            ComPtr<ID2D1StrokeStyle> strokeStyle = {};
-        }
-        checkedIcon = {};
-
-        void loadCheckedIconStrokeStyle();
-
         _D14_SET_APPEARANCE_PROPERTY(CheckBox)
+
+        //////////////////////
+        // Cached Resources //
+        //////////////////////
+
+        using MasterPtr = cpp_lang_utils::EnableMasterPtr<CheckBox>;
+
+        struct CheckedIcon : MasterPtr
+        {
+            using MasterPtr::MasterPtr;
+
+            ComPtr<ID2D1StrokeStyle> strokeStyle = {};
+            void loadStrokeStyle();
+        }
+        checkedIcon{ this };
+
+        ///////////////////////
+        // Interaction Logic //
+        ///////////////////////
+
+        //------------------------------------------------------------------
+        // Check Mode
+        //------------------------------------------------------------------
+    protected:
+        CheckMode m_mode = {};
+
+    public:
+        CheckMode checkMode() const;
+        void setCheckMode(CheckMode mode);
+
+        //------------------------------------------------------------------
+        // Check State
+        //------------------------------------------------------------------
+    public:
+        using CheckState = State::ActiveFlag;
+
+        constexpr static auto Unchecked = CheckState::Unchecked;
+        constexpr static auto Intermediate = CheckState::Intermediate;
+        constexpr static auto Checked = CheckState::Checked;
+
+        CheckState checkState() const;
+        void setCheckState(CheckState state);
+
+        // Update the state without triggering the corresponding event.
+        void setCheckStateSilently(CheckState state);
+
+        //------------------------------------------------------------------
+        // State Maps
+        //------------------------------------------------------------------
+    protected:
+        using StateMap = cpp_lang_utils::EnumMap<CheckState>;
+        using StateMapGroup = cpp_lang_utils::EnumMap<CheckMode, StateMap>;
+
+        const static StateMapGroup g_stateMaps;
+
+        const StateMap& stateMap() const;
+        CheckState nextState() const;
+
+        /////////////////////////
+        // Interface Overrides //
+        /////////////////////////
+
+    public:
+        //------------------------------------------------------------------
+        // Panel
+        //------------------------------------------------------------------
 
         void setEnabled(bool value) override;
 
-    public:
-        constexpr static auto Unchecked = State::ActiveFlag::Unchecked;
-        constexpr static auto Intermediate = State::ActiveFlag::Intermediate;
-        constexpr static auto Checked = State::ActiveFlag::Checked;
-
-        void setChecked(State::ActiveFlag flag);
-        // Set the state directly without callback.
-        void setCheckedState(State::ActiveFlag flag);
-
     protected:
-        bool m_isTripleState = {};
-
-        using StateTransitionMap = cpp_lang_utils::EnumMap<State::ActiveFlag>;
-
-        StateTransitionMap m_stateTransitionMap = {};
-
-    public:
-        bool isTripleState() const;
-        void enableTripleState(bool value);
-
-    protected:
+        //------------------------------------------------------------------
         // IDrawObject2D
-        void onRendererDrawD2d1ObjectHelper(renderer::Renderer* rndr) override;
+        //------------------------------------------------------------------
 
+        void onRendererDrawD2d1ObjectHelper(Renderer* rndr) override;
+
+        //------------------------------------------------------------------
         // Panel
-        void onChangeThemeStyleHelper(const ThemeStyle& style) override;
+        //------------------------------------------------------------------
 
         void onMouseEnterHelper(MouseMoveEvent& e) override;
 
         void onMouseLeaveHelper(MouseMoveEvent& e) override;
 
+        void onChangeThemeStyleHelper(const ThemeStyle& style) override;
+
+        //------------------------------------------------------------------
         // ClickablePanel
+        //------------------------------------------------------------------
+
         void onMouseButtonPressHelper(ClickablePanel::Event& e) override;
 
         void onMouseButtonReleaseHelper(ClickablePanel::Event& e) override;

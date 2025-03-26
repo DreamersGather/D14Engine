@@ -15,7 +15,7 @@ using namespace d14engine::renderer;
 namespace d14engine::uikit
 {
     CheckBox::CheckBox(
-        bool isTripleState,
+        CheckMode mode,
         float roundRadius,
         const D2D1_RECT_F& rect)
         :
@@ -24,24 +24,25 @@ namespace d14engine::uikit
     {
         roundRadiusX = roundRadiusY = roundRadius;
 
-        m_state = { Unchecked, State::ButtonFlag::Idle };
-        m_stateDetail.flag = Unchecked;
-
-        enableTripleState(isTripleState);
+        setCheckMode(mode);
     }
 
     void CheckBox::onInitializeFinish()
     {
         ClickablePanel::onInitializeFinish();
 
-        loadCheckedIconStrokeStyle();
+        checkedIcon.loadStrokeStyle();
     }
 
-    void CheckBox::loadCheckedIconStrokeStyle()
+    void CheckBox::CheckedIcon::loadStrokeStyle()
     {
+        CheckBox* cb = m_master;
+        THROW_IF_NULL(cb);
+
         THROW_IF_NULL(Application::g_app);
 
-        auto factory = Application::g_app->renderer()->d2d1Factory();
+        auto& app = Application::g_app;
+        auto factory = app->renderer()->d2d1Factory();
 
         auto prop = D2D1::StrokeStyleProperties
         (
@@ -49,7 +50,7 @@ namespace d14engine::uikit
         /* endCap   */ D2D1_CAP_STYLE_ROUND,
         /* dashCap  */ D2D1_CAP_STYLE_ROUND
         );
-        auto& style = checkedIcon.strokeStyle;
+        auto& style = strokeStyle;
 
         THROW_IF_FAILED(factory->CreateStrokeStyle
         (
@@ -60,18 +61,26 @@ namespace d14engine::uikit
         ));
     }
 
-    void CheckBox::setEnabled(bool value)
+    CheckBox::CheckMode CheckBox::checkMode() const
     {
-        ClickablePanel::setEnabled(value);
-
-        m_state.buttonFlag = value ?
-            State::ButtonFlag::Idle :
-            State::ButtonFlag::Disabled;
+        return m_mode;
     }
 
-    void CheckBox::setChecked(State::ActiveFlag flag)
+    void CheckBox::setCheckMode(CheckMode mode)
     {
-        m_state.activeFlag = flag;
+        m_mode = mode;
+
+        setCheckStateSilently(Unchecked);
+    }
+
+    CheckBox::CheckState CheckBox::checkState() const
+    {
+        return m_state.activeFlag;
+    }
+
+    void CheckBox::setCheckState(CheckState state)
+    {
+        m_state.activeFlag = state;
 
         StatefulObject::Event soe = {};
         soe.flag = m_state.activeFlag;
@@ -83,40 +92,44 @@ namespace d14engine::uikit
         }
     }
 
-    void CheckBox::setCheckedState(State::ActiveFlag flag)
+    void CheckBox::setCheckStateSilently(CheckState state)
     {
-        m_state.activeFlag = flag;
+        m_state.activeFlag = state;
         m_stateDetail.flag = m_state.activeFlag;
     }
 
-    bool CheckBox::isTripleState() const
+    const CheckBox::StateMapGroup CheckBox::g_stateMaps =
     {
-        return m_isTripleState;
+        StateMap // Binary
+        {
+            /* Unchecked    */ Checked,
+            /* Intermediate */ Unchecked,
+            /* Checked      */ Unchecked
+        },
+        StateMap // TriState
+        {
+            /* Unchecked    */ Intermediate,
+            /* Intermediate */ Checked,
+            /* Checked      */ Unchecked
+        }
+    };
+    const CheckBox::StateMap& CheckBox::stateMap() const
+    {
+        return g_stateMaps[(size_t)m_mode];
     }
 
-    void CheckBox::enableTripleState(bool value)
+    CheckBox::CheckState CheckBox::nextState() const
     {
-        setChecked(Unchecked);
+        return stateMap()[(size_t)checkState()];
+    }
 
-        m_isTripleState = value;
-        if (m_isTripleState)
-        {
-            m_stateTransitionMap =
-            {
-            /* Unchecked    */ State::ActiveFlag::Intermediate,
-            /* Intermediate */ State::ActiveFlag::Checked,
-            /* Checked      */ State::ActiveFlag::Unchecked
-            };
-        }
-        else // Use double-state mode.
-        {
-            m_stateTransitionMap =
-            {
-            /* Unchecked    */ State::ActiveFlag::Checked,
-            /* Intermediate */ State::ActiveFlag::Unchecked,
-            /* Checked      */ State::ActiveFlag::Unchecked
-            };
-        }
+    void CheckBox::setEnabled(bool value)
+    {
+        ClickablePanel::setEnabled(value);
+
+        m_state.buttonFlag = value ?
+            State::ButtonFlag::Idle :
+            State::ButtonFlag::Disabled;
     }
 
     void CheckBox::onRendererDrawD2d1ObjectHelper(Renderer* rndr)
@@ -127,36 +140,45 @@ namespace d14engine::uikit
         // Background //
         ////////////////
 
-        resource_utils::solidColorBrush()->SetColor(setting.background.color);
-        resource_utils::solidColorBrush()->SetOpacity(setting.background.opacity);
+        auto& background = setting.background;
 
-        ClickablePanel::drawBackground(rndr);
+        resource_utils::solidColorBrush()->SetColor(background.color);
+        resource_utils::solidColorBrush()->SetOpacity(background.opacity);
+
+        drawBackground(rndr);
 
         //////////
         // Icon //
         //////////
 
-        if (m_state.activeFlag == Intermediate)
+        switch (checkState())
+        {
+        case Unchecked:
+        {
+            break; // There is no foreground icon when unchecked.
+        }
+        case Intermediate:
         {
             auto& geoSetting = appearance().icon.geometry.intermediate;
-            auto& iconBackground = appearance().icon.background[m_state.index()];
+            auto& background = appearance().icon.background[m_state.index()];
 
-            resource_utils::solidColorBrush()->SetColor(iconBackground.color);
-            resource_utils::solidColorBrush()->SetOpacity(iconBackground.opacity);
+            resource_utils::solidColorBrush()->SetColor(background.color);
+            resource_utils::solidColorBrush()->SetOpacity(background.opacity);
 
             rndr->d2d1DeviceContext()->FillRectangle
             (
             /* rect  */ math_utils::centered(m_absoluteRect, geoSetting.size),
             /* brush */ resource_utils::solidColorBrush()
             );
+            break;
         }
-        else if (m_state.activeFlag == Checked)
+        case Checked:
         {
             auto& geoSetting = appearance().icon.geometry.checked;
-            auto& iconBackground = appearance().icon.background[m_state.index()];
+            auto& background = appearance().icon.background[m_state.index()];
 
-            resource_utils::solidColorBrush()->SetColor(iconBackground.color);
-            resource_utils::solidColorBrush()->SetOpacity(iconBackground.opacity);
+            resource_utils::solidColorBrush()->SetColor(background.color);
+            resource_utils::solidColorBrush()->SetOpacity(background.opacity);
 
             auto iconLeftTop = absolutePosition();
 
@@ -176,31 +198,28 @@ namespace d14engine::uikit
             /* strokeWidth */ geoSetting.strokeWidth,
             /* strokeStyle */ checkedIcon.strokeStyle.Get()
             );
+            break;
         }
-
+        default: break;
+        }
         /////////////
         // Outline //
         /////////////
 
-        resource_utils::solidColorBrush()->SetColor(setting.stroke.color);
-        resource_utils::solidColorBrush()->SetOpacity(setting.stroke.opacity);
+        auto& stroke = setting.stroke;
 
-        auto frame = math_utils::inner(m_absoluteRect, setting.stroke.width);
-        D2D1_ROUNDED_RECT outlineRect = { frame, roundRadiusX, roundRadiusY };
+        resource_utils::solidColorBrush()->SetColor(stroke.color);
+        resource_utils::solidColorBrush()->SetOpacity(stroke.opacity);
+
+        auto rect = math_utils::inner(m_absoluteRect, stroke.width);
+        D2D1_ROUNDED_RECT roundedRect = { rect, roundRadiusX, roundRadiusY };
 
         rndr->d2d1DeviceContext()->DrawRoundedRectangle
         (
-        /* roundedRect */ outlineRect,
+        /* roundedRect */ roundedRect,
         /* brush       */ resource_utils::solidColorBrush(),
-        /* strokeWidth */ setting.stroke.width
+        /* strokeWidth */ stroke.width
         );
-    }
-
-    void CheckBox::onChangeThemeStyleHelper(const ThemeStyle& style)
-    {
-        ClickablePanel::onChangeThemeStyleHelper(style);
-
-        appearance().changeTheme(style.name);
     }
 
     void CheckBox::onMouseEnterHelper(MouseMoveEvent& e)
@@ -215,6 +234,13 @@ namespace d14engine::uikit
         ClickablePanel::onMouseLeaveHelper(e);
 
         m_state.buttonFlag = State::ButtonFlag::Idle;
+    }
+
+    void CheckBox::onChangeThemeStyleHelper(const ThemeStyle& style)
+    {
+        ClickablePanel::onChangeThemeStyleHelper(style);
+
+        appearance().changeTheme(style.name);
     }
 
     void CheckBox::onMouseButtonPressHelper(ClickablePanel::Event& e)
@@ -232,7 +258,7 @@ namespace d14engine::uikit
         {
             m_state.buttonFlag = State::ButtonFlag::Hover;
 
-            setChecked(m_stateTransitionMap[(size_t)m_state.activeFlag]);
+            setCheckState(nextState());
         }
     }
 }

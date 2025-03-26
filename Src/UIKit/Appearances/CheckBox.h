@@ -13,8 +13,8 @@ namespace d14engine::uikit
 {
     struct CheckBoxState
     {
-        enum class ActiveFlag { Unchecked, Intermediate, Checked } activeFlag = {};
-        enum class ButtonFlag { Idle, Hover, Down, Disabled } buttonFlag = {};
+        enum class ActiveFlag { Unchecked, Intermediate, Checked } activeFlag = ActiveFlag::Unchecked;
+        enum class ButtonFlag { Idle, Hover, Down, Disabled } buttonFlag = ButtonFlag::Idle;
 
         size_t index() const
         {
@@ -28,9 +28,9 @@ namespace d14engine::uikit
         };
     };
 
-    struct CheckBoxStateChangeEvent : uikit::Event
+    struct CheckBoxStateChangeEvent : Event
     {
-        CheckBoxState::ActiveFlag flag = {};
+        CheckBoxState::ActiveFlag flag = CheckBoxState::ActiveFlag::Unchecked;
 
         bool operator==(const CheckBoxStateChangeEvent& other) const { return flag == other.flag; }
 
