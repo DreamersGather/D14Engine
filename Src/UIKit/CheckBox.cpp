@@ -17,11 +17,10 @@ namespace d14engine::uikit
         const D2D1_RECT_F& rect)
         :
         Panel(rect, resource_utils::solidColorBrush()),
-        ClickablePanel(rect, resource_utils::solidColorBrush())
+        ClickablePanel(rect, resource_utils::solidColorBrush()),
+        m_mode(mode)
     {
         roundRadiusX = roundRadiusY = roundRadius;
-
-        setCheckMode(mode);
     }
 
     void CheckBox::onInitializeFinish()
