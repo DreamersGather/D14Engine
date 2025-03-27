@@ -81,8 +81,7 @@ namespace d14engine::uikit
 
         const static StateMapGroup g_stateMaps;
 
-        const StateMap& stateMap() const;
-        CheckState nextState() const;
+        const StateMap& stateMap() const; CheckState nextState() const;
 
         /////////////////////////
         // Interface Overrides //
