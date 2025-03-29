@@ -10,6 +10,10 @@ namespace d14engine::uikit
     {
         using Panel::Panel;
 
+        ////////////////////////
+        // Callback Functions //
+        ////////////////////////
+
         struct Event : MouseEvent
         {
             enum class Flag { Unknown, Left, Right, Middle } flag = Flag::Unknown;
@@ -19,6 +23,9 @@ namespace d14engine::uikit
             bool middle() const { return flag == Flag::Middle; }
         };
 
+        //------------------------------------------------------------------
+        // Public Interfaces
+        //------------------------------------------------------------------
     public:
         void onMouseButtonPress(Event& e);
 
@@ -28,10 +35,20 @@ namespace d14engine::uikit
 
         Function<void(ClickablePanel*, Event&)> f_onMouseButtonRelease = {};
 
+        //------------------------------------------------------------------
+        // Protected Helpers
+        //------------------------------------------------------------------
     protected:
         virtual void onMouseButtonPressHelper(Event& e);
         virtual void onMouseButtonReleaseHelper(Event& e);
 
+        ///////////////////////
+        // Interaction Logic //
+        ///////////////////////
+
+        //------------------------------------------------------------------
+        // Double-Click
+        //------------------------------------------------------------------
     public:
         // Introduce this to help handle the specialized mouse-click callback.
         //
@@ -48,6 +65,9 @@ namespace d14engine::uikit
 
         bool captureDoubleClick = true;
 
+        //------------------------------------------------------------------
+        // Press-State
+        //------------------------------------------------------------------
     protected:
         // Since there is no capture mechanism in the UI event system, so the
         // following behavior can be triggered unexpectedly: A mouse button
@@ -61,7 +81,7 @@ namespace d14engine::uikit
         // check the real mouse-click event, which will be triggered when a
         // native mouse-up event is encountered and m_hasXxxPressed is true.
 
-        bool m_hasLeftPressed = false, m_hasRightPressed = false, m_hasMiddlePressed = false;
+        bool m_leftPressed = false, m_rightPressed = false, m_middlePressed = false;
 
         /////////////////////////
         // Interface Overrides //

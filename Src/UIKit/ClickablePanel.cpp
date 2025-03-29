@@ -4,13 +4,6 @@
 
 namespace d14engine::uikit
 {
-    void ClickablePanel::setEnabled(bool value)
-    {
-        Panel::setEnabled(value);
-
-        setEnabledWrapper(value);
-    }
-
     void ClickablePanel::onMouseButtonPress(Event& e)
     {
         onMouseButtonPressHelper(e);
@@ -35,6 +28,18 @@ namespace d14engine::uikit
         // This method intentionally left blank.
     }
 
+    void ClickablePanel::setEnabled(bool value)
+    {
+        Panel::setEnabled(value);
+
+        setEnabledWrapper(value);
+    }
+
+    void ClickablePanel::setEnabledWrapper(bool value)
+    {
+        m_leftPressed = m_rightPressed = m_middlePressed = false;
+    }
+
     void ClickablePanel::onMouseLeaveHelper(MouseMoveEvent& e)
     {
         Panel::onMouseLeaveHelper(e);
@@ -44,7 +49,7 @@ namespace d14engine::uikit
 
     void ClickablePanel::onMouseLeaveWrapper(MouseMoveEvent& e)
     {
-        m_hasLeftPressed = m_hasRightPressed = m_hasMiddlePressed = false;
+        m_leftPressed = m_rightPressed = m_middlePressed = false;
     }
 
     void ClickablePanel::onMouseButtonHelper(MouseButtonEvent& e)
@@ -67,40 +72,40 @@ namespace d14engine::uikit
         {
             if (leftPressed)
             {
-                m_hasLeftPressed = true;
+                m_leftPressed = true;
                 be.flag = Event::Flag::Left;
             }
             else if (rightPressed)
             {
-                m_hasRightPressed = true;
+                m_rightPressed = true;
                 be.flag = Event::Flag::Right;
             }
             else if (middlePressed)
             {
-                m_hasMiddlePressed = true;
+                m_middlePressed = true;
                 be.flag = Event::Flag::Middle;
             }
             else be.flag = Event::Flag::Unknown;
 
             onMouseButtonPress(be);
         }
-        else if (m_hasLeftPressed || m_hasRightPressed || m_hasMiddlePressed)
+        else if (m_leftPressed || m_rightPressed || m_middlePressed)
         {
             if (e.state.leftUp() || e.state.rightUp() || e.state.middleUp())
             {
                 if (e.state.leftUp())
                 {
-                    m_hasLeftPressed = false;
+                    m_leftPressed = false;
                     be.flag = Event::Flag::Left;
                 }
                 else if (e.state.rightUp())
                 {
-                    m_hasRightPressed = false;
+                    m_rightPressed = false;
                     be.flag = Event::Flag::Right;
                 }
                 else if (e.state.middleUp())
                 {
-                    m_hasMiddlePressed = false;
+                    m_middlePressed = false;
                     be.flag = Event::Flag::Middle;
                 }
                 else be.flag = Event::Flag::Unknown;
@@ -108,10 +113,5 @@ namespace d14engine::uikit
                 onMouseButtonRelease(be);
             }
         }
-    }
-
-    void ClickablePanel::setEnabledWrapper(bool value)
-    {
-        m_hasLeftPressed = m_hasRightPressed = m_hasMiddlePressed = false;
     }
 }
